@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    	<record model="ir.ui.view" id="plan_sale_milk_form_view">
+            <field name="name">plan_sale_milk.form</field>
+            <field name="model">milk.plan_sale_milk</field>
+            <field name="arch" type="xml">
+                <form string="План производства/реализации молока">
+                  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" string="Номер"/>
+                                <field name="date_doc" string="Дата"/>
+                                
+                            </group>
+
+                            <group>
+                                <field name="month" string="Месяц"/>
+                                <field name="year" string="Год"/>
+                                
+                            </group>
+
+                        </group>
+                        <group>
+                            <group>
+                                <field name="valoviy_nadoy"/>
+                                <field name="vipoyka"/>
+                                <field name="utilizaciya"/>
+                                <field name="jir"/>
+                                <field name="belok"/>
+                            </group>
+                            <group>
+                                <field name="price"/>
+                                <field name="natura"/>
+                                <field name="zachet"/>
+                                <field name="amount"/>
+                                <field name="amount_nds"/>
+                            </group>
+
+                        </group>
+                         
+                         <div class="oe_button_box" name="button_box">
+                                <button name="action_generate"
+                                    type="object"
+                                    class="oe_stat_button oe_edit_only"
+                                    icon="fa-refresh" string="Распределить"
+                                   >
+                                </button>
+                            </div>
+                            <notebook>
+                                <page string="В разрезе недель">
+                                    <field name="plan_sale_milk_line">
+                                        <tree string="Plan Sale milk line2" editable="botton">
+                                            <!-- <field name="year"/>
+                                            <field name="month"/> -->
+                                            <field name="week"/>
+                                            <field name="date_start"/>
+                                            <field name="date_end"/>
+                                            <field name="valoviy_nadoy"/>
+                                            <field name="vipoyka"/>
+                                            <field name="utilizaciya"/>
+                                            <field name="natura"/>
+                                            <field name="jir"/>
+                                            <field name="belok"/>
+                                            <field name="zachet"/>
+                                            <field name="amount"/>
+                                            <field name="amount_nds"/>
+                                          
+                                           
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                            <!-- 
+                            <group>
+                                <h2> Итого: </h2>
+                                <group>
+                                    <field name="amount_ot_ves_natura" string="От.натура"/>
+                                    <field name="amount_pt_ves_natura" string="Пр.натура"/>
+                                    <field name="amount_ot_ves_zachet" string="От.зачет"/>
+                                    <field name="amount_pr_ves_zachet" string="Пр.зачет"/>
+                                </group>
+                                <h2> Отклонение (принято - отправлено): </h2>
+                                <group>
+                                    <field name="otklonene_ves_natura" string="Натура"/>
+                                    <field name="otklonene_ves_zachet" string="Зачет"/>
+                                    
+                                </group>
+                                
+                                
+                        
+                            </group>
+                            <notebook colspan="4">
+                                <page string="Комментарии">
+                                    <field name="description" nolabel="1"/>
+                                </page>
+                            </notebook> -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+
+
+
+
+
+
+
+
+
+
+        <record model="ir.ui.view" id="view_plan_sale_milk_tree">
+            <field name="name">plan_sale_milk.tree</field>
+            <field name="model">milk.plan_sale_milk</field>
+            <field name="arch" type="xml">
+                <tree string="План производства/реализации молока" default_order='name desc'>
+                    <field name="name" string="№"/>
+                    <field name="date_doc" string="Дата"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
+
+	   <record model="ir.ui.view" id="plan_sale_milk_search_view">
+            <field name="name">plan_sale_milk.search</field>
+            <field name="model">milk.plan_sale_milk</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Номер"/>
+                    <field name="date_doc" string="Дата"/>
+                </search>
+            </field>
+        </record>
+        
+
+
+     
+
+
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="plan_sale_milk_list_action">
+            <field name="name">План производства/реализации молока</field>
+            <field name="res_model">milk.plan_sale_milk</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первый документ План производства/реализации молока
+                </p>
+            </field>
+        </record>
+
+   
+    </data>
+</openerp>

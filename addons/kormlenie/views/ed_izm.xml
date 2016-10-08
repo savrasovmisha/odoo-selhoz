@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="nomen_ed_izm_form_view">
+        <field name="name">nomen_ed_izm.form</field>
+        <field name="model">nomen.ed_izm</field>
+        <field name="arch" type="xml">
+            <form string="Форма Ед.Измерения">
+                <sheet>
+                    <group>
+                        <field name="name" string="Наименование"/>
+                        <field name="ed_izm_categ_id" string="Категория"/>
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_nomen_ed_izm_tree">
+            <field name="name">nomen_ed_izm.tree</field>
+            <field name="model">nomen.ed_izm</field>
+            <field name="arch" type="xml">
+                <tree string="Единицы измерения">
+                    <field name="name" string="Ноименование"/>
+                    <field name="ed_izm_categ_id" string="Категория"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="nomen_ed_izm_search_view">
+            <field name="name">nomen_ed_izm.search</field>
+            <field name="model">nomen.ed_izm</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Ноименование"/>
+                    <field name="ed_izm_categ_id" string="Категория"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="nomen_ed_izm_list_action">
+            <field name="name">Единицы измерения</field>
+            <field name="res_model">nomen.ed_izm</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись ед.изм.
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

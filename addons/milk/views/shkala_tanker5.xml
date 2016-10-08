@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="shkala_tanker5_form_view">
+        <field name="name">shkala_tanker5.form</field>
+        <field name="model">milk.shkala_tanker5</field>
+        <field name="arch" type="xml">
+            <form string="Форма Шкалы танкера №5">
+                <sheet>
+                    <group>
+                        <field name="name" string="Показание"/>
+                        <field name="value" string="Значение"/>
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_shkala_tanker5_tree">
+            <field name="name">shkala_tanker5.tree</field>
+            <field name="model">milk.shkala_tanker5</field>
+            <field name="arch" type="xml">
+                <tree string="Шкала танкер №5">
+                    <field name="name" string="Показание"/>
+                    <field name="value" string="Значение"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="shkala_tanker5_list_action">
+            <field name="name">Шкала танкера №5</field>
+            <field name="res_model">milk.shkala_tanker5</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

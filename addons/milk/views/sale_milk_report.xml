@@ -1,0 +1,16 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+		<report
+		    id="sale_milk"
+		    model="milk.sale_milk"
+		    string="Sale milk"
+		    report_type="qweb-html"
+		    name="milk.sale_milk_report"
+		    file="milk.sale_milk_report"
+		    attachment_use="True"
+		    attachment="(object.state in ('open','paid')) and
+		        ('INV'+(object.number or '').replace('/','')+'.pdf')"
+		/>
+ 	</data>
+</openerp> -->

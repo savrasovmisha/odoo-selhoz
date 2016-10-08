@@ -1,0 +1,70 @@
+<odoo>
+    
+    <record id="sale_milk_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">milk.sale_milk_dashboard.kanban</field>
+        <field name="model">milk.sale_milk_dashboard</field>
+        <field name="arch" type="xml">
+            <kanban create="false">
+                
+                
+                <field name="kkk"/>
+                 <templates>
+             
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_content">
+                            <!-- title -->
+                            <h3>Реализация молока</h3>
+                           
+                            <br/>
+                            Месяц:
+                            <field name="date"/> 
+                            
+                        
+                            <table border="1">
+                             <tr>
+
+                                            <td>
+                                                Факт
+                                            </td>
+                                           <td>
+                                                План
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td>
+                                                <field name="kkk"/> 
+                                            </td>
+                                           <td>
+                                                <field name="ddd"/> 
+                                            </td>
+                                        </tr>
+                            </table>
+                         </div>
+                    </t>
+
+                </templates>
+            </kanban>
+        </field>
+    </record> 
+
+    <record id="open_sale_milk_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">Панель Молоко</field>
+        <field name="res_model">milk.sale_milk_dashboard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban</field>
+
+        <field name="help" type="html">
+            <p>
+
+                This is the accounting dashboard. If you have not yet
+                installed a chart of account, please install one first.
+               
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="milk_menu_sale_milk_dashboard_kanban" name="Dashboard" action="open_sale_milk_dashboard_kanban" parent="milk_menu_doc" sequence="1"/>
+
+  
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="pricep_form_view">
+        <field name="name">pricep.form</field>
+        <field name="model">milk.pricep</field>
+        <field name="arch" type="xml">
+            <form string="Форма Прицеп">
+                <sheet>
+                    <group>
+                        <field name="name" string="Имя"/>
+                        <field name="type_transport_id" string="Тип транспорта"/>
+                        <field name="gos_nomer" string="Гос. номер"/>
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_pricep_tree">
+            <field name="name">pricep.tree</field>
+            <field name="model">milk.pricep</field>
+            <field name="arch" type="xml">
+                <tree string="Прицепы">
+                    <field name="name" string="Ноименование"/>
+                    <field name="type_transport_id" string="Тип транспорта"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="pricep_search_view">
+            <field name="name">pricep.search</field>
+            <field name="model">milk.pricep</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Ноименование"/>
+                    <field name="type_transport_id" string="Тип транспорта"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="pricep_list_action">
+            <field name="name">Прицепы</field>
+            <field name="res_model">milk.pricep</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Прицепа
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

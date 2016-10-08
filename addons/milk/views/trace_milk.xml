@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    	<record model="ir.ui.view" id="trace_milk_form_view">
+            <field name="name">trace_milk.form</field>
+            <field name="model">milk.trace_milk</field>
+            <field name="arch" type="xml">
+                <form string="Форма Учет движения молока">
+                    <header>
+                        <!-- <button name="create_ttn" string="Создать ТТН" type="object" />  -->
+                        <!-- Add button in your xml form -->
+        
+        
+
+                    </header>
+                    <sheet>
+                        
+                            <group>
+                                <field name="name" string="Номер"/>
+                                <field name="date_doc"/>
+                            </group>
+                            <group>
+                                <separator string="Движение молока" colspan="2"/>
+                                <group>
+                                    <field name="vipoyka"/>
+                                    <field name="utilizaciya"/>
+                                    <field name="sale_natura"/>
+                                    <field name="sale_zachet"/>
+                                    <field name="sale_jir"/>
+                                    <field name="sale_belok"/>
+                                    
+                                </group>
+                                <group>
+                                    <field name="sale_peresdali_natura"/>
+                                    <field name="sale_peresdali_zachet"/>
+                                </group>
+                                <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
+                                    <field name="valoviy_nadoy" class="oe_subtotal_footer_separator"/>
+                                    <field name="otk_valoviy_nadoy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>
+                                </group>
+                            </group>
+                            
+
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_load_uniform"
+                                    type="object"
+                                    class="oe_stat_button oe_edit_only"
+                                    icon="fa-refresh" string="Загрузить"
+                                   >
+                                </button>
+                            </div>
+
+
+                            <group col="10">
+                                <group colspan="5">
+                                    <separator string="Состав поголовья" colspan="2"/>
+                                    <field name="cow_doy"/>
+                                    <field name="cow_zapusk"/>
+                                    <field name="cow_fur"/>
+                                    <field name="cow_netel"/>
+                                    <field name="cow_total"/>
+                                    <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
+                                        <field name="nadoy_doy" class="oe_subtotal_footer_separator"/>
+                                        <field name="otk_nadoy_doy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>    
+                                        <field name="nadoy_fur" class="oe_subtotal_footer_separator"/>
+                                        <field name="otk_nadoy_fur" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/> 
+                                    </group>
+                                    
+                                </group>
+                              
+                                <group colspan="5">
+                                    <separator string="Надой по группам дней лактации" colspan="2"/>
+                                     
+                                    <label for="nadoy_0_40" />
+                                    <div class="o_row" >  
+                                        <field name="nadoy_0_40" calss="oe_inline" />( <field name="otk_0_40" nolabel="1" class="oe_inline"/>)
+                                    </div>
+
+                                    <label for="nadoy_40_150" />
+                                    <div class="o_row" >  
+                                        <field name="nadoy_40_150" calss="oe_inline" />( <field name="otk_40_150" nolabel="1" class="oe_inline"/>)
+                                    </div>
+
+                                    <label for="nadoy_150_300" />
+                                    <div class="o_row" >  
+                                        <field name="nadoy_150_300" calss="oe_inline" />( <field name="otk_150_300" nolabel="1" class="oe_inline"/>)
+                                    </div>
+
+                                    <label for="nadoy_300" />
+                                    <div class="o_row" >  
+                                        <field name="nadoy_300" calss="oe_inline" />( <field name="otk_300" nolabel="1" class="oe_inline"/>)
+                                    </div>
+                                    
+                                </group>
+                            </group>
+                            <notebook colspan="4">
+                                <page string="Комментарии">
+                                    <field name="description" nolabel="1"/>
+                                </page>
+                            </notebook>
+                            
+
+                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+
+
+
+
+        <record model="ir.ui.view" id="view_trace_milk_tree">
+            <field name="name">trace_milk.tree</field>
+            <field name="model">milk.trace_milk</field>
+            <field name="arch" type="xml">
+                <tree string="Учет движения молока" default_order='date_doc desc' decoration-danger="otk_nadoy_doy&lt;0">
+                    <!-- <field name="name" string="№"/> -->
+                    <field name="date_doc" string="Дата"/>
+                    <field name="valoviy_nadoy"/>
+                    <field name="nadoy_doy"/>
+                    <field name="otk_nadoy_doy" string="Откл" help="Отклонение от предыдущего дня"/>
+                    <field name="vipoyka"/>
+                    <field name="utilizaciya" string="Утил- но"/>
+                    <field name="sale_natura" string="Реал- но"/>
+                    <field name="sale_zachet"/>
+                    <field name="sale_jir"/>
+                    <field name="sale_belok"/>
+                    <field name="cow_doy"/>
+                    <field name="cow_zapusk"/>
+                    <field name="cow_fur"/>
+                    <field name="cow_netel"/>
+                    <field name="cow_total"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
+
+	   <record model="ir.ui.view" id="trace_milk_search_view">
+            <field name="name">trace_milk.search</field>
+            <field name="model">milk.trace_milk</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Номер"/>
+                    <field name="date_doc" string="Дата"/>
+                </search>
+            </field>
+        </record>
+        
+
+
+        <record id="view_trace_milk_graph" model="ir.ui.view">
+             <field name="name">trace_milk.graph</field>
+             <field name="model">milk.trace_milk</field>
+             <field name="arch" type="xml">
+                 <graph string="Sales Milk Analysis">
+                     <field name="date_doc" type="row" interval="day"/>
+                     <field name="valoviy_nadoy" type="measure"/>
+                     
+                 </graph>
+             </field>
+        </record>
+
+
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="trace_milk_list_action">
+            <field name="name">Учет движения молока</field>
+            <field name="res_model">milk.trace_milk</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первый документ учета движения молока
+                </p>
+            </field>
+        </record>
+
+   
+    </data>
+</openerp>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    	<record model="ir.ui.view" id="control_sale_milk_form_view">
+            <field name="name">control_sale_milk.form</field>
+            <field name="model">milk.control_sale_milk</field>
+            <field name="arch" type="xml">
+                <form string="Форма сверки реализации молока">
+                  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" string="Номер"/>
+                                <field name="partner_id" string="Партнер" domain="[('company_type','=','company')]"/>
+                                
+                            </group>
+
+                            <group>
+                                <field name="create_date" string="Дата"/>
+                                <field name="month" string="Месяц"/>
+                                <field name="year" string="Год"/>
+                                
+                            </group>
+
+                        </group>
+                        
+                         
+                            <notebook>
+                                <page string="Отправлено / Принято">
+                                    <field name="control_sale_milk_line">
+                                        <tree string="Sale milk line2" editable="botton">
+                                            <field name="day" string="День"/>
+                                            <field name="sale_milk_id" string="Док.реализации"/>
+
+                                            <field name="ot_ves_natura" string="От.Натура"/>
+                                            <field name="pr_ves_natura" string="Пр.Натура"/>
+
+                                            <field name="ot_ves_zachet" string="От.Зачет"/>
+                                            <field name="pr_ves_zachet" string="Пр.Зачет"/>
+
+                                            <field name="ot_jir" string="От.Жир"/>
+                                            <field name="pr_jir" string="Пр.Жир"/>
+
+                                            <field name="ot_belok" string="От.Белок"/>
+                                            <field name="pr_belok" string="Пр.Белок"/>
+                                           
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                            <group>
+                                <h2> Итого: </h2>
+                                <group>
+                                    <field name="amount_ot_ves_natura" string="От.натура"/>
+                                    <field name="amount_pt_ves_natura" string="Пр.натура"/>
+                                    <field name="amount_ot_ves_zachet" string="От.зачет"/>
+                                    <field name="amount_pr_ves_zachet" string="Пр.зачет"/>
+                                </group>
+                                <h2> Отклонение (принято - отправлено): </h2>
+                                <group>
+                                    <field name="otklonene_ves_natura" string="Натура"/>
+                                    <field name="otklonene_ves_zachet" string="Зачет"/>
+                                    
+                                </group>
+                                
+                                
+                        
+                            </group>
+                            <notebook colspan="4">
+                                <page string="Комментарии">
+                                    <field name="description" nolabel="1"/>
+                                </page>
+                            </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+
+
+
+
+
+
+
+
+
+
+        <record model="ir.ui.view" id="view_control_sale_milk_tree">
+            <field name="name">control_sale_milk.tree</field>
+            <field name="model">milk.control_sale_milk</field>
+            <field name="arch" type="xml">
+                <tree string="Сверка Реализация молока" default_order='name desc'>
+                    <field name="name" string="№"/>
+                    <field name="create_date" string="Дата"/>
+                    <field name="partner_id" string="Партнер"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
+
+	   <record model="ir.ui.view" id="control_sale_milk_search_view">
+            <field name="name">control_sale_milk.search</field>
+            <field name="model">milk.control_sale_milk</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Номер"/>
+                    <field name="create_date" string="Дата"/>
+                </search>
+            </field>
+        </record>
+        
+
+
+     
+
+
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="control_sale_milk_list_action">
+            <field name="name">Сверка Реализация молока</field>
+            <field name="res_model">milk.control_sale_milk</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первый документ Сверки реализации молока
+                </p>
+            </field>
+        </record>
+
+   
+    </data>
+</openerp>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nomen_ed_izm_categ_manager,nomen.ed_izm_categ,model_nomen_ed_izm_categ,group_kormlenie_manager,1,1,1,1
+access_nomen_ed_izm_categ_users,nomen.ed_izm_categ,model_nomen_ed_izm_categ,group_kormlenie_users,1,0,0,0
+access_nomen_ed_izm_manager,nomen.ed_izm,model_nomen_ed_izm,group_kormlenie_manager,1,1,1,1
+access_nomen_ed_izm_users,nomen.ed_izm,model_nomen_ed_izm,group_kormlenie_users,1,0,0,0
+
+

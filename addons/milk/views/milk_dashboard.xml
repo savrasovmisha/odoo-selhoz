@@ -1,0 +1,324 @@
+<odoo>
+    
+    <record id="sale_milk_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">milk.sale_milk_dashboard.kanban</field>
+        <field name="model">milk.sale_milk_dashboard</field>
+        <field name="arch" type="xml">
+            <kanban create="false">
+                
+                
+                <field name="zachet_fact"/>
+                <field name="visible"/>
+                <field name="otk_valoviy_nadoy"/>
+                <field name="otk_nadoy_doy"/>
+                <field name="otk_koef_tovarnosti"/>
+                <field name="otk_koef_zachet"/>
+                <field name="otk_sale_jir"/>
+                <field name="otk_sale_belok"/>
+                <field name="izmenenie_viruchki"/>
+                 <templates>
+                    
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_content">
+                            <!-- title -->
+                            <h4>Реализация молока за <field name="month"/>-<field name="year"/></h4>
+                            <table class="kanban">
+                                <tr>
+                                    <td class="name_amount">Выручка, тыс.руб.:</td>
+                                    <td class="amount"><field name="amount_sale_fact"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="name_amount">План, тыс.руб.: </td>
+                                    <td  class="amount_small"><field name="amount_sale_plan"/></td>
+                                </tr>
+                                <tr>
+                                    <t t-if="record.visible.raw_value=='True'">
+                                        <td class="name_amount">Прогноз выполнения плана:</td>
+                                    </t>
+                                    <t t-if="record.visible.raw_value=='False'">
+                                        <td class="name_amount">Выполнение плана:</td>
+                                    </t>
+                                    <td  class="amount_small"><field name="zachet_prognoz"/>%</td>
+                                </tr>
+                            </table>
+                           <br/>
+
+                            <table class="kanban">
+                             <tr>
+                                            <th class="kanban">
+                                                Показатель
+                                            </th>
+
+                                            <th class="kanban">
+                                                Факт
+                                            </th>
+                                           <th class="kanban">
+                                                План
+                                            </th>
+                                            <th class="kanban">
+                                                Откл
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">
+                                                Зачетный вес, тонн
+                                            </td>
+
+                                            <td class="data">
+                                                <field name="zachet_fact"/> 
+                                            </td>
+                                           <td class="data">
+                                                <field name="zachet_plan"/> 
+                                            </td>
+                                            <td class="data">
+                                                <field name="zachet_otk"/> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data">
+                                                Вес натура, тонн
+                                            </td>
+
+                                            <td class="data">
+                                                <field name="natura_fact"/> 
+                                            </td>
+                                           <td class="data">
+                                                 <field name="natura_plan"/> 
+                                            </td>
+                                            <td class="data">
+                                                <field name="natura_otk"/> 
+                                            </td>
+                                        </tr>
+                            </table>
+                         </div>
+                        <t t-if="record.visible.raw_value=='True'">
+                            <div t-attf-class="oe_kanban_content">
+                                <!-- title -->
+                                                         
+                                <h4>Производство молока за <field name="date_end"/></h4>
+
+                                <table class="kanban">
+                                    <tr>
+                                        <td class="name_amount">Валовый надой, л:</td>
+                                        <td class="amount"><field name="valoviy_nadoy"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_valoviy_nadoy.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_valoviy_nadoy"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_valoviy_nadoy.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_valoviy_nadoy"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="name_amount">На фуражную, л: </td>
+                                        <td  class="amount_small"><field name="nadoy_fur"/></td>
+                                        <td  class="amount_small"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="name_amount">На дойную, л:</td>
+                                        <td class="amount_small"><field name="nadoy_doy"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_nadoy_doy.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_nadoy_doy"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_nadoy_doy.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_nadoy_doy"/>
+                                                </span>
+
+                                            </t>
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="name_amount">Поголовье (фуражное):</td>
+                                        <td class="amount_small"><field name="cow_fur"/></td>
+                                        <td class="amount_small"></td>
+                                    </tr>
+                                </table>
+                                                              
+                                
+
+
+                                
+                             </div>
+                        </t>
+                        <t t-if="record.visible.raw_value=='True'">
+                            <div t-attf-class="oe_kanban_content">
+                                <!-- title -->
+                                                         
+                                <h4>Показатели эффективности за <field name="date_end"/></h4>
+                                <table class="kanban">
+                                    <tr>
+                                        <td class="name_amount">Коэф. товарности:</td>
+                                        <td class="amount"><field name="koef_tovarnosti" help="Реализованно в натуре/Валовый надой"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_koef_tovarnosti.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_koef_tovarnosti"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_koef_tovarnosti.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_koef_tovarnosti"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="name_amount">Коэф. зачетного веса:</td>
+                                        <td class="amount"><field name="koef_zachet" help="Реализованно в зачетном весе/Реализаванно в натуре"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_koef_zachet.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_koef_zachet"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_koef_zachet.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_koef_zachet"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="name_amount">Жир:</td>
+                                        <td class="amount_small"><field name="sale_jir"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_sale_jir.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_sale_jir"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_sale_jir.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_sale_jir"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="name_amount">Белок:</td>
+                                        <td class="amount_small"><field name="sale_belok"/></td>
+                                        <td class="amount_small">
+                                            <t t-if="record.otk_sale_belok.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="otk_sale_belok"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.otk_sale_belok.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="otk_sale_belok"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="name_amount">Изменение выручки <br/>от жира/белка:</td>
+                                        <td class="amount">
+                                            <t t-if="record.izmenenie_viruchki.raw_value&gt;0">
+                                                <span class="value_up">
+                                                    +<field name="izmenenie_viruchki"/>
+                                                </span>
+
+                                            </t>
+                                            <t t-if="record.izmenenie_viruchki.raw_value&lt;0">
+                                                <span class="value_down">
+                                                    <field name="izmenenie_viruchki"/>
+                                                </span>
+
+                                            </t>
+                                        </td>
+                                        
+                                        <td class="amount_small">
+                                        </td>
+                                    </tr>
+
+
+
+
+                                    
+                                </table>
+
+                                
+                                                              
+                                
+
+
+                                
+                             </div>
+                        </t>
+                    </t>
+
+                </templates>
+            </kanban>
+        </field>
+    </record> 
+
+
+    <record id="view_sale_milk_dashboard_pivot" model="ir.ui.view">
+         <field name="name">sale_milk_dashboard.pivot</field>
+         <field name="model">milk.sale_milk_dashboard</field>
+         <field name="arch" type="xml">
+             <pivot string="Анализ производства/реализации молока" disable_linking="True">
+                 <!-- <field name="team_id" type="col"/> -->
+                 <field name="year"  type="row"/>
+                 <field name="month"  type="row"/>
+                 <field name="amount_sale_fact" type="measure"/>
+                 <field name="amount_sale_plan" type="measure"/>
+                 <field name="otk_amount_sale" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+    
+    <record id="filter_sale_milk_dashboard" model="ir.filters">
+            <field name="name">За послед. 4 мес.</field>
+            <field name="model_id">milk.sale_milk_dashboard</field>
+            <field name="domain">[('date','&gt;=', (context_today()-relativedelta(months=3)).strftime('%Y-%m-01'))]</field>
+            <field name="is_default">1</field>
+            <field name="user_id"></field>
+            
+        </record>
+
+
+    <record id="open_sale_milk_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">Информационная панель - Молоко</field>
+        <field name="res_model">milk.sale_milk_dashboard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,pivot</field>
+
+        <field name="help" type="html">
+            <p>
+
+                This is the accounting dashboard. If you have not yet
+                installed a chart of account, please install one first.
+               
+            </p>
+        </field>
+    </record>
+
+    
+
+  
+</odoo>

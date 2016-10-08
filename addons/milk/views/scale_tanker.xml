@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="scale_tanker_form_view">
+        <field name="name">scale_tanker.form</field>
+        <field name="model">milk.scale_tanker</field>
+        <field name="arch" type="xml">
+            <form string="Форма Шкалы танкера">
+                <sheet>
+                    <group>
+                        <field name="name" string="Наименование"/>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                                <page string="Показания">
+                                    <field name="scale_tanker_line">
+                                        <tree string="scale_tanker_line" editable="botton">
+                                            <field name="value" string="Значение"/>
+                                            <field name="result" string="Результат"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_scale_tanker_tree">
+            <field name="name">scale_tanker.tree</field>
+            <field name="model">milk.scale_tanker</field>
+            <field name="arch" type="xml">
+                <tree string="Шкала танкеров">
+                    <field name="name" string="Наименование"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="scale_tanker_list_action">
+            <field name="name">Шкала танкера</field>
+            <field name="res_model">milk.scale_tanker</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

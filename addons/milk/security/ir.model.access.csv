@@ -1,0 +1,26 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_milk_type_transport_manager,milk.type_transport,model_milk_type_transport,group_milk_manager,1,1,1,1
+access_milk_milk_type_transport_users,milk.type_transport users,model_milk_type_transport,group_milk_users,1,,,
+access_milk_tanker_manager,milk.tanker,model_milk_tanker,group_milk_manager,1,1,1,1
+access_milk_pricep_manager,milk.pricep,model_milk_pricep,group_milk_manager,1,1,1,1
+access_milk_transport_manager,milk.transport,model_milk_transport,group_milk_manager,1,1,1,1
+access_milk_scale_tanker_manager,milk.scale_tanker,model_milk_scale_tanker,group_milk_manager,1,1,1,1
+access_milk_sale_milk_manager,milk.scale_sale_milk,model_milk_sale_milk,group_milk_manager,1,1,1,1
+access_milk_sale_milk_line_manager,milk.scale_sale_milk_line,model_milk_sale_milk_line,group_milk_manager,1,1,1,1
+access_milk_control_sale_milk_manager,milk.control_scale_sale_milk,model_milk_control_sale_milk,group_milk_manager,1,1,1,1
+access_milk_control_sale_milk_line_manager,milk.control_scale_sale_milk_line,model_milk_control_sale_milk_line,group_milk_manager,1,1,1,1
+access_milk_trace_milk_manager,milk.trace_milk,model_milk_trace_milk,group_milk_manager,1,1,1,1
+access_milk_plan_sale_milk_manager,milk.plan_sale_milk,model_milk_plan_sale_milk,group_milk_manager,1,1,1,1
+access_milk_sale_milk_report_manager,milk.sale_milk_report,model_milk_sale_milk_report,group_milk_manager,1,1,1,1
+access_milk_tanker_users,milk.tanker  users,model_milk_tanker,group_milk_users,1,,,
+access_milk_pricep_users,milk.pricep  users,model_milk_pricep,group_milk_users,1,,,
+access_milk_transport_users,milk.transport  users,model_milk_transport,group_milk_users,1,,,
+access_milk_scale_tanker_users,milk.scale_tanker  users,model_milk_scale_tanker,group_milk_users,1,,,
+access_milk_sale_milk_users,milk.scale_sale_milk  users,model_milk_sale_milk,group_milk_users,1,,,
+access_milk_sale_milk_line_users,milk.scale_sale_milk_line  users,model_milk_sale_milk_line,group_milk_users,1,,,
+access_milk_control_sale_milk_users,milk.control_scale_sale_milk users,model_milk_control_sale_milk,group_milk_users,1,,,
+access_milk_control_sale_milk_line_users,milk.control_scale_sale_milk_line users,model_milk_control_sale_milk_line,group_milk_users,1,,,
+access_milk_trace_milk_users,milk.trace_milk users,model_milk_trace_milk,group_milk_users,1,,,
+access_excel_extended,excel.extended,model_excel_extended,group_milk_users,1,1,1,1
+access_milk_sale_milk_dashboard,milk.sale_milk_dashboard,model_milk_sale_milk_dashboard,group_milk_users,1,1,1,1
+

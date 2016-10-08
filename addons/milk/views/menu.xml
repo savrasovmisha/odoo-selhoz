@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- top level menu: no parent -->
+        <menuitem id="base.main_milk_menu" name="Молоко" groups="group_milk_manager,group_milk_users"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+        
+
+        <menuitem id="milk_menu_doc" name="Документы" sequence="1" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
+
+        <!-- the following menuitem should appear *after*
+             its parent openacademy_menu and *after* its
+             action course_list_action -->
+<!--
+	     Левое меню
+-->
+        <menuitem id="sale_milk_menu" name="Реализация молока" sequence="1" parent="milk_menu_doc"
+                  action="sale_milk_list_action" groups="group_milk_manager,group_milk_users"/>
+
+
+        <menuitem id="trace_milk_menu" name="Учет движения молока" sequence="2" parent="milk_menu_doc"
+                  action="trace_milk_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="control_sale_milk_menu" name="Сверка реализации молока" sequence="3" parent="milk_menu_doc"
+                  action="control_sale_milk_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="plan_sale_milk_menu" name="План производства/реализации молока" sequence="4" parent="milk_menu_doc" action="plan_sale_milk_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="milk_menu_sale_milk_dashboard_kanban" name="Информационная панель" action="open_sale_milk_dashboard_kanban" parent="milk_menu_doc" sequence="5"/>
+
+
+        <menuitem id="milk_menu" name="Справочники" sequence="2" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="tanker_menu" name="Танкеры" parent="milk_menu"
+                  action="tanker_list_action" groups="group_milk_manager,group_milk_users"/>
+        <menuitem id="shkala_tanker5_menu" name="Шкала танкер №5" parent="milk_menu"
+                  action="shkala_tanker5_list_action"/>
+        <menuitem id="scale_tanker_menu" name="Шкала танкеров" parent="milk_menu"
+                  action="scale_tanker_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="type_transport_menu" name="Тип транспорта" parent="milk_menu"
+                  action="type_transport_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="transport_menu" name="Транспорт" parent="milk_menu"
+                  action="transport_list_action" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="pricep_menu" name="Прицепы" parent="milk_menu"
+                  action="pricep_list_action" groups="group_milk_manager,group_milk_users"/>
+
+
+        
+
+        <menuitem id="partners_menu" name="Партнеры" parent="milk_menu"
+                  action="partners_list_action" groups="group_milk_manager,group_milk_users"/>
+
+
+        
+    </data>
+</openerp>

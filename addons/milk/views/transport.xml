@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="transport_form_view">
+            <field name="name">transport.form</field>
+            <field name="model">milk.transport</field>
+            <field name="arch" type="xml">
+                <form string="Форма Транспорт">
+                    <sheet>
+                        <group>
+                            <field name="name" string="Наименование"/>
+                            <field name="mark" string="Марка"/>
+                            <field name="gos_nomer" string="Гос. номер"/>
+                            <field name="type_transport_id" string="Тип транспорта"/>
+                            
+                        </group>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+        <record model="ir.ui.view" id="view_transport_tree">
+            <field name="name">transport.tree</field>
+            <field name="model">milk.transport</field>
+            <field name="arch" type="xml">
+                <tree string="Транспорт">
+                    <field name="name" string="Наименование"/>
+                    <field name="type_transport_id" string="Тип транспорта"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+	
+	<record model="ir.ui.view" id="transport_search_view">
+            <field name="name">transport.search</field>
+            <field name="model">milk.transport</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    <field name="type_transport_id" string="Тип транспорта"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="transport_list_action">
+            <field name="name">Транспорт</field>
+            <field name="res_model">milk.transport</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Транспорта
+                </p>
+            </field>
+        </record>
+
+    </data>
+</openerp>

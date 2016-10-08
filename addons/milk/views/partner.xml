@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <openerp>
+    <data>
+        <!-- Add instructor field to existing view -->
+        <record model="ir.ui.view" id="partner_full_name_form_view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">36</field>
+            <field name="arch" type="xml">
+           <!--      <xpath expr="//page[@name='sales_purchases']/group">
+                    <group string="Point of Sale" name="point_of_sale">
+                        <field name="full_name" />
+                    </group>
+                </xpath> -->
+                <notebook position="inside">
+                    <page string="Бухгалтерский учет">
+
+                            
+                            <group>
+                                <field name="name_official"/>
+                            </group>
+                            <group>
+                                
+                                <group>
+                                    <field name="inn"/>
+                                    <field name="kpp"/>
+                                    <field name="okpo"/>
+                                    <field name="contract_num"/>
+                                    <field name="contract_date"/>
+                                </group>
+                                <group>
+                                     <field name="ceo"/>
+                                    <field name="ceo_function"/>
+                                    <field name="accountant"/>
+                                </group>
+                                
+                            </group>
+                            <group>
+                            <field name="address_formatted"/>
+                            </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        
+
+    </data>
+</openerp>

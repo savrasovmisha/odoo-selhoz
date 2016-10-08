@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- top level menu: no parent -->
+        <menuitem id="base.main_sklad_menu" name="Склад"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+        
+
+        <menuitem id="sklad_menu_doc" name="Документы" sequence="1" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
+
+    
+<!--
+	     Левое меню
+-->
+       
+
+
+        <menuitem id="sklad_menu" name="Справочники" sequence="2" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="nomen_ed_izm_categ_menu" name="Категории ед.изм" parent="sklad_menu" action="nomen_ed_izm_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="nomen_ed_izm_menu" name="Единицы измерения" parent="sklad_menu" action="nomen_ed_izm_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="nomen_categ_menu" name="Категории номенклатуры" parent="sklad_menu" action="nomen_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="nomen_group_menu" name="Группы номенклатуры" parent="sklad_menu" action="nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="nomen_nomen_menu" name="Номенклатура" parent="sklad_menu" action="nomen_nomen_list_action" groups="group_sklad_manager,group_sklad_users"/>
+    
+        <menuitem id="sklad_sklad_menu" name="Склады" parent="sklad_menu" action="sklad_sklad_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+
+        
+    </data>
+</openerp>

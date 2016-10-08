@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="nomen_group_form_view">
+        <field name="name">nomen_group.form</field>
+        <field name="model">nomen.group</field>
+        <field name="arch" type="xml">
+            <form string="Форма Группы номенклатуры">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_nomen_group_tree">
+            <field name="name">nomen_group.tree</field>
+            <field name="model">nomen.group</field>
+            <field name="arch" type="xml">
+                <tree string="Группы номенклатуры">
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="nomen_group_search_view">
+            <field name="name">nomen_group.search</field>
+            <field name="model">nomen.group</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="nomen_group_list_action">
+            <field name="name">Группы номенклатуры</field>
+            <field name="res_model">nomen.group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Группы номенклатуры
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

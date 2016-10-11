@@ -10,6 +10,7 @@
                     <group>
                         <field name="name"/>
                         <field name="partner_id"/>
+                        <field name="id_1c"/>
            
                         
                     </group>

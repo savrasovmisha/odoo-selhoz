@@ -1,0 +1,476 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"j",
+				"jir"
+			],
+			[
+				"sal",
+				"sale_zachet"
+			],
+			[
+				"sale",
+				"sale_natura"
+			],
+			[
+				"ma",
+				"margin"
+			],
+			[
+				"na",
+				"natura_plan"
+			],
+			[
+				"natura_",
+				"natura_fact"
+			],
+			[
+				"mar",
+				"margin-right"
+			],
+			[
+				"border-co",
+				"border-color"
+			],
+			[
+				"border",
+				"border-top"
+			],
+			[
+				"vi",
+				"visible"
+			],
+			[
+				"za",
+				"zachet_plan"
+			],
+			[
+				"zache",
+				"zachet_otk"
+			],
+			[
+				"now_",
+				"now_day"
+			],
+			[
+				"date_",
+				"date_doc"
+			],
+			[
+				"date",
+				"date_end"
+			],
+			[
+				"de",
+				"desc"
+			],
+			[
+				"da",
+				"date_doc"
+			],
+			[
+				"no",
+				"now_year"
+			],
+			[
+				"m",
+				"month"
+			],
+			[
+				"am",
+				"amount"
+			],
+			[
+				"a",
+				"amount_nds"
+			],
+			[
+				"pr",
+				"price"
+			],
+			[
+				"kol",
+				"kol_day_week"
+			],
+			[
+				"d",
+				"dsn_selex"
+			],
+			[
+				"otk",
+				"otk_nadoy_doy"
+			],
+			[
+				"cow_",
+				"cow_doy"
+			],
+			[
+				"nad",
+				"nadoy_doy"
+			],
+			[
+				"cow",
+				"cow_doy"
+			],
+			[
+				"sa",
+				"sale_natura"
+			],
+			[
+				"val",
+				"valoviy_nadoy"
+			],
+			[
+				"mo",
+				"month"
+			],
+			[
+				"is",
+				"is_next_day"
+			],
+			[
+				"parte",
+				"partner_id"
+			],
+			[
+				"res",
+				"result"
+			],
+			[
+				"sc",
+				"scale_tanker_id"
+			],
+			[
+				"Res",
+				"result"
+			],
+			[
+				"avg",
+				"avg_belok"
+			],
+			[
+				"ve",
+				"ves_natura"
+			],
+			[
+				"av",
+				"avg_belok"
+			],
+			[
+				"def",
+				"default"
+			],
+			[
+				"mete",
+				"meter_value"
+			],
+			[
+				"M",
+				"Model"
+			],
+			[
+				"type_",
+				"type_transport"
+			],
+			[
+				"T",
+				"True"
+			],
+			[
+				"_",
+				"_name"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"console":
+	{
+		"height": 0.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/smv/odoo/addons/milk/views/resources.xml",
+		"/home/smv/odoo/addons/kormlenie/__init__.py",
+		"/home/smv/odoo/addons/kormlenie/__openerp__.py",
+		"/home/smv/odoo/addons/kormlenie/models/models.py",
+		"/home/smv/odoo/addons/kormlenie/views/menu.xml",
+		"/home/smv/odoo/addons/kormlenie/security/kormlenie_security.xml",
+		"/home/smv/odoo/addons/kormlenie/models/__init__.py",
+		"/home/smv/odoo/addons/kormlenie/views/ed_izm_categ.xml",
+		"/home/smv/odoo/addons/kormlenie/security/ir.model.access.csv",
+		"/home/smv/odoo/addons/kormlenie/views/ed_izm.xml",
+		"/home/smv/odoo/addons/kormlenie/views/nomen_nomen.xml",
+		"/home/smv/odoo/addons/kormlenie/views/nomen_categ.xml",
+		"/home/smv/odoo/addons/kormlenie/views/nomen_group.xml",
+		"/home/smv/odoo/addons/kormlenie/views/sklad_sklad.xml",
+		"/home/smv/odoo/addons/sklad/__openerp__.py",
+		"/home/smv/odoo/addons/sklad/security/ir.model.access.csv",
+		"/home/smv/odoo/addons/sklad/security/sklad_security.xml",
+		"/home/smv/odoo/addons/sklad/views/menu.xml",
+		"/home/smv/odoo/addons/sklad/models/models.py",
+		"/home/smv/odoo/addons/milk/static/src/css/milk.css",
+		"/home/smv/odoo/addons/milk/views/trace_milk.xml",
+		"/home/smv/odoo/addons/milk/views/milk_dashboard.xml",
+		"/home/smv/odoo/addons/milk/views/sale_milk_report.xml",
+		"/home/smv/odoo/addons/milk/__init__.py",
+		"/home/smv/odoo/addons/milk/report/sale_milk_report_view.xml",
+		"/tmp/.fr-vQky51/web_kanban_graph/views/web_kanban_graph.xml",
+		"/home/smv/odoo/addons/milk/report/sale_milk_report.py",
+		"/home/smv/odoo/addons/milk/views/sale_milk.xml",
+		"/home/smv/odoo/addons/milk/views/control_sale_milk.xml",
+		"/home/smv/odoo/addons/milk/security/ir.model.access.csv",
+		"/home/smv/odoo/addons/milk/views/menu.xml",
+		"/home/smv/odoo/addons/milk/static/sales_milk_dashboard.xml",
+		"/home/smv/odoo/addons/milk/__openerp__.py",
+		"/home/smv/odoo/addons/milk/views/plan_sale_milk.xml",
+		"/home/smv/odoo/addons/milk/models/work_date.py",
+		"/home/smv/odoo/addons/milk/models/models.py",
+		"/home/smv/odoo/addons/milk/views/seq_sale_milk.xml",
+		"/home/smv/odoo/addons/milk/views/type_transport.xml",
+		"/home/smv/odoo/addons/milk/views/pricep.xml",
+		"/home/smv/odoo/addons/milk/views/shkala_tanker5.xml",
+		"/home/smv/odoo/addons/milk/views/tanker.xml",
+		"/home/smv/odoo/addons/milk/views/transport.xml",
+		"/home/smv/odoo/addons/milk/readme.txt",
+		"/home/smv/odoo/addons/milk/models/unohelper.py",
+		"/home/smv/odoo/addons/milk/views/scale_tanker.xml",
+		"/home/smv/odoo/addons/milk/report/__init__.py",
+		"/home/smv/odoo/addons/milk/report/sale_milk_view.xml",
+		"/home/smv/odoo/addons/milk/security/milk_security.xml",
+		"/home/smv/odoo/addons/milk/models/__init__.py",
+		"/home/smv/odoo/addons/milk/models/partner.py",
+		"/home/smv/odoo/addons/milk/views/partner.xml",
+		"/home/smv/odoo/addons/milk/partner.py",
+		"/home/smv/odoo/addons/milk/res_config.py",
+		"/home/smv/odoo/addons/milk/views/res_config.xml",
+		"/mnt/evika/База знаний/db/Сайт ФОНДА/Текстовка Эвика-Агро про конкурс",
+		"/home/smv/Загрузки/TTN (6).ods_FILES/content.xml",
+		"/home/smv/odoo/addons/milk/models/ttnShablon (copy).ods_FILES/content.xml",
+		"/home/smv/Загрузки/TTN (3).ods_FILES/content.xml",
+		"/home/smv/odoo/addons/milk/models/ttnShablon.ods_FILES/content.xml",
+		"/home/smv/odoo/addons/milk/controllers/__init__.py",
+		"/home/smv/odoo/addons/milk/views/milk.xml"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"kormlenie",
+			"nomen",
+			"partne",
+			"Категории",
+			"categ",
+			"ed_izm_",
+			"ed_izm",
+			"uom",
+			"product",
+			"uom",
+			"product",
+			"model_product_uom_categ",
+			"_categ",
+			"menuitem",
+			"milk",
+			"graph",
+			"jir",
+			"round",
+			".openerp h3.amount {\n    margin: 5px;\n    text-align: right;\n    \n   }\n",
+			">\n",
+			"kkk",
+			"date_ucheta",
+			"    <record id=\"sale_milk_dashboard_kanban_view\" model=\"ir.ui.view\">\n        <field name=\"name\">milk.sale_milk_dashboard.kanban</field>\n        <field name=\"model\">milk.sale_milk_dashboard</field>\n        <field name=\"arch\" type=\"xml\">\n            <kanban create=\"false\" class=\"oe_background_grey o_kanban_dashboard\">\n                \n                \n                <field name=\"kkk\"/>\n                <templates>\n                </templates>\n            </kanban>\n        </field>\n    </record> ",
+			"open_account_charts",
+			"month",
+			"date_trunc\n\n",
+			"date_trunc",
+			"date_ucheta",
+			"                 <",
+			"zachet",
+			",\n",
+			"crea",
+			"control_sale_milk",
+			"mail.thread",
+			"openacademy.course",
+			"grap",
+			"graf",
+			"openacademy_session_graph_view",
+			"cr, uid",
+			"partner",
+			"sale_milk",
+			"datetime",
+			"date_",
+			"\"),\n",
+			"create_ttn",
+			"browse",
+			"sale_milk",
+			"view_sale_milk_graph",
+			"view_sale_milk_search",
+			"sale_milk_report",
+			"\nmenu_report_product_all",
+			"shkala_tanker5",
+			"pricep",
+			"16\n16",
+			"\nvoditel",
+			"uno",
+			":\",",
+			"report",
+			"Sale milk",
+			"\n	@api.depends('transport.mark', 'transport.gos_nomer')\n	def _update_name(self):\n\n		self.name = self.mark + ' ' + self.gos_nomer",
+			"@api.onchange('transport.mark', 'transport.gos_nomer')\n	@api.depends('transport.mark', 'transport.gos_nomer')\n	def _update_name(self):\n\n		self.name = self.mark + ' ' + self.gos_nomer",
+			"pricep",
+			"report",
+			")\n",
+			"pricep",
+			"type_transport\n\navto",
+			"',\n",
+			"transport",
+			"type_avt",
+			"type_avto",
+			"',\n",
+			"type_avto"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"sklad",
+			"Группы",
+			"group",
+			"",
+			"nomen",
+			"ed_izm",
+			"nomen",
+			"ed_izm",
+			"nomen",
+			"",
+			"kormlenie",
+			"plan_sale_milk",
+			"milk.trace_milk",
+			"trace_milk",
+			"control_sale_milk",
+			"sale_milk",
+			"scale_tanker",
+			"shkala_tanker5",
+			"shkala_tanker5\n			os.remove(shablon_name)\n		except:\n			pass",
+			"try:\n			os.remove(shablon_name)\n		except:\n			pass",
+			":\",",
+			"@api.onchange('transport.mark', 'transport.gos_nomer')\n	@api.depends('transport.mark', 'transport.gos_nomer')\n	def _update_name(self):\n\n		self.name = self.mark + ' ' + self.gos_nomer",
+			"tanker",
+			"sale_milk",
+			"pricep",
+			"type_transport",
+			"transport"
+		],
+		"reverse": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 53.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 215.0,
+	"status_bar_visible": true
+}

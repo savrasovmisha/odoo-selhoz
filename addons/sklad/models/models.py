@@ -46,7 +46,11 @@ class nomen_nomen(models.Model):
     nomen_categ_id = fields.Many2one('nomen.categ', string="Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string="Группа", default=None)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", default=None)
+    id_1c = fields.Char(string="Номер в 1С")
 
+#----------------------------------------------------------
+# Склад
+#----------------------------------------------------------
 
 class sklad_sklad(models.Model):
     _name = 'sklad.sklad'
@@ -54,3 +58,42 @@ class sklad_sklad(models.Model):
   
     name = fields.Char(string="Наименование", required=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
+    id_1c = fields.Char(string="Номер в 1С")
+
+
+#----------------------------------------------------------
+# Договора
+#----------------------------------------------------------
+class dogovor(models.Model):
+    _name = 'dogovor'
+    _description = 'Договора'
+  
+    name = fields.Char(string="Номер", required=True) 
+    partner_id = fields.Many2one('res.partner', string='Ответственный')
+    date_start = fields.Date(string='Дата начала', required=True)
+    date_end = fields.Date(string='Дата окончания', required=True)
+    predmet = fields.Text(string="Предмет договора")
+    amount = fields.Float(digits=(10, 2), string="Сумма договора") 
+    id_1c = fields.Char(string="Номер в 1С")
+
+#----------------------------------------------------------
+# Регистры остатков и оборотов
+#----------------------------------------------------------
+class sklad_ostatok(models.Model):
+    _name = 'sklad.ostatok'
+    _description = 'Договора'
+  
+    name = fields.Char(string="Номер", required=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура')
+    kol = fields.Float(digits=(10, 3), string="Кол-во")
+
+class sklad_oborot(models.Model):
+    _name = 'sklad.oborot'
+    _description = 'Договора'
+  
+    name = fields.Char(string="Номер", required=True)
+    date = fields.Date(string='Дата', required=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура')
+    kol = fields.Float(digits=(10, 3), string="Кол-во")

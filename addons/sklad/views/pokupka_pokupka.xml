@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="pokupka_pokupka_form_view">
+        <field name="name">pokupka_pokupka.form</field>
+        <field name="model">pokupka.pokupka</field>
+        <field name="arch" type="xml">
+            <form string="Форма Поступление товаров">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер"/>
+                            <field name="partner_id"/>
+                            <field name="nds_price"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="sklad_sklad_id"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Товары">
+                            <field name="pokupka_pokupka_line">
+                                <tree string="pokupka_pokupka_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="nds"/>
+                                    <field name="amount_nds"/>
+                                    <field name="amount_total"/>
+                                    
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_bez_nds" widget='monetary'/>
+                                <field name="amount_nds" widget='monetary'/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total" />
+                                    
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+                            </group>
+                        </page>
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_pokupka_pokupka_tree">
+            <field name="name">pokupka_pokupka.tree</field>
+            <field name="model">pokupka.pokupka</field>
+            <field name="arch" type="xml">
+                <tree string="Поступление товаров">
+                    <field name="name" string="Наименование"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="pokupka_pokupka_list_action">
+            <field name="name">Поступление товаров</field>
+            <field name="res_model">pokupka.pokupka</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Поступление товаров
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

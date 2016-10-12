@@ -33,6 +33,7 @@
         'views/nomen_categ.xml',
         'views/nomen_nomen.xml',
         'views/sklad_sklad.xml',
+        'views/pokupka_pokupka.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

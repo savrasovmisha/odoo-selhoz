@@ -46,6 +46,7 @@ class nomen_nomen(models.Model):
     nomen_categ_id = fields.Many2one('nomen.categ', string="Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string="Группа", default=None)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", default=None)
+    nalog_nds_id = fields.Many2one('nalog.nds', string="Ставка НДС %", default=None)
     id_1c = fields.Char(string="Номер в 1С")
 
 #----------------------------------------------------------
@@ -106,22 +107,50 @@ class sklad_oborot(models.Model):
 #----------------------------------------------------------
 # Документы прихода/расхода
 #----------------------------------------------------------
+class nalog_nds(models.Model):
+    _name = 'nalog.nds'
+    _description = u'Ставки НДС'
+
+    name = fields.Char(string="Наименование", required=True)
+    nds = fields.Float(digits=(10, 2), string="% НДС", required=True)
+
 class pokupka_pokupka(models.Model):
     _name = 'pokupka.pokupka'
     _description = u'Поступление товаров'
+    _order = 'date desc, id desc'
 
-    name = fields.Char(string="Номер", required=True)
-    date = fields.Date(string='Дата', required=True)
-    partner_id = fields.Many2one('res.partner', string='Контрагент')
-    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('pokupka.pokupka') or 'New'
+
+        result = super(pokupka_pokupka, self).create(vals)
+        return result
+
+    # @api.model
+    # def write(self, vals, context=None):
+    #     print 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    #     return True
+
+    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    partner_id = fields.Many2one('res.partner', string='Контрагент', required=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     pokupka_pokupka_line = fields.One2many('pokupka.pokupka_line', 'pokupka_pokupka_id', string="Строка Поступление товаров")
     nds_price = fields.Boolean(string="Цена включает НДС")
     amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    proveden = fields.Boolean(string="Проводен")
+    state = fields.Selection([
+        ('draft', "Создан"),
+        ('confirmed', "Проведен"),
+        
+    ], default='draft')
 
+    @api.one
     @api.depends('pokupka_pokupka_line.kol','pokupka_pokupka_line.price',
-                 'pokupka_pokupka_line.amount','pokupka_pokupka_line.nds')
+                 'pokupka_pokupka_line.amount','pokupka_pokupka_line.nalog_nds_id')
     def _amount_all(self):
         """
         Compute the total amounts.
@@ -133,60 +162,82 @@ class pokupka_pokupka(models.Model):
             self.amount_total += line.amount_total
         self.amount_bez_nds = self.amount_total - self.amount_nds
 
+    @api.multi
+    def action_draft(self):
+        self.state = 'draft'
+        print 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
+    
+
+    @api.multi
+    def action_confirm(self):
+        print 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
+        self.write({'state': 'confirmed'})
+        self.state = 'confirmed'
+
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+
 class pokupka_pokupka_line(models.Model):
     _name = 'pokupka.pokupka_line'
     _description = u'Поступление товаров строки'
-  
-    name = fields.Char(string="Номер", required=True)
-    pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string="Поступление", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура')
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", default=None)
-    kol = fields.Float(digits=(10, 3), string="Кол-во")
-    price = fields.Float(digits=(10, 2), string="Цена", readonly=False,  store=True)
-    amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
-    nds = fields.Integer(string="%НДС")
-    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
 
+
+    @api.one
+    @api.depends('nomen_nomen_id','kol','price','amount','nalog_nds_id')
     def _amount_all(self):
         """
         Compute the total amounts.
         """
-        if self.kol>0 and self.price>0:
+        if self.nalog_nds_id and self.kol>0 and self.price>0:
             
             if self.pokupka_pokupka_id.nds_price == True:
-                self.amount_nds = self.amount * self.nds/(100 + self.nds)
+                self.amount_nds = self.amount * self.nalog_nds_id.nds/(100 + self.nalog_nds_id.nds)
                 self.amount_total = self.amount
             else:
-                self.amount_nds = self.amount * self.nds/100
+                self.amount_nds = self.amount * self.nalog_nds_id.nds/100
                 self.amount_total = self.amount + self.amount_nds
+            self.amount_bez_nds = self.amount_total - self.amount_nds
 
 
     @api.one
-    @api.onchange('kol','price','amount','nds')
+    @api.depends('kol','price','amount','nalog_nds_id')
     def _amount(self):
         """
         Compute the total amounts.
         """
-        print u"+++++++++Изменилась"
-        if self.price:
-            print u"Изменилась цена"
-            self.amount = self.kol*self.price
-        if self.amount or self.nds or self.kol:
-            print u"Изменилась сумма"
+        if self.amount or self.kol:
             self.price = self.amount / self.kol
 
-        self._amount_all()
-            
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        """
+        Compute the total amounts.
+        """
+          
+        if self.nomen_nomen_id:
+            # func_model = self.env['nomen.ed_izm']
+            # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
 
-    # @api.one
-    # @api.depends('amount','nds')
-    # def _price(self):
-    #     """
-    #     Compute the total amounts.
-    #     """
-    #     print u"Изменилась сумма"
-    #     if self.kol>0:
-    #         self.price = self.amount / self.kol
-    #         self._amount_all()
-            
+    def return_name(self):
+        self.name = self.pokupka_pokupka_id.name
+
+    name = fields.Char(string="Номер", required=True, compute='return_name')
+    pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string="Поступление", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", required=True,  store=True)
+    kol = fields.Float(digits=(10, 3), string="Кол-во")
+    price = fields.Float(digits=(10, 2), string="Цена", readonly=False, compute='_amount',  store=True)
+    amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
+    nalog_nds_id = fields.Many2one('nalog.nds',string="%НДС", readonly=False, compute='_nomen',  store=True)
+    amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
+
+    
+

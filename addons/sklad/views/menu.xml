@@ -24,6 +24,8 @@
 
         <menuitem id="nomen_ed_izm_menu" name="Единицы измерения" parent="sklad_menu" action="nomen_ed_izm_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
+        <menuitem id="nalog_nds_menu" name="Ставки НДС" parent="sklad_menu" action="nalog_nds_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
         <menuitem id="nomen_categ_menu" name="Категории номенклатуры" parent="sklad_menu" action="nomen_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
         <menuitem id="nomen_group_menu" name="Группы номенклатуры" parent="sklad_menu" action="nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>

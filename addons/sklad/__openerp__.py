@@ -29,11 +29,14 @@
         
         'views/ed_izm_categ.xml',
         'views/ed_izm.xml',
+        'views/nalog_nds.xml',
         'views/nomen_group.xml',
         'views/nomen_categ.xml',
         'views/nomen_nomen.xml',
         'views/sklad_sklad.xml',
         'views/pokupka_pokupka.xml',
+        'views/pokupka_pokupka_workflow.xml',
+        'views/seq_pokupka_pokupka.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

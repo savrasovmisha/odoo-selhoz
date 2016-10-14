@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="nalog_nds_form_view">
+        <field name="name">nalog_nds.form</field>
+        <field name="model">nalog.nds</field>
+        <field name="arch" type="xml">
+            <form string="Форма Ставки НДС">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="nds"/>
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_nalog_nds_tree">
+            <field name="name">nalog_nds.tree</field>
+            <field name="model">nalog.nds</field>
+            <field name="arch" type="xml">
+                <tree string="Ставки НДС">
+                    <field name="name"/>
+                    <field name="nds"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="nalog_nds_search_view">
+            <field name="name">nalog_nds.search</field>
+            <field name="model">nalog.nds</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="nds"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="nalog_nds_list_action">
+            <field name="name">Ставки НДС</field>
+            <field name="res_model">nalog.nds</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Ставки НДС
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

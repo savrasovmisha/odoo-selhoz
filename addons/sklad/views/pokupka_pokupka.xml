@@ -5,7 +5,18 @@
         <field name="name">pokupka_pokupka.form</field>
         <field name="model">pokupka.pokupka</field>
         <field name="arch" type="xml">
+           
             <form string="Форма Поступление товаров">
+                <header>
+                        <button name="draft" type="workflow"
+                                string="Отменить проведение"
+                                states="confirmed"/>
+                        <button name="confirm" type="workflow"
+                                string="Провести" states="draft"
+                                class="oe_highlight"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
                 <sheet>
                     <group>
                         <group>
@@ -23,14 +34,14 @@
                     </group>
                     <notebook>
                         <page string="Товары">
-                            <field name="pokupka_pokupka_line">
+                            <field name="pokupka_pokupka_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="pokupka_pokupka_line" editable="botton">
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
                                     <field name="price"/>
                                     <field name="amount"/>
-                                    <field name="nds"/>
+                                    <field name="nalog_nds_id"/>
                                     <field name="amount_nds"/>
                                     <field name="amount_total"/>
                                     

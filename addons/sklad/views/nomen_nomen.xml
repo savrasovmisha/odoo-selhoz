@@ -12,6 +12,7 @@
                         <field name="nomen_categ_id"/>
                         <field name="nomen_group_id"/>
                         <field name="ed_izm_id"/>
+                        <field name="nalog_nds_id"/>
                         <field name="id_1c"/>
                         
                         

@@ -1,0 +1,38 @@
+<openerp>
+    <data>
+        <record model="workflow" id="wkf_pokupka">
+            <field name="name">pokupka pokupka workflow</field>
+            <field name="osv">pokupka.pokupka</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record model="workflow.activity" id="draft">
+            <field name="name">Drafted</field>
+            <field name="wkf_id" ref="wkf_pokupka"/>
+            <field name="flow_start">True</field>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+        </record>
+
+
+        <record model="workflow.activity" id="confirmed">
+            <field name="name">Confirmed</field>
+            <field name="wkf_id" ref="wkf_pokupka"/>
+            <!-- <field name="flow_stop">True</field> -->
+            <field name="kind">function</field>
+            <field name="action">action_confirm()</field>
+        </record>
+        
+        <record model="workflow.transition" id="pokupka_confirmed_to_draft">
+            <field name="act_from" ref="confirmed"/>
+            <field name="act_to" ref="draft"/>
+            <field name="signal">draft</field>
+        </record>
+        <record model="workflow.transition" id="pokupka_draft_to_confirmed">
+            <field name="act_from" ref="draft"/>
+            <field name="act_to" ref="confirmed"/>
+            <field name="signal">confirm</field>
+        </record>
+
+    </data>
+</openerp>

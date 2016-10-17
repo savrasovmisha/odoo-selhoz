@@ -35,7 +35,7 @@
         'views/nomen_nomen.xml',
         'views/sklad_sklad.xml',
         'views/pokupka_pokupka.xml',
-        'views/pokupka_pokupka_workflow.xml',
+        #'views/pokupka_pokupka_workflow.xml',
         'views/seq_pokupka_pokupka.xml',
         'views/menu.xml',
         

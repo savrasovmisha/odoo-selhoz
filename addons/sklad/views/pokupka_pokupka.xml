@@ -8,25 +8,29 @@
            
             <form string="Форма Поступление товаров">
                 <header>
-                        <button name="draft" type="workflow"
+                        <button name="action_draft" type="object"
                                 string="Отменить проведение"
-                                states="confirmed"/>
-                        <button name="confirm" type="workflow"
+                                states="confirmed"
+                                class="btn-primary"/>
+                        <button name="action_confirm" type="object"
                                 string="Провести" states="draft"
                                 class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft" style="background-color:red"/>
                         
                         <field name="state" widget="statusbar"/>
                     </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" string="Номер"/>
-                            <field name="partner_id"/>
-                            <field name="nds_price"/>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="partner_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="nds_price" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                         <group>
-                            <field name="date"/>
-                            <field name="sklad_sklad_id"/>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                       
                         
@@ -88,6 +92,7 @@
                 </p>
             </field>
         </record>
+
 
         
     </data>

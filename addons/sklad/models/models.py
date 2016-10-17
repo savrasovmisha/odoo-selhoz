@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api
+from openerp import models, fields, api, exceptions, _
 from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 
@@ -114,6 +114,7 @@ class nalog_nds(models.Model):
     name = fields.Char(string="Наименование", required=True)
     nds = fields.Float(digits=(10, 2), string="% НДС", required=True)
 
+
 class pokupka_pokupka(models.Model):
     _name = 'pokupka.pokupka'
     _description = u'Поступление товаров'
@@ -123,14 +124,23 @@ class pokupka_pokupka(models.Model):
     def create(self, vals):
         if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
             vals['name'] = self.env['ir.sequence'].next_by_code('pokupka.pokupka') or 'New'
+            vals['state'] = 'draft'
+
 
         result = super(pokupka_pokupka, self).create(vals)
         return result
 
-    # @api.model
-    # def write(self, vals, context=None):
-    #     print 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-    #     return True
+    @api.multi
+    def unlink(self):
+        
+        print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
+        for pp in self:
+            if self.state != 'done':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (self.name)))
+        #self.env['pokupka.pokupka'].browse(vals).write({'state': 'canceled'})
+        #pp = self.env['pokupka.pokupka'].browse(vals)
+        return super(pokupka_pokupka, self).unlink()
+
 
     name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
@@ -143,10 +153,12 @@ class pokupka_pokupka(models.Model):
     amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     proveden = fields.Boolean(string="Проводен")
     state = fields.Selection([
-        ('draft', "Создан"),
+        ('create', "Создан"),
+        ('draft', "Черновик"),
         ('confirmed', "Проведен"),
+        ('done', "Отменен"),
         
-    ], default='draft')
+    ], default='create')
 
     @api.one
     @api.depends('pokupka_pokupka_line.kol','pokupka_pokupka_line.price',

@@ -82,27 +82,111 @@ class dogovor(models.Model):
 #----------------------------------------------------------
 class sklad_ostatok(models.Model):
     _name = 'sklad.ostatok'
-    _description = u'Договора'
+    _description = u'Остатки номенклатуры'
   
-    name = fields.Char(string="Номер", required=True)
-    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура')
+    name = fields.Char(string="Регистратор", required=True)
+    date = fields.Datetime(string='Дата последнего изменения')
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во")
 
-    def zapis(self, doc):
-        self.sklad_sklad_id = doc.sklad_sklad_id
+    # def zapis(self, vals, prihod, kol):
+    #     """Если prihod=True тогда это поступление и будет прибавленно кол-во иначе вычтено"""
+    #     if prihod == True:
+    #         so = self.search([
+    #             ('sklad_sklad_id', '=', self.sklad_sklad_id.id),
+    #             ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+    #             ])
+    #         if len(so)>0:
+    #             print 'kkkkkkkkkkkkkkkkkkkkkk'
+    #             kol = so[0].kol
+
+
+    #         else:
+    #             print '=========================================='
+
+    #             self.create(vals)
+
+class sklad_ostatok_period(models.Model):
+    _name = 'sklad.ostatok_period'
+    _description = u'Остатки по периодам'
+    """Регистр остатков по периодам, Если период равен 01.01.5000 то это тек. остатки."""
+  
+    name = fields.Char(string="Номер", default='ostatok_period')
+    period = fields.Datetime(string='Период', required=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    kol = fields.Float(digits=(10, 3), string="Кол-во")
+
 
 class sklad_oborot(models.Model):
     _name = 'sklad.oborot'
-    _description = u'Договора'
+    _description = u'Остатки номенклатуры. Движение'
   
     name = fields.Char(string="Регистратор", required=True)
-    obj = fields.Char(string="Объект", required=True)
-    obj_id = fields.Integer(string="ID Объекта", required=True)
-    date = fields.Date(string='Дата', required=True)
+    obj = fields.Char(string="Регистратор", required=True)
+    obj_id = fields.Char(string="ID Регистратора", required=True)
+    date = fields.Datetime(string='Дата')
+    vid = fields.Float(digits=(1, 0), string="Вид движения")
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура')
-    kol = fields.Float(digits=(10, 3), string="Кол-во")
+    kol_oborot = fields.Float(digits=(10, 3), string="Кол-во оборот")
+    kol_prihod = fields.Float(digits=(10, 3), string="Кол-во приход")
+    kol_rashod = fields.Float(digits=(10, 3), string="Кол-во расход")
+
+
+
+def reg_ostatok_move(obj,vals, vid_dvijeniya):
+
+
+    print 'kkkkkkkkkkkkkkkkkkkkkk'
+    ost = obj.env['sklad.ostatok']
+    for line in vals:
+        ost_nomen = ost.search([
+            ('sklad_sklad_id', '=', line['sklad_sklad_id']),
+            ('nomen_nomen_id', '=', line['nomen_nomen_id']),
+            ])
+        line['err'] = False
+        line['id'] = False
+
+        if len(ost_nomen)>0:
+        
+            line['id'] = ost_nomen[0].id
+            kol_do = ost_nomen[0].kol
+            if vid_dvijeniya == 'prihod':
+                print 'kkkkkkkkkkkkkkkkkkkkkk++++++++++++++++++++++++'
+                line['kol'] += kol_do
+            else:
+                line['kol'] = kol_do - line['kol']
+                if line['kol']<0:
+                    line['err'] = True
+
+        else:
+            if vid_dvijeniya == 'rashod' and line['kol']<0:
+                line['err'] = True
+
+        if line['err'] == True:
+            return False
+
+
+    for line in vals:
+        if line['id'] == False:
+            ost.create(line)
+        else:
+            ost.write(line)
+
+
+
+
+            
+
+
+        
+             
+
+
+
+
 
 #----------------------------------------------------------
 # Документы прихода/расхода
@@ -135,10 +219,9 @@ class pokupka_pokupka(models.Model):
         
         print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if self.state != 'done':
-                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (self.name)))
-        #self.env['pokupka.pokupka'].browse(vals).write({'state': 'canceled'})
-        #pp = self.env['pokupka.pokupka'].browse(vals)
+            if pp.state != 'done':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
         return super(pokupka_pokupka, self).unlink()
 
 
@@ -177,14 +260,28 @@ class pokupka_pokupka(models.Model):
     @api.multi
     def action_draft(self):
         self.state = 'draft'
-        print 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
+        
     
 
     @api.multi
     def action_confirm(self):
-        print 'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr'
-        self.write({'state': 'confirmed'})
+        #self.write({'state': 'confirmed'})
         self.state = 'confirmed'
+        for doc in self:
+            vals = []
+            for line in doc.pokupka_pokupka_line:
+                vals.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
+
+                print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                
+            reg_ostatok_move(self, vals, 'prihod')
+
+
 
 
     @api.multi

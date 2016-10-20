@@ -10,14 +10,13 @@
                 <header>
                         <button name="action_draft" type="object"
                                 string="Отменить проведение"
-                                states="confirmed"
-                                class="btn-primary"/>
+                                states="confirmed"/>
                         <button name="action_confirm" type="object"
                                 string="Провести" states="draft"
                                 class="oe_highlight"/>
                         <button name="action_done" type="object"
                                 string="Удалить" 
-                                states="draft" style="background-color:red"/>
+                                states="draft"  style="margin-left: 100px;"/>
                         
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -72,8 +71,12 @@
             <field name="name">pokupka_pokupka.tree</field>
             <field name="model">pokupka.pokupka</field>
             <field name="arch" type="xml">
-                <tree string="Поступление товаров">
+                <tree string="Поступление товаров" colors="green:state=='draft';red:state == 'done'">
                     <field name="name" string="Наименование"/>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
+                    <field name="state"/>
                     
                     
                     
@@ -92,7 +95,6 @@
                 </p>
             </field>
         </record>
-
 
         
     </data>

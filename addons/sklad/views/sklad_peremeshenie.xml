@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="sklad_peremeshenie_form_view">
+        <field name="name">sklad_peremeshenie.form</field>
+        <field name="model">sklad.peremeshenie</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Перемещение товаров">
+                <header>
+                        <button name="action_draft" type="object"
+                                string="Отменить проведение"
+                                states="confirmed"/>
+                        <button name="action_confirm" type="object"
+                                string="Провести" states="draft"
+                                class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft"  style="margin-left: 100px;"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_otp_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_pol_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Товары">
+                            <field name="sklad_peremeshenie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="sklad_peremeshenie_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                                                        
+                                </tree>
+                            </field>
+                            
+                        </page>
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_sklad_peremeshenie_tree">
+            <field name="name">sklad_peremeshenie.tree</field>
+            <field name="model">sklad.peremeshenie</field>
+            <field name="arch" type="xml">
+                <tree string="Перемещение товаров" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="sklad_otp_id"/>
+                    <field name="sklad_pol_id"/>
+                    <field name="state"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="sklad_peremeshenie_list_action">
+            <field name="name">Перемещение товаров</field>
+            <field name="res_model">sklad.peremeshenie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Перемещение товаров
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

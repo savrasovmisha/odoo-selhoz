@@ -11,6 +11,8 @@
         <menuitem id="sklad_menu_doc" name="Документы" sequence="1" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
 
         <menuitem id="pokupka_pokupka_menu" name="Поступление товаров" parent="sklad_menu_doc" action="pokupka_pokupka_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="sklad_peremeshenie_menu" name="Перемещение товаров" parent="sklad_menu_doc" action="sklad_peremeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
     
 <!--
 	     Левое меню

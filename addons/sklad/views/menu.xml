@@ -14,6 +14,9 @@
 
         <menuitem id="sklad_peremeshenie_menu" name="Перемещение товаров" parent="sklad_menu_doc" action="sklad_peremeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
     
+        <menuitem id="prodaja_prodaja_menu" name="Реализация товаров" parent="sklad_menu_doc" action="prodaja_prodaja_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+         <menuitem id="sklad_spisanie_menu" name="Списание товаров" parent="sklad_menu_doc" action="sklad_spisanie_list_action" groups="group_sklad_manager,group_sklad_users"/>
 <!--
 	     Левое меню
 -->

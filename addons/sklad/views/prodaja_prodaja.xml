@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="sklad_peremeshenie_form_view">
-        <field name="name">sklad_peremeshenie.form</field>
-        <field name="model">sklad.peremeshenie</field>
+	<record model="ir.ui.view" id="prodaja_prodaja_form_view">
+        <field name="name">prodaja_prodaja.form</field>
+        <field name="model">prodaja.prodaja</field>
         <field name="arch" type="xml">
            
-            <form string="Форма Перемещение товаров">
+            <form string="Форма Реализация товаров">
                 <header>
                         <button name="action_draft" type="object"
                                 string="Отменить проведение"
@@ -24,12 +24,12 @@
                     <group>
                         <group>
                             <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
-                            <field name="sklad_otp_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
-                            
+                            <field name="partner_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="nds_price" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                         <group>
                             <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
-                            <field name="sklad_pol_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                       
                         
@@ -37,18 +37,28 @@
                     </group>
                     <notebook>
                         <page string="Товары">
-                            <field name="sklad_peremeshenie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
-                                <tree string="sklad_peremeshenie_line" editable="botton">
+                            <field name="prodaja_prodaja_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="prodaja_prodaja_line" editable="botton">
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
-                                                                        
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="nalog_nds_id"/>
+                                    <field name="amount_nds"/>
+                                    <field name="amount_total"/>
+                                    
                                 </tree>
                             </field>
                             <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                
+                                <field name="amount_bez_nds" widget='monetary'/>
+                                <field name="amount_nds" widget='monetary'/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total" />
+                                    
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
                             </group>
-                            
                         </page>
                     </notebook>
 		            
@@ -57,15 +67,15 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_sklad_peremeshenie_tree">
-            <field name="name">sklad_peremeshenie.tree</field>
-            <field name="model">sklad.peremeshenie</field>
+        <record model="ir.ui.view" id="view_prodaja_prodaja_tree">
+            <field name="name">prodaja_prodaja.tree</field>
+            <field name="model">prodaja.prodaja</field>
             <field name="arch" type="xml">
-                <tree string="Перемещение товаров" colors="green:state=='draft';red:state == 'done'">
-                    <field name="name"/>
+                <tree string="Реализация товаров" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name" string="Наименование"/>
                     <field name="date"/>
-                    <field name="sklad_otp_id"/>
-                    <field name="sklad_pol_id"/>
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
                     <field name="state"/>
                     
                     
@@ -75,13 +85,13 @@
             </field>
         </record>	
 	
-        <record model="ir.actions.act_window" id="sklad_peremeshenie_list_action">
-            <field name="name">Перемещение товаров</field>
-            <field name="res_model">sklad.peremeshenie</field>
+        <record model="ir.actions.act_window" id="prodaja_prodaja_list_action">
+            <field name="name">Реализация товаров</field>
+            <field name="res_model">prodaja.prodaja</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Перемещение товаров
+                <p class="oe_view_nocontent_create">Создайте первую запись Реализация товаров
                 </p>
             </field>
         </record>

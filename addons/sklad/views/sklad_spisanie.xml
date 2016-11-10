@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="sklad_spisanie_form_view">
+        <field name="name">sklad_spisanie.form</field>
+        <field name="model">sklad.spisanie</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Списание товаров">
+                <header>
+                    <button name="action_draft" type="object"
+                            string="Отменить проведение"
+                            states="confirmed"/>
+                    <button name="action_confirm" type="object"
+                            string="Провести" states="draft"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object"
+                            string="Удалить" 
+                            states="draft"  style="margin-left: 100px;"/>
+                    
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Товары">
+                            <field name="sklad_spisanie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="sklad_spisanie_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    
+                                    
+                                </tree>
+                            </field>
+                            
+                        </page>
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_sklad_spisanie_tree">
+            <field name="name">sklad_spisanie.tree</field>
+            <field name="model">sklad.spisanie</field>
+            <field name="arch" type="xml">
+                <tree string="Списание товаров" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name" string="Наименование"/>
+                    <field name="date"/>
+                    <field name="sklad_sklad_id"/>
+                    <field name="state"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="sklad_spisanie_list_action">
+            <field name="name">Списание товаров</field>
+            <field name="res_model">sklad.spisanie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Списание товаров
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

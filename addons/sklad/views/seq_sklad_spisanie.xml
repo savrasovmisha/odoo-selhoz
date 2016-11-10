@@ -3,10 +3,10 @@
     <data noupdate="1">
 
         <!-- Sequences for sale.order -->
-        <record id="seq_sklad_peremeshenie" model="ir.sequence">
-            <field name="name">sklad peremeshenie</field>
-            <field name="code">sklad.peremeshenie</field>
-            <field name="prefix">SP/%(year)s/</field>
+        <record id="seq_sklad_spisanie" model="ir.sequence">
+            <field name="name">sklad spisanie</field>
+            <field name="code">sklad.spisanie</field>
+            <field name="prefix">SS/%(year)s/</field>
             <field name="padding">4</field>
             <field name="use_date_range" eval="True"/>
             <field name="company_id" eval="False"/>

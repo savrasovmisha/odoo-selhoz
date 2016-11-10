@@ -37,8 +37,12 @@
         'views/pokupka_pokupka.xml',
         #'views/pokupka_pokupka_workflow.xml',
         'views/seq_pokupka_pokupka.xml',
+        'views/prodaja_prodaja.xml',
+        'views/seq_prodaja_prodaja.xml',
         'views/sklad_peremeshenie.xml',
         'views/seq_sklad_peremeshenie.xml',
+        'views/sklad_spisanie.xml',
+        'views/seq_sklad_spisanie.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

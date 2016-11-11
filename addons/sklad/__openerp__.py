@@ -43,6 +43,8 @@
         'views/seq_sklad_peremeshenie.xml',
         'views/sklad_spisanie.xml',
         'views/seq_sklad_spisanie.xml',
+        'views/sklad_inventarizaciya.xml',
+        'views/seq_sklad_inventarizaciya.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

@@ -171,7 +171,7 @@ def reg_ostatok_move(obj,vals, vid_dvijeniya):
             line['err'] = True
             message = u"Кол-во должно быть больше нуля"
 
-
+        print line
         if len(ost_nomen)>0:
         
             line['id'] = ost_nomen[0].id
@@ -394,7 +394,7 @@ class pokupka_pokupka_line(models.Model):
     name = fields.Char(string="Номер", required=True, compute='return_name')
     pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string="Поступление", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", required=True,  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
     price = fields.Float(digits=(10, 2), string="Цена", readonly=False, compute='_amount',  store=True)
     amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
@@ -523,12 +523,15 @@ class sklad_peremeshenie_line(models.Model):
             #self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
 
     @api.one
-    @api.depends('ed_izm_id',)
+    @api.depends('nomen_nomen_id')
     def _nomen(self):
         """
         Compute the total amounts.
         """
-        self.kol = 12
+          
+        if self.nomen_nomen_id:
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            
 
     def return_name(self):
         self.name = self.sklad_peremeshenie_id.name
@@ -536,7 +539,7 @@ class sklad_peremeshenie_line(models.Model):
     name = fields.Char(string="Номер", required=True, compute='return_name')
     sklad_peremeshenie_id = fields.Many2one('sklad.peremeshenie', ondelete='cascade', string="Перемещение", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", required=True, store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
  
    
@@ -700,7 +703,7 @@ class prodaja_prodaja_line(models.Model):
     name = fields.Char(string="Номер", required=True, compute='return_name')
     prodaja_prodaja_id = fields.Many2one('prodaja.prodaja', ondelete='cascade', string="Реализация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", required=True,  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
     price = fields.Float(digits=(10, 2), string="Цена", readonly=False, compute='_amount',  store=True)
     amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
@@ -804,7 +807,7 @@ class sklad_spisanie_line(models.Model):
 
     @api.one
     @api.depends('nomen_nomen_id')
-    def _nomen1(self):
+    def _nomen(self):
         """
         Compute the total amounts.
         """
@@ -823,5 +826,180 @@ class sklad_spisanie_line(models.Model):
     name = fields.Char(string="Номер", required=True, compute='return_name')
     sklad_spisanie_id = fields.Many2one('sklad.spisanie', ondelete='cascade', string="Списание", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", required=True,  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
+
+
+
+
+
+class sklad_inventarizaciya(models.Model):
+    _name = 'sklad.inventarizaciya'
+    _description = u'Инвентаризация товаров'
+    _order = 'date desc, id desc'
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('sklad.inventarizaciya') or 'New'
+            vals['state'] = 'draft'
+
+
+        result = super(sklad_inventarizaciya, self).create(vals)
+        return result
+
+    @api.multi
+    def unlink(self):
+        
+        #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
+        for pp in self:
+            if pp.state != 'done':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+        return super(sklad_inventarizaciya, self).unlink()
+
+
+    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    sklad_inventarizaciya_line = fields.One2many('sklad.inventarizaciya_line', 'sklad_inventarizaciya_id', string="Строка Инвентаризация товаров")
+    proveden = fields.Boolean(string="Проводен")
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Черновик"),
+        ('confirmed', "Проведен"),
+        ('done', "Отменен"),
+        
+    ], default='create')
+
+       
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            vals_prihod = []
+            vals_rashod = []
+            for line in doc.sklad_inventarizaciya_line:
+                if line.kol_otk>0:
+                    vals_prihod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                })
+                if line.kol_otk<0:
+                    vals_rashod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                })
+                      
+
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                
+            if ((len(vals_prihod)==0 or reg_ostatok_move(self, vals_prihod, 'prihod-draft')==True) and 
+                (len(vals_rashod)==0 or reg_ostatok_move(self, vals_rashod, 'rashod-draft')==True)):
+                self.state = 'draft'
+
+        
+    
+
+    @api.multi
+    def action_confirm(self):
+        #self.write({'state': 'confirmed'})
+        
+        for doc in self:
+            vals_prihod = []
+            vals_rashod = []
+            for line in doc.sklad_inventarizaciya_line:
+                if line.kol_otk>0:
+                    vals_prihod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                })
+                if line.kol_otk<0:
+                    vals_rashod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                })
+                      
+
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                
+            if ((len(vals_prihod)==0 or reg_ostatok_move(self, vals_prihod, 'prihod')==True) and 
+                (len(vals_rashod)==0 or reg_ostatok_move(self, vals_rashod, 'rashod')==True)):
+                self.state = 'confirmed'
+
+
+
+
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+    @api.one
+    def action_zapolnit_ostatki(self):
+        #print "ZZZZZZZZZZZZZZZZZZZZz"
+        if self.state == 'confirmed':
+            raise exceptions.ValidationError(_(u"Ошибка. Документ №%s проведен!" % (self.name,)))
+        else:
+            self.sklad_inventarizaciya_line.unlink()
+            ost = self.env['sklad.ostatok']
+            ost_nomen = ost.search([('sklad_sklad_id', '=', self.sklad_sklad_id.id)])
+            for line in ost_nomen:
+                vals={  'sklad_sklad_id': line.sklad_sklad_id.id,
+                        'nomen_nomen_id': line.nomen_nomen_id.id,
+                        'kol': line.kol,
+                        'kol_fact': line.kol,
+                        'sklad_inventarizaciya_id': self.id,
+                        }
+                print vals
+                self.env['sklad.inventarizaciya_line'].create(vals)
+
+
+
+
+class sklad_inventarizaciya_line(models.Model):
+    _name = 'sklad.inventarizaciya_line'
+    _description = u'Инвентаризация товаров строки'
+
+    @api.one
+    @api.depends('kol','kol_fact')
+    def _amount(self):
+        """
+        Compute the total amounts.
+        """
+        if self.kol and self.kol_fact:
+            self.kol_otk = self.kol_fact - self.kol
+        
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        """
+        Compute the total amounts.
+        """
+        print "---------------------**********************"  
+        if self.nomen_nomen_id:
+            # func_model = self.env['nomen.ed_izm']
+            # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            #self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+
+    
+    def return_name(self):
+        self.name = self.sklad_inventarizaciya_id.name
+
+    name = fields.Char(string="Номер", required=True, compute='return_name')
+    sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string="Инвентаризация", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string="Кол-во по учету", required=True)
+    kol_fact = fields.Float(digits=(10, 3), string="Кол-во по факту", required=True)
+    kol_otk = fields.Float(digits=(10, 3), string="Отклонение от факта", compute='_amount',  store=True)
+  

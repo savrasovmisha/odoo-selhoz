@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="stado_zagon_form_view">
+        <field name="name">stado_zagon.form</field>
+        <field name="model">stado.zagon</field>
+        <field name="arch" type="xml">
+            <form string="Форма Загон">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        <field name="nomer"/>
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_stado_zagon_tree">
+            <field name="name">stado_zagon.tree</field>
+            <field name="model">stado.zagon</field>
+            <field name="arch" type="xml">
+                <tree string="Загоны">
+                    
+                    <field name="nomer" width="50"/>
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="stado_zagon_search_view">
+            <field name="name">stado_zagon.search</field>
+            <field name="model">stado.zagon</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    <field name="nomer"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="stado_zagon_list_action">
+            <field name="name">Загон</field>
+            <field name="res_model">stado.zagon</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Загон
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

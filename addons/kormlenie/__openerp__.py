@@ -20,15 +20,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'sklad'],
 
     # always loaded
     'data': [
-        'security/kormlenie_security.xml',
+        'security/korm_security.xml',
         'security/ir.model.access.csv',
         
-        'views/ed_izm_categ.xml',
-        'views/ed_izm.xml',
+        'views/korm_pit_standart.xml',
+        'views/stado_zagon.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

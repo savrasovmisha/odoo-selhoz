@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_pit_standart_form_view">
+        <field name="name">korm_pit_standart.form</field>
+        <field name="model">korm.pit_standart</field>
+        <field name="arch" type="xml">
+            <form string="Форма Питательность по стандарту">
+                <sheet>
+                    <group>
+                        
+                        <field name="nomen_nomen_id"/>
+
+                        <separator string="Показатели" colspan="2"/>
+                        <field name="ov"/>
+                        <field name="sv"/>
+                        <field name="oe"/>
+                        <field name="sp"/>
+                        <field name="pp"/>
+                        <field name="sk"/>
+                        <field name="sj"/>
+                        <field name="ca"/>
+                        <field name="p"/>
+                        <field name="sahar"/>
+                        <field name="krahmal"/>
+                        <field name="bev"/>
+                        <field name="magniy"/>
+                        <field name="natriy"/>
+                        <field name="kaliy"/>
+                        <field name="hlor"/>
+                        <field name="sera"/>
+                        <field name="udp"/>
+                        <field name="me"/>
+                        <field name="xp"/>
+                        <field name="nrp"/>
+                        <field name="rnb"/>
+                        <field name="nrp_p"/>
+
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_pit_standart_tree">
+            <field name="name">korm_pit_standart.tree</field>
+            <field name="model">korm.pit_standart</field>
+            <field name="arch" type="xml">
+                <tree string="Питательность по стандарту">
+                    
+                    <field name="nomen_nomen_id"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_pit_standart_search_view">
+            <field name="name">korm_pit_standart.search</field>
+            <field name="model">korm.pit_standart</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    <field name="nomen_nomen_id"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_pit_standart_list_action">
+            <field name="name">Питательность по стандарту</field>
+            <field name="res_model">korm.pit_standart</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Питательность по стандарту
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -3,12 +3,12 @@
     <data>
 
 <!-- top level menu: no parent -->
-        <menuitem id="base.main_kormlenie_menu" name="Кормление"/>
+        <menuitem id="base.main_korm_menu" name="Кормление"/>
         <!-- A first level in the left side menu is needed
              before using action= attribute -->
         
 
-        <menuitem id="kormlenie_menu_doc" name="Документы" sequence="1" parent="base.main_kormlenie_menu" groups="group_kormlenie_manager,group_kormlenie_users"/>
+        <menuitem id="korm_menu_doc" name="Документы" sequence="1" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
     
 <!--
@@ -17,11 +17,12 @@
        
 
 
-        <menuitem id="kormlenie_menu" name="Справочники" sequence="2" parent="base.main_kormlenie_menu" groups="group_kormlenie_manager,group_kormlenie_users"/>
+        <menuitem id="korm_menu" name="Справочники" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="nomen_ed_izm_categ_menu" name="Категории ед.изм" parent="kormlenie_menu" action="nomen_ed_izm_categ_list_action" groups="group_kormlenie_manager,group_kormlenie_users"/>
+        <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="nomen_ed_izm_menu" name="Единицы измерения" parent="kormlenie_menu" action="nomen_ed_izm_list_action" groups="group_kormlenie_manager,group_kormlenie_users"/>
+        <menuitem id="stado_zagon_menu" name="Загоны" parent="korm_menu" action="stado_zagon_list_action" groups="group_korm_manager,group_korm_users"/>
+
 
 
     

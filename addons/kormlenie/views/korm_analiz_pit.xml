@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_analiz_pit_form_view">
+        <field name="name">korm_analiz_pit.form</field>
+        <field name="model">korm.analiz_pit</field>
+        <field name="arch" type="xml">
+            <form string="Форма Анализ питательности корма">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="nomen_nomen_id" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>
+                            <field name="korm_receptura_id" attrs="{'readonly': 1, 'invisible': [('korm_receptura_id', '=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>
+                        </group>
+                     </group>
+                    <group>
+                        <separator string="Показатели, (По стандарту)" colspan="2"/>
+                        <label for="ov" />
+                        <div class="o_row">  
+                            <field name="ov" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="ov_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+                        <label for="sv" />
+                        <div class="o_row" >  
+                            <field name="sv" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sv_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="oe" />
+                        <div class="o_row" >  
+                            <field name="oe" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="oe_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sp" />
+                        <div class="o_row" >  
+                            <field name="sp" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="pp" />
+                        <div class="o_row" >  
+                            <field name="pp" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="pp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sk" />
+                        <div class="o_row" >  
+                            <field name="sk" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sk_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sj" />
+                        <div class="o_row" >  
+                            <field name="sj" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sj_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="ca" />
+                        <div class="o_row" >  
+                            <field name="ca" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="ca_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="p" />
+                        <div class="o_row" >  
+                            <field name="p" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="p_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sahar" />
+                        <div class="o_row" >  
+                            <field name="sahar" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sahar_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="krahmal" />
+                        <div class="o_row" >  
+                            <field name="krahmal" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="krahmal_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="bev" />
+                        <div class="o_row" >  
+                            <field name="bev" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="bev_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="magniy" />
+                        <div class="o_row" >  
+                            <field name="magniy" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="magniy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="natriy" />
+                        <div class="o_row" >  
+                            <field name="natriy" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="natriy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="kaliy" />
+                        <div class="o_row" >  
+                            <field name="kaliy" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="kaliy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="hlor" />
+                        <div class="o_row" >  
+                            <field name="hlor" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="hlor_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sera" />
+                        <div class="o_row" >  
+                            <field name="sera" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="sera_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="udp" />
+                        <div class="o_row" >  
+                            <field name="udp" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="udp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="me" />
+                        <div class="o_row" >  
+                            <field name="me" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="me_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="xp" />
+                        <div class="o_row" >  
+                            <field name="xp" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="xp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="nrp" />
+                        <div class="o_row" >  
+                            <field name="nrp" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="nrp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="rnb" />
+                        <div class="o_row" >  
+                            <field name="rnb" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="rnb_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="nrp_p" />
+                        <div class="o_row" >  
+                            <field name="nrp_p" calss="oe_inline" attrs="{'readonly': [('korm_receptura_id', '!=', False)]}"/>( <field name="nrp_p_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_analiz_pit_tree">
+            <field name="name">korm_analiz_pit.tree</field>
+            <field name="model">korm.analiz_pit</field>
+            <field name="arch" type="xml">
+                <tree string="Анализ питательности корма">
+                    
+                    <field name="date"/>
+                    <field name="nomen_nomen_id"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_analiz_pit_search_view">
+            <field name="name">korm_analiz_pit.search</field>
+            <field name="model">korm.analiz_pit</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    <field name="nomen_nomen_id"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_analiz_pit_list_action">
+            <field name="name">Анализ питательности корма</field>
+            <field name="res_model">korm.analiz_pit</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Анализ питательности корма
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

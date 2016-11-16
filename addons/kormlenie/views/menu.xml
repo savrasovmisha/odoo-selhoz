@@ -10,9 +10,9 @@
 
         <menuitem id="korm_menu_doc" name="Документы" sequence="1" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_analiz_pit_menu" name="Анализ питательности корма" parent="korm_menu" action="korm_analiz_pit_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_analiz_pit_menu" name="Анализ питательности корма" parent="korm_menu_doc" action="korm_analiz_pit_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" parent="korm_menu" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" parent="korm_menu_doc" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>
     
 <!--
          Левое меню
@@ -24,6 +24,8 @@
 
         <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>
 
+
+        <menuitem id="stado_fiz_group_menu" name="Физиологическая группа" parent="korm_menu" action="stado_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="stado_zagon_menu" name="Загоны" parent="korm_menu" action="stado_zagon_list_action" groups="group_korm_manager,group_korm_users"/>
 

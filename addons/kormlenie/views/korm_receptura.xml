@@ -16,37 +16,152 @@
                             <field name="date"/>
                         </group>
                      </group>
-                    <group>
+                   
+                    
                        
+                            <notebook>
+                                <page string="Состав комбикорма">
+                                    <field name="korm_receptura_line">
+                                        <tree string="korm_receptura_line" editable="botton">
+                                            <field name="nomen_nomen_id"/>
+                                            <field name="korm_analiz_pit_id"/>
+                                            <field name="ed_izm_id"/>
+                                            <field name="kol"/>
+                                                                                
+                                        </tree>
+                                    </field>
+                                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                        
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="amount" />
+                                            
+                                        </div>
+                                        <field name="amount" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+                                    </group>
+                                    
+                                </page>
 
-                        <separator string="Показатели" colspan="2"/>
-                        <field name="ov"/>
-                        <field name="sv"/>
-                        <field name="oe"/>
-                        <field name="sp"/>
-                        <field name="pp"/>
-                        <field name="sk"/>
-                        <field name="sj"/>
-                        <field name="ca"/>
-                        <field name="p"/>
-                        <field name="sahar"/>
-                        <field name="krahmal"/>
-                        <field name="bev"/>
-                        <field name="magniy"/>
-                        <field name="natriy"/>
-                        <field name="kaliy"/>
-                        <field name="hlor"/>
-                        <field name="sera"/>
-                        <field name="udp"/>
-                        <field name="me"/>
-                        <field name="xp"/>
-                        <field name="nrp"/>
-                        <field name="rnb"/>
-                        <field name="nrp_p"/>
+                            </notebook>
+                       
+                        <group>
+                            <separator string="Показатели" colspan="2"/>
+                            <label for="ov" />
+                        <div class="o_row">  
+                            <field name="ov" calss="oe_inline" />( <field name="ov_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+                        <label for="sv" />
+                        <div class="o_row" >  
+                            <field name="sv" calss="oe_inline" />( <field name="sv_s" nolabel="1" class="oe_inline"/>)
+                        </div>
 
+                        <label for="oe" />
+                        <div class="o_row" >  
+                            <field name="oe" calss="oe_inline" />( <field name="oe_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sp" />
+                        <div class="o_row" >  
+                            <field name="sp" calss="oe_inline" />( <field name="sp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="pp" />
+                        <div class="o_row" >  
+                            <field name="pp" calss="oe_inline" />( <field name="pp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sk" />
+                        <div class="o_row" >  
+                            <field name="sk" calss="oe_inline" />( <field name="sk_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sj" />
+                        <div class="o_row" >  
+                            <field name="sj" calss="oe_inline" />( <field name="sj_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="ca" />
+                        <div class="o_row" >  
+                            <field name="ca" calss="oe_inline" />( <field name="ca_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="p" />
+                        <div class="o_row" >  
+                            <field name="p" calss="oe_inline" />( <field name="p_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sahar" />
+                        <div class="o_row" >  
+                            <field name="sahar" calss="oe_inline" />( <field name="sahar_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="krahmal" />
+                        <div class="o_row" >  
+                            <field name="krahmal" calss="oe_inline" />( <field name="krahmal_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="bev" />
+                        <div class="o_row" >  
+                            <field name="bev" calss="oe_inline" />( <field name="bev_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="magniy" />
+                        <div class="o_row" >  
+                            <field name="magniy" calss="oe_inline" />( <field name="magniy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="natriy" />
+                        <div class="o_row" >  
+                            <field name="natriy" calss="oe_inline" />( <field name="natriy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="kaliy" />
+                        <div class="o_row" >  
+                            <field name="kaliy" calss="oe_inline" />( <field name="kaliy_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="hlor" />
+                        <div class="o_row" >  
+                            <field name="hlor" calss="oe_inline" />( <field name="hlor_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="sera" />
+                        <div class="o_row" >  
+                            <field name="sera" calss="oe_inline" />( <field name="sera_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="udp" />
+                        <div class="o_row" >  
+                            <field name="udp" calss="oe_inline" />( <field name="udp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="me" />
+                        <div class="o_row" >  
+                            <field name="me" calss="oe_inline" />( <field name="me_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="xp" />
+                        <div class="o_row" >  
+                            <field name="xp" calss="oe_inline" />( <field name="xp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="nrp" />
+                        <div class="o_row" >  
+                            <field name="nrp" calss="oe_inline" />( <field name="nrp_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="rnb" />
+                        <div class="o_row" >  
+                            <field name="rnb" calss="oe_inline" />( <field name="rnb_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+
+                        <label for="nrp_p" />
+                        <div class="o_row" >  
+                            <field name="nrp_p" calss="oe_inline" />( <field name="nrp_p_s" nolabel="1" class="oe_inline"/>)
+                        </div>
+                        </group>
                         
                         
-                    </group>
+                   
 		            
                 </sheet>
             </form>

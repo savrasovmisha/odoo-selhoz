@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="stado_zagon_form_view">
-        <field name="name">stado_zagon.form</field>
-        <field name="model">stado.zagon</field>
+	<record model="ir.ui.view" id="stado_fiz_group_form_view">
+        <field name="name">stado_fiz_group.form</field>
+        <field name="model">stado.fiz_group</field>
         <field name="arch" type="xml">
-            <form string="Форма Загон">
+            <form string="Форма Физиологическая группа">
                 <sheet>
                     <group>
                         
                         <field name="name"/>
-                        <field name="nomer"/>
-                        <field name="stado_fiz_group_id"/>
+                        
                        
                         
                     </group>
@@ -21,15 +20,14 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_stado_zagon_tree">
-            <field name="name">stado_zagon.tree</field>
-            <field name="model">stado.zagon</field>
+        <record model="ir.ui.view" id="view_stado_fiz_group_tree">
+            <field name="name">stado_fiz_group.tree</field>
+            <field name="model">stado.fiz_group</field>
             <field name="arch" type="xml">
-                <tree string="Загоны">
+                <tree string="Физиологическая группаы">
                     
-                    <field name="nomer" width="50"/>
+                    
                     <field name="name"/>
-                    <field name="stado_fiz_group_id"/>
                   
                     
                     
@@ -38,15 +36,14 @@
             </field>
         </record>	
 	
-	<record model="ir.ui.view" id="stado_zagon_search_view">
-            <field name="name">stado_zagon.search</field>
-            <field name="model">stado.zagon</field>
+	<record model="ir.ui.view" id="stado_fiz_group_search_view">
+            <field name="name">stado_fiz_group.search</field>
+            <field name="model">stado.fiz_group</field>
             <field name="arch" type="xml">
                 <search>
                     
-                    <field name="nomer"/>
+                    
                     <field name="name"/>
-                    <field name="stado_fiz_group_id"/>
                 </search>
             </field>
         </record>
@@ -55,13 +52,13 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
-        <record model="ir.actions.act_window" id="stado_zagon_list_action">
-            <field name="name">Загон</field>
-            <field name="res_model">stado.zagon</field>
+        <record model="ir.actions.act_window" id="stado_fiz_group_list_action">
+            <field name="name">Физиологическая группа</field>
+            <field name="res_model">stado.fiz_group</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Загон
+                <p class="oe_view_nocontent_create">Создайте первую запись Физиологическая группа
                 </p>
             </field>
         </record>

@@ -78,7 +78,7 @@ class stado_fiz_group(models.Model):
 
     name = fields.Char(string="Наименование", required=True)
     _sql_constraints = [
-						    ('name_unique', 'unique(name_id)', u'Такая физиологическая группа уже существует!')
+						    ('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
 						]
     
 

@@ -22,3 +22,10 @@ List of Domain operators: ! (Not), | (Or), & (And)
 
 	List of Term operators: '=', '!=', '<=', '<', '>', '>=', '=?', '=like', '=ilike', 'like', 'not like', 'ilike', 'not ilike', 'in', 'not in', 'child_of'
 	'child_of': parent_id = '1' #Agrolait 'child_of': [('partner_id', 'child_of', parent_id)] - return left and right list of partner_id for given parent_id
+
+
+
+Уникальное значение для поля "name"
+_sql_constraints = [
+						    ('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
+						]

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_norm_form_view">
+        <field name="name">korm_norm.form</field>
+        <field name="model">korm.norm</field>
+        <field name="arch" type="xml">
+            <form string="Форма Нормы кормления">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="stado_fiz_group_id"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date" />
+                        </group>
+                     </group>
+                    <group>
+                        <separator string="Показатели, Min - Max" colspan="2"/>
+                        <label for="ov_min" />
+                        <div class="o_row"> 
+                           <field name="ov_min" calss="oe_inline" /> - <field name="ov_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sv_min" />
+                        <div class="o_row"> 
+                           <field name="sv_min" calss="oe_inline" /> - <field name="sv_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="oe_min" />
+                        <div class="o_row"> 
+                           <field name="oe_min" calss="oe_inline" /> - <field name="oe_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sp_min" />
+                        <div class="o_row"> 
+                           <field name="sp_min" calss="oe_inline" /> - <field name="sp_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="pp_min" />
+                        <div class="o_row"> 
+                           <field name="pp_min" calss="oe_inline" /> - <field name="pp_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sk_min" />
+                        <div class="o_row"> 
+                           <field name="sk_min" calss="oe_inline" /> - <field name="sk_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sj_min" />
+                        <div class="o_row"> 
+                           <field name="sj_min" calss="oe_inline" /> - <field name="sj_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="ca_min" />
+                        <div class="o_row"> 
+                           <field name="ca_min" calss="oe_inline" /> - <field name="ca_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="p_min" />
+                        <div class="o_row"> 
+                           <field name="p_min" calss="oe_inline" /> - <field name="p_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sahar_min" />
+                        <div class="o_row"> 
+                           <field name="sahar_min" calss="oe_inline" /> - <field name="sahar_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="krahmal_min" />
+                        <div class="o_row"> 
+                           <field name="krahmal_min" calss="oe_inline" /> - <field name="krahmal_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="bev_min" />
+                        <div class="o_row"> 
+                           <field name="bev_min" calss="oe_inline" /> - <field name="bev_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="magniy_min" />
+                        <div class="o_row"> 
+                           <field name="magniy_min" calss="oe_inline" /> - <field name="magniy_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="natriy_min" />
+                        <div class="o_row"> 
+                           <field name="natriy_min" calss="oe_inline" /> - <field name="natriy_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="kaliy_min" />
+                        <div class="o_row"> 
+                           <field name="kaliy_min" calss="oe_inline" /> - <field name="kaliy_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="hlor_min" />
+                        <div class="o_row"> 
+                           <field name="hlor_min" calss="oe_inline" /> - <field name="hlor_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="sera_min" />
+                        <div class="o_row"> 
+                           <field name="sera_min" calss="oe_inline" /> - <field name="sera_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="udp_min" />
+                        <div class="o_row"> 
+                           <field name="udp_min" calss="oe_inline" /> - <field name="udp_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="me_min" />
+                        <div class="o_row"> 
+                           <field name="me_min" calss="oe_inline" /> - <field name="me_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="xp_min" />
+                        <div class="o_row"> 
+                           <field name="xp_min" calss="oe_inline" /> - <field name="xp_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="nrp_min" />
+                        <div class="o_row"> 
+                           <field name="nrp_min" calss="oe_inline" /> - <field name="nrp_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="rnb_min" />
+                        <div class="o_row"> 
+                           <field name="rnb_min" calss="oe_inline" /> - <field name="rnb_max" nolabel="1" class="oe_inline"/>
+                        </div>
+                        <label for="nrp_p_min" />
+                        <div class="o_row"> 
+                           <field name="nrp_p_min" calss="oe_inline" /> - <field name="nrp_p_max" nolabel="1" class="oe_inline"/>
+                        </div>
+
+
+
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_norm_tree">
+            <field name="name">korm_norm.tree</field>
+            <field name="model">korm.norm</field>
+            <field name="arch" type="xml">
+                <tree string="Нормы кормления">
+                    
+                    <field name="date"/>
+                    <field name="stado_fiz_group_id"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_norm_search_view">
+            <field name="name">korm_norm.search</field>
+            <field name="model">korm.norm</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    <field name="stado_fiz_group_id"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_norm_list_action">
+            <field name="name">Нормы кормления</field>
+            <field name="res_model">korm.norm</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Нормы кормления
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

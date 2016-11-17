@@ -45,6 +45,8 @@
         'views/seq_sklad_spisanie.xml',
         'views/sklad_inventarizaciya.xml',
         'views/seq_sklad_inventarizaciya.xml',
+        'views/nomen_price.xml',
+        'views/seq_nomen_price.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

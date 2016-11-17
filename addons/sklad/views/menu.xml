@@ -19,6 +19,8 @@
          <menuitem id="sklad_spisanie_menu" name="Списание товаров" parent="sklad_menu_doc" action="sklad_spisanie_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
          <menuitem id="sklad_inventarizaciya_menu" name="Инвентаризация товаров" parent="sklad_menu_doc" action="sklad_inventarizaciya_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+         <menuitem id="nomen_price_menu" name="Установка цен номенклатуры" parent="sklad_menu_doc" action="nomen_price_list_action" groups="group_sklad_manager,group_sklad_users"/>
 <!--
 	     Левое меню
 -->

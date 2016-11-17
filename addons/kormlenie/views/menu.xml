@@ -14,6 +14,9 @@
 
         <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" parent="korm_menu_doc" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>
     
+        <menuitem id="korm_norm_menu" name="Нормы кормления" parent="korm_menu_doc" action="korm_norm_list_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_racion_menu" name="Рацион кормления" parent="korm_menu_doc" action="korm_racion_list_action" groups="group_korm_manager,group_korm_users"/>
 <!--
          Левое меню
 -->

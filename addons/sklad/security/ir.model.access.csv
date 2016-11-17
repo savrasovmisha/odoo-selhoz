@@ -39,3 +39,7 @@ access_sklad_inventarizaciya_manager,sklad.inventarizaciya,model_sklad_inventari
 access_sklad_inventarizaciya_users,sklad.inventarizaciya,model_sklad_inventarizaciya,group_sklad_users,1,0,0,0
 access_sklad_inventarizaciya_line_manager,sklad.inventarizaciya_line,model_sklad_inventarizaciya_line,group_sklad_manager,1,1,1,1
 access_sklad_inventarizaciya_line_users,sklad.inventarizaciya_line,model_sklad_inventarizaciya_line,group_sklad_users,1,0,0,0
+access_nomen_price_manager,nomen.price,model_nomen_price,group_sklad_manager,1,1,1,1
+access_nomen_price_users,nomen.price,model_nomen_price,group_sklad_users,1,0,0,0
+access_nomen_price_line_manager,nomen.price_line,model_nomen_price_line,group_sklad_manager,1,1,1,1
+access_nomen_price_line_users,nomen.price_line,model_nomen_price_line,group_sklad_users,1,0,0,0

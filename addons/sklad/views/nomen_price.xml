@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="nomen_price_form_view">
+        <field name="name">nomen_price.form</field>
+        <field name="model">nomen.price</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Установка цен номенклатуры">
+                
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" />
+                            
+                            
+                        </group>
+                        <group>
+                            <field name="date" />
+                            
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Товары">
+                            <field name="nomen_price_line" >
+                                <tree string="nomen_price_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="price"/>
+                                                                        
+                                </tree>
+                            </field>
+                           
+                            
+                        </page>
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_nomen_price_tree">
+            <field name="name">nomen_price.tree</field>
+            <field name="model">nomen.price</field>
+            <field name="arch" type="xml">
+                <tree string="Установка цен номенклатуры" >
+                    <field name="name"/>
+                    <field name="date"/>
+                      
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="nomen_price_list_action">
+            <field name="name">Установка цен номенклатуры</field>
+            <field name="res_model">nomen.price</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Установка цен номенклатуры
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

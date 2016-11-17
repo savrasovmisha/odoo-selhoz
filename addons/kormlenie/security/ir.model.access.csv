@@ -1,5 +1,17 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_korm_pit_standart_manager,korm.pit_standart,model_korm_pit_standart,group_korm_manager,1,1,1,1
 access_korm_pit_standart_users,korm.pit_standart,model_korm_pit_standart,group_korm_users,1,0,0,0
+access_korm_norm_manager,korm.norm,model_korm_norm,group_korm_manager,1,1,1,1
+access_korm_norm_users,korm.norm,model_korm_norm,group_korm_users,1,0,0,0
+access_korm_analiz_pit_manager,korm.analiz_pit,model_korm_analiz_pit,group_korm_manager,1,1,1,1
+access_korm_analiz_pit_users,korm.analiz_pit,model_korm_analiz_pit,group_korm_users,1,0,0,0
+access_korm_receptura_manager,korm.receptura,model_korm_receptura,group_korm_manager,1,1,1,1
+access_korm_receptura_users,korm.receptura,model_korm_receptura,group_korm_users,1,0,0,0
+access_korm_receptura_line_manager,korm.receptura_line,model_korm_receptura_line,group_korm_manager,1,1,1,1
+access_korm_receptura_line_users,korm.receptura_line,model_korm_receptura_line,group_korm_users,1,0,0,0
+access_stado_fiz_group_manager,stado.fiz_group,model_stado_fiz_group,group_korm_manager,1,1,1,1
+access_stado_fiz_group_users,stado.fiz_group,model_stado_fiz_group,group_korm_users,1,0,0,0
+access_stado_zagon_manager,stado.stado_zagon,model_stado_zagon,group_korm_manager,1,1,1,1
+access_stado_zagon_users,stado.stado_zagon,model_stado_zagon,group_korm_users,1,0,0,0
 
 

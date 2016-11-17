@@ -1002,4 +1002,81 @@ class sklad_inventarizaciya_line(models.Model):
     kol = fields.Float(digits=(10, 3), string="Кол-во по учету", required=True)
     kol_fact = fields.Float(digits=(10, 3), string="Кол-во по факту", required=True)
     kol_otk = fields.Float(digits=(10, 3), string="Отклонение от факта", compute='_amount',  store=True)
-  
+ 
+
+class nomen_price(models.Model):
+    _name = 'nomen.price'
+    _description = u'Установка цен номенклатуры'
+    _order = 'date desc'
+
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('nomen.price') or 'New'
+            
+
+
+        result = super(nomen_price, self).create(vals)
+
+        price_vals={}
+        # price_vals['date'] = self.date
+        # for line in self.nomen_price_line:
+        #     price_line = self.env['nomen.price_line']
+        #     price_line.browse(line.id).write(price_vals)
+        return result
+
+    @api.multi
+    def write(self, vals):
+        result = super(nomen_price, self).write(vals)
+        price_vals={}
+        price_vals['date'] = self.date
+        for line in self.nomen_price_line:
+            price_line = self.env['nomen.price_line']
+            price_line.browse(line.id).write(price_vals)
+
+        return result
+
+
+
+
+    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+    nomen_price_line = fields.One2many('nomen.price_line', 'nomen_price_id', string="Строка Установка цен номенклатуры")
+    
+
+class nomen_price_line(models.Model):
+    _name = 'nomen.price_line'
+    _description = u'Строка Установка цен номенклатуры'
+
+
+    @api.model
+    def create(self, vals):
+                 
+        vals['date'] = self.nomen_price_id.date
+
+        result = super(nomen_price_line, self).create(vals)
+
+        
+        return result
+    
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        if self.nomen_nomen_id:
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+
+
+    def return_name(self):
+        for line in self:
+            line.name = line.nomen_price_id.name
+            line.date = line.nomen_price_id.date
+
+
+    name = fields.Char(string="Номер", required=True, compute='return_name')
+    date = fields.Date(string='Дата',  store=True)
+    nomen_price_id = fields.Many2one('nomen.price', ondelete='cascade', string="Установка цен номенклатуры", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
+    price = fields.Float(digits=(10, 2), string="Цена", required=True)
+ 

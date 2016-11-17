@@ -412,7 +412,7 @@ class korm_receptura_line(models.Model):
 class korm_norm(models.Model):
     _name = 'korm.norm'
     _description = 'Нормы кормления'
-    _order = 'date desc'
+    _order = 'date desc, stado_fiz_group_id'
 
 
 
@@ -513,3 +513,183 @@ class korm_norm(models.Model):
     nrp_max = fields.Float(digits=(10, 2), string="НРП", store=True, compute='_raschet')
     rnb_max = fields.Float(digits=(10, 2), string="RNB", store=True, compute='_raschet')
     nrp_p_max = fields.Float(digits=(10, 2), string="%НРП")
+
+
+
+
+class korm_racion(models.Model):
+    _name = 'korm.racion'
+    _description = 'Рацион кормления'
+    _order = 'date desc, stado_fiz_group_id'
+
+
+    @api.one
+    @api.depends('stado_fiz_group_id')
+    def return_name(self):
+        self.name = self.stado_fiz_group_id.name + u' от ' + self.date
+
+
+ 
+    @api.depends('stado_fiz_group_id')
+    def _norm(self):
+    	for st in self:
+	    	if st.stado_fiz_group_id:
+		        standart = self.env['korm.norm'].search([('stado_fiz_group_id', '=', st.stado_fiz_group_id.id)],limit=1)
+		        if len(standart)>0:
+		        	for par in parametrs:
+    					self[par+'_min'] = standart[par+'_min']
+    					self[par+'_max'] = standart[par+'_max']
+
+
+
+    @api.one
+    @api.depends('korm_racion_line.kol')
+    def _raschet(self):
+
+    	self.amount=self.ov=self.sv = 0
+
+    	for line in self.korm_racion_line:
+    		self.amount += line.kol
+    		for par in parametrs:
+    			self[par] += line.kol * line.korm_analiz_pit_id[par]
+    		
+    	if self.amount>0:
+    		for par in parametrs:
+    			self[par] = self[par]/self.amount
+
+    	        
+        if self.sv and self.nrp_p:
+        	self.nrp = self.sp * self.nrp_p/100.00
+    	
+    	if self.sv>0 and self.nrp:
+        	self.udp = self.nrp/self.sv
+
+        if self.sv>0 and self.oe:
+        	self.me = self.oe/self.sv
+
+        if self.sv>0 and self.sp:
+        	self.xp = self.sp/self.sv
+
+        if self.xp!=0 and self.me and self.udp:
+        	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
+
+
+
+
+    name = fields.Char(string="Наименование", compute='return_name')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
+    date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+    korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string="Строка Рацион кормления")
+    amount = fields.Float(digits=(10, 3), string="Всего Кол-во", store=True, compute='_raschet')
+
+    ov = fields.Float(digits=(10, 2), string="ОВ", store=True, compute='_raschet')
+    sv = fields.Float(digits=(10, 2), string="СВ", store=True, compute='_raschet')
+    oe = fields.Float(digits=(10, 2), string="ОЭ", store=True, compute='_raschet')
+    sp = fields.Float(digits=(10, 2), string="СП", store=True, compute='_raschet')
+    pp = fields.Float(digits=(10, 2), string="ПП", store=True, compute='_raschet')
+    sk = fields.Float(digits=(10, 2), string="СК", store=True, compute='_raschet')
+    sj = fields.Float(digits=(10, 2), string="СЖ", store=True, compute='_raschet')
+    ca = fields.Float(digits=(10, 2), string="Ca", store=True, compute='_raschet')
+    p = fields.Float(digits=(10, 2), string="P", store=True, compute='_raschet')
+    sahar = fields.Float(digits=(10, 2), string="Сахар", store=True, compute='_raschet')
+    krahmal = fields.Float(digits=(10, 2), string="Крахмал", store=True, compute='_raschet')
+    bev = fields.Float(digits=(10, 2), string="БЭВ", store=True, compute='_raschet')
+    magniy = fields.Float(digits=(10, 2), string="Магний", store=True, compute='_raschet')
+    natriy = fields.Float(digits=(10, 2), string="Натрий", store=True, compute='_raschet')
+    kaliy = fields.Float(digits=(10, 2), string="Калий", store=True, compute='_raschet')
+    hlor = fields.Float(digits=(10, 2), string="Хлор", store=True, compute='_raschet')
+    sera = fields.Float(digits=(10, 2), string="Сера", store=True, compute='_raschet')
+    udp = fields.Float(digits=(10, 2), string="UDP", store=True, compute='_raschet')
+    me = fields.Float(digits=(10, 2), string="ME", store=True, compute='_raschet')
+    xp = fields.Float(digits=(10, 2), string="XP", store=True, compute='_raschet')
+    nrp = fields.Float(digits=(10, 2), string="НРП", store=True, compute='_raschet')
+    rnb = fields.Float(digits=(10, 2), string="RNB", store=True, compute='_raschet')
+    nrp_p = fields.Float(digits=(10, 2), string="%НРП", store=True, compute='_raschet')
+    
+    #Параметры питательности по норме:
+    ov_min = fields.Float(digits=(10, 2), string="ОВ", compute='_norm')
+    sv_min = fields.Float(digits=(10, 2), string="СВ", compute='_norm')
+    oe_min = fields.Float(digits=(10, 2), string="ОЭ", compute='_norm')
+    sp_min = fields.Float(digits=(10, 2), string="СП", compute='_norm')
+    pp_min = fields.Float(digits=(10, 2), string="ПП", compute='_norm')
+    sk_min = fields.Float(digits=(10, 2), string="СК", compute='_norm')
+    sj_min = fields.Float(digits=(10, 2), string="СЖ", compute='_norm')
+    ca_min = fields.Float(digits=(10, 2), string="Ca", compute='_norm')
+    p_min = fields.Float(digits=(10, 2), string="P", compute='_norm')
+    sahar_min = fields.Float(digits=(10, 2), string="Сахар", compute='_norm')
+    krahmal_min = fields.Float(digits=(10, 2), string="Крахмал", compute='_norm')
+    bev_min = fields.Float(digits=(10, 2), string="БЭВ", compute='_norm')
+    magniy_min = fields.Float(digits=(10, 2), string="Магний", compute='_norm')
+    natriy_min = fields.Float(digits=(10, 2), string="Натрий", compute='_norm')
+    kaliy_min = fields.Float(digits=(10, 2), string="Калий", compute='_norm')
+    hlor_min = fields.Float(digits=(10, 2), string="Хлор", compute='_norm')
+    sera_min = fields.Float(digits=(10, 2), string="Сера", compute='_norm')
+    udp_min = fields.Float(digits=(10, 2), string="UDP", compute='_norm')
+    me_min = fields.Float(digits=(10, 2), string="ME", compute='_norm')
+    xp_min = fields.Float(digits=(10, 2), string="XP", compute='_norm')
+    nrp_min = fields.Float(digits=(10, 2), string="НРП", compute='_norm')
+    rnb_min = fields.Float(digits=(10, 2), string="RNB", compute='_norm')
+    nrp_p_min = fields.Float(digits=(10, 2), string="%НРП", compute='_norm')
+
+    ov_max = fields.Float(digits=(10, 2), string="ОВ", compute='_norm')
+    sv_max = fields.Float(digits=(10, 2), string="СВ", compute='_norm')
+    oe_max = fields.Float(digits=(10, 2), string="ОЭ", compute='_norm')
+    sp_max = fields.Float(digits=(10, 2), string="СП", compute='_norm')
+    pp_max = fields.Float(digits=(10, 2), string="ПП", compute='_norm')
+    sk_max = fields.Float(digits=(10, 2), string="СК", compute='_norm')
+    sj_max = fields.Float(digits=(10, 2), string="СЖ", compute='_norm')
+    ca_max = fields.Float(digits=(10, 2), string="Ca", compute='_norm')
+    p_max = fields.Float(digits=(10, 2), string="P", compute='_norm')
+    sahar_max = fields.Float(digits=(10, 2), string="Сахар", compute='_norm')
+    krahmal_max = fields.Float(digits=(10, 2), string="Крахмал", compute='_norm')
+    bev_max = fields.Float(digits=(10, 2), string="БЭВ", compute='_norm')
+    magniy_max = fields.Float(digits=(10, 2), string="Магний", compute='_norm')
+    natriy_max = fields.Float(digits=(10, 2), string="Натрий", compute='_norm')
+    kaliy_max = fields.Float(digits=(10, 2), string="Калий", compute='_norm')
+    hlor_max = fields.Float(digits=(10, 2), string="Хлор", compute='_norm')
+    sera_max = fields.Float(digits=(10, 2), string="Сера", compute='_norm')
+    udp_max = fields.Float(digits=(10, 2), string="UDP", compute='_norm')
+    me_max = fields.Float(digits=(10, 2), string="ME", compute='_norm')
+    xp_max = fields.Float(digits=(10, 2), string="XP", compute='_norm')
+    nrp_max = fields.Float(digits=(10, 2), string="НРП", compute='_norm')
+    rnb_max = fields.Float(digits=(10, 2), string="RNB", compute='_norm')
+    nrp_p_max = fields.Float(digits=(10, 2), string="%НРП", compute='_norm')
+
+
+
+class korm_racion_line(models.Model):
+    _name = 'korm.racion_line'
+    _description = 'Строка Рацион кормления'
+    #_order = 'date desc, nomen_nomen_id'
+
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def return_name(self):
+        self.name = self.nomen_nomen_id.name
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        
+        if self.nomen_nomen_id:
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            analiz = self.env['korm.analiz_pit']
+            analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
+            self.korm_analiz_pit_id = analiz_id
+
+            obj_price = self.env['nomen.price_line']
+            price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).price
+            self.price = price
+
+            
+
+
+    name = fields.Char(string="Наименование", compute='return_name')
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Наименование корма', required=True)
+    korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string='Анализ корма', store=True, compute='_nomen')
+    korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string="Рацион кормления", required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
+    price = fields.Float(digits=(10, 2), string="Цена", required=True, compute='_nomen',  store=True)
+   

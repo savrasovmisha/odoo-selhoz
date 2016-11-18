@@ -10,14 +10,24 @@
                     <group>
                         <group>
                             <field name="stado_fiz_group_id"/>
-                            
                         </group>
                         <group>
                             <field name="date"/>
                         </group>
                      </group>
+                     <group>
+                        <separator string="Продуктивность" colspan="2"/>
+                        <group>
+                            <field name="milk"/>
+                            <field name="massa"/>
+                        </group>
+                        <group>
+                            <field name="jir"/>
+                            <field name="belok"/>
+                        </group>
+                     </group>
                    
-                    
+            
                        
                             <notebook>
                                 <page string="Состав комбикорма">
@@ -28,11 +38,12 @@
                                             <field name="ed_izm_id"/>
                                             <field name="kol"/>
                                             <field name="price"/>
+                                            <field name="amount"/>
                                                                                 
                                         </tree>
                                     </field>
                                     <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                        
+                                        <field name="kol" widget='monetary'/>
                                         <div class="oe_subtotal_footer_separator oe_inline o_td_label">
                                             <label for="amount" />
                                             
@@ -48,96 +59,97 @@
                             <separator string="Показатели,  Min - расчет - Max" colspan="2"/>
                             <label for="ov"/>
                             <div class="o_row"> 
-                                <field name="ov_min" calss="oe_inline" /> - <field name="ov" calss="oe_inline" nolabel="1"/> - <field name="ov_max" nolabel="1" class="oe_inline"/>
+                                <field name="ov_min" calss="oe_inline" /> - <field name="ov" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="ov_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sv"/>
                             <div class="o_row"> 
-                                <field name="sv_min" calss="oe_inline" /> - <field name="sv" calss="oe_inline" nolabel="1"/> - <field name="sv_max" nolabel="1" class="oe_inline"/>
+                                <field name="sv_min" calss="oe_inline" /> - <field name="sv" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sv_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="oe"/>
                             <div class="o_row"> 
-                                <field name="oe_min" calss="oe_inline" /> - <field name="oe" calss="oe_inline" nolabel="1"/> - <field name="oe_max" nolabel="1" class="oe_inline"/>
+                                <field name="oe_min" calss="oe_inline" /> - <field name="oe" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="oe_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sp"/>
                             <div class="o_row"> 
-                                <field name="sp_min" calss="oe_inline" /> - <field name="sp" calss="oe_inline" nolabel="1"/> - <field name="sp_max" nolabel="1" class="oe_inline"/>
+                                <field name="sp_min" calss="oe_inline" /> - <field name="sp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sp_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="pp"/>
                             <div class="o_row"> 
-                                <field name="pp_min" calss="oe_inline" /> - <field name="pp" calss="oe_inline" nolabel="1"/> - <field name="pp_max" nolabel="1" class="oe_inline"/>
+                                <field name="pp_min" calss="oe_inline" /> - <field name="pp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="pp_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sk"/>
                             <div class="o_row"> 
-                                <field name="sk_min" calss="oe_inline" /> - <field name="sk" calss="oe_inline" nolabel="1"/> - <field name="sk_max" nolabel="1" class="oe_inline"/>
+                                <field name="sk_min" calss="oe_inline" /> - <field name="sk" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sk_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sj"/>
                             <div class="o_row"> 
-                                <field name="sj_min" calss="oe_inline" /> - <field name="sj" calss="oe_inline" nolabel="1"/> - <field name="sj_max" nolabel="1" class="oe_inline"/>
+                                <field name="sj_min" calss="oe_inline" /> - <field name="sj" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sj_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="ca"/>
                             <div class="o_row"> 
-                                <field name="ca_min" calss="oe_inline" /> - <field name="ca" calss="oe_inline" nolabel="1"/> - <field name="ca_max" nolabel="1" class="oe_inline"/>
+                                <field name="ca_min" calss="oe_inline" /> - <field name="ca" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="ca_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="p"/>
                             <div class="o_row"> 
-                                <field name="p_min" calss="oe_inline" /> - <field name="p" calss="oe_inline" nolabel="1"/> - <field name="p_max" nolabel="1" class="oe_inline"/>
+                                <field name="p_min" calss="oe_inline" /> - <field name="p" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="p_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sahar"/>
                             <div class="o_row"> 
-                                <field name="sahar_min" calss="oe_inline" /> - <field name="sahar" calss="oe_inline" nolabel="1"/> - <field name="sahar_max" nolabel="1" class="oe_inline"/>
+                                <field name="sahar_min" calss="oe_inline" /> - <field name="sahar" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sahar_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="krahmal"/>
                             <div class="o_row"> 
-                                <field name="krahmal_min" calss="oe_inline" /> - <field name="krahmal" calss="oe_inline" nolabel="1"/> - <field name="krahmal_max" nolabel="1" class="oe_inline"/>
+                                <field name="krahmal_min" calss="oe_inline" /> - <field name="krahmal" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="krahmal_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="bev"/>
                             <div class="o_row"> 
-                                <field name="bev_min" calss="oe_inline" /> - <field name="bev" calss="oe_inline" nolabel="1"/> - <field name="bev_max" nolabel="1" class="oe_inline"/>
+                                <field name="bev_min" calss="oe_inline" /> - <field name="bev" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="bev_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="magniy"/>
                             <div class="o_row"> 
-                                <field name="magniy_min" calss="oe_inline" /> - <field name="magniy" calss="oe_inline" nolabel="1"/> - <field name="magniy_max" nolabel="1" class="oe_inline"/>
+                                <field name="magniy_min" calss="oe_inline" /> - <field name="magniy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="magniy_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="natriy"/>
                             <div class="o_row"> 
-                                <field name="natriy_min" calss="oe_inline" /> - <field name="natriy" calss="oe_inline" nolabel="1"/> - <field name="natriy_max" nolabel="1" class="oe_inline"/>
+                                <field name="natriy_min" calss="oe_inline" /> - <field name="natriy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="natriy_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="kaliy"/>
                             <div class="o_row"> 
-                                <field name="kaliy_min" calss="oe_inline" /> - <field name="kaliy" calss="oe_inline" nolabel="1"/> - <field name="kaliy_max" nolabel="1" class="oe_inline"/>
+                                <field name="kaliy_min" calss="oe_inline" /> - <field name="kaliy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="kaliy_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="hlor"/>
                             <div class="o_row"> 
-                                <field name="hlor_min" calss="oe_inline" /> - <field name="hlor" calss="oe_inline" nolabel="1"/> - <field name="hlor_max" nolabel="1" class="oe_inline"/>
+                                <field name="hlor_min" calss="oe_inline" /> - <field name="hlor" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="hlor_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="sera"/>
                             <div class="o_row"> 
-                                <field name="sera_min" calss="oe_inline" /> - <field name="sera" calss="oe_inline" nolabel="1"/> - <field name="sera_max" nolabel="1" class="oe_inline"/>
+                                <field name="sera_min" calss="oe_inline" /> - <field name="sera" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sera_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="udp"/>
                             <div class="o_row"> 
-                                <field name="udp_min" calss="oe_inline" /> - <field name="udp" calss="oe_inline" nolabel="1"/> - <field name="udp_max" nolabel="1" class="oe_inline"/>
+                                <field name="udp_min" calss="oe_inline" /> - <field name="udp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="udp_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="me"/>
                             <div class="o_row"> 
-                                <field name="me_min" calss="oe_inline" /> - <field name="me" calss="oe_inline" nolabel="1"/> - <field name="me_max" nolabel="1" class="oe_inline"/>
+                                <field name="me_min" calss="oe_inline" /> - <field name="me" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="me_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="xp"/>
                             <div class="o_row"> 
-                                <field name="xp_min" calss="oe_inline" /> - <field name="xp" calss="oe_inline" nolabel="1"/> - <field name="xp_max" nolabel="1" class="oe_inline"/>
+                                <field name="xp_min" calss="oe_inline" /> - <field name="xp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="xp_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="nrp"/>
                             <div class="o_row"> 
-                                <field name="nrp_min" calss="oe_inline" /> - <field name="nrp" calss="oe_inline" nolabel="1"/> - <field name="nrp_max" nolabel="1" class="oe_inline"/>
+                                <field name="nrp_min" calss="oe_inline" /> - <field name="nrp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="nrp_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="rnb"/>
                             <div class="o_row"> 
-                                <field name="rnb_min" calss="oe_inline" /> - <field name="rnb" calss="oe_inline" nolabel="1"/> - <field name="rnb_max" nolabel="1" class="oe_inline"/>
+                                <field name="rnb_min" calss="oe_inline" /> - <field name="rnb" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="rnb_max" nolabel="1" class="oe_inline"/>
                             </div>
                             <label for="nrp_p"/>
                             <div class="o_row"> 
-                                <field name="nrp_p_min" calss="oe_inline" /> - <field name="nrp_p" calss="oe_inline" nolabel="1"/> - <field name="nrp_p_max" nolabel="1" class="oe_inline"/>
+                                <field name="nrp_p_min" calss="oe_inline" /> - <field name="nrp_p" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="nrp_p_max" nolabel="1" class="oe_inline"/>
                             </div>
+
 
                         </group>
                         

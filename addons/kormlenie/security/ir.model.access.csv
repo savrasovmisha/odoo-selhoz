@@ -13,5 +13,9 @@ access_stado_fiz_group_manager,stado.fiz_group,model_stado_fiz_group,group_korm_
 access_stado_fiz_group_users,stado.fiz_group,model_stado_fiz_group,group_korm_users,1,0,0,0
 access_stado_zagon_manager,stado.stado_zagon,model_stado_zagon,group_korm_manager,1,1,1,1
 access_stado_zagon_users,stado.stado_zagon,model_stado_zagon,group_korm_users,1,0,0,0
+access_korm_racion_manager,korm.racion,model_korm_racion,group_korm_manager,1,1,1,1
+access_korm_racion_users,korm.racion,model_korm_racion,group_korm_users,1,0,0,0
+access_korm_racion_line_manager,korm.racion_line,model_korm_racion_line,group_korm_manager,1,1,1,1
+access_korm_racion_line_users,korm.racion_line,model_korm_racion_line,group_korm_users,1,0,0,0
 
 

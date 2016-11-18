@@ -573,14 +573,24 @@ class korm_racion(models.Model):
         if self.xp!=0 and self.me and self.udp:
         	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
+        self.kol = self.amount = 0.00
+    	for line in self.korm_racion_line:
+    		self.kol += line.kol
+    		self.amount += line.amount
 
-
+        	
+    			
 
     name = fields.Char(string="Наименование", compute='return_name')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
     date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
     korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string="Строка Рацион кормления")
-    amount = fields.Float(digits=(10, 3), string="Всего Кол-во", store=True, compute='_raschet')
+    kol = fields.Float(digits=(10, 3), string="Всего Кол-во", store=True, compute='_raschet')
+    amount = fields.Float(digits=(10, 2), string="Всего стоимость", store=True, compute='_raschet')
+    milk = fields.Float(digits=(10, 1), string="Молоко, кг", store=True)
+    jir = fields.Float(digits=(10, 2), string="Жир, %", store=True)
+    belok = fields.Float(digits=(10, 2), string="Белок, %", store=True)
+    massa = fields.Integer(string="Живая масса, кг", store=True)
 
     ov = fields.Float(digits=(10, 2), string="ОВ", store=True, compute='_raschet')
     sv = fields.Float(digits=(10, 2), string="СВ", store=True, compute='_raschet')
@@ -675,14 +685,20 @@ class korm_racion_line(models.Model):
         if self.nomen_nomen_id:
             self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
             analiz = self.env['korm.analiz_pit']
-            analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
+            analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).id
             self.korm_analiz_pit_id = analiz_id
 
             obj_price = self.env['nomen.price_line']
-            price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).price
+            price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).price
             self.price = price
 
-            
+            self.amount = self.price * self.kol
+
+    @api.one
+    @api.depends('kol')
+    def _amount(self):
+    	self.amount = self.price * self.kol           
+
 
 
     name = fields.Char(string="Наименование", compute='return_name')
@@ -691,5 +707,6 @@ class korm_racion_line(models.Model):
     korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string="Рацион кормления", required=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
-    price = fields.Float(digits=(10, 2), string="Цена", required=True, compute='_nomen',  store=True)
+    price = fields.Float(digits=(10, 2), string="Цена", compute='_nomen',  store=True)
+    amount = fields.Float(digits=(10, 2), string="Сумма", compute='_amount',  store=True)
    

@@ -1012,23 +1012,18 @@ class nomen_price(models.Model):
     
     @api.model
     def create(self, vals):
+        print "ssssssssssssssssssssssssssss", self.date
         if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
             vals['name'] = self.env['ir.sequence'].next_by_code('nomen.price') or 'New'
             
-
-
         result = super(nomen_price, self).create(vals)
 
-        price_vals={}
-        # price_vals['date'] = self.date
-        # for line in self.nomen_price_line:
-        #     price_line = self.env['nomen.price_line']
-        #     price_line.browse(line.id).write(price_vals)
         return result
 
     @api.multi
     def write(self, vals):
         result = super(nomen_price, self).write(vals)
+        """Установка Даты в сроках""" 
         price_vals={}
         price_vals['date'] = self.date
         for line in self.nomen_price_line:
@@ -1052,8 +1047,10 @@ class nomen_price_line(models.Model):
 
     @api.model
     def create(self, vals):
-                 
-        vals['date'] = self.nomen_price_id.date
+        """Установка Даты в сроках""" 
+        price = self.env['nomen.price']
+        price_date = price.search([('id', '=', vals['nomen_price_id'])]).date      
+        vals['date'] = price_date
 
         result = super(nomen_price_line, self).create(vals)
 

@@ -12,6 +12,7 @@
                             <field name="mark" string="Марка"/>
                             <field name="gos_nomer" string="Гос. номер"/>
                             <field name="type_transport_id" string="Тип транспорта"/>
+                            <field name="max_value"/>
                             
                         </group>
     		            

@@ -10,44 +10,44 @@ from openerp.exceptions import ValidationError
 
 class ed_izm_categ(models.Model):
     _name = 'nomen.ed_izm_categ'
-    _description = 'Категории Единицы Измерения Номенклатуры'
-    name = fields.Char(string="Наименование", required=True)
+    _description = u'Категории Единицы Измерения Номенклатуры'
+    name = fields.Char(string=u"Наименование", required=True)
 
 
 class ed_izm(models.Model):
     _name = 'nomen.ed_izm'
-    _description = 'Единицы Измерения'
+    _description = u'Единицы Измерения'
    
-    name = fields.Char(string="Наименование", required=True)
-    ed_izm_categ_id = fields.Many2one('nomen.ed_izm_categ', string="Категория ед.изм.", default=None)
+    name = fields.Char(string=u"Наименование", required=True)
+    ed_izm_categ_id = fields.Many2one('nomen.ed_izm_categ', string=u"Категория ед.изм.", default=None)
 
 #----------------------------------------------------------
 # Номенклатура
 #----------------------------------------------------------
 class nomen_categ(models.Model):
     _name = 'nomen.categ'
-    _description = 'Категории номенклатуры'
+    _description = u'Категории номенклатуры'
     """Категории используются для вывода иерархического вида справочника"""
    
-    name = fields.Char(string="Наименование", required=True)
+    name = fields.Char(string=u"Наименование", required=True)
 
 class nomen_group(models.Model):
     _name = 'nomen.group'
-    _description = 'Группы номенклатуры'
+    _description = u'Группы номенклатуры'
     """Группы используются для отнесения номенклатуры к типу номенклатуры"""
    
-    name = fields.Char(string="Наименование", required=True)  
+    name = fields.Char(string=u"Наименование", required=True)  
 
 class nomen_nomen(models.Model):
     _name = 'nomen.nomen'
-    _description = 'Номенклатура'
+    _description = u'Номенклатура'
 
-    name = fields.Char(string="Наименование", required=True)
-    nomen_categ_id = fields.Many2one('nomen.categ', string="Категория", default=None)
-    nomen_group_id = fields.Many2one('nomen.group', string="Группа", default=None)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", default=None)
-    nalog_nds_id = fields.Many2one('nalog.nds', string="Ставка НДС %", default=None)
-    id_1c = fields.Char(string="Номер в 1С")
+    name = fields.Char(string=u"Наименование", required=True)
+    nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)
+    nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", default=None)
+    nalog_nds_id = fields.Many2one('nalog.nds', string=u"Ставка НДС %", default=None)
+    id_1c = fields.Char(string=u"Номер в 1С")
 
 #----------------------------------------------------------
 # Склад
@@ -55,11 +55,11 @@ class nomen_nomen(models.Model):
 
 class sklad_sklad(models.Model):
     _name = 'sklad.sklad'
-    _description = 'Склады'
+    _description = u'Склады'
   
-    name = fields.Char(string="Наименование", required=True) 
+    name = fields.Char(string=u"Наименование", required=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
-    id_1c = fields.Char(string="Номер в 1С")
+    id_1c = fields.Char(string=u"Номер в 1С")
 
 
 #----------------------------------------------------------
@@ -69,13 +69,13 @@ class dogovor(models.Model):
     _name = 'dogovor'
     _description = u'Договора'
   
-    name = fields.Char(string="Номер", required=True) 
+    name = fields.Char(string=u"Номер", required=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
     date_start = fields.Date(string='Дата начала', required=True)
     date_end = fields.Date(string='Дата окончания', required=True)
-    predmet = fields.Text(string="Предмет договора")
-    amount = fields.Float(digits=(10, 2), string="Сумма договора") 
-    id_1c = fields.Char(string="Номер в 1С")
+    predmet = fields.Text(string=u"Предмет договора")
+    amount = fields.Float(digits=(10, 2), string=u"Сумма договора") 
+    id_1c = fields.Char(string=u"Номер в 1С")
 
 #----------------------------------------------------------
 # Регистры остатков и оборотов
@@ -84,11 +84,11 @@ class sklad_ostatok(models.Model):
     _name = 'sklad.ostatok'
     _description = u'Остатки номенклатуры'
   
-    name = fields.Char(string="Регистратор", required=True)
+    name = fields.Char(string=u"Регистратор", required=True)
     date = fields.Datetime(string='Дата последнего изменения')
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во")
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
     # def zapis(self, vals, prihod, kol):
     #     """Если prihod=True тогда это поступление и будет прибавленно кол-во иначе вычтено"""
@@ -112,27 +112,27 @@ class sklad_ostatok_period(models.Model):
     _description = u'Остатки по периодам'
     """Регистр остатков по периодам, Если период равен 01.01.5000 то это тек. остатки."""
   
-    name = fields.Char(string="Номер", default='ostatok_period')
+    name = fields.Char(string=u"Номер", default='ostatok_period')
     period = fields.Datetime(string='Период', required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во")
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
 
 class sklad_oborot(models.Model):
     _name = 'sklad.oborot'
     _description = u'Остатки номенклатуры. Движение'
   
-    name = fields.Char(string="Регистратор", required=True)
-    obj = fields.Char(string="Регистратор", required=True)
-    obj_id = fields.Integer(string="ID Регистратора", required=True)
+    name = fields.Char(string=u"Регистратор", required=True)
+    obj = fields.Char(string=u"Регистратор", required=True)
+    obj_id = fields.Integer(string=u"ID Регистратора", required=True)
     date = fields.Datetime(string='Дата', required=True)
-    vid = fields.Char(string="Вид движения", required=True)
+    vid = fields.Char(string=u"Вид движения", required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    kol_oborot = fields.Float(digits=(10, 3), string="Кол-во оборот")
-    kol_prihod = fields.Float(digits=(10, 3), string="Кол-во приход")
-    kol_rashod = fields.Float(digits=(10, 3), string="Кол-во расход")
+    kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
+    kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход")
+    kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход")
 
 
 
@@ -231,8 +231,8 @@ class nalog_nds(models.Model):
     _name = 'nalog.nds'
     _description = u'Ставки НДС'
 
-    name = fields.Char(string="Наименование", required=True)
-    nds = fields.Float(digits=(10, 2), string="% НДС", required=True)
+    name = fields.Char(string=u"Наименование", required=True)
+    nds = fields.Float(digits=(10, 2), string=u"% НДС", required=True)
 
 
 class pokupka_pokupka(models.Model):
@@ -261,16 +261,16 @@ class pokupka_pokupka(models.Model):
         return super(pokupka_pokupka, self).unlink()
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     partner_id = fields.Many2one('res.partner', string='Контрагент', required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
-    pokupka_pokupka_line = fields.One2many('pokupka.pokupka_line', 'pokupka_pokupka_id', string="Строка Поступление товаров")
-    nds_price = fields.Boolean(string="Цена включает НДС")
-    amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    proveden = fields.Boolean(string="Проводен")
+    pokupka_pokupka_line = fields.One2many('pokupka.pokupka_line', 'pokupka_pokupka_id', string=u"Строка Поступление товаров")
+    nds_price = fields.Boolean(string=u"Цена включает НДС")
+    amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    proveden = fields.Boolean(string=u"Проводен")
     state = fields.Selection([
         ('create', "Создан"),
         ('draft', "Черновик"),
@@ -391,17 +391,17 @@ class pokupka_pokupka_line(models.Model):
     def return_name(self):
         self.name = self.pokupka_pokupka_id.name
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
-    pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string="Поступление", required=True)
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string=u"Поступление", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
-    price = fields.Float(digits=(10, 2), string="Цена", readonly=False, compute='_amount',  store=True)
-    amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
-    nalog_nds_id = fields.Many2one('nalog.nds',string="%НДС", readonly=False, compute='_nomen',  store=True)
-    amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", readonly=False, compute='_amount',  store=True)
+    amount = fields.Float(digits=(10, 2), string=u"Сумма", readonly=False, store=True, group_operator="sum")
+    nalog_nds_id = fields.Many2one('nalog.nds',string=u"%НДС", readonly=False, compute='_nomen',  store=True)
+    amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
 
     
 
@@ -430,12 +430,12 @@ class sklad_peremeshenie(models.Model):
         return super(sklad_peremeshenie, self).unlink()
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     
     sklad_otp_id = fields.Many2one('sklad.sklad', string='Склад отправитель', required=True)
     sklad_pol_id = fields.Many2one('sklad.sklad', string='Склад получатель', required=True)
-    sklad_peremeshenie_line = fields.One2many('sklad.peremeshenie_line', 'sklad_peremeshenie_id', string="Строка Перемещение товаров")
+    sklad_peremeshenie_line = fields.One2many('sklad.peremeshenie_line', 'sklad_peremeshenie_id', string=u"Строка Перемещение товаров")
     
     state = fields.Selection([
         ('create', "Создан"),
@@ -536,11 +536,11 @@ class sklad_peremeshenie_line(models.Model):
     def return_name(self):
         self.name = self.sklad_peremeshenie_id.name
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
-    sklad_peremeshenie_id = fields.Many2one('sklad.peremeshenie', ondelete='cascade', string="Перемещение", required=True)
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    sklad_peremeshenie_id = fields.Many2one('sklad.peremeshenie', ondelete='cascade', string=u"Перемещение", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
  
    
 
@@ -571,16 +571,16 @@ class prodaja_prodaja(models.Model):
         return super(prodaja_prodaja, self).unlink()
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     partner_id = fields.Many2one('res.partner', string='Контрагент', required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
-    prodaja_prodaja_line = fields.One2many('prodaja.prodaja_line', 'prodaja_prodaja_id', string="Строка Реализации товаров")
-    nds_price = fields.Boolean(string="Цена включает НДС")
-    amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    proveden = fields.Boolean(string="Проводен")
+    prodaja_prodaja_line = fields.One2many('prodaja.prodaja_line', 'prodaja_prodaja_id', string=u"Строка Реализации товаров")
+    nds_price = fields.Boolean(string=u"Цена включает НДС")
+    amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    proveden = fields.Boolean(string=u"Проводен")
     state = fields.Selection([
         ('create', "Создан"),
         ('draft', "Черновик"),
@@ -700,17 +700,17 @@ class prodaja_prodaja_line(models.Model):
     def return_name(self):
         self.name = self.prodaja_prodaja_id.name
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
-    prodaja_prodaja_id = fields.Many2one('prodaja.prodaja', ondelete='cascade', string="Реализация", required=True)
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    prodaja_prodaja_id = fields.Many2one('prodaja.prodaja', ondelete='cascade', string=u"Реализация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
-    price = fields.Float(digits=(10, 2), string="Цена", readonly=False, compute='_amount',  store=True)
-    amount = fields.Float(digits=(10, 2), string="Сумма", readonly=False, store=True, group_operator="sum")
-    nalog_nds_id = fields.Many2one('nalog.nds',string="%НДС", readonly=False, compute='_nomen',  store=True)
-    amount_bez_nds = fields.Float(digits=(10, 2), string="Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_nds = fields.Float(digits=(10, 2), string="Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
-    amount_total = fields.Float(digits=(10, 2), string="Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", readonly=False, compute='_amount',  store=True)
+    amount = fields.Float(digits=(10, 2), string=u"Сумма", readonly=False, store=True, group_operator="sum")
+    nalog_nds_id = fields.Many2one('nalog.nds',string=u"%НДС", readonly=False, compute='_nomen',  store=True)
+    amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
 
 
 class sklad_spisanie(models.Model):
@@ -739,11 +739,11 @@ class sklad_spisanie(models.Model):
         return super(sklad_spisanie, self).unlink()
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
-    sklad_spisanie_line = fields.One2many('sklad.spisanie_line', 'sklad_spisanie_id', string="Строка Списание товаров")
-    proveden = fields.Boolean(string="Проводен")
+    sklad_spisanie_line = fields.One2many('sklad.spisanie_line', 'sklad_spisanie_id', string=u"Строка Списание товаров")
+    proveden = fields.Boolean(string=u"Проводен")
     state = fields.Selection([
         ('create', "Создан"),
         ('draft', "Черновик"),
@@ -823,11 +823,11 @@ class sklad_spisanie_line(models.Model):
     def return_name(self):
         self.name = self.sklad_spisanie_id.name
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
-    sklad_spisanie_id = fields.Many2one('sklad.spisanie', ondelete='cascade', string="Списание", required=True)
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    sklad_spisanie_id = fields.Many2one('sklad.spisanie', ondelete='cascade', string=u"Списание", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во", required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 
 
 
@@ -859,11 +859,11 @@ class sklad_inventarizaciya(models.Model):
         return super(sklad_inventarizaciya, self).unlink()
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
-    sklad_inventarizaciya_line = fields.One2many('sklad.inventarizaciya_line', 'sklad_inventarizaciya_id', string="Строка Инвентаризация товаров")
-    proveden = fields.Boolean(string="Проводен")
+    sklad_inventarizaciya_line = fields.One2many('sklad.inventarizaciya_line', 'sklad_inventarizaciya_id', string=u"Строка Инвентаризация товаров")
+    proveden = fields.Boolean(string=u"Проводен")
     state = fields.Selection([
         ('create', "Создан"),
         ('draft', "Черновик"),
@@ -995,13 +995,13 @@ class sklad_inventarizaciya_line(models.Model):
     def return_name(self):
         self.name = self.sklad_inventarizaciya_id.name
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
-    sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string="Инвентаризация", required=True)
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string=u"Инвентаризация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string="Кол-во по учету", required=True)
-    kol_fact = fields.Float(digits=(10, 3), string="Кол-во по факту", required=True)
-    kol_otk = fields.Float(digits=(10, 3), string="Отклонение от факта", compute='_amount',  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True)
+    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True)
+    kol_otk = fields.Float(digits=(10, 3), string=u"Отклонение от факта", compute='_amount',  store=True)
  
 
 class nomen_price(models.Model):
@@ -1035,9 +1035,9 @@ class nomen_price(models.Model):
 
 
 
-    name = fields.Char(string="Номер", required=True, copy=False, index=True, default='New')
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
-    nomen_price_line = fields.One2many('nomen.price_line', 'nomen_price_id', string="Строка Установка цен номенклатуры")
+    nomen_price_line = fields.One2many('nomen.price_line', 'nomen_price_id', string=u"Строка Установка цен номенклатуры")
     
 
 class nomen_price_line(models.Model):
@@ -1070,10 +1070,10 @@ class nomen_price_line(models.Model):
             line.date = line.nomen_price_id.date
 
 
-    name = fields.Char(string="Номер", required=True, compute='return_name')
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
     date = fields.Date(string='Дата',  store=True)
-    nomen_price_id = fields.Many2one('nomen.price', ondelete='cascade', string="Установка цен номенклатуры", required=True)
+    nomen_price_id = fields.Many2one('nomen.price', ondelete='cascade', string=u"Установка цен номенклатуры", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string="Ед.изм.", compute='_nomen',  store=True)
-    price = fields.Float(digits=(10, 2), string="Цена", required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", required=True)
  

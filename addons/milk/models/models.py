@@ -20,17 +20,17 @@ from work_date import week_magic, last_day_of_month
 class type_transport(models.Model):
     _name = 'milk.type_transport'
     
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(string=u"Name", required=True)
 
 
 class transport(models.Model):
 	_name = 'milk.transport'
 
-	name = fields.Char(string="Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
-	mark = fields.Char(string="Mark", required=True)
-	gos_nomer = fields.Char(string="Gos nomer", required=True)
-	type_transport_id = fields.Many2one('milk.type_transport', string="type_transport", default=None)
-	
+	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
+	mark = fields.Char(string=u"Mark", required=True)
+	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
+	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
+	max_value = fields.Integer(string=u"Грузоподъемность, кг") 
 	# @api.one
 	# @api.onchange('mark', 'gos_nomer')
 	@api.depends('mark', 'gos_nomer')
@@ -42,9 +42,9 @@ class transport(models.Model):
 class pricep(models.Model):
 	_name = 'milk.pricep'
 
-	name = fields.Char(string="Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
-	type_transport_id = fields.Many2one('milk.type_transport', string="type_transport", default=None)
-	gos_nomer = fields.Char(string="Gos nomer", required=True)
+	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
+	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
+	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
 
 	# @api.onchange('gos_nomer')
 	@api.depends('gos_nomer')
@@ -57,24 +57,24 @@ class pricep(models.Model):
 class tanker(models.Model):
 	_name = 'milk.tanker'
 
-	name = fields.Char(string="Name", required=True)
-	max_size = fields.Integer(string="max size", required=True)
-	is_meter = fields.Boolean(string="is meter", default=True)
-	scale_tanker_id = fields.Many2one('milk.scale_tanker', string="scale_tanker", default=None)
+	name = fields.Char(string=u"Name", required=True)
+	max_size = fields.Integer(string=u"max size", required=True)
+	is_meter = fields.Boolean(string=u"is meter", default=True)
+	scale_tanker_id = fields.Many2one('milk.scale_tanker', string=u"scale_tanker", default=None)
 
 
 class sale_milk(models.Model):
 	_name = 'milk.sale_milk'
 	_order = 'date_doc desc, id desc'
 	
-	#name = fields.Text(string="Name", required=True)
+	#name = fields.Text(string=u"Name", required=True)
 	name = fields.Char(string='Номер', required=True, copy=False, 
 						readonly=True,  
 						index=True, default='New')
     
 	date_doc = fields.Datetime(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
-	is_next_day = fields.Boolean(string="Зачесть следующим днем?", default=False)
+	is_next_day = fields.Boolean(string=u"Зачесть следующим днем?", default=False)
 	date_ucheta = fields.Date(string='Дата учета', required=True,  
 						index=True, copy=False, default=fields.Datetime.now,
 						compute='_next_day', store=True)
@@ -83,22 +83,22 @@ class sale_milk(models.Model):
 	voditel_id = fields.Many2one('res.partner', string='Водитель')
 	transport_id = fields.Many2one('milk.transport', string='Транспорт')
 	pricep_id = fields.Many2one('milk.pricep', string='Прицеп')
-	split_line = fields.Boolean(string="Разбивать строки?", default=False)
+	split_line = fields.Boolean(string=u"Разбивать строки?", default=False)
 	otpustil_id = fields.Many2one('res.partner', string='Отпустил')
 
-	sale_milk_line = fields.One2many('milk.sale_milk_line', 'sale_milk_id', string="Строка Реализация молока")
+	sale_milk_line = fields.One2many('milk.sale_milk_line', 'sale_milk_id', string=u"Строка Реализация молока")
 
-	amount_ves_natura = fields.Integer( string="Вес натура", default=0, 
+	amount_ves_natura = fields.Integer( string=u"Вес натура", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	amount_ves_zachet = fields.Integer(string="Зачетный вес", default=0, 
+	amount_ves_zachet = fields.Integer(string=u"Зачетный вес", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	avg_jir = fields.Float(digits=(3, 1), string="Среднее жир", default=0, 
+	avg_jir = fields.Float(digits=(3, 1), string=u"Среднее жир", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
-	avg_belok = fields.Float(digits=(3, 2), string="Среднее белок", default=0, 
+	avg_belok = fields.Float(digits=(3, 2), string=u"Среднее белок", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
-	avg_plotnost = fields.Float(digits=(4, 2), string="Среднее плотность", default=0, 
+	avg_plotnost = fields.Float(digits=(4, 2), string=u"Среднее плотность", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
-	description = fields.Text(string="Коментарии")
+	description = fields.Text(string=u"Коментарии")
 
 	@api.one
 	@api.depends('date_doc','is_next_day')
@@ -262,25 +262,25 @@ class sale_milk(models.Model):
 
 class shkala_tanker5(models.Model):
 	_name = 'milk.shkala_tanker5'
-	name = fields.Float(digits=(5, 1), string="Pokazanie", required=True)
-	value = fields.Integer(string="Value", required=True)
+	name = fields.Float(digits=(5, 1), string=u"Pokazanie", required=True)
+	value = fields.Integer(string=u"Value", required=True)
 
 class scale_tanker(models.Model):
 	_name = 'milk.scale_tanker'
 	name = fields.Char(string='Name', required=True, copy=False, 
 						readonly=False,  
 						index=True, default='New')
-	scale_tanker_line = fields.One2many('milk.scale_tanker_line', 'scale_tanker_id', string="Scale tanker line")	
+	scale_tanker_line = fields.One2many('milk.scale_tanker_line', 'scale_tanker_id', string=u"Scale tanker line")	
 
 class scale_tanker_line(models.Model):
 	_name = 'milk.scale_tanker_line'
 	def return_name(self):
 		self.name = self.scale_tanker_id.name
 	name = fields.Text(string='Description', required=True, default='New', compute='return_name', store=True)
-	value = fields.Float(digits=(5, 1), string="Value", required=True)
-	result = fields.Integer(string="Result", required=True)
+	value = fields.Float(digits=(5, 1), string=u"Value", required=True)
+	result = fields.Integer(string=u"Result", required=True)
 	scale_tanker_id = fields.Many2one('milk.scale_tanker',
-        ondelete='cascade', string="scale_tanker", required=True)
+        ondelete='cascade', string=u"scale_tanker", required=True)
 
 
 class sale_milk_line(models.Model):
@@ -289,18 +289,18 @@ class sale_milk_line(models.Model):
 	def return_name(self):
 		self.name = self.tanker_id.name
 	name = fields.Text(string='Description', required=True, default='New', compute='return_name', store=True)
-	tanker_id = fields.Many2one('milk.tanker', string="tanker", required=True)
-	meter_value = fields.Integer(string="meter value", required=True)
+	tanker_id = fields.Many2one('milk.tanker', string=u"tanker", required=True)
+	meter_value = fields.Integer(string=u"meter value", required=True)
 	jir = fields.Float(digits=(3, 1))
 	belok = fields.Float(digits=(3, 2))
 	plotnost = fields.Float(digits=(4, 2))
-	ves_natura = fields.Integer(string="natura",  store=True)
-	ves_zachet = fields.Integer(string="zachetniy ves", compute='_raschet', store=True)
-	som_kletki = fields.Integer(string="somaticheskie kletki")
+	ves_natura = fields.Integer(string=u"natura",  store=True)
+	ves_zachet = fields.Integer(string=u"zachetniy ves", compute='_raschet', store=True)
+	som_kletki = fields.Integer(string=u"somaticheskie kletki")
 	somo = fields.Float(digits=(4, 2))
 	
 	sale_milk_id = fields.Many2one('milk.sale_milk',
-        ondelete='cascade', string="Sale milk", required=True)
+        ondelete='cascade', string=u"Sale milk", required=True)
 
 	@api.model
 	def create(self, vals):
@@ -333,7 +333,7 @@ class sale_milk_line(models.Model):
 			self.ves_zachet = round(self.ves_natura * (self.jir*0.5/3.4 + self.belok*0.5/3))
 
 
-	is_meter = fields.Char(string="Meter", compute='_is_meter', readonly=True, default='')
+	is_meter = fields.Char(string=u"Meter", compute='_is_meter', readonly=True, default='')
 	
 
 
@@ -397,27 +397,27 @@ class control_sale_milk(models.Model):
         ('12', "Декабрь"),
     ], default=str(datetime.today().month), required=True)
 	
-	year = fields.Char(string="Год", required=True, default=str(datetime.today().year))
+	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
 	
 	partner_id = fields.Many2one('res.partner', string='Партнер')
 
-	control_sale_milk_line = fields.One2many('milk.control_sale_milk_line', 'control_sale_milk_id', string="Строка Сверка реализации молока")
+	control_sale_milk_line = fields.One2many('milk.control_sale_milk_line', 'control_sale_milk_id', string=u"Строка Сверка реализации молока")
 
-	amount_ot_ves_natura = fields.Integer( string="От. Вес натура", default=0, 
+	amount_ot_ves_natura = fields.Integer( string=u"От. Вес натура", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	amount_pt_ves_natura = fields.Integer( string="Пр. Вес натура", default=0, 
+	amount_pt_ves_natura = fields.Integer( string=u"Пр. Вес натура", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	amount_ot_ves_zachet = fields.Integer( string="От. Зачет", default=0, 
+	amount_ot_ves_zachet = fields.Integer( string=u"От. Зачет", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	amount_pr_ves_zachet = fields.Integer( string="Пр. Зачет", default=0, 
-										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-
-	otklonene_ves_natura = fields.Integer( string="Отклонение Вес натура", default=0, 
-										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	otklonene_ves_zachet = fields.Integer( string="Отклонение Зачет", default=0, 
+	amount_pr_ves_zachet = fields.Integer( string=u"Пр. Зачет", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
 
-	description = fields.Text(string="Коментарии")
+	otklonene_ves_natura = fields.Integer( string=u"Отклонение Вес натура", default=0, 
+										readonly=True, compute='_amount_all', store=True, group_operator="sum")
+	otklonene_ves_zachet = fields.Integer( string=u"Отклонение Зачет", default=0, 
+										readonly=True, compute='_amount_all', store=True, group_operator="sum")
+
+	description = fields.Text(string=u"Коментарии")
 
 	@api.depends(	'control_sale_milk_line.day', 
 					'control_sale_milk_line.pr_ves_natura', 
@@ -458,19 +458,19 @@ class control_sale_milk_line(models.Model):
 	sale_milk_id = fields.Many2one('milk.sale_milk', string='Док-т реал-и')
 
 	control_sale_milk_id = fields.Many2one('milk.control_sale_milk',
-        ondelete='cascade', string="Control Sale milk", required=True)
+        ondelete='cascade', string=u"Control Sale milk", required=True)
 
 	ot_jir = fields.Float(digits=(3, 1), readonly=True,  store=True, compute='_result')
 	ot_belok = fields.Float(digits=(3, 2), readonly=True,  store=True, compute='_result')
 	
-	ot_ves_natura = fields.Integer(string="От. натура", readonly=True,  store=True, compute='_result')
-	ot_ves_zachet = fields.Integer(string="От. зачет", readonly=True,  store=True, compute='_result')
+	ot_ves_natura = fields.Integer(string=u"От. натура", readonly=True,  store=True, compute='_result')
+	ot_ves_zachet = fields.Integer(string=u"От. зачет", readonly=True,  store=True, compute='_result')
 
 	pr_jir = fields.Float(digits=(3, 1))
 	pr_belok = fields.Float(digits=(3, 2))
 	
-	pr_ves_natura = fields.Integer(string="Пр. натура", store=True)
-	pr_ves_zachet = fields.Integer(string="Пр. зачет", store=True)
+	pr_ves_natura = fields.Integer(string=u"Пр. натура", store=True)
+	pr_ves_zachet = fields.Integer(string=u"Пр. зачет", store=True)
 
 	# @api.onchange('day')
 	# def _verify_valid_day(self):
@@ -545,41 +545,41 @@ class trace_milk(models.Model):
 	date_doc = fields.Date(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
 
-	vipoyka = fields.Integer(string="На выпойку", store=True)
-	utilizaciya = fields.Integer(string="Утилизированно", store=True)
-	sale_natura = fields.Integer(string="Реализованно", store=True, compute='_sale_result')
-	sale_zachet = fields.Integer(string="Зачетный вес", store=True, compute='_sale_result')
-	sale_jir = fields.Float(digits=(3, 1), string="Жир", store=True, compute='_sale_result', group_operator="avg")
-	sale_belok = fields.Float(digits=(3, 2), string="Белок", store=True, compute='_sale_result', group_operator="avg")
+	vipoyka = fields.Integer(string=u"На выпойку", store=True)
+	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
+	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')
+	sale_zachet = fields.Integer(string=u"Зачетный вес", store=True, compute='_sale_result')
+	sale_jir = fields.Float(digits=(3, 1), string=u"Жир", store=True, compute='_sale_result', group_operator="avg")
+	sale_belok = fields.Float(digits=(3, 2), string=u"Белок", store=True, compute='_sale_result', group_operator="avg")
 	
-	valoviy_nadoy = fields.Integer(string="Валовый надой", store=True, compute='_valoviy_nadoy_result')
-	otk_valoviy_nadoy = fields.Float(digits=(3, 3), string="Откл-е Валовый надой от предыд. дня", compute='_otk_result', store=False)
+	valoviy_nadoy = fields.Integer(string=u"Валовый надой", store=True, compute='_valoviy_nadoy_result')
+	otk_valoviy_nadoy = fields.Float(digits=(3, 3), string=u"Откл-е Валовый надой от предыд. дня", compute='_otk_result', store=False)
 
-	sale_peresdali_natura = fields.Integer(string="Пересдали натура", store=True, compute='_sale_result')
-	sale_peresdali_zachet = fields.Integer(string="Пересдали зачет", store=True, compute='_sale_result')
+	sale_peresdali_natura = fields.Integer(string=u"Пересдали натура", store=True, compute='_sale_result')
+	sale_peresdali_zachet = fields.Integer(string=u"Пересдали зачет", store=True, compute='_sale_result')
 
-	cow_doy = fields.Integer(string="Дойные", store=True, group_operator="avg")
-	cow_zapusk = fields.Integer(string="В запуске", store=True, group_operator="avg")
-	cow_fur = fields.Integer(string="Фуражные", store=True, compute='_nadoy_result', group_operator="avg")
-	cow_netel = fields.Integer(string="Нетели", store=True, group_operator="avg")
-	cow_total = fields.Integer(string="Общее поголовье", store=True, group_operator="avg")
+	cow_doy = fields.Integer(string=u"Дойные", store=True, group_operator="avg")
+	cow_zapusk = fields.Integer(string=u"В запуске", store=True, group_operator="avg")
+	cow_fur = fields.Integer(string=u"Фуражные", store=True, compute='_nadoy_result', group_operator="avg")
+	cow_netel = fields.Integer(string=u"Нетели", store=True, group_operator="avg")
+	cow_total = fields.Integer(string=u"Общее поголовье", store=True, group_operator="avg")
 
-	nadoy_doy = fields.Float(digits=(3, 1), string="Надой на дойную", store=True, compute='_nadoy_result', group_operator="avg")
-	nadoy_fur = fields.Float(digits=(3, 1), string="Надой на фуражную", store=True, compute='_nadoy_result', group_operator="avg")
-	otk_nadoy_doy = fields.Float(digits=(3, 1), string="Откл-е от предыд. дня", compute='_otk_result', store=False)
-	otk_nadoy_fur = fields.Float(digits=(3, 1), string="Откл-е от предыд. дня", compute='_otk_result', store=False)
+	nadoy_doy = fields.Float(digits=(3, 1), string=u"Надой на дойную", store=True, compute='_nadoy_result', group_operator="avg")
+	nadoy_fur = fields.Float(digits=(3, 1), string=u"Надой на фуражную", store=True, compute='_nadoy_result', group_operator="avg")
+	otk_nadoy_doy = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня", compute='_otk_result', store=False)
+	otk_nadoy_fur = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня", compute='_otk_result', store=False)
 
-	nadoy_0_40 = fields.Float(digits=(3, 2), string="Надой 0-40", store=True, group_operator="avg")
-	nadoy_40_150 = fields.Float(digits=(3, 2), string="Надой 40-150", store=True, group_operator="avg")
-	nadoy_150_300 = fields.Float(digits=(3, 2), string="Надой 150-300", store=True, group_operator="avg")
-	nadoy_300 = fields.Float(digits=(3, 2), string="Надой >300", store=True, group_operator="avg")
+	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
+	nadoy_40_150 = fields.Float(digits=(3, 2), string=u"Надой 40-150", store=True, group_operator="avg")
+	nadoy_150_300 = fields.Float(digits=(3, 2), string=u"Надой 150-300", store=True, group_operator="avg")
+	nadoy_300 = fields.Float(digits=(3, 2), string=u"Надой >300", store=True, group_operator="avg")
 
-	otk_0_40 = fields.Float(digits=(3, 2), string="Откл-е Надой 0-40", compute='_otk_nadoy_result', store=False, group_operator="avg")
-	otk_40_150 = fields.Float(digits=(3, 2), string="Откл-е 40-150", compute='_otk_nadoy_result', store=False, group_operator="avg")
-	otk_150_300 = fields.Float(digits=(3, 2), string="Откл-е 150-300", compute='_otk_nadoy_result', store=False, group_operator="avg")
-	otk_300 = fields.Float(digits=(3, 2), string="Откл-е >300", compute='_otk_nadoy_result', store=False, group_operator="avg")
+	otk_0_40 = fields.Float(digits=(3, 2), string=u"Откл-е Надой 0-40", compute='_otk_nadoy_result', store=False, group_operator="avg")
+	otk_40_150 = fields.Float(digits=(3, 2), string=u"Откл-е 40-150", compute='_otk_nadoy_result', store=False, group_operator="avg")
+	otk_150_300 = fields.Float(digits=(3, 2), string=u"Откл-е 150-300", compute='_otk_nadoy_result', store=False, group_operator="avg")
+	otk_300 = fields.Float(digits=(3, 2), string=u"Откл-е >300", compute='_otk_nadoy_result', store=False, group_operator="avg")
 
-	description = fields.Text(string="Коментарии")
+	description = fields.Text(string=u"Коментарии")
 
 	
 	@api.one
@@ -727,7 +727,7 @@ class plan_sale_milk(models.Model):
         ('12', "Декабрь"),
     ], default=str(datetime.today().month), required=True)
 	
-	year = fields.Char(string="Год", required=True, default=str(datetime.today().year))
+	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
 
 	date_start = fields.Date(string='Дата начала', required=True, index=True, copy=False, compute='return_name')
 	date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
@@ -745,22 +745,22 @@ class plan_sale_milk(models.Model):
 		self.amount = self.amount_nds / 1.1
 
 
-	valoviy_nadoy = fields.Float(digits=(10, 3), string="Валовый надой, тн.", store=True)
+	valoviy_nadoy = fields.Float(digits=(10, 3), string=u"Валовый надой, тн.", store=True)
 
-	vipoyka = fields.Float(digits=(10, 3), string="На выпойку, тн.", store=True)
-	utilizaciya = fields.Float(digits=(10, 3), string="Утилизированно, тн.", store=True)
-	natura = fields.Float(digits=(10, 3), string="Реализованно, тн.", store=True, compute='_raschet')
-	zachet = fields.Float(digits=(10, 3), string="Зачетный вес, тн.", store=True, compute='_raschet')
-	jir = fields.Float(digits=(3, 1), string="Жир, %", store=True, group_operator="avg")
-	belok = fields.Float(digits=(3, 2), string="Белок, %", store=True, group_operator="avg")
+	vipoyka = fields.Float(digits=(10, 3), string=u"На выпойку, тн.", store=True)
+	utilizaciya = fields.Float(digits=(10, 3), string=u"Утилизированно, тн.", store=True)
+	natura = fields.Float(digits=(10, 3), string=u"Реализованно, тн.", store=True, compute='_raschet')
+	zachet = fields.Float(digits=(10, 3), string=u"Зачетный вес, тн.", store=True, compute='_raschet')
+	jir = fields.Float(digits=(3, 1), string=u"Жир, %", store=True, group_operator="avg")
+	belok = fields.Float(digits=(3, 2), string=u"Белок, %", store=True, group_operator="avg")
 	
 	
-	price = fields.Float(digits=(3, 2), string="Цена с НДС(10%), руб/кг", store=True)
+	price = fields.Float(digits=(3, 2), string=u"Цена с НДС(10%), руб/кг", store=True)
 
-	amount = fields.Float(digits=(10, 2), string="Выручка (без НДС), тыс.руб.", store=True, compute='_raschet')
-	amount_nds = fields.Float(digits=(10, 2), string="Выручка (с учетом НДС), тыс.руб.", store=True, compute='_raschet')
+	amount = fields.Float(digits=(10, 2), string=u"Выручка (без НДС), тыс.руб.", store=True, compute='_raschet')
+	amount_nds = fields.Float(digits=(10, 2), string=u"Выручка (с учетом НДС), тыс.руб.", store=True, compute='_raschet')
 	
-	plan_sale_milk_line = fields.One2many('milk.plan_sale_milk_line', 'plan_sale_milk_id', string="Строка Плана производства/реализации молока")
+	plan_sale_milk_line = fields.One2many('milk.plan_sale_milk_line', 'plan_sale_milk_id', string=u"Строка Плана производства/реализации молока")
 
 	@api.one
 	def action_generate(self):
@@ -823,13 +823,13 @@ class plan_sale_milk_line(models.Model):
 	# 					index=True, copy=False, default=fields.Datetime.now)
 	
 	plan_sale_milk_id = fields.Many2one('milk.plan_sale_milk',
-        ondelete='cascade', string="План производства/реализации молока", required=True)
+        ondelete='cascade', string=u"План производства/реализации молока", required=True)
 
-	year = fields.Char(string="Год", required=True, store=True)
+	year = fields.Char(string=u"Год", required=True, store=True)
 
-	month = fields.Char(string="Месяц", required=True, store=True)
+	month = fields.Char(string=u"Месяц", required=True, store=True)
 	
-	week = fields.Char(string="Неделя", required=True, store=True)
+	week = fields.Char(string=u"Неделя", required=True, store=True)
 
 	
 	
@@ -846,15 +846,15 @@ class plan_sale_milk_line(models.Model):
 		self.amount_nds = round(self.zachet * self.plan_sale_milk_id.price, 2)
 		self.amount = round(self.amount_nds / 1.1, 2)
 
-	valoviy_nadoy = fields.Float(digits=(10, 3), string="Валовый надой, тн.", store=True)
+	valoviy_nadoy = fields.Float(digits=(10, 3), string=u"Валовый надой, тн.", store=True)
 
-	vipoyka = fields.Float(digits=(10, 3), string="На выпойку, тн.", store=True)
-	utilizaciya = fields.Float(digits=(10, 3), string="Утил-но, тн.", store=True)
-	natura = fields.Float(digits=(10, 3), string="Реал-но, тн.", store=True, compute='_raschet')
-	zachet = fields.Float(digits=(10, 3), string="Зачетный вес, тн.", store=True, compute='_raschet')
-	jir = fields.Float(digits=(3, 1), string="Жир, %", store=True, group_operator="avg")
-	belok = fields.Float(digits=(3, 2), string="Белок, %", store=True, group_operator="avg")
+	vipoyka = fields.Float(digits=(10, 3), string=u"На выпойку, тн.", store=True)
+	utilizaciya = fields.Float(digits=(10, 3), string=u"Утил-но, тн.", store=True)
+	natura = fields.Float(digits=(10, 3), string=u"Реал-но, тн.", store=True, compute='_raschet')
+	zachet = fields.Float(digits=(10, 3), string=u"Зачетный вес, тн.", store=True, compute='_raschet')
+	jir = fields.Float(digits=(3, 1), string=u"Жир, %", store=True, group_operator="avg")
+	belok = fields.Float(digits=(3, 2), string=u"Белок, %", store=True, group_operator="avg")
 		
-	amount = fields.Float(digits=(10, 2), string="Выручка (без НДС), тыс.руб.", store=True, compute='_raschet')
-	amount_nds = fields.Float(digits=(10, 2), string="Выручка (с учетом НДС), тыс.руб.", store=True, compute='_raschet')
+	amount = fields.Float(digits=(10, 2), string=u"Выручка (без НДС), тыс.руб.", store=True, compute='_raschet')
+	amount_nds = fields.Float(digits=(10, 2), string=u"Выручка (с учетом НДС), тыс.руб.", store=True, compute='_raschet')
 

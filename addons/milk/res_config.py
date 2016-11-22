@@ -10,12 +10,12 @@ class milk_config_settings(models.TransientModel):
 	_name = 'milk.config.settings'
 	_inherit = 'res.config.settings'
 
-	dsn_selex = fields.Char(string='DNS Селекс')
-	user_selex = fields.Char(string='Пользователь Селекс')
-	password_selex = fields.Char(string='Пароль Селекс')
-	dsn_uniform = fields.Char(string='DNS uniform')
-	user_uniform = fields.Char(string='Пользователь uniform')
-	password_uniform = fields.Char(string='Пароль uniform')
+	dsn_selex = fields.Char(string=u'DNS Селекс')
+	user_selex = fields.Char(string=u'Пользователь Селекс')
+	password_selex = fields.Char(string=u'Пароль Селекс')
+	dsn_uniform = fields.Char(string=u'DNS uniform')
+	user_uniform = fields.Char(string=u'Пользователь uniform')
+	password_uniform = fields.Char(string=u'Пароль uniform')
 
 	# #@api.one
 	# def get_default_dsn_selex(self, cr, uid, ids, context=None):

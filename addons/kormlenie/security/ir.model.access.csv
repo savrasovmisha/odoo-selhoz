@@ -17,5 +17,12 @@ access_korm_racion_manager,korm.racion,model_korm_racion,group_korm_manager,1,1,
 access_korm_racion_users,korm.racion,model_korm_racion,group_korm_users,1,0,0,0
 access_korm_racion_line_manager,korm.racion_line,model_korm_racion_line,group_korm_manager,1,1,1,1
 access_korm_racion_line_users,korm.racion_line,model_korm_racion_line,group_korm_users,1,0,0,0
+access_korm_type_transport_manager,milk.type_transport,milk.model_milk_type_transport,group_korm_manager,1,1,1,1
+access_korm_type_transport_users,milk.type_transport,milk.model_milk_type_transport,group_korm_users,1,0,0,0
+access_korm_transport_manager,milk.transport,milk.model_milk_transport,group_korm_manager,1,1,1,1
+access_korm_transport_users,milk.transport,milk.model_milk_transport,group_korm_users,1,0,0,0
+
+
+
 
 

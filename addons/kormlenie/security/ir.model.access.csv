@@ -21,6 +21,10 @@ access_korm_type_transport_manager,milk.type_transport,milk.model_milk_type_tran
 access_korm_type_transport_users,milk.type_transport,milk.model_milk_type_transport,group_korm_users,1,0,0,0
 access_korm_transport_manager,milk.transport,milk.model_milk_transport,group_korm_manager,1,1,1,1
 access_korm_transport_users,milk.transport,milk.model_milk_transport,group_korm_users,1,0,0,0
+access_korm_korm_manager,korm.korm,model_korm_korm,group_korm_manager,1,1,1,1
+access_korm_korm_users,korm.korm,model_korm_korm,group_korm_users,1,0,0,0
+access_korm_korm_line_manager,korm.korm_line,model_korm_korm_line,group_korm_manager,1,1,1,1
+access_korm_korm_line_users,korm.korm_line,model_korm_korm_line,group_korm_users,1,0,0,0
 
 
 

@@ -34,6 +34,8 @@
         'views/korm_receptura.xml',
         'views/korm_racion.xml',
         'views/korm_norm.xml',
+        'views/korm_korm.xml',
+        'views/seq_korm_korm.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

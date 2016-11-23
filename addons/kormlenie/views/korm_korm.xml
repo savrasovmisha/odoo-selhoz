@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_korm_form_view">
+        <field name="name">korm_korm.form</field>
+        <field name="model">korm.korm</field>
+        <field name="arch" type="xml">
+            <form string="Форма Кормление">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="transport_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="voditel_id" domain="[('company_type','=','person')]"/>
+                        </group>
+                     </group>
+                                    
+            
+                       
+                            <notebook>
+                                <page string="Порядок кормления">
+                                    <field name="korm_korm_line">
+                                        <tree string="korm_korm_line" editable="botton">
+                                            <field name="sorting"/>
+                                            <field name="stado_zagon_ids"/>
+                                            <field name="stado_zagon_id"/>
+                                            <field name="stado_fiz_group_id"/>
+                                            <field name="korm_racion_id"/>
+                                            <field name="kol_golov"/>
+                                            <field name="kol_ostatok"/>
+                                            
+                                                                                
+                                        </tree>
+                                    </field>
+                                    
+                                    
+                                </page>
+
+                            </notebook>
+                       
+                        
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_korm_tree">
+            <field name="name">korm_korm.tree</field>
+            <field name="model">korm.korm</field>
+            <field name="arch" type="xml">
+                <tree string="Кормление">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_korm_search_view">
+            <field name="name">korm_korm.search</field>
+            <field name="model">korm.korm</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_korm_list_action">
+            <field name="name">Кормление</field>
+            <field name="res_model">korm.korm</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Кормление
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

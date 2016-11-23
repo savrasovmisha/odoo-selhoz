@@ -44,9 +44,8 @@
             <field name="arch" type="xml">
                 <search>
                     
-                    <field name="nomer"/>
                     <field name="name"/>
-                    <field name="stado_fiz_group_id"/>
+
                 </search>
             </field>
         </record>

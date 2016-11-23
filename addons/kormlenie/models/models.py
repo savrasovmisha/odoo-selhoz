@@ -88,7 +88,12 @@ class stado_zagon(models.Model):
     _description = u'Загоны'
     _order = 'nomer'
 
-    name = fields.Char(string=u"Наименование", required=True)
+    @api.one
+    @api.depends('stado_fiz_group_id', 'nomer')
+    def return_name(self):
+        self.name = str(self.nomer) + u" " + self.stado_fiz_group_id.name
+
+    name = fields.Char(string=u"Наименование", compute='return_name', readonly=True, index=True, store=True)
     nomer = fields.Integer(string=u"Номер", required=True)
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
 
@@ -713,3 +718,53 @@ class korm_racion_line(models.Model):
     price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
     amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
    
+
+
+class korm_korm(models.Model):
+	_name = 'korm.korm'
+	_description = u'Кормление'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('korm.korm') or 'New'
+
+		result = super(korm_korm, self).create(vals)
+		return result
+
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление")
+	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
+	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
+
+
+class korm_korm_line(models.Model):
+	_name = 'korm.korm_line'
+	_description = u'Строка Кормление'
+	_order = 'sorting'
+
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+	    self.name = self.stado_zagon_id.nomer
+
+	    self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+	    racion = self.env['korm.racion']
+	    racion_id = racion.search([('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), ('date', '<=', self.korm_korm_id.date)], order="date desc",limit=1).id
+	    self.korm_racion_id = racion_id
+
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
+
+	sorting = fields.Integer(string=u"Порядок", required=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_zagon_ids = fields.Many2many('stado.zagon', string=u'Загон')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	kol_golov = fields.Integer(string=u"Кол-во голов", required=True)
+	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+    

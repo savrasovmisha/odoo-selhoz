@@ -12,10 +12,11 @@
                         <field name="name"/>
                         <field name="nomer"/>
                         <field name="stado_fiz_group_id"/>
+                        <field name="uniform_id"/>
                        
                         
                     </group>
-		            
+                    
                 </sheet>
             </form>
         </field>

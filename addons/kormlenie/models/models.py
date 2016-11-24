@@ -3,6 +3,7 @@
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
+import math
 
 parametrs = ['ov', 'sv', 'oe', 'sp', 'pp', 'sk', 'sj', 'ca', 'p', 
 		'sahar', 'krahmal', 'bev', 'magniy', 'natriy', 'kaliy', 'hlor', 'sera', 
@@ -88,14 +89,10 @@ class stado_zagon(models.Model):
     _description = u'Загоны'
     _order = 'nomer'
 
-    @api.one
-    @api.depends('stado_fiz_group_id', 'nomer')
-    def return_name(self):
-        self.name = str(self.nomer) + u" " + self.stado_fiz_group_id.name
-
-    name = fields.Char(string=u"Наименование", compute='return_name', readonly=True, index=True, store=True)
+    name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
     nomer = fields.Integer(string=u"Номер", required=True)
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
+    uniform_id = fields.Integer(string=u"ID Uniform")
 
 
 class korm_analiz_pit(models.Model):
@@ -396,7 +393,6 @@ class korm_receptura_line(models.Model):
         """
           
         if self.nomen_nomen_id:
-            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
             analiz = self.env['korm.analiz_pit']
             analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
             self.korm_analiz_pit_id = analiz_id
@@ -408,7 +404,7 @@ class korm_receptura_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Наименование корма', required=True)
     korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string='Анализ корма', store=True, compute='_nomen')
     korm_receptura_id = fields.Many2one('korm.receptura', ondelete='cascade', string=u"Рецептура комбикормов", required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
    
 
@@ -691,7 +687,6 @@ class korm_racion_line(models.Model):
     def _nomen(self):
         
         if self.nomen_nomen_id:
-            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
             analiz = self.env['korm.analiz_pit']
             analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).id
             self.korm_analiz_pit_id = analiz_id
@@ -713,7 +708,7 @@ class korm_racion_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
     korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string=u'Анализ корма', store=True, compute='_nomen')
     korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string=u"Рацион кормления", required=True)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
     amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
@@ -736,8 +731,11 @@ class korm_korm(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление")
+	
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
+
+	description = fields.Text(string=u"Коментарии")
 
 
 class korm_korm_line(models.Model):
@@ -754,17 +752,41 @@ class korm_korm_line(models.Model):
 	    racion = self.env['korm.racion']
 	    racion_id = racion.search([('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), ('date', '<=', self.korm_korm_id.date)], order="date desc",limit=1).id
 	    self.korm_racion_id = racion_id
+	    self.kol_golov = 0
 
+	@api.one
+	@api.depends('kol_golov')
+	def _raschet(self):
+		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
+		if self.kol_golov>0 and self.korm_racion_id!=False:
+			self.kol_korma = self.korm_racion_id.kol * self.kol_golov
+			max_value = self.korm_korm_id.transport_id.max_value
+			if self.kol_korma>max_value and max_value>0:
+				self.kol_zamesov = math.ceil(self.kol_korma / max_value)
+				self.kol_korma_zames = self.kol_korma / self.kol_zamesov
+			else:
+				self.kol_zamesov = 1
+				self.kol_korma_zames = self.kol_korma
+
+
+
+
+
+	    
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
-
+	
 	sorting = fields.Integer(string=u"Порядок", required=True)
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
-	stado_zagon_ids = fields.Many2many('stado.zagon', string=u'Загон')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
 	kol_golov = fields.Integer(string=u"Кол-во голов", required=True)
+	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
+	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
+	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet')
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+
+	description = fields.Text(string=u"Коментарии")
     

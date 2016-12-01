@@ -43,6 +43,33 @@
                             
                         </page>
 
+                        <page string="Детали кормления">
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_raschet"
+                                    type="object"
+                                    class="oe_stat_button oe_edit_only"
+                                    icon="fa-refresh" string="Заполнить"
+                                   >
+                                </button>
+                            </div>
+                            <field name="korm_korm_detail_line">
+                                <tree string="korm_korm_detail_line" editable="botton">
+                                    <field name="sorting"/>
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol_norma"/>
+                                    <field name="kol_fakt"/>
+                                    
+                                    <field name="description" nolabel="1"/>
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
                     </notebook>
 
 

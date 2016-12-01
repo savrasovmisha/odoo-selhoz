@@ -731,11 +731,55 @@ class korm_korm(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление")
+	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления")
 	
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
 
 	description = fields.Text(string=u"Коментарии")
+
+	@api.one
+	def action_raschet(self):
+		delail_line = self.env['korm.korm_detail_line']
+		del_line = delail_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line.unlink()
+
+		sorted=''
+		kol_golov=kol_korma=racion_id=0
+		d = []
+		for line in self.korm_korm_line:
+			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, line.kol_korma])
+
+
+		print d
+					
+		from itertools import groupby
+		for g in groupby( d,key=lambda x:x[1]):
+			print g[0]
+			kol_golov=kol_korma=racion_id=0
+			for i in g[1]:
+				print ' - ',i
+				kol_golov += i[3]
+				if racion_id !=0 and racion_id != i[2]:
+					print "111EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
+
+					raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не соответствуют рационы!" % (i[1])))
+					print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
+				racion_id = i[2]
+
+			#racion_line = self.env['korm.racion_line']
+			#search_racion_line = racion_line.search([('korm_racion_id',	'=',	i[2])])
+			for rl in racion_id.korm_racion_line:
+
+				delail_line.create({'korm_korm_id':	self.id,
+									'name':	rl.nomen_nomen_id.name,
+									'sorting':	i[1],
+									'nomen_nomen_id':	rl.nomen_nomen_id.id,
+									'kol_norma':	rl.kol * kol_golov,
+									})
+
+
+		
 
 
 class korm_korm_line(models.Model):
@@ -790,3 +834,46 @@ class korm_korm_line(models.Model):
 
 	description = fields.Text(string=u"Коментарии")
     
+
+class korm_korm_detail_line(models.Model):
+    _name = 'korm.korm_detail_line'
+    _description = u'Детальные строки Кормления'
+    #_order = 'date desc, nomen_nomen_id'
+
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def return_name(self):
+        self.name = self.nomen_nomen_id.name
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        
+        if self.nomen_nomen_id:
+            analiz = self.env['korm.analiz_pit']
+            analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).id
+            self.korm_analiz_pit_id = analiz_id
+
+            obj_price = self.env['nomen.price_line']
+            price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).price
+            self.price = price
+
+            self.amount = self.price * self.kol
+
+    @api.one
+    @api.depends('kol')
+    def _amount(self):
+    	self.amount = self.price * self.kol           
+
+
+
+    name = fields.Char(string=u"Наименование", compute='return_name')
+    korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
+	
+    sorting = fields.Integer(string=u"Порядок", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+    kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", readonly=True)
+    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+    description = fields.Text(string=u"Коментарии")

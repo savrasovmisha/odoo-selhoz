@@ -17,6 +17,14 @@
                             <field name="voditel_id" domain="[('company_type','=','person')]"/>
                         </group>
                      </group>
+                     <div class="oe_button_box" name="button_box">
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                               >
+                            </button>
+                        </div>
                                     
             
                        
@@ -26,13 +34,34 @@
                                 <tree string="korm_korm_line" editable="botton">
                                     <field name="sorting"/>
                                     <field name="stado_zagon_id"/>
-                                    <field name="stado_fiz_group_id"/>
+                                    <field name="korm_racion_id"/>
+                                    <field name="kol_golov"/>
+                                    <field name="kol_korma"/>
+                                    <!-- <field name="kol_zamesov"/>
+                                    <field name="kol_korma_zames"/> -->
+                                    <field name="kol_ostatok"/>
+                                    <field name="date_obedkov"/>
+                                    <field name="description" nolabel="1"/>
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        <page string="Свод кормления">
+                            <field name="korm_korm_svod_line">
+                                <tree string="korm_korm_svod_line" editable="botton">
+                                    <field name="sorting"/>
                                     <field name="korm_racion_id"/>
                                     <field name="kol_golov"/>
                                     <field name="kol_korma"/>
                                     <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/>
                                     <field name="kol_ostatok"/>
+                                    <field name="date_obedkov"/>
                                     <field name="description" nolabel="1"/>
                                     
                                     
@@ -44,14 +73,7 @@
                         </page>
 
                         <page string="Детали кормления">
-                            <div class="oe_button_box" name="button_box">
-                                <button name="action_raschet"
-                                    type="object"
-                                    class="oe_stat_button oe_edit_only"
-                                    icon="fa-refresh" string="Заполнить"
-                                   >
-                                </button>
-                            </div>
+                            
                             <field name="korm_korm_detail_line">
                                 <tree string="korm_korm_detail_line" editable="botton">
                                     <field name="sorting"/>

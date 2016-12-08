@@ -731,6 +731,7 @@ class korm_korm(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление")
+	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление")
 	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления")
 	
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
@@ -740,6 +741,10 @@ class korm_korm(models.Model):
 
 	@api.one
 	def action_raschet(self):
+		svod_line = self.env['korm.korm_svod_line']
+		del_line = svod_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line.unlink()
+
 		delail_line = self.env['korm.korm_detail_line']
 		del_line = delail_line.search([('korm_korm_id',	'=',	self.id)])
 		del_line.unlink()
@@ -755,11 +760,13 @@ class korm_korm(models.Model):
 					
 		from itertools import groupby
 		for g in groupby( d,key=lambda x:x[1]):
+			sorting = g[0]
 			print g[0]
 			kol_golov=kol_korma=racion_id=0
 			for i in g[1]:
 				print ' - ',i
 				kol_golov += i[3]
+				kol_korma += i[4]
 				if racion_id !=0 and racion_id != i[2]:
 					print "111EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
 
@@ -767,6 +774,13 @@ class korm_korm(models.Model):
 					print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
 				racion_id = i[2]
 
+			svod_line.create({'korm_korm_id':	self.id,
+								'name':	racion_id.stado_fiz_group_id.name,
+								'sorting':	sorting,
+								'korm_racion_id':	racion_id.id,
+								'kol_golov':	kol_golov,
+								'kol_korma':	kol_korma,
+								})
 			#racion_line = self.env['korm.racion_line']
 			#search_racion_line = racion_line.search([('korm_racion_id',	'=',	i[2])])
 			for rl in racion_id.korm_racion_line:
@@ -831,9 +845,45 @@ class korm_korm_line(models.Model):
 	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
 	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet')
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
-
+	date_obedkov = fields.Date(string='Дата объедков')
+	
 	description = fields.Text(string=u"Коментарии")
     
+
+class korm_korm_svod_line(models.Model):
+	_name = 'korm.korm_svod_line'
+	_description = u'Строка Свода Кормление'
+	_order = 'sorting'
+
+	@api.multi
+	def _raschet(self):
+		for line in self:
+			line.kol_zamesov=line.kol_korma_zames=0
+			if line.kol_golov>0 and line.korm_racion_id!=False:
+				max_value = line.korm_korm_id.transport_id.max_value
+				if line.kol_korma>max_value and max_value>0:
+					line.kol_zamesov = math.ceil(line.kol_korma / max_value)
+					line.kol_korma_zames = line.kol_korma / line.kol_zamesov
+				else:
+					line.kol_zamesov = 1
+					line.kol_korma_zames = line.kol_korma	    
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
+	
+	sorting = fields.Integer(string=u"Порядок", required=True)
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	kol_golov = fields.Integer(string=u"Кол-во голов", required=True)
+	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False)
+	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
+	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet')
+	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+	date_obedkov = fields.Date(string='Дата объедков')
+	
+	description = fields.Text(string=u"Коментарии")
+
+
 
 class korm_korm_detail_line(models.Model):
     _name = 'korm.korm_detail_line'

@@ -793,7 +793,7 @@ class korm_korm(models.Model):
 									})
 
 
-		
+	
 
 
 class korm_korm_line(models.Model):

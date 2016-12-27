@@ -1,0 +1,107 @@
+<openerp>
+    <data>
+        
+        
+
+        <template id="report_korm_view">
+            <t t-call="report.html_container">                    
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page">    
+                        <h3>Кормовое задание № <t t-esc="doc.name"/></h3>
+                        Кормораздатчик <t t-esc="doc.transport_id.name"/><br/>
+                        Водитель <t t-esc="doc.voditel_id.name"/><br/>
+
+                        
+
+                        <t t-foreach="doc.korm_korm_svod_line" t-as="svod">
+                            <div >
+                            <table class="table" style="page-break-inside: avoid;">
+                                <tr>
+                                    <th><t t-esc="svod.sorting"/>. <t t-esc="svod.korm_racion_id.stado_fiz_group_id.name"/></th>
+                                    <th></th>
+                                    <th>Примечание</th>
+                                 </tr>
+
+                                 <tr>
+                                    <td>
+                                        <table class="table-bordered">
+                                             <tr>
+                                                <th></th>
+                                                <th>Норма</th>
+                                                <th>Замес 1</th>
+                                                <th>Замес 2</th>
+                                             </tr>
+                                             <t t-foreach="doc.korm_korm_detail_line" t-as="detail">
+                                                 <t t-if="detail.sorting==svod.sorting">
+                                                     <tr>
+                                                         <td><t t-esc="detail.nomen_nomen_id.name"/></td>
+                                                         <td class="text-right"><t t-esc="'%.0f'%(detail.kol_norma)"/></td>
+                                                         <td></td>
+                                                         <td></td>
+                                                         
+                                                     </tr>
+                                                 </t>
+                                     
+                                             </t>
+                                         </table>
+
+
+                                    </td>
+                                    <td>
+                                        <table class="table-bordered">
+                                             <tr>
+                                                <th>Загон</th>
+                                                <th>Гол.</th>
+                                                <th>Масса</th>
+                                                <th>Остатки</th>
+
+                                                
+                                             </tr>
+                                             <t t-foreach="doc.korm_korm_line" t-as="line">
+                                                 <t t-if="line.sorting==svod.sorting">
+                                                     <tr>
+                                                         <td class="text-center"><t t-esc="line.stado_zagon_id.nomer"/></td>
+                                                         <td class="text-right"><t t-esc="line.kol_golov"/></td>
+                                                         <td class="text-right"><t t-esc="'%.0f'%(line.kol_korma)"/></td>
+                                                         <td></td>
+                                                         
+                                                         
+                                                         
+                                                     </tr>
+                                                 </t>
+                                     
+                                             </t>
+                                        </table>
+
+
+
+                                    </td>
+                                    <td>
+
+
+                                    </td>
+                                   
+                                </tr>
+
+                                    
+                             </table>
+                             </div>
+                        </t>      
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_korm"
+        model="korm.korm"
+        string="Session Report"
+        name="kormlenie.report_korm_view"
+        file="kormlenie.report_korm"
+        report_type="qweb-pdf" />
+
+    </data>
+</openerp>

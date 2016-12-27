@@ -6,6 +6,7 @@
         <field name="model">korm.korm</field>
         <field name="arch" type="xml">
             <form string="Форма Кормление">
+               
                 <sheet>
                     <group>
                         <group>

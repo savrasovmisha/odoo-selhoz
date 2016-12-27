@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sklad', 'milk'],
+    'depends': ['base', 'sklad', 'milk','report'],
 
     # always loaded
     'data': [
@@ -35,6 +35,7 @@
         'views/korm_racion.xml',
         'views/korm_norm.xml',
         'views/korm_korm.xml',
+        'views/korm_korm_report.xml',
         'views/seq_korm_korm.xml',
         'views/menu.xml',
         

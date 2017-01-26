@@ -4,6 +4,162 @@
 		"selected_items":
 		[
 			[
+				"fi",
+				"stado_fiz_group_id"
+			],
+			[
+				"racion",
+				"racion_line"
+			],
+			[
+				"so",
+				"sorting"
+			],
+			[
+				"ko",
+				"kol_korma"
+			],
+			[
+				"korm_ko",
+				"korm_korm_line"
+			],
+			[
+				"kol",
+				"kol_korma"
+			],
+			[
+				"tra",
+				"transport_id"
+			],
+			[
+				"korm_k",
+				"korm_korm_id"
+			],
+			[
+				"kol_ko",
+				"kol_korma_zames"
+			],
+			[
+				"korm",
+				"korm_racion_id"
+			],
+			[
+				"korm_ra",
+				"korm_racion_line"
+			],
+			[
+				"nome",
+				"nomen_price_id"
+			],
+			[
+				"no",
+				"nomen_price"
+			],
+			[
+				"stado",
+				"stado_fiz_group"
+			],
+			[
+				"pa",
+				"parametrs"
+			],
+			[
+				"nrp",
+				"nrp_p"
+			],
+			[
+				"id",
+				"id"
+			],
+			[
+				"vi",
+				"vid_dvijeniya"
+			],
+			[
+				"ras",
+				"rashod-draft"
+			],
+			[
+				"pri",
+				"prihod"
+			],
+			[
+				"R",
+				"Reg_ostatok"
+			],
+			[
+				"de",
+				"default"
+			],
+			[
+				"I",
+				"Integer"
+			],
+			[
+				"poku",
+				"pokupka_pokupka_line"
+			],
+			[
+				"sk",
+				"sklad_sklad_id"
+			],
+			[
+				"skl",
+				"sklad_oborot"
+			],
+			[
+				"st",
+				"state"
+			],
+			[
+				"nomen",
+				"nomen_nomen_id"
+			],
+			[
+				"na",
+				"nalog_nds_id"
+			],
+			[
+				"nom",
+				"nomen_nomen"
+			],
+			[
+				"ed",
+				"ed_izm_id"
+			],
+			[
+				"nalo",
+				"nalog_nds"
+			],
+			[
+				"am",
+				"amount_bez_nds"
+			],
+			[
+				"nd",
+				"nds"
+			],
+			[
+				"_am",
+				"_amount_all"
+			],
+			[
+				"amo",
+				"amount"
+			],
+			[
+				"nds",
+				"nds_price"
+			],
+			[
+				"pok",
+				"pokupka_pokupka_id"
+			],
+			[
+				"po",
+				"pokupka_pokupka_line"
+			],
+			[
 				"j",
 				"jir"
 			],
@@ -20,10 +176,6 @@
 				"margin"
 			],
 			[
-				"na",
-				"natura_plan"
-			],
-			[
 				"natura_",
 				"natura_fact"
 			],
@@ -38,10 +190,6 @@
 			[
 				"border",
 				"border-top"
-			],
-			[
-				"vi",
-				"visible"
 			],
 			[
 				"za",
@@ -64,24 +212,12 @@
 				"date_end"
 			],
 			[
-				"de",
-				"desc"
-			],
-			[
 				"da",
 				"date_doc"
 			],
 			[
-				"no",
-				"now_year"
-			],
-			[
 				"m",
 				"month"
-			],
-			[
-				"am",
-				"amount"
 			],
 			[
 				"a",
@@ -90,10 +226,6 @@
 			[
 				"pr",
 				"price"
-			],
-			[
-				"kol",
-				"kol_day_week"
 			],
 			[
 				"d",
@@ -187,6 +319,211 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "addons/kormlenie/readme.txt",
+			"settings":
+			{
+				"buffer_size": 277,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/models/models.py",
+			"settings":
+			{
+				"buffer_size": 41179,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<openerp>\n    <data>\n        \n        \n\n        <template id=\"report_korm_view\">\n            <t t-call=\"report.html_container\">                    \n                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->\n                <t t-foreach=\"docs\" t-as=\"doc\">\n                    <t>          \n                     <div class=\"page\">    \n                        <h5>Кормовое задание № <t t-esc=\"doc.name\"/> на  </h5>\n                        Кормораздатчик <t t-esc=\"doc.transport_id.name\"/><br/>\n                        Водитель <t t-esc=\"doc.voditel_id.name\"/><br/>\n\n                        \n\n                        <t t-foreach=\"doc.korm_korm_svod_line\" t-as=\"svod\">\n                            <div >\n                            <table class=\"table\" style=\"page-break-inside: avoid;\">\n                                <tr>\n                                    <th><t t-esc=\"svod.sorting\"/>. <t t-esc=\"svod.korm_racion_id.stado_fiz_group_id.name\"/></th>\n                                    <th></th>\n                                    <th>Примечание</th>\n                                 </tr>\n\n                                 <tr>\n                                    <td>\n                                        <table class=\"table-bordered\">\n                                             <tr>\n                                                <th></th>\n                                                <th>Норма</th>\n                                                <th>Замес 1</th>\n                                                <th>Замес 2</th>\n                                             </tr>\n                                             <t t-foreach=\"doc.korm_korm_detail_line\" t-as=\"detail\">\n                                                 <t t-if=\"detail.sorting==svod.sorting\">\n                                                     <tr>\n                                                         <td><t t-esc=\"detail.nomen_nomen_id.name\"/></td>\n                                                         <td class=\"text-right\"><t t-esc=\"'%.0f'%(detail.kol_norma)\"/></td>\n                                                         <td></td>\n                                                         <td></td>\n                                                         \n                                                     </tr>\n                                                 </t>\n                                     \n                                             </t>\n                                         </table>\n\n\n                                    </td>\n                                    <td>\n                                        <table class=\"table-bordered\">\n                                             <tr>\n                                                <th>Загон</th>\n                                                <th>Гол.</th>\n                                                <th>Масса</th>\n                                                <th>Остатки</th>\n\n                                                \n                                             </tr>\n                                             <t t-foreach=\"doc.korm_korm_line\" t-as=\"line\">\n                                                 <t t-if=\"line.sorting==svod.sorting\">\n                                                     <tr>\n                                                         <td class=\"text-center\"><t t-esc=\"line.stado_zagon_id.nomer\"/></td>\n                                                         <td class=\"text-right\"><t t-esc=\"line.kol_golov\"/></td>\n                                                         <td class=\"text-right\"><t t-esc=\"'%.0f'%(line.kol_korma)\"/></td>\n                                                         <td></td>\n                                                         \n                                                         \n                                                         \n                                                     </tr>\n                                                 </t>\n                                     \n                                             </t>\n                                        </table>\n\n\n\n                                    </td>\n                                    <td>\n\n\n                                    </td>\n                                   \n                                </tr>\n\n                                    \n                             </table>\n                             </div>\n                        </t>      \n                     </div>\n                    </t>\n                </t>\n            </t>\n        </template>\n\n        <report\n        id=\"report_korm\"\n        model=\"korm.korm\"\n        string=\"Кормовое задание\"\n        name=\"kormlenie.report_korm_view\"\n        file=\"kormlenie.report_korm\"\n        report_type=\"qweb-pdf\" />\n\n    </data>\n</openerp>",
+			"file": "addons/kormlenie/views/korm_korm_report.xml",
+			"file_size": 5114,
+			"file_write_time": 1485406152000000,
+			"settings":
+			{
+				"buffer_size": 5013,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "\n\n    ov_color = fields.Char( string=\"ОВ\", compute='_raschet')\n    sv_color = fields.Char( string=\"СВ\", compute='_raschet')\n    oe_color = fields.Char( string=\"ОЭ\", compute='_raschet')\n    sp_color = fields.Char( string=\"СП\", compute='_raschet')\n    pp_color = fields.Char( string=\"ПП\", compute='_raschet')\n    sk_color = fields.Char( string=\"СК\", compute='_raschet')\n    sj_color = fields.Char( string=\"СЖ\", compute='_raschet')\n    ca_color = fields.Char( string=\"Ca\", compute='_raschet')\n    p_color = fields.Char( string=\"P\", compute='_raschet')\n    sahar_color = fields.Char( string=\"Сахар\", compute='_raschet')\n    krahmal_color = fields.Char( string=\"Крахмал\", compute='_raschet')\n    bev_color = fields.Char( string=\"БЭВ\", compute='_raschet')\n    magniy_color = fields.Char( string=\"Магний\", compute='_raschet')\n    natriy_color = fields.Char( string=\"Натрий\", compute='_raschet')\n    kaliy_color = fields.Char( string=\"Калий\", compute='_raschet')\n    hlor_color = fields.Char( string=\"Хлор\", compute='_raschet')\n    sera_color = fields.Char( string=\"Сера\", compute='_raschet')\n    udp_color = fields.Char( string=\"UDP\", compute='_raschet')\n    me_color = fields.Char( string=\"ME\", compute='_raschet')\n    xp_color = fields.Char( string=\"XP\", compute='_raschet')\n    nrp_color = fields.Char( string=\"НРП\", compute='_raschet')\n    rnb_color = fields.Char( string=\"RNB\", compute='_raschet')\n    nrp_p_color = fields.Char( string=\"%НРП\", compute='_raschet')",
+			"settings":
+			{
+				"buffer_size": 1461,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_pit_standart.xml",
+			"settings":
+			{
+				"buffer_size": 3391,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/stado_zagon.xml",
+			"settings":
+			{
+				"buffer_size": 2393,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/security/ir.model.access.csv",
+			"settings":
+			{
+				"buffer_size": 2488,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/security/korm_security.xml",
+			"settings":
+			{
+				"buffer_size": 698,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/menu.xml",
+			"settings":
+			{
+				"buffer_size": 2192,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/__openerp__.py",
+			"settings":
+			{
+				"buffer_size": 1271,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_analiz_pit.xml",
+			"settings":
+			{
+				"buffer_size": 9814,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_receptura.xml",
+			"settings":
+			{
+				"buffer_size": 9791,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "README.md",
+			"settings":
+			{
+				"buffer_size": 1182,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/stado_fiz_group.xml",
+			"settings":
+			{
+				"buffer_size": 2301,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_norm.xml",
+			"settings":
+			{
+				"buffer_size": 8295,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_racion.xml",
+			"settings":
+			{
+				"buffer_size": 12655,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/static/src/css/korm.css",
+			"settings":
+			{
+				"buffer_size": 1115,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/sklad/views/seq_nomen_price.xml",
+			"settings":
+			{
+				"buffer_size": 515,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/sklad/views/nomen_price.xml",
+			"settings":
+			{
+				"buffer_size": 2651,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/models/__init__.py",
+			"settings":
+			{
+				"buffer_size": 103,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Searching 98 files for \"partners_list_action\n\"\n\n0 matches across 0 files\n",
+			"settings":
+			{
+				"buffer_size": 73,
+				"line_ending": "Unix",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"file": "addons/milk/models/models.py",
+			"settings":
+			{
+				"buffer_size": 31818,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/milk/views/transport.xml",
+			"settings":
+			{
+				"buffer_size": 2576,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/seq_korm_korm.xml",
+			"settings":
+			{
+				"buffer_size": 516,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "addons/kormlenie/views/korm_korm.xml",
+			"settings":
+			{
+				"buffer_size": 6786,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -212,6 +549,32 @@
 	},
 	"file_history":
 	[
+		"/home/smv/odoo-selhoz/addons/kormlenie/views/transport.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/__openerp__.py",
+		"/home/smv/odoo-selhoz/addons/sklad/views/menu.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/security/ir.model.access.csv",
+		"/home/smv/odoo-selhoz/addons/milk/res_config.py",
+		"/home/smv/odoo-selhoz/addons/milk/partner.py",
+		"/home/smv/odoo-selhoz/addons/kormlenie/models/tableau.py",
+		"/home/smv/odoo-selhoz/addons/kormlenie/models/simplex.py",
+		"/home/smv/odoo-selhoz/addons/sklad/models/models.py",
+		"/home/smv/odoo-selhoz/addons/milk/models/models.py",
+		"/home/smv/odoo-selhoz/addons/milk/views/trace_milk.xml",
+		"/home/smv/odoo-selhoz/README.md",
+		"/home/smv/odoo-selhoz/addons/sklad/views/seq_sklad_inventarizaciya.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/seq_prodaja_prodaja.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/seq_pokupka_pokupka.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/pokupka_pokupka_workflow.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/sklad_peremeshenie.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/seq_sklad_peremeshenie.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/pokupka_pokupka.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/nomen_nomen.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/sklad_sklad.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/nalog_nds.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/prodaja_prodaja.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/seq_sklad_spisanie.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/sklad_spisanie.xml",
+		"/home/smv/odoo-selhoz/addons/sklad/views/sklad_inventarizaciya.xml",
 		"/home/smv/odoo/addons/milk/views/resources.xml",
 		"/home/smv/odoo/addons/kormlenie/__init__.py",
 		"/home/smv/odoo/addons/kormlenie/__openerp__.py",
@@ -280,9 +643,10 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 93.0,
 		"where_history":
 		[
+			""
 		]
 	},
 	"find_state":
@@ -290,6 +654,106 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"model_name",
+			"example",
+			"raise",
+			"ed_izm",
+			"data",
+			"stado.zagon",
+			"Рацион кормления",
+			"racion",
+			"partners_list_action\n",
+			"string='",
+			"string=\"",
+			"_description = '",
+			"string=\"",
+			"_norm",
+			"Float(digits=(10, 2),",
+			"_max",
+			"total",
+			"search",
+			"attrs=\"{'readonly': [('state', 'in', ['confirmed',])]}\"",
+			"Перемещение товаров",
+			"sklad.peremeshenie",
+			"sklad_peremeshenie",
+			"pokupka.pokupka",
+			"pokupka_pokupka",
+			"red",
+			"receptura",
+			"stado_fiz_group_id",
+			"nomen_nomen_id",
+			"Рецептура комбикорма",
+			"receptura",
+			"_min",
+			"_s",
+			"stado_stado",
+			"nomen_nomen_id",
+			"attrs=\"{'readonly': [('korm_receptura_id', '!=', False)]}\"",
+			"Анализ питательности корма",
+			"analiz_pit",
+			"Загон",
+			"zagon",
+			"self",
+			"total\n",
+			"amount\n",
+			"attrs=\"{'readonly': [('korm_receptura_id', '!=', False)]}\"",
+			"search",
+			"write",
+			"Питательность по стандарту",
+			"korm.pit_standart",
+			"korm_pit_standart",
+			"save",
+			"create",
+			"today",
+			"Питательность по стандарту",
+			"korm.pit_standart",
+			"korm_pit_standart",
+			"sear",
+			"korm.pit_standart",
+			"korm_pit_standart",
+			"kormlenie",
+			"nomen.ed_izm",
+			"nomen_ed_izm",
+			"ed_izm",
+			"era",
+			"erase",
+			"create",
+			"ost.search",
+			"sear",
+			"prodaja_prodaja",
+			"prodaja.prodaja",
+			"prodaja_prodaja",
+			"Реализация",
+			"prodaja.prodaja",
+			"prodaja_prodaja",
+			"sklad_spisanie_line",
+			"peremeshenie",
+			"prodaja.prodaja",
+			"prodaja_prodaja",
+			"prodaja.prodaja",
+			"Реализация",
+			"prodaja_prodaja",
+			"prodaja.prodaja",
+			"prodaja_prodaja",
+			"больше",
+			"Поступление",
+			"pokupka",
+			"unlin",
+			"delete",
+			"Поступление",
+			"pokupka_pokupka",
+			"pokupka.pokupka",
+			"search",
+			"bro",
+			"openacademy",
+			"penacademy",
+			"session",
+			"openacademy",
+			"session",
+			"ed.izm.id",
+			"ed_izm",
+			"nomen",
+			"scale_tanker",
 			"kormlenie",
 			"nomen",
 			"partne",
@@ -317,51 +781,7 @@
 			"month",
 			"date_trunc\n\n",
 			"date_trunc",
-			"date_ucheta",
-			"                 <",
-			"zachet",
-			",\n",
-			"crea",
-			"control_sale_milk",
-			"mail.thread",
-			"openacademy.course",
-			"grap",
-			"graf",
-			"openacademy_session_graph_view",
-			"cr, uid",
-			"partner",
-			"sale_milk",
-			"datetime",
-			"date_",
-			"\"),\n",
-			"create_ttn",
-			"browse",
-			"sale_milk",
-			"view_sale_milk_graph",
-			"view_sale_milk_search",
-			"sale_milk_report",
-			"\nmenu_report_product_all",
-			"shkala_tanker5",
-			"pricep",
-			"16\n16",
-			"\nvoditel",
-			"uno",
-			":\",",
-			"report",
-			"Sale milk",
-			"\n	@api.depends('transport.mark', 'transport.gos_nomer')\n	def _update_name(self):\n\n		self.name = self.mark + ' ' + self.gos_nomer",
-			"@api.onchange('transport.mark', 'transport.gos_nomer')\n	@api.depends('transport.mark', 'transport.gos_nomer')\n	def _update_name(self):\n\n		self.name = self.mark + ' ' + self.gos_nomer",
-			"pricep",
-			"report",
-			")\n",
-			"pricep",
-			"type_transport\n\navto",
-			"',\n",
-			"transport",
-			"type_avt",
-			"type_avto",
-			"',\n",
-			"type_avto"
+			"date_ucheta"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -369,6 +789,70 @@
 		"regex": false,
 		"replace_history":
 		[
+			"korm",
+			"Кормление",
+			"korm",
+			"string=u'",
+			"string=u\"",
+			"_description = u'",
+			"string=u\"",
+			"_raschet",
+			"Char(",
+			"_color",
+			"",
+			"Установка цен номенклатуры",
+			"nomen.price",
+			"nomen_price",
+			"nomen.price",
+			"nomen_price",
+			"stado_fiz_group_id",
+			"Рацион кормления",
+			"racion",
+			"_max",
+			"_min",
+			"stado",
+			"stado_fiz_group_id",
+			"",
+			"Нормы кормления",
+			"norm",
+			"Физиологическая группа",
+			"fiz_group",
+			"",
+			"Рецептура комбикорма",
+			"korm.receptura",
+			"korm_receptura",
+			"Анализ питательности корма",
+			"korm.analiz_pit",
+			"korm_analiz_pit",
+			"stado.zagon",
+			"stado_zagon",
+			"korm",
+			"korm.pit_standart",
+			"korm_pit_standart",
+			"sklad_inventarizaciya",
+			"sklad.inventarizaciya",
+			"sklad_inventarizaciya",
+			"Инвентаризация",
+			"sklad.inventarizaciya",
+			"sklad_inventarizaciya",
+			"sklad.spisanie",
+			"sklad_spisanie",
+			"sklad.spisanie",
+			"Списание",
+			"sklad.spisanie",
+			"sklad_spisanie",
+			"sklad.spisanie",
+			"sklad_spisanie",
+			"Реализация",
+			"prodaja",
+			"Перемещение",
+			"sklad_peremeshenie",
+			"sklad.peremeshenie",
+			"pokupka",
+			"pokupka_pokupka",
+			"nds",
+			"nalog",
+			"pokupka_pokupka",
 			"sklad",
 			"Группы",
 			"group",
@@ -406,8 +890,700 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "addons/kormlenie/readme.txt",
+					"settings":
+					{
+						"buffer_size": 277,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								277,
+								277
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "addons/kormlenie/models/models.py",
+					"settings":
+					{
+						"buffer_size": 41179,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								34021,
+								34021
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 12141.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "addons/kormlenie/views/korm_korm_report.xml",
+					"settings":
+					{
+						"buffer_size": 5013,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								555,
+								555
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"settings":
+					{
+						"buffer_size": 1461,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6,
+								6
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "addons/kormlenie/views/korm_pit_standart.xml",
+					"settings":
+					{
+						"buffer_size": 3391,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3391,
+								3391
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "addons/kormlenie/views/stado_zagon.xml",
+					"settings":
+					{
+						"buffer_size": 2393,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1061,
+								1061
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 153.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "addons/kormlenie/security/ir.model.access.csv",
+					"settings":
+					{
+						"buffer_size": 2488,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2481,
+								2481
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "addons/kormlenie/security/korm_security.xml",
+					"settings":
+					{
+						"buffer_size": 698,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								85,
+								85
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "addons/kormlenie/views/menu.xml",
+					"settings":
+					{
+						"buffer_size": 2192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1214,
+								1214
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "addons/kormlenie/__openerp__.py",
+					"settings":
+					{
+						"buffer_size": 1271,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								661,
+								661
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 204.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "addons/kormlenie/views/korm_analiz_pit.xml",
+					"settings":
+					{
+						"buffer_size": 9814,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								663,
+								663
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "addons/kormlenie/views/korm_receptura.xml",
+					"settings":
+					{
+						"buffer_size": 9791,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8555,
+								8555
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 450.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "README.md",
+					"settings":
+					{
+						"buffer_size": 1182,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								548,
+								548
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "addons/kormlenie/views/stado_fiz_group.xml",
+					"settings":
+					{
+						"buffer_size": 2301,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1953,
+								1953
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 714.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "addons/kormlenie/views/korm_norm.xml",
+					"settings":
+					{
+						"buffer_size": 8295,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7568,
+								7568
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2703.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "addons/kormlenie/views/korm_racion.xml",
+					"settings":
+					{
+						"buffer_size": 12655,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1454,
+								1454
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 561.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "addons/kormlenie/static/src/css/korm.css",
+					"settings":
+					{
+						"buffer_size": 1115,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1013,
+								1013
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 969.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "addons/sklad/views/seq_nomen_price.xml",
+					"settings":
+					{
+						"buffer_size": 515,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								515,
+								515
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "addons/sklad/views/nomen_price.xml",
+					"settings":
+					{
+						"buffer_size": 2651,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1964,
+								1964
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 306.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "addons/kormlenie/models/__init__.py",
+					"settings":
+					{
+						"buffer_size": 103,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								62,
+								62
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"settings":
+					{
+						"buffer_size": 73,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"detect_indentation": false,
+							"output_tag": 1,
+							"result_base_dir": "",
+							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "addons/milk/models/models.py",
+					"settings":
+					{
+						"buffer_size": 31818,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6778,
+								6778
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3080.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 22,
+					"file": "addons/milk/views/transport.xml",
+					"settings":
+					{
+						"buffer_size": 2576,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2576,
+								2576
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 23,
+					"file": "addons/kormlenie/views/seq_korm_korm.xml",
+					"settings":
+					{
+						"buffer_size": 516,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								516,
+								516
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 24,
+					"file": "addons/kormlenie/views/korm_korm.xml",
+					"settings":
+					{
+						"buffer_size": 6786,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								903,
+								903
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -444,7 +1620,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 53.0
+		"height": 39.0
 	},
 	"replace":
 	{

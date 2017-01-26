@@ -736,6 +736,10 @@ class korm_korm(models.Model):
 	
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
+	sostavil_id = fields.Many2one('res.partner', string='Составил')
+	utverdil_id = fields.Many2one('res.partner', string='Утвердил')
+
+
 
 	description = fields.Text(string=u"Коментарии")
 
@@ -793,7 +797,7 @@ class korm_korm(models.Model):
 									})
 
 
-	
+
 
 
 class korm_korm_line(models.Model):

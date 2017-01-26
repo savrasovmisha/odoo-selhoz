@@ -12,10 +12,13 @@
                         <group>
                             <field name="name"/>
                             <field name="transport_id"/>
+                            <field name="voditel_id" domain="[('company_type','=','person')]"/>
                         </group>
                         <group>
                             <field name="date"/>
-                            <field name="voditel_id" domain="[('company_type','=','person')]"/>
+                            <field name="sostavil_id" domain="[('company_type','=','person')]"/>
+                            <field name="utverdil_id" domain="[('company_type','=','person')]"/>
+
                         </group>
                      </group>
                      <div class="oe_button_box" name="button_box">

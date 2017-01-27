@@ -12,7 +12,7 @@
                         
                         <div class="row">
                             <div class="col-xs-8 text-left">
-                                Кормовое задание № <t t-esc="doc.name"/> на <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd-MM-yyyy&quot;}"/><br/>
+                                Кормовое задание № <t t-esc="doc.name"/> на <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/><br/>
                                 <span  style="font-size:14px">Кормораздатчик: <t t-esc="doc.transport_id.name" /> </span>
                             </div>
                             <div class="col-xs-4 text-right" style="font-size:14px">
@@ -26,8 +26,13 @@
                             <div style="margin-top: 10px;">
                             <table class="table-bordered" style="page-break-inside: avoid; width: 100%;">
                                 <tr>
-                                    <th><t t-esc="svod.sorting"/>. <t t-esc="svod.korm_racion_id.stado_fiz_group_id.name"/></th>
-                                    <th></th>
+                                    <th colspan="2"><t t-esc="svod.sorting"/>. <t t-esc="svod.korm_racion_id.stado_fiz_group_id.name"/> 
+                                        <span style="font-size:14px; font-weight: normal; text-align: center;"> 
+                                            (<t t-esc="svod.kol_zamesov"/> замеса массой по <t t-esc="'%.0f'% svod.kol_korma_zames"/>. Всего: <t t-esc="'%.0f'% svod.kol_korma"/>)
+                                        </span>
+                                    </th>
+                                        
+                                    <!-- <th></th> -->
                                     <th style="font-size:14px; font-weight: normal; text-align: center;">Примечание</th>
                                  </tr>
 
@@ -37,25 +42,50 @@
                                              <tr>
                                                 <th></th>
                                                 <th style="padding: 2px;">Норма</th>
-                                                <th style="padding: 2px;">Замес 1</th>
-                                                <th style="padding: 2px;">Замес 2</th>
+                                                <t t-foreach="range(svod.kol_zamesov)" t-as="l">
+                                                    <th style="padding: 2px;">Замес <t t-esc="l+1"/></th>
+                                                </t>
+
+
+                                                <!-- <th style="padding: 2px;">Замес 2</th> -->
                                              </tr>
-                                             <t t-foreach="doc.korm_korm_detail_line" t-as="detail">
-                                                 <t t-if="detail.sorting==svod.sorting">
-                                                     <tr>
-                                                        <td style="padding: 2px;">
-                                                            <div style="overflow: auto; width:200px;">
-                                                                <t t-esc="detail.nomen_nomen_id.name"  />
-                                                            </div>
-                                                        </td>
-                                                         <td class="text-right" style="padding: 2px;"><t t-esc="'%.0f'%(detail.kol_norma/svod.kol_zamesov)"/></td>
-                                                         <td></td>
-                                                         <td></td>
-                                                         
-                                                     </tr>
+                                             
+                                                 <t t-foreach="doc.korm_korm_line" t-as="line">
+                                                     <t t-if="line.sorting==svod.sorting and line.date_obedkov is not False">
+                                                        <tr>
+                                                            <td style="padding: 2px;">
+                                                                <div style="overflow: auto; width:200px;">
+                                                                    Объедки от <span t-field="line.date_obedkov" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}" />
+                                                                </div>
+                                                            </td>
+                                                             <td ></td>
+                                                             <t t-foreach="range(svod.kol_zamesov)" t-as="l">
+                                                                <td></td>
+                                                             </t>
+                                                             <!-- <td></td> -->
+                                                         </tr>
+                                                     </t>
+                                         
                                                  </t>
-                                     
-                                             </t>
+                                                 <t t-foreach="doc.korm_korm_detail_line" t-as="detail">
+                                                     <t t-if="detail.sorting==svod.sorting">
+                                                        <tr> 
+                                                            <td style="padding: 2px;">
+                                                                <div style="overflow: auto; width:200px;">
+                                                                    <t t-esc="detail.nomen_nomen_id.name"  />
+                                                                </div>
+                                                            </td>
+                                                             <td class="text-right" style="padding: 2px;"><t t-esc="'%.0f'%(detail.kol_norma/svod.kol_zamesov)"/></td>
+                                                             <t t-foreach="range(svod.kol_zamesov)" t-as="l">
+                                                                <td></td>
+                                                             </t>
+                                                             <!-- <td></td> -->
+                                                             
+                                                        </tr> 
+                                                     </t>
+                                         
+                                                 </t>
+                                            
                                          </table>
 
 
@@ -90,6 +120,17 @@
 
                                     </td>
                                     <td>
+                                        <t t-foreach="doc.korm_korm_line" t-as="line">
+                                             <t t-if="line.sorting==svod.sorting">
+                                                <div style="font-size:14px; margin: 2px;">
+                                                    <t t-esc="line.description"/>
+
+                                                </div>
+                                                 
+                                             </t>
+                                 
+                                         </t>
+
 
 
                                     </td>

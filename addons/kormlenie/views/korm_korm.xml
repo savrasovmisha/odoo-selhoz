@@ -43,7 +43,7 @@
                                     <field name="kol_korma"/>
                                     <!-- <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/> -->
-                                    <field name="kol_ostatok"/>
+                                    <!-- <field name="kol_ostatok"/> -->
                                     <field name="date_obedkov"/>
                                     <field name="description" nolabel="1"/>
                                     
@@ -57,7 +57,7 @@
 
                         <page string="Свод кормления">
                             <field name="korm_korm_svod_line">
-                                <tree string="korm_korm_svod_line" editable="botton">
+                                <tree string="korm_korm_svod_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sorting"/>
                                     <field name="korm_racion_id"/>
                                     <field name="kol_golov"/>
@@ -65,8 +65,8 @@
                                     <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/>
                                     <field name="kol_ostatok"/>
-                                    <field name="date_obedkov"/>
-                                    <field name="description" nolabel="1"/>
+                                    <!-- <field name="date_obedkov"/>
+                                    <field name="description" nolabel="1"/> -->
                                     
                                     
                                                                         
@@ -79,14 +79,14 @@
                         <page string="Детали кормления">
                             
                             <field name="korm_korm_detail_line">
-                                <tree string="korm_korm_detail_line" editable="botton">
+                                <tree string="korm_korm_detail_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sorting"/>
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol_norma"/>
                                     <field name="kol_fakt"/>
                                     
-                                    <field name="description" nolabel="1"/>
+                                    <!-- <field name="description" nolabel="1"/> -->
                                     
                                     
                                                                         

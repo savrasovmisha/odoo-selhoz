@@ -64,7 +64,7 @@
                                     <field name="kol_korma"/>
                                     <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/>
-                                    <field name="kol_ostatok"/>
+                                    <!-- <field name="kol_ostatok"/> -->
                                     <!-- <field name="date_obedkov"/>
                                     <field name="description" nolabel="1"/> -->
                                     

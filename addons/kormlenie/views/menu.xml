@@ -19,6 +19,8 @@
         <menuitem id="korm_racion_menu" name="Рацион кормления" parent="korm_menu_doc" action="korm_racion_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_korm_menu" name="Кормление" parent="korm_menu_doc" action="korm_korm_list_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_korm_ostatok_menu" name="Остатки кормления" parent="korm_menu_doc" action="korm_korm_ostatok_list_action" groups="group_korm_manager,group_korm_users"/>
 <!--
          Левое меню
 -->

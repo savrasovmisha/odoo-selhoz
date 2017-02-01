@@ -85,6 +85,7 @@
                                     <field name="ed_izm_id"/>
                                     <field name="kol_norma"/>
                                     <field name="kol_fakt"/>
+                                    <field name="formula" on_change="raschet_formuli(formula)"/>
                                     
                                     <!-- <field name="description" nolabel="1"/> -->
                                     

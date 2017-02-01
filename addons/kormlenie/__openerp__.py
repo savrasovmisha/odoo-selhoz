@@ -37,6 +37,8 @@
         'views/korm_korm.xml',
         'views/korm_korm_report.xml',
         'views/seq_korm_korm.xml',
+        'views/korm_korm_ostatok.xml',
+        'views/seq_korm_korm_ostatok.xml',
         'views/menu.xml',
         'views/resources.xml',
         

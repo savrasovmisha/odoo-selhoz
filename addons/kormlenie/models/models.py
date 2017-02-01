@@ -89,6 +89,32 @@ class stado_zagon(models.Model):
     _description = u'Загоны'
     _order = 'nomer'
 
+    @api.one
+    def name_get(self):
+        print "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", self.env.context.get('tolko_nomer', True)
+        if self.env.context.get('tolko_nomer', True):
+            print "]]]]]%s]]]]]]", self.nomer
+            return (self.id, self.nomer)
+        else:
+            return (self.id, self.name)
+
+
+        # if context is None:
+        #     context = {}
+        # if isinstance(ids, (int, long)):
+        #     ids = [ids]
+        # res = []
+        # if context.get('tolko_nomer')=='True':
+        #     for record in self.browse(cr, uid, ids, context=context):
+        #         nomer = record.nomer
+                
+        #         res.append((record.id, nomer))
+        # else:
+        #     # Do a for and set here the standard display name, for example if the standard display name were name, you should do the next for
+        #     for record in self.browse(cr, uid, ids, context=context):
+        #         res.append((record.id, record.name))
+        # return res
+
     name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
     nomer = fields.Integer(string=u"Номер", required=True)
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
@@ -822,13 +848,13 @@ class korm_korm_line(models.Model):
 		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
 		if self.kol_golov>0 and self.korm_racion_id!=False:
 			self.kol_korma = self.korm_racion_id.kol * self.kol_golov
-			max_value = self.korm_korm_id.transport_id.max_value
-			if self.kol_korma>max_value and max_value>0:
-				self.kol_zamesov = math.ceil(self.kol_korma / max_value)
-				self.kol_korma_zames = self.kol_korma / self.kol_zamesov
-			else:
-				self.kol_zamesov = 1
-				self.kol_korma_zames = self.kol_korma
+			# max_value = self.korm_korm_id.transport_id.max_value
+			# if self.kol_korma>max_value and max_value>0:
+			# 	self.kol_zamesov = math.ceil(self.kol_korma / max_value)
+			# 	self.kol_korma_zames = self.kol_korma / self.kol_zamesov
+			# else:
+			# 	self.kol_zamesov = 1
+			# 	self.kol_korma_zames = self.kol_korma
 
 
 
@@ -846,9 +872,9 @@ class korm_korm_line(models.Model):
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
 	kol_golov = fields.Integer(string=u"Кол-во голов", required=True)
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
-	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
-	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet')
-	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+	# kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
+	# kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet')
+	# kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
 	date_obedkov = fields.Date(string='Дата объедков')
 	
 	description = fields.Text(string=u"Коментарии")
@@ -882,8 +908,8 @@ class korm_korm_svod_line(models.Model):
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, readonly=True)
 	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet', readonly=True)
 	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet', readonly=True)
-	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
-	date_obedkov = fields.Date(string='Дата объедков')
+	# kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+	# date_obedkov = fields.Date(string='Дата объедков')
 	
 	description = fields.Text(string=u"Коментарии")
 
@@ -918,16 +944,103 @@ class korm_korm_detail_line(models.Model):
     @api.one
     @api.depends('kol')
     def _amount(self):
-    	self.amount = self.price * self.kol           
+    	self.amount = self.price * self.kol 
+
+    
+    def raschet_formuli(self, cr, uid, ids, formula, context=None):
+        try:
+            if formula==False:
+                return False
+
+            formula=formula.replace(',','.')
+
+            zn = formula.split('+')
+            ss=[]
+            for l in zn:
+                ss.append(float(l))
+
+            total = sum(ss)
+            res = {
+                    'value': {
+                            'kol_fakt': total
+                            }
+                } 
+            return res
+        except Exception as exc:
+            raise exceptions.ValidationError(_(u"Ошибка в формуле! Поле Формула должно быть вида: 25.56+45.589. Ошибка:%s" % (exc)))
+       
 
 
-
+    raschet_formuli
     name = fields.Char(string=u"Наименование", compute='return_name')
     korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
-	
+    
     sorting = fields.Integer(string=u"Порядок", required=True, readonly=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
     kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", readonly=True)
     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+    formula = fields.Char(string=u"Формула сложения")
     description = fields.Text(string=u"Коментарии")
+
+
+
+
+
+
+class korm_korm_ostatok(models.Model):
+    _name = 'korm.korm_ostatok'
+    _description = u'Остатки кормления'
+    _order = 'date desc'
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('korm.korm_ostatok') or 'New'
+
+        result = super(korm_korm_ostatok, self).create(vals)
+        return result
+
+    name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+    date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+    korm_korm_ostatok_line = fields.One2many('korm.korm_ostatok_line', 'korm_korm_ostatok_id', string=u"Строка Остатки Кормления")
+    korm_korm_ostatok_svod_line = fields.One2many('korm.korm_ostatok_svod_line', 'korm_korm_ostatok_id', string=u"Строка Свода Остатки Кормлениея")
+    
+    description = fields.Text(string=u"Коментарии")
+
+class korm_korm_ostatok_line(models.Model):
+    _name = 'korm.korm_ostatok_line'
+    _description = u'Строка Остатки Кормления'
+    
+
+    @api.one
+    def return_name(self):
+        self.name = self.stado_zagon_id.nomer
+        
+
+
+    name = fields.Char(string=u"Наименование", compute='return_name')
+    korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
+    
+    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+   
+    
+    
+
+class korm_korm_ostatok_svod_line(models.Model):
+    _name = 'korm.korm_ostatok_svod_line'
+    _description = u'Строка Свода Остатки Кормления'
+    
+
+
+
+    name = fields.Char(string=u"Наименование", compute='return_name')
+    korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
+    
+    stado_zagon_id = fields.Many2many('stado.zagon', string=u'Загон', required=True)
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+    
+    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+    

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_korm_ostatok_form_view">
+        <field name="name">korm_korm_ostatok.form</field>
+        <field name="model">korm.korm_ostatok</field>
+        <field name="arch" type="xml">
+            <form string="Форма Остатки Кормления">
+               
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            
+                        </group>
+                     </group>
+                     <div class="oe_button_box" name="button_box">
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                               >
+                            </button>
+                        </div>
+                                    
+            
+                       
+                    <notebook>
+                        <page string="Остатки по загонам">
+                            <field name="korm_korm_ostatok_line">
+                                <tree string="korm_korm_ostatok_line" editable="botton">
+                                    
+                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_fiz_group_id"/>
+                                    
+                                    <field name="kol_ostatok"/>
+                                    
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        <page string="Свод остатков">
+                            <field name="korm_korm_ostatok_svod_line">
+                                <tree string="korm_korm_ostatok_svod_line" editable="botton" >
+                                    <field name="stado_zagon_id" context="{'tolko_nomer': True}"/>
+                                    <field name="stado_fiz_group_id"/>
+                                    
+                                    <field name="kol_ostatok"/>
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        
+
+                    </notebook>
+
+
+                       
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>    
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_korm_ostatok_tree">
+            <field name="name">korm_korm_ostatok.tree</field>
+            <field name="model">korm.korm_ostatok</field>
+            <field name="arch" type="xml">
+                <tree string="Остатки Кормления">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_korm_ostatok_search_view">
+            <field name="name">korm_korm_ostatok.search</field>
+            <field name="model">korm.korm_ostatok</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_korm_ostatok_list_action">
+            <field name="name">Остатки Кормления</field>
+            <field name="res_model">korm.korm_ostatok</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Остатки Кормления
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

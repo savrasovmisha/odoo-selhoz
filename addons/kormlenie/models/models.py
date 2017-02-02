@@ -89,31 +89,21 @@ class stado_zagon(models.Model):
     _description = u'Загоны'
     _order = 'nomer'
 
-    @api.one
+    @api.multi
     def name_get(self):
-        print "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", self.env.context.get('tolko_nomer', True)
-        if self.env.context.get('tolko_nomer', True):
-            print "]]]]]%s]]]]]]", self.nomer
-            return (self.id, self.nomer)
+        zagon_tolko_nomer = self.env.context.get('zagon_tolko_nomer', False)
+        
+        if zagon_tolko_nomer:
+            res = []
+            for doc in self:
+                res.append((doc.id, doc.nomer))
+            
         else:
-            return (self.id, self.name)
+            res = super(stado_zagon, self).name_get()
 
 
-        # if context is None:
-        #     context = {}
-        # if isinstance(ids, (int, long)):
-        #     ids = [ids]
-        # res = []
-        # if context.get('tolko_nomer')=='True':
-        #     for record in self.browse(cr, uid, ids, context=context):
-        #         nomer = record.nomer
-                
-        #         res.append((record.id, nomer))
-        # else:
-        #     # Do a for and set here the standard display name, for example if the standard display name were name, you should do the next for
-        #     for record in self.browse(cr, uid, ids, context=context):
-        #         res.append((record.id, record.name))
-        # return res
+        return res
+
 
     name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
     nomer = fields.Integer(string=u"Номер", required=True)
@@ -1001,11 +991,56 @@ class korm_korm_ostatok(models.Model):
         result = super(korm_korm_ostatok, self).create(vals)
         return result
 
+    @api.one
+    def action_raschet(self):
+        line = self.env['korm.korm_ostatok_line']
+        del_line = line.search([('korm_korm_ostatok_id', '=',    self.id)])
+        del_line.unlink()
+
+        svod_line = self.env['korm.korm_ostatok_svod_line']
+        del_line = svod_line.search([('korm_korm_ostatok_id',   '=',    self.id)])
+        del_line.unlink()
+
+        korm_korm = self.env['korm.korm']
+        korm_korm_ids = korm_korm.search([('date', '=', self.date)],)
+        for korm_korm_id in korm_korm_ids:
+            korm_korm_line = self.env['korm.korm_line']
+            korm_korm_line_ids = korm_korm_line.search([('korm_korm_id', '=', korm_korm_id.id)],)
+            d = []
+            for korm_line in korm_korm_line_ids:
+                line.create({'korm_korm_ostatok_id':   self.id,
+                                'name': self.name,
+                                'stado_zagon_id':  korm_line.stado_zagon_id.id,
+                                'stado_fiz_group_id':   korm_line.stado_fiz_group_id.id,
+                                })
+                d.append([korm_line.id, korm_line.sorting, korm_line.stado_fiz_group_id, korm_line.stado_zagon_id.id])
+
+            
+            #Заполняем сводные данные
+                                  
+            from itertools import groupby #Преобразует список в иерархический по группировке сортинг
+            for g in groupby( d,key=lambda x:x[1]):
+                sorting = g[0]
+                kol_golov=kol_korma=racion_id=0
+                stado_zagon_id = []
+                for i in g[1]:
+                    stado_zagon_id.append(i[3])
+                    stado_fiz_group_id = i[2]
+
+                print stado_zagon_id
+                svod_line.create({'korm_korm_ostatok_id':   self.id,
+                                    'name': self.name,
+                                    'stado_zagon_id':   [(6, 0, stado_zagon_id)],
+                                    'stado_fiz_group_id':    stado_fiz_group_id.id,
+                                    })
+
+        
+
     name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
     date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
     korm_korm_ostatok_line = fields.One2many('korm.korm_ostatok_line', 'korm_korm_ostatok_id', string=u"Строка Остатки Кормления")
     korm_korm_ostatok_svod_line = fields.One2many('korm.korm_ostatok_svod_line', 'korm_korm_ostatok_id', string=u"Строка Свода Остатки Кормлениея")
-    
+    svodno = fields.Boolean(string=u"Остатки вводятся по группе загонов", default=True)
     description = fields.Text(string=u"Коментарии")
 
 class korm_korm_ostatok_line(models.Model):
@@ -1022,8 +1057,8 @@ class korm_korm_ostatok_line(models.Model):
     name = fields.Char(string=u"Наименование", compute='return_name')
     korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
     
-    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+    stado_zagon_id = fields.Many2one('stado.zagon', readonly=True, string=u'Загон', required=True)
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, compute='return_name')
     kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
    
     
@@ -1039,8 +1074,8 @@ class korm_korm_ostatok_svod_line(models.Model):
     name = fields.Char(string=u"Наименование", compute='return_name')
     korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
     
-    stado_zagon_id = fields.Many2many('stado.zagon', string=u'Загон', required=True)
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+    stado_zagon_id = fields.Many2many('stado.zagon', readonly=True, string=u'Загон', required=True)
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, compute='return_name')
     
     kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
     

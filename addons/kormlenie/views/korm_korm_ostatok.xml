@@ -11,6 +11,7 @@
                     <group>
                         <group>
                             <field name="name"/>
+                            <field name="svodno"/>
                             
                         </group>
                         <group>
@@ -31,8 +32,8 @@
                        
                     <notebook>
                         <page string="Остатки по загонам">
-                            <field name="korm_korm_ostatok_line">
-                                <tree string="korm_korm_ostatok_line" editable="botton">
+                            <field name="korm_korm_ostatok_line" attrs="{'readonly': [('svodno', '=', True)]}">
+                                <tree string="korm_korm_ostatok_line" editable="botton" edit="true" create="false" delete="false">
                                     
                                     <field name="stado_zagon_id"/>
                                     <field name="stado_fiz_group_id"/>
@@ -49,9 +50,10 @@
                         </page>
 
                         <page string="Свод остатков">
-                            <field name="korm_korm_ostatok_svod_line">
-                                <tree string="korm_korm_ostatok_svod_line" editable="botton" >
-                                    <field name="stado_zagon_id" context="{'tolko_nomer': True}"/>
+                            <field name="korm_korm_ostatok_svod_line" context="{'zagon_tolko_nomer': True}" attrs="{'readonly': [('svodno', '=', False)]}">
+                                <tree string="korm_korm_ostatok_svod_line" editable="botton" edit="true" create="false" delete="false">
+                                    <field name="stado_zagon_id" widget="many2many_tags"
+    options="{'no_create_edit': True}"/>
                                     <field name="stado_fiz_group_id"/>
                                     
                                     <field name="kol_ostatok"/>

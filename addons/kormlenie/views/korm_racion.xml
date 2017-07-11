@@ -30,7 +30,7 @@
             
                        
                             <notebook>
-                                <page string="Состав комбикорма">
+                                <page string="Состав">
                                     <field name="korm_racion_line">
                                         <tree string="korm_racion_line" editable="botton">
                                             <field name="nomen_nomen_id"/>

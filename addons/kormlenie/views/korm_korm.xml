@@ -13,11 +13,13 @@
                             <field name="name"/>
                             <field name="transport_id"/>
                             <field name="voditel_id" domain="[('company_type','=','person')]"/>
+                            <field name="is_vremya_dnya"/>
                         </group>
                         <group>
                             <field name="date"/>
                             <field name="sostavil_id" domain="[('company_type','=','person')]"/>
                             <field name="utverdil_id" domain="[('company_type','=','person')]"/>
+                            <field name="vremya_dnya" attrs="{'invisible': [('is_vremya_dnya', '=', False)]}" />
 
                         </group>
                      </group>
@@ -40,6 +42,7 @@
                                     <field name="stado_zagon_id"/>
                                     <field name="korm_racion_id"/>
                                     <field name="kol_golov"/>
+                                    <field name="procent_dachi"/>
                                     <field name="kol_korma"/>
                                     <!-- <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/> -->
@@ -123,6 +126,7 @@
                     
                     <field name="date"/>
                     <field name="name"/>
+                    <field name="vremya_dnya"/>
                   
                     
                     
@@ -138,6 +142,7 @@
                 <search>
                     <field name="date"/>
                     <field name="name"/>
+                    <field name="vremya_dnya"/>
                 </search>
             </field>
         </record>

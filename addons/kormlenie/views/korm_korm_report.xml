@@ -7,13 +7,13 @@
            </template>   
         
 
-        <template id="report_korm_view">
-             <xpath expr="." position="inside">
+       <template id="report_korm_view">
+            <!--   <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/kormlenie/static/css/style.css"/>
             </xpath>
             <template id="report.assets_pdf">
                 <link href="/kormlenie/static/src/css/korm.css" rel="stylesheet"/>
-            </template>
+            </template> -->
           <!--   <style type="text/css">
                 .border-black td {
                 border-top: 1px solid black !important;
@@ -24,12 +24,12 @@
                 <t t-foreach="docs" t-as="doc">
                     <t>          
                      <div class="page" style="font-size:16px;">   
-                         <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/>
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         
                         <div class="row">
                             <div class="col-xs-8 text-left">
-                                Кормовое задание № <t t-esc="doc.name"/> на <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/><br/>
+                                Кормовое задание № <t t-esc="doc.name"/> на <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> [ <t t-esc="doc.vremya_dnya"/> ]<br/>
                                 <span  style="font-size:14px">Кормораздатчик: <t t-esc="doc.transport_id.name" /> </span>
                             </div>
                             <div class="col-xs-4 text-right" style="font-size:14px">

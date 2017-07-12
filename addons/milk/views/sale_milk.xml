@@ -38,7 +38,7 @@
                                     <field name="sale_milk_line">
                                         <tree string="Sale milk line2" editable="botton">
                                             <field name="tanker_id" string="Танкер"/>
-                                            <field name="is_meter" string="Мерило"/>
+                                            <field name="merilo" string="Мерило"/>
                                             <field name="meter_value" string="Показания"/>
                                             <field name="jir" string="Жир"/>
                                             <field name="belok" string="Белок"/>
@@ -47,6 +47,7 @@
                                             <field name="ves_zachet" string="Зачет"/>
                                             <field name="som_kletki" width="200" string="Сом.клетки" help="Соматические клетки, тыс.ед.см3 "/>
                                             <field name="somo" string="СОМО,%"/>
+                                            <field name="antibiotik" width="200" help="Проверка на содержание антибиотиков"/>
                                         </tree>
                                     </field>
                                 </page>

@@ -59,7 +59,13 @@ class tanker(models.Model):
 
 	name = fields.Char(string=u"Name", required=True)
 	max_size = fields.Integer(string=u"max size", required=True)
-	is_meter = fields.Boolean(string=u"is meter", default=True)
+	#is_meter = fields.Boolean(string=u"is meter", default=False)
+	#is_ves = fields.Boolean(string=u"Есть весы?", default=True)
+	merilo = fields.Selection([
+		(u'Весы', "Весы"),
+		(u'Счетчик', "Счетчик"),
+		(u'Линейка', "Линейка"),
+	], default=u'Весы', string="Тип мерила")
 	scale_tanker_id = fields.Many2one('milk.scale_tanker', string=u"scale_tanker", default=None)
 
 
@@ -167,7 +173,7 @@ class sale_milk(models.Model):
 		if s_m.split_line:
 			s_m_line = s_m.sale_milk_line
 		else:
-			s_m_line = [{"jir": s_m.avg_jir, "belok": s_m.avg_belok, "plotnost": s_m.avg_plotnost, "ves_natura": s_m.amount_ves_natura},]
+			s_m_line = [{"jir": s_m.avg_jir, "belok": s_m.avg_belok, "plotnost": s_m.avg_plotnost, "ves_natura": s_m.amount_ves_natura, "antibiotik": ''},]
 
 		import sys
 		import os
@@ -230,7 +236,7 @@ class sale_milk(models.Model):
 
 		write_and_close_docx(z, f, output_filename)
 		import subprocess
-		cmd = 'libreoffice5.1 --headless --convert-to pdf --outdir '+tmp_dir+' '+ output_filename
+		cmd = 'libreoffice --headless --convert-to pdf --outdir '+tmp_dir+' '+ output_filename
 		print 'Generate ODS to PGF..........................', cmd
 		
 		p = subprocess.Popen(cmd, shell = True)
@@ -298,6 +304,7 @@ class sale_milk_line(models.Model):
 	ves_zachet = fields.Integer(string=u"zachetniy ves", compute='_raschet', store=True)
 	som_kletki = fields.Integer(string=u"somaticheskie kletki")
 	somo = fields.Float(digits=(4, 2))
+	antibiotik = fields.Char(string=u"Антиб.", default=u'отр.')
 	
 	sale_milk_id = fields.Many2one('milk.sale_milk',
         ondelete='cascade', string=u"Sale milk", required=True)
@@ -315,7 +322,9 @@ class sale_milk_line(models.Model):
 	@api.depends('tanker_id','meter_value','jir','belok','plotnost')
 	def _raschet(self):
 		if self.meter_value and self.jir and self.belok and self.plotnost:
-			if self.tanker_id.is_meter == True:
+			if self.tanker_id.merilo == u'Весы':
+				self.ves_natura = self.meter_value
+			elif self.tanker_id.merilo == u'Счетчик':
 				self.ves_natura = round(self.meter_value * (1+self.plotnost/1000))
 			else:
 				pok = self.env['milk.scale_tanker_line'].search([('value', '=', self.meter_value),
@@ -333,7 +342,7 @@ class sale_milk_line(models.Model):
 			self.ves_zachet = round(self.ves_natura * (self.jir*0.5/3.4 + self.belok*0.5/3))
 
 
-	is_meter = fields.Char(string=u"Meter", compute='_is_meter', readonly=True, default='')
+	merilo = fields.Char(string=u"Meter", compute='_is_meter', readonly=True, default='')
 	
 
 
@@ -342,12 +351,9 @@ class sale_milk_line(models.Model):
 	@api.depends('tanker_id')
 	def _is_meter(self):
 		if self.tanker_id:
-			if self.tanker_id.is_meter == True:
-				self.is_meter = u'Счетчик'
-			else:
-				self.is_meter = u'Линейка'
+			self.merilo = self.tanker_id.merilo
 		else:
-			self.is_meter = ''
+			self.merilo = ''
 
 
 

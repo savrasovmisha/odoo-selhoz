@@ -10,7 +10,8 @@
                     <group>
                         <field name="name" string="Наименование"/>
                         <field name="max_size" string="Максимальный объем"/>
-                        <field name="is_meter" string="Есть счетчик?"/>
+                        <field name="merilo"/>
+                        <!-- <field name="is_meter" string="Есть счетчик?"/> -->
                         <field name="scale_tanker_id" string="Шкала танкера"/>
                         
                     </group>

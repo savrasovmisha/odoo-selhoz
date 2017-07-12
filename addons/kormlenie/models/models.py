@@ -777,11 +777,11 @@ class korm_korm(models.Model):
 		del_line.unlink()
 
 		sorted=''
-		kol_golov=kol_korma=racion_id=0
+		kol_golov=kol_golov_zagon=kol_korma=racion_id=0
 		d = []
 		for line in self.korm_korm_line:
 			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
-						line.kol_korma, line.procent_dachi, float(line.kol_golov*line.procent_dachi/100)])
+						line.kol_korma, line.procent_dachi, line.kol_golov_zagon])
 			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером
 
 		print d
@@ -790,12 +790,13 @@ class korm_korm(models.Model):
 		for g in groupby( d,key=lambda x:x[1]):
 			sorting = g[0]
 			print g[0]
-			kol_golov=kol_korma=kol_golov_detail=racion_id=0
+			kol_golov=kol_golov_zagon=kol_korma=kol_golov_detail=racion_id=0
 			for i in g[1]:
 				print ' - ',i
 				kol_golov += i[3]
 				kol_korma += i[4]
-				kol_golov_detail += i[6]
+				kol_golov_zagon += i[6]
+				
 
 				if racion_id !=0 and racion_id != i[2]:
 					#print "111EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
@@ -809,6 +810,7 @@ class korm_korm(models.Model):
 								'sorting':	sorting,
 								'korm_racion_id':	racion_id.id,
 								'kol_golov':	kol_golov,
+								'kol_golov_zagon':	kol_golov_zagon,
 								'kol_korma':	kol_korma,
 								})
 			#racion_line = self.env['korm.racion_line']
@@ -819,7 +821,7 @@ class korm_korm(models.Model):
 									'name':	rl.nomen_nomen_id.name,
 									'sorting':	i[1],
 									'nomen_nomen_id':	rl.nomen_nomen_id.id,
-									'kol_norma':	rl.kol * kol_golov_detail,
+									'kol_norma':	rl.kol * kol_golov,
 									})
 
 
@@ -849,14 +851,15 @@ class korm_korm_line(models.Model):
 			else:
 				self.procent_dachi = self.stado_zagon_id.vecher
 		
-		self.kol_golov = 0
+		self.kol_golov = self.kol_golov_zagon = 0
 
 	@api.one
-	@api.depends('kol_golov')
+	@api.depends('kol_golov_zagon')
 	def _raschet(self):
 		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
+		self.kol_golov = self.kol_golov_zagon * self.procent_dachi/100
 		if self.kol_golov>0 and self.korm_racion_id!=False:
-			self.kol_korma = self.korm_racion_id.kol * self.kol_golov * self.procent_dachi/100
+			self.kol_korma = self.korm_racion_id.kol * self.kol_golov
 			# max_value = self.korm_korm_id.transport_id.max_value
 			# if self.kol_korma>max_value and max_value>0:
 			# 	self.kol_zamesov = math.ceil(self.kol_korma / max_value)
@@ -879,7 +882,8 @@ class korm_korm_line(models.Model):
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
-	kol_golov = fields.Integer(string=u"Кол-во голов", required=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, compute='_raschet')
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True)
 	procent_dachi = fields.Integer(string=u"% дачи", store=True, compute='return_name')
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
 	# kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet')
@@ -904,9 +908,11 @@ class korm_korm_svod_line(models.Model):
 				if line.kol_korma>max_value and max_value>0:
 					line.kol_zamesov = math.ceil(line.kol_korma / max_value)
 					line.kol_korma_zames = line.kol_korma / line.kol_zamesov
+					line.kol_golov_zames = line.kol_golov / line.kol_zamesov    
 				else:
 					line.kol_zamesov = 1
-					line.kol_korma_zames = line.kol_korma	    
+					line.kol_korma_zames = line.kol_korma	
+					line.kol_golov_zames = line.kol_golov    
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
@@ -914,7 +920,9 @@ class korm_korm_svod_line(models.Model):
 	
 	sorting = fields.Integer(string=u"Порядок", required=True, readonly=True)
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name', readonly=True)
-	kol_golov = fields.Integer(string=u"Кол-во голов", required=True, readonly=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, readonly=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, readonly=True)
+	kol_golov_zames = fields.Integer(string=u"Кол-во голов для 1-го замеса", required=True, compute='_raschet', readonly=True)
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, readonly=True)
 	kol_zamesov = fields.Integer( string=u"Кол-во замесов", copy=False, compute='_raschet', readonly=True)
 	kol_korma_zames = fields.Float(digits=(10, 3), string=u"Вес замеса", copy=False, compute='_raschet', readonly=True)

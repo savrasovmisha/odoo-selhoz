@@ -45,7 +45,7 @@
                                 <tr>
                                     <th colspan="2"><t t-esc="svod.sorting"/>. <t t-esc="svod.korm_racion_id.stado_fiz_group_id.name"/> 
                                         <span style="font-size:14px; font-weight: normal; text-align: center;"> 
-                                            (<t t-esc="svod.kol_zamesov"/> замеса массой по <t t-esc="'%.0f'% svod.kol_korma_zames"/>. Всего: <t t-esc="'%.0f'% svod.kol_korma"/>)
+                                            (<t t-esc="svod.kol_zamesov"/> замеса массой по <t t-esc="'%.0f'% svod.kol_korma_zames"/> в расчете на <t t-esc="svod.kol_golov_zames"/> голов. Всего: <t t-esc="'%.0f'% svod.kol_korma"/>)
                                         </span>
                                     </th>
                                         
@@ -57,7 +57,7 @@
                                     <td style="width:500px;">
                                         <table class="table-bordered" style="margin: 3px;">
                                              <tr>
-                                                <th></th>
+                                                <th style="padding: 2px; text-align: right;"> Расчет на <t t-esc="svod.kol_golov_zames"/> гол.</th>
                                                 <th style="padding: 2px;">Норма</th>
                                                 <t t-foreach="range(svod.kol_zamesov)" t-as="l">
                                                     <th style="padding: 2px;">Замес <t t-esc="l+1"/></th>

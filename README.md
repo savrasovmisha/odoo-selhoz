@@ -8,6 +8,9 @@ git add %file_path%
 git commit -m "%commit_message%"
 git push origin master
 
+Скачать изменения на комп
+git pull
+
 
 Восстановить удалённый файл
 Сначала нужно найти последний коммит, где файл еще существовал:

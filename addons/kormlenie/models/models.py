@@ -773,8 +773,8 @@ class korm_korm(models.Model):
 		(u'Утро', "Утро"),
 		(u'Вечер', "Вечер"),
 	], default=u'Утро', string="Время дня")
-	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, readonly=True)
-	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", required=True, store=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True)
 	description = fields.Text(string=u"Коментарии")
 
 	@api.one

@@ -72,12 +72,23 @@ class korm_pit_standart(models.Model):
 							('nomen_nomen_id_unique', 'unique(nomen_nomen_id)', u'Питательность для такого корма уже существует!')
 						]
 
+class stado_vid_fiz_group(models.Model):
+	_name = 'stado.vid_fiz_group'
+	_description = u'Вид физиологической группы'
+	_order = 'name'
+
+	name = fields.Char(string=u"Наименование", required=True)
+	_sql_constraints = [
+							('name_unique', 'unique(name)', u'Такой вид физиологической группы уже существует!')
+						]
+
 class stado_fiz_group(models.Model):
 	_name = 'stado.fiz_group'
 	_description = u'Физиологическая группа'
 	_order = 'name'
 
 	name = fields.Char(string=u"Наименование", required=True)
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string='Вид физ. группы')
 	_sql_constraints = [
 							('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
 						]
@@ -762,8 +773,8 @@ class korm_korm(models.Model):
 		(u'Утро', "Утро"),
 		(u'Вечер', "Вечер"),
 	], default=u'Утро', string="Время дня")
-
-
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, readonly=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", required=True, store=True)
 	description = fields.Text(string=u"Коментарии")
 
 	@api.one
@@ -783,6 +794,8 @@ class korm_korm(models.Model):
 			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
 						line.kol_korma, line.procent_dachi, line.kol_golov_zagon])
 			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером
+			self.kol_golov_zagon += lene.kol_golov_zagon
+			self.kol_golov += lene.kol_golov
 
 		print d
 					
@@ -828,6 +841,7 @@ class korm_korm(models.Model):
 
 
 
+
 class korm_korm_line(models.Model):
 	_name = 'korm.korm_line'
 	_description = u'Строка Кормление'
@@ -868,12 +882,12 @@ class korm_korm_line(models.Model):
 			# 	self.kol_zamesov = 1
 			# 	self.kol_korma_zames = self.kol_korma
 
+	@api.one
+	@api.depends('korm_korm_id.date')
+	def return_date(self):
+		self.date = self.korm_korm_id.date
 
-
-
-
-		
-
+	date = fields.Date(string='Дата', store=True, compute='return_date')
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
@@ -914,10 +928,16 @@ class korm_korm_svod_line(models.Model):
 					line.kol_korma_zames = line.kol_korma	
 					line.kol_golov_zames = line.kol_golov    
 
+	@api.one
+	@api.depends('korm_korm_id.date')
+	def return_date(self):
+		self.date = self.korm_korm_id.date
+
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
 	
+	date = fields.Date(string='Дата', store=True, compute='return_date')
 	sorting = fields.Integer(string=u"Порядок", required=True, readonly=True)
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name', readonly=True)
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, readonly=True)
@@ -990,9 +1010,17 @@ class korm_korm_detail_line(models.Model):
 
 
 	raschet_formuli
+	
+	@api.one
+	@api.depends('korm_korm_id.date')
+	def return_date(self):
+		self.date = self.korm_korm_id.date
+
+
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
 	
+	date = fields.Date(string='Дата', store=True, compute='return_date')
 	sorting = fields.Integer(string=u"Порядок", required=True, readonly=True)
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)

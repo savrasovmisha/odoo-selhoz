@@ -29,6 +29,7 @@
         
         'views/korm_pit_standart.xml',
         'views/korm_analiz_pit.xml',
+        'views/stado_vid_fiz_group.xml',
         'views/stado_fiz_group.xml',
         'views/stado_zagon.xml',
         'views/korm_receptura.xml',
@@ -39,6 +40,7 @@
         'views/seq_korm_korm.xml',
         'views/korm_korm_ostatok.xml',
         'views/seq_korm_korm_ostatok.xml',
+        'reports/korm_svod_report_view.xml',
         'views/menu.xml',
         'views/resources.xml',
         

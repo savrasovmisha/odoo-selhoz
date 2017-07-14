@@ -1138,6 +1138,7 @@ class korm_korm_ostatok(models.Model):
 								'kol_golov_zagon':    sr_kol_golov_zagon,
 								'kol_korma_fakt':    kol_korma_fakt,
 								'kol_korma_norma':    kol_korma_norma,
+								'kol_korma_otk':    kol_korma_fakt-kol_korma_norma,
 								})
 
 		
@@ -1158,7 +1159,11 @@ class korm_korm_ostatok(models.Model):
 					if stado_zagon_id == line.stado_zagon_id:
 						if svod_line.kol_golov_zagon>0:
 							line.kol_ostatok = svod_line.kol_ostatok * line.kol_golov_zagon / svod_line.kol_golov_zagon
-
+						if line.kol_korma_fakt>0:
+							line.procent_ostatkov = round(line.kol_ostatok / line.kol_korma_fakt, 3) * 100
+							print 'line.kol_ostatok=',line.kol_ostatok
+							print 'line.kol_korma_fakt=',line.kol_korma_fakt
+							print 'line.procent_ostatkov=',line.procent_ostatkov
 			#Заполняем сводные данные
 								  
 			# for g in groupby( d,key=lambda x:x[1]):
@@ -1204,8 +1209,10 @@ class korm_korm_ostatok_line(models.Model):
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", store=True, readonly=True)
 	kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", store=True, readonly=True)
 	kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", store=True, readonly=True)
+	kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", store=True, readonly=True)
 	
-	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False, readonly=True)
+	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", copy=False, readonly=True)
    
 	
 	
@@ -1231,4 +1238,3 @@ class korm_korm_ostatok_svod_line(models.Model):
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", store=True, readonly=True)
 	
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
-	

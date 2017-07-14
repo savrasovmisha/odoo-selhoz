@@ -41,7 +41,9 @@
                                     <field name="kol_golov_zagon"/>
                                     <field name="kol_korma_norma"/>
                                     <field name="kol_korma_fakt"/>
+                                    <field name="kol_korma_otk"/>
                                     <field name="kol_ostatok"/>
+                                    <field name="procent_ostatkov"/>
                                     
                                     
                                     
@@ -125,7 +127,7 @@
             <field name="name">Остатки Кормления</field>
             <field name="res_model">korm.korm_ostatok</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Остатки Кормления
                 </p>

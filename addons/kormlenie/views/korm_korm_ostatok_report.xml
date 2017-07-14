@@ -1,0 +1,91 @@
+<openerp>
+    <data>
+          
+        
+
+       <template id="report_korm_ostatok_view">
+   
+            <t t-call="report.html_container">                    
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
+
+                        
+                     <h2 style="margin-top: 20px;">
+                                Остатки кормления № <t t-esc="doc.name"/> с <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                        </h2>  
+
+                            <div style="margin-top: 50px;">
+                            <table class="table" style="page-break-inside: avoid; width: 100%;">
+                                <tr>
+                                    <th> № загона </th>
+                                        
+                                    <th>Физиологическая группа</th>
+                                    <th>Кол-во остатков</th>
+                                 </tr>
+
+                        <t t-foreach="doc.korm_korm_ostatok_svod_line" t-as="svod">
+                                 <tr  style="border: 1px solid black;">
+                                    <td >
+                                        <t t-foreach="svod.stado_zagon_id" t-as="stado_zagon_id">
+                                            <t t-esc="stado_zagon_id.nomer"/>, 
+                                        </t> 
+                                    </td>
+                                    <td >
+                                        <t t-esc="svod.stado_fiz_group_id.name"/>
+                                    </td>
+                                    <td >
+                                        
+                                    </td>
+                                       
+                                   
+                                </tr>
+
+                                    
+                        </t>  
+                             </table>
+                             </div>
+                        <div style="font-size:14px; margin-top: 10px;">   
+                        Составил:  <span style='padding-left:20px;'> Мехаизатор: _____________</span>
+                        </div>
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_korm_ostatok"
+        model="korm.korm_ostatok"
+        string="Остатки кормления"
+        name="kormlenie.report_korm_ostatok_view"
+        file="kormlenie.report_korm_ostatok"
+        report_type="qweb-pdf" />
+
+
+    <!--     <record id="paperformat_lowmargin" model="report.paperformat">
+            <field name="name">European A4 low margin</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">4</field>
+            <field name="margin_bottom">4</field>
+            <field name="margin_left">4</field>
+            <field name="margin_right">4</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record> -->
+
+        <record id="kormlenie.report_korm_ostatok" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+        </record>
+
+        
+
+    </data>
+</openerp>

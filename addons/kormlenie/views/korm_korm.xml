@@ -44,6 +44,7 @@
                                     <field name="kol_golov_zagon"/>
                                     <field name="procent_dachi"/>
                                     <field name="kol_golov"/>
+                                    <field name="procent_raciona"/>
                                     <field name="kol_korma"/>
                                     <!-- <field name="kol_zamesov"/>
                                     <field name="kol_korma_zames"/> -->

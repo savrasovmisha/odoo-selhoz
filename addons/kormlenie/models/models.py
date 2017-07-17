@@ -1239,3 +1239,86 @@ class korm_korm_ostatok_svod_line(models.Model):
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", store=True, readonly=True)
 	
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False)
+
+
+
+
+class korm_potrebnost(models.Model):
+	_name = 'korm.potrebnost'
+	_description = u'Потребность в кормах'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('korm.potrebnost') or 'New'
+
+		result = super(korm_potrebnost, self).create(vals)
+		return result
+
+
+	@api.one
+	def action_raschet(self):
+		print "jjj"
+
+	
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	korm_potrebnost_zagon_line = fields.One2many('korm.potrebnost_zagon_line', 'korm_potrebnost_id', string=u"Структура стада", copy=True)
+	#korm_potrebnost_korm_line = fields.One2many('korm.potrebnost_korm_line', 'korm_potrebnost_id', string=u"Потребность в кормах")
+	#korm_potrebnost_kombikorm_line = fields.One2many('korm.potrebnost_kombikorm_line', 'korm_potrebnost_id', string=u"Расчет для комбикормов")
+	
+	
+	sostavil_id = fields.Many2one('res.partner', string='Составил')
+	utverdil_id = fields.Many2one('res.partner', string='Утвердил')
+	
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True, copy=True)
+	kol_korma = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
+	description = fields.Text(string=u"Коментарии")
+
+		
+
+
+	
+
+class korm_potrebnost_zagon_line(models.Model):
+	_name = 'korm.potrebnost_zagon_line'
+	_description = u'Структура стада'
+	#_order = 'name'
+
+
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		self.name = self.stado_zagon_id.nomer
+
+		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+		racion = self.env['korm.racion']
+		racion_id = racion.search([('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), ('date', '<=', self.korm_potrebnost_id.date)], order="date desc",limit=1).id
+		self.korm_racion_id = racion_id
+				
+		self.kol_golov = 0
+
+	@api.one
+	@api.depends('kol_golov', 'procent_raciona')
+	def _raschet(self):
+		self.kol_korma=0
+		if self.kol_golov>0 and self.korm_racion_id!=False:
+			self.kol_korma = self.korm_racion_id.kol * self.kol_golov * self.procent_raciona/100
+	
+
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
+	
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	kol_golov = fields.Integer(string=u"Ср.поголовье в сутки", store=True)
+	
+	procent_raciona = fields.Integer(string=u"% дачи рациона", store=True, default=100)
+	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
+	
+	description = fields.Text(string=u"Коментарии")
+	

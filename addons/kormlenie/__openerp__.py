@@ -42,6 +42,8 @@
         'views/korm_korm_ostatok_report.xml',
         'views/seq_korm_korm_ostatok.xml',
         'reports/korm_svod_report_view.xml',
+        'views/korm_potrebnost.xml',
+        'views/seq_korm_potrebnost.xml',
         'views/menu.xml',
         'views/resources.xml',
         

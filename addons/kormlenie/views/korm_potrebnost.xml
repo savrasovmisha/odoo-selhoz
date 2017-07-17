@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_potrebnost_form_view">
+        <field name="name">korm_potrebnost.form</field>
+        <field name="model">korm.potrebnost</field>
+        <field name="arch" type="xml">
+            <form string="Форма Потребность в кормах">
+               
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            
+                            <field name="sostavil_id" domain="[('company_type','=','person')]"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="utverdil_id" domain="[('company_type','=','person')]"/>
+                            
+                        </group>
+                     </group>
+                     <div class="oe_button_box" name="button_box">
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                               >
+                            </button>
+                        </div>
+                                    
+            
+                       
+                    <notebook>
+                        <page string="Структура стада">
+                            <field name="korm_potrebnost_zagon_line">
+                                <tree string="korm_potrebnost_zagon_line" editable="botton">
+                                    
+                                    <field name="stado_zagon_id"/>
+                                    <field name="korm_racion_id"/>
+                                    <field name="kol_golov"/>
+                                    
+                                    <field name="procent_raciona"/>
+                                    <field name="kol_korma"/>
+                                    
+                                    <field name="description" nolabel="1"/>
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                  
+                    </notebook>
+                    <group>
+                        <h2> Итого: </h2>
+                        <group>
+                            <field name="kol_korma"/>
+                            <field name="kol_golov"/>
+                        </group>
+                                       
+                    </group>
+
+                       
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>    
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_potrebnost_tree">
+            <field name="name">korm_potrebnost.tree</field>
+            <field name="model">korm.potrebnost</field>
+            <field name="arch" type="xml">
+                <tree string="Потребность в кормах">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_potrebnost_search_view">
+            <field name="name">korm_potrebnost.search</field>
+            <field name="model">korm.potrebnost</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                    
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_potrebnost_action">
+            <field name="name">Потребность в кормах</field>
+            <field name="res_model">korm.potrebnost</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Потребность в кормах
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

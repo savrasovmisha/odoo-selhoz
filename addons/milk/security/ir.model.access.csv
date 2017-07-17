@@ -23,4 +23,5 @@ access_milk_control_sale_milk_line_users,milk.control_scale_sale_milk_line users
 access_milk_trace_milk_users,milk.trace_milk users,model_milk_trace_milk,group_milk_users,1,,,
 access_excel_extended,excel.extended,model_excel_extended,group_milk_users,1,1,1,1
 access_milk_sale_milk_dashboard,milk.sale_milk_dashboard,model_milk_sale_milk_dashboard,group_milk_users,1,1,1,1
+access_milk_sale_milk_report,milk.sale_milk_report,model_milk_sale_milk_report,group_milk_users,1,1,1,1
 

@@ -793,6 +793,7 @@ class korm_korm(models.Model):
 		kol_golov=kol_golov_zagon=kol_korma=racion_id=self.kol_golov_zagon=self.kol_golov=0
 		d = []
 		for line in self.korm_korm_line:
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
 			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
 						line.kol_korma, line.procent_dachi, line.kol_golov_zagon, line.procent_raciona])
 			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером

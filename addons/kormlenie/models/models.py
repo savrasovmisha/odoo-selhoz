@@ -772,8 +772,8 @@ class korm_korm(models.Model):
 		(u'Утро', "Утро"),
 		(u'Вечер', "Вечер"),
 	], default=u'Утро', string="Время дня")
-	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True)
-	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True, copy=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 
 		
@@ -903,7 +903,7 @@ class korm_korm_line(models.Model):
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
-	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", required=True, compute='_raschet', store=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", compute='_raschet', store=True)
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True)
 	procent_dachi = fields.Integer(string=u"% дачи", store=True, compute='return_name')
 	procent_raciona = fields.Integer(string=u"% дачи рациона", store=True, default=100)

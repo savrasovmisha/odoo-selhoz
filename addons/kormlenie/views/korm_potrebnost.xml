@@ -11,28 +11,39 @@
                     <group>
                         <group>
                             <field name="name"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="kol_day"/>
                             
-                            <field name="sostavil_id" domain="[('company_type','=','person')]"/>
                         </group>
                         <group>
                             <field name="date"/>
+                            <field name="sostavil_id" domain="[('company_type','=','person')]"/>
                             <field name="utverdil_id" domain="[('company_type','=','person')]"/>
                             
                         </group>
                      </group>
+                    
                      <div class="oe_button_box" name="button_box">
-                            <button name="action_raschet"
-                                type="object"
-                                class="oe_stat_button oe_edit_only"
-                                icon="fa-refresh" string="Заполнить"
-                               >
-                            </button>
-                        </div>
+                        <button name="action_zapolnit_zagoni"
+                            type="object"
+                            class="oe_stat_button oe_edit_only"
+                            icon="fa-refresh" string="Заполнить по загонам"
+                           >
+                        </button>
+                        <button name="action_raschet"
+                            type="object"
+                            class="oe_stat_button oe_edit_only"
+                            icon="fa-refresh" string="Расчитать потребность"
+                           >
+                        </button>
+                     </div>
                                     
             
                        
                     <notebook>
                         <page string="Структура стада">
+
                             <field name="korm_potrebnost_zagon_line">
                                 <tree string="korm_potrebnost_zagon_line" editable="botton">
                                     
@@ -44,6 +55,23 @@
                                     <field name="kol_korma"/>
                                     
                                     <field name="description" nolabel="1"/>
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        <page string="Корма">
+                            <field name="korm_potrebnost_korm_line">
+                                <tree string="korm_potrebnost_zagon_line" editable="botton">
+                                    
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                          
                                     
                                     
                                                                         

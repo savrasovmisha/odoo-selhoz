@@ -1258,22 +1258,80 @@ class korm_potrebnost(models.Model):
 
 
 	@api.one
-	def action_raschet(self):
-		print "jjj"
+	def action_zapolnit_zagoni(self):
+
+		zagon_line = self.env['korm.potrebnost_zagon_line']
+		del_line = zagon_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line.unlink()
+
+
+		ras_date_start = ras_date_end = 0
+		
+		date = datetime.strptime(self.date, "%Y-%m-%d")
+		ras_date_end = date - timedelta(days=1)
+		
+		ras_date_start = ras_date_end - timedelta(days=self.kol_day)
+		#print 'ddddddddddddddd=', (ras_date_start,ras_date_end )
+		zapros = """SELECT  stado_zagon_id, 
+							max(stado_fiz_group_id),
+							max(korm_racion_id),
+							avg(kol_golov_zagon)
+					FROM korm_korm_line
+					WHERE date>='%s' and date<='%s'	
+					GROUP BY stado_zagon_id
+					Order by stado_zagon_id
+				""" %(ras_date_start.date(), ras_date_end.date())
+		#print zapros
+		self._cr.execute(zapros,)
+		zagons = self._cr.fetchall()
+		for z in zagons:
+			zagon_line.create({
+								'korm_potrebnost_id':	self.id,
+								'stado_zagon_id':	z[0],
+								'stado_fiz_group_id':	z[1],
+								'korm_racion_id':	z[2],
+								'kol_golov':	z[3],
+								})
 
 	
+	@api.one
+	def action_raschet(self):
+
+		korma_line = self.env['korm.potrebnost_korm_line']
+		del_line = korma_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line.unlink()
+
+		# zapros = """SELECT  nomen_nomen_id, 
+							
+		# 			FROM korm_racion_line
+		# 			WHERE date>='%s' and date<='%s'	
+		# 			GROUP BY stado_zagon_id
+		# 			Order by stado_zagon_id
+		# 		""" %(ras_date_start.date(), ras_date_end.date())
+		# #print zapros
+		# self._cr.execute(zapros,)
+		# zagons = self._cr.fetchall()
+
+
+
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	date_start = fields.Date(string='Дата начала', required=True, copy=False, default=fields.Datetime.now)
+	date_end = fields.Date(string='Дата окончания', required=True, copy=False)
+	
+	kol_day = fields.Integer(string=u"Расчет поголовья за, дней", default=7, store=True, copy=True)
+	
+
 	korm_potrebnost_zagon_line = fields.One2many('korm.potrebnost_zagon_line', 'korm_potrebnost_id', string=u"Структура стада", copy=True)
-	#korm_potrebnost_korm_line = fields.One2many('korm.potrebnost_korm_line', 'korm_potrebnost_id', string=u"Потребность в кормах")
+	korm_potrebnost_korm_line = fields.One2many('korm.potrebnost_korm_line', 'korm_potrebnost_id', string=u"Потребность в кормах")
 	#korm_potrebnost_kombikorm_line = fields.One2many('korm.potrebnost_kombikorm_line', 'korm_potrebnost_id', string=u"Расчет для комбикормов")
 	
 	
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
 	utverdil_id = fields.Many2one('res.partner', string='Утвердил')
 	
-	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True, copy=True)
-	kol_korma = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
+	kol_golov = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
+	kol_korma = fields.Integer(string=u"Кол-во корма", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 
 		
@@ -1321,4 +1379,28 @@ class korm_potrebnost_zagon_line(models.Model):
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
 	
 	description = fields.Text(string=u"Коментарии")
+	
+
+
+class korm_potrebnost_korm_line(models.Model):
+	_name = 'korm.potrebnost_korm_line'
+	_description = u'Строки Потребность в кормах'
+	#_order = 'name'
+
+
+	@api.one
+	def return_name(self):
+		self.name = self.nomen_nomen_id.name
+
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во", copy=False)
+	
+
 	

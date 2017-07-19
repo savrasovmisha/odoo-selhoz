@@ -1,0 +1,139 @@
+<openerp>
+    <data>
+
+
+        <template id="report_korm_potrebnost_style" inherit_id="report.style">
+          <xpath expr=".">
+            <t>
+              .table table-bordered {
+            border: 1px solid black !important;
+            }
+            </t>
+          </xpath>
+        </template>
+
+          
+        
+
+       <template id="report_korm_potrebnost_view">
+
+   
+            <t t-call="report.html_container">                    
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
+
+                        
+                     <h2 style="margin-top: 16px;">
+                                Расчет потребности в кормах № <t t-esc="doc.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                        </h2>  
+                        <h2 style="margin-top: 16px;">
+                                на <t t-esc="doc.period_day"/> дней с <span t-field="doc.date_start" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
+                                по <span t-field="doc.date_end" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
+                                 <br/>
+                        </h2>
+
+                        <div style="margin-top: 50px;">
+                            <table class="table" style="page-break-inside: avoid; width: 100%;">
+                            <tr>
+                              <td>
+                                <table class="table table-bordered" style="page-break-inside: avoid; width: 100%;">
+                                    <tr>
+                                        <th> № загона </th>
+                                            
+                                        <th>Физ. группа</th>
+                                        <th>Ср. гол. в сутки</th>
+                                        <th>% дачи рациона</th>
+                                        <th>Кол-во корма, кг</th>
+                                     </tr>
+
+                                    <t t-foreach="doc.korm_potrebnost_zagon_line" t-as="zagon">
+                                     <tr >
+                                        <td >
+                                            <t t-esc="zagon.stado_zagon_id.nomer"/> 
+                                        </td>
+                                        <td >
+                                            <t t-esc="zagon.stado_fiz_group_id.name"/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="zagon.kol_golov"/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="zagon.procent_raciona"/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="zagon.kol_korma"/>
+                                        </td>
+                                           
+                                       
+                                    </tr>
+
+                                        
+                                    </t>  
+                                 </table>
+                               </td>
+                               <td>
+                                 <table class="table table-bordered" style="page-break-inside: avoid; width: 100%;">
+                                    <tr>
+                                        <th> Группа </th>
+                                            
+                                        <th>Наименование</th>
+                                        <th>Кол-во в сутки</th>
+                                        <th>Кол-во за период</th>
+                                     </tr>
+
+                                    <t t-foreach="doc.korm_potrebnost_korm_line" t-as="korm">
+                                     <tr >
+                                        <td >
+                                            <t t-esc="korm.nomen_group_id.name"/> 
+                                        </td>
+                                        <td >
+                                            <t t-esc="korm.nomen_nomen_id.name"/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="korm.kol"/>
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="korm.kol_za_period"/>
+                                        </td>
+                                        
+                                           
+                                       
+                                    </tr>
+
+                                        
+                                    </t>  
+                                 </table>
+                               </td>
+                             </tr>
+                            </table>
+                         </div>
+                        <div style="font-size:14px; margin-top: 10px;">   
+                        Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
+                        </div>
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_korm_potrebnost"
+        model="korm.potrebnost"
+        string="Потребность в кормах"
+        name="kormlenie.report_korm_potrebnost_view"
+        file="kormlenie.report_korm_potrebnost"
+        report_type="qweb-pdf" />
+
+
+
+        <record id="kormlenie.report_korm_potrebnost" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+        </record>
+
+        
+
+    </data>
+</openerp>

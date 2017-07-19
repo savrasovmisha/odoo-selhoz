@@ -1256,6 +1256,14 @@ class korm_potrebnost(models.Model):
 		result = super(korm_potrebnost, self).create(vals)
 		return result
 
+	@api.one
+	@api.depends('date_start','date_end')
+	def get_period_day(self):
+		if self.date_start and self.date_end:
+			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
+			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
+			self.period_day = (d2-d1).days + 1
+			
 
 	@api.one
 	def action_zapolnit_zagoni(self):
@@ -1301,16 +1309,28 @@ class korm_potrebnost(models.Model):
 		del_line = korma_line.search([('korm_potrebnost_id',	'=',	self.id)])
 		del_line.unlink()
 
-		# zapros = """SELECT  nomen_nomen_id, 
-							
-		# 			FROM korm_racion_line
-		# 			WHERE date>='%s' and date<='%s'	
-		# 			GROUP BY stado_zagon_id
-		# 			Order by stado_zagon_id
-		# 		""" %(ras_date_start.date(), ras_date_end.date())
-		# #print zapros
-		# self._cr.execute(zapros,)
-		# zagons = self._cr.fetchall()
+		zapros = """SELECT r.nomen_nomen_id,
+						sum(r.kol*z.kol_golov) as kol_korma
+
+					FROM korm_racion_line r
+					left join korm_potrebnost_zagon_line z on z.korm_racion_id=r.korm_racion_id
+					WHERE r.korm_racion_id IN ( SELECT korm_racion_id 
+												FROM korm_potrebnost_zagon_line 
+												WHERE korm_potrebnost_id=%s) 
+					group by r.nomen_nomen_id
+					Order by r.nomen_nomen_id
+				""" %(self.id,)
+		#print zapros
+		self._cr.execute(zapros,)
+		korms = self._cr.fetchall()
+		for k in korms:
+			korma_line.create({
+								'korm_potrebnost_id':	self.id,
+								'nomen_nomen_id':	k[0],
+								'kol':	k[1],
+								'kol_za_period': k[1] * self.period_day,
+								})
+
 
 
 
@@ -1319,7 +1339,8 @@ class korm_potrebnost(models.Model):
 	date_start = fields.Date(string='Дата начала', required=True, copy=False, default=fields.Datetime.now)
 	date_end = fields.Date(string='Дата окончания', required=True, copy=False)
 	
-	kol_day = fields.Integer(string=u"Расчет поголовья за, дней", default=7, store=True, copy=True)
+	kol_day = fields.Integer(string=u"Расчет поголовья за, дней назад", default=7, store=True, copy=True)
+	period_day = fields.Integer(string=u"Кол-во дней в периоде", compute='get_period_day', store=True, copy=True)
 	
 
 	korm_potrebnost_zagon_line = fields.One2many('korm.potrebnost_zagon_line', 'korm_potrebnost_id', string=u"Структура стада", copy=True)
@@ -1385,22 +1406,24 @@ class korm_potrebnost_zagon_line(models.Model):
 class korm_potrebnost_korm_line(models.Model):
 	_name = 'korm.potrebnost_korm_line'
 	_description = u'Строки Потребность в кормах'
-	#_order = 'name'
+	_order = 'nomen_group_id, nomen_nomen_id'
 
 
 	@api.one
 	def return_name(self):
 		self.name = self.nomen_nomen_id.name
-
+		self.kol_za_period = self.kol * self.korm_potrebnost_id.period_day
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
 	
+	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	
-	kol = fields.Float(digits=(10, 3), string=u"Кол-во", copy=False)
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во в сутки", copy=False, readonly=True)
+	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, compute='return_name', store=True)
 	
 
 	

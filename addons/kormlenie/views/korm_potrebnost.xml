@@ -13,6 +13,7 @@
                             <field name="name"/>
                             <field name="date_start"/>
                             <field name="date_end"/>
+                            <field name="period_day"/>
                             <field name="kol_day"/>
                             
                         </group>
@@ -68,9 +69,11 @@
                             <field name="korm_potrebnost_korm_line">
                                 <tree string="korm_potrebnost_zagon_line" editable="botton">
                                     
+                                    <field name="nomen_group_id"/>
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
+                                    <field name="kol_za_period"/>
                           
                                     
                                     

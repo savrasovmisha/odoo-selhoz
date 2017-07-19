@@ -46,13 +46,13 @@
         'views/korm_potrebnost_report.xml',
         'views/seq_korm_potrebnost.xml',
         'views/menu.xml',
-        'views/resources.xml',
+        #'views/resources.xml',
         
         #'report/sale_milk_report_view.xml',
         
         #'views/templates.xml',
     ],
-    'css': ['static/css/style.css'],
+    #'css': ['static/css/style.css'],
    
 
 }

@@ -1,10 +1,10 @@
 <openerp>
     <data>
-           <template id="style">
+          <!--  <template id="style">
                 .border-black td {
                  border-top: 1px solid black !important;
                 }
-           </template>   
+           </template>  -->  
         
 
        <template id="report_korm_view">

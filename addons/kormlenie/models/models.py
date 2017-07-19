@@ -1406,24 +1406,25 @@ class korm_potrebnost_zagon_line(models.Model):
 class korm_potrebnost_korm_line(models.Model):
 	_name = 'korm.potrebnost_korm_line'
 	_description = u'Строки Потребность в кормах'
-	_order = 'nomen_group_id, nomen_nomen_id'
+	#_order = 'nomen_group_id, nomen_nomen_id'
 
 
 	@api.one
 	def return_name(self):
-		self.name = self.nomen_nomen_id.name
-		self.kol_za_period = self.kol * self.korm_potrebnost_id.period_day
+		if self.nomen_nomen_id:
+			self.name = self.nomen_nomen_id.name
+		#self.kol_za_period = self.kol * self.korm_potrebnost_id.period_day
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
 	
-	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
+	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во в сутки", copy=False, readonly=True)
-	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, compute='return_name', store=True)
+	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, readonly=True, store=True)
 	
 
 	

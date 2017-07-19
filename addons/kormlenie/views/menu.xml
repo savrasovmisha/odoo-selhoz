@@ -23,6 +23,9 @@
         <menuitem id="korm_korm_ostatok_menu" name="Остатки кормления" parent="korm_menu_doc" action="korm_korm_ostatok_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" parent="korm_menu_doc" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_svod_report_menu" name="Анализ кормления" parent="korm_menu_doc"
+                  action="korm_svod_report_action" groups="group_korm_manager,group_korm_users"/>
 <!--
          Левое меню
 -->

@@ -1331,7 +1331,10 @@ class korm_potrebnost(models.Model):
 								'kol_za_period': k[1] * self.period_day,
 								})
 
-
+		self.kol_golov = self.kol_korma = 0
+		for line in self.korm_potrebnost_zagon_line:
+			self.kol_golov += line.kol_golov
+			self.kol_korma += line.kol_korma
 
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
@@ -1406,7 +1409,7 @@ class korm_potrebnost_zagon_line(models.Model):
 class korm_potrebnost_korm_line(models.Model):
 	_name = 'korm.potrebnost_korm_line'
 	_description = u'Строки Потребность в кормах'
-	#_order = 'nomen_group_id, nomen_nomen_id'
+	_order = 'sorting_group, sorting_name'
 
 
 	@api.one
@@ -1415,6 +1418,11 @@ class korm_potrebnost_korm_line(models.Model):
 			self.name = self.nomen_nomen_id.name
 		#self.kol_za_period = self.kol * self.korm_potrebnost_id.period_day
 
+	# @api.multi
+	# def return_sorting(self):
+	# 	for line in self:
+	# 		line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
+	# 		print 'ddddddddddddddddd=====', line.sorting
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
@@ -1425,6 +1433,8 @@ class korm_potrebnost_korm_line(models.Model):
 	
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во в сутки", copy=False, readonly=True)
 	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, readonly=True, store=True)
-	
+	#поля для сортировки
+	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
+	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)
 
 	

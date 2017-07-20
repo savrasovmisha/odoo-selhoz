@@ -9,7 +9,7 @@
                 <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
                 <t t-foreach="docs" t-as="doc">
                     <t>          
-                     <div class="page" style="font-size:16px;">   
+                     <div class="page" style="font-size:20px;">   
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         
@@ -18,7 +18,7 @@
                         </h2>  
 
                             <div style="margin-top: 50px;">
-                            <table class="table table-bordered" style="page-break-inside: avoid; width: 100%;">
+                            <table class="table table-bordered  table-condensed" style="page-break-inside: avoid; width: 100%;">
                                 <tr>
                                     <th> № загона </th>
                                         

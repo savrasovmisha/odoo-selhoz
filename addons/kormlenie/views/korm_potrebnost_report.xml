@@ -1,11 +1,11 @@
 <openerp>
     <data>
 
-         
+
         
 
        <template id="report_korm_potrebnost_view">
-
+            
    
             <t t-call="report.html_container">                    
                 <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
@@ -15,24 +15,24 @@
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         
-                     <h2 style="margin-top: 16px;">
+                     <h3 style="margin-top: 18px;">
                                 Расчет потребности в кормах № <t t-esc="doc.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
-                        </h2>  
-                        <h2 style="margin-top: 16px;">
+                        </h3>  
+                        <h3 style="margin-top: 18px;">
                                 на <t t-esc="doc.period_day"/> дней с <span t-field="doc.date_start" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
                                 по <span t-field="doc.date_end" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
                                  <br/>
-                        </h2>
+                        </h3>
 
-                        <div style="margin-top: 50px;">
+                        <div style="margin-top: 30px;">
                             <table class="table" style="page-break-inside: avoid; width: 100%;">
                             <tr>
-                              <td>
-                                <table class="table table-bordered" style="page-break-inside: avoid; width: 100%;">
+                              <td style="width: 30%;">
+                                <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
                                     <tr>
                                         <th> № загона </th>
                                             
-                                        <th>Физ. группа</th>
+                                        <!-- <th>Физ. группа</th> -->
                                         <th>Ср. гол. в сутки</th>
                                         <th>% дачи рациона</th>
                                         <th>Кол-во корма, кг</th>
@@ -43,16 +43,16 @@
                                         <td >
                                             <t t-esc="zagon.stado_zagon_id.nomer"/> 
                                         </td>
-                                        <td >
+                                        <!-- <td >
                                             <t t-esc="zagon.stado_fiz_group_id.name"/>
-                                        </td>
-                                        <td align="center">
+                                        </td> -->
+                                        <td align="right">
                                             <t t-esc="zagon.kol_golov"/>
                                         </td>
-                                        <td align="center">
+                                        <td align="right">
                                             <t t-esc="zagon.procent_raciona"/>
                                         </td>
-                                        <td align="center">
+                                        <td align="right">
                                             <t t-esc="zagon.kol_korma"/>
                                         </td>
                                            
@@ -63,8 +63,8 @@
                                     </t>  
                                  </table>
                                </td>
-                               <td>
-                                 <table class="table table-bordered" style="page-break-inside: avoid; width: 100%;">
+                               <td style="width: 60%;">
+                                 <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
                                     <tr>
                                         <th> Группа </th>
                                             
@@ -81,10 +81,10 @@
                                         <td >
                                             <t t-esc="korm.nomen_nomen_id.name"/>
                                         </td>
-                                        <td align="center">
+                                        <td align="right">
                                             <t t-esc="korm.kol"/>
                                         </td>
-                                        <td align="center">
+                                        <td align="right">
                                             <t t-esc="korm.kol_za_period"/>
                                         </td>
                                         
@@ -98,6 +98,8 @@
                                </td>
                              </tr>
                             </table>
+                            Итого в сутки: голов <t t-esc="doc.kol_golov"/> 
+                            корма <t t-esc="doc.kol_korma"/>
                          </div>
                         <div style="font-size:14px; margin-top: 10px;">   
                         Составил:  <span style='padding-left:20px;'> _______________: _____________</span>

@@ -325,6 +325,7 @@ class korm_receptura(models.Model):
 				self[par] += line.kol * line.korm_analiz_pit_id[par]
 			
 		if self.amount>0:
+			
 			for par in parametrs:
 				self[par] = self[par]/self.amount
 
@@ -345,6 +346,17 @@ class korm_receptura(models.Model):
 			self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 
+	@api.one
+	def action_raschet(self):
+		
+		if self.amount>0:
+			
+			k = round(1000 / self.amount, 3)
+		
+			for line in self.korm_receptura_line:
+				line.kol_tonna = k * line.kol
+				line.procent = line.kol_tonna / 1000 * 100
+				#print "ffffffffsssssssss========", r.kol_tonna
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
@@ -353,7 +365,8 @@ class korm_receptura(models.Model):
 	#korm_analiz_pit_id = fields.One2many('korm.analiz_pit', 'korm_receptura_id', string=u"Анализ кормов")
 	korm_receptura_line = fields.One2many('korm.receptura_line', 'korm_receptura_id', string=u"Строка Рецептура комбикормов")
 	amount = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
-
+	active = fields.Boolean(string=u"Используется", default=True)
+	
 	ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
 	sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
 	oe = fields.Float(digits=(10, 2), string=u"ОЭ", store=True, compute='_raschet')
@@ -426,7 +439,21 @@ class korm_receptura_line(models.Model):
 			analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
 			self.korm_analiz_pit_id = analiz_id
 
-			
+	#@api.onchange('kol')
+	# @api.one
+	# def _raschet_tonna(self):
+	# 	self.kol_tonna = 100 * self.kol
+		# amount = self.korm_receptura_id.amount
+		# # for line in self:
+		# # 	amount += line.kol
+		# print "werwrwerwerwer========", amount
+		# # for line in self:
+		# if amount>0:
+		# 	k = round(1000 / amount, 3)
+		# 	self.kol_tonna = k * self.kol
+		# 	self.procent = self.kol_tonna / 1000 * 100
+
+
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
@@ -435,7 +462,9 @@ class korm_receptura_line(models.Model):
 	korm_receptura_id = fields.Many2one('korm.receptura', ondelete='cascade', string=u"Рецептура комбикормов", required=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
-   
+	kol_tonna = fields.Float(digits=(10, 3), string=u"Кол-во на тонну", store=True, readonly=True)
+	procent = fields.Float(digits=(10, 1), string=u"%", store=True, readonly=True)
+
 
 
 

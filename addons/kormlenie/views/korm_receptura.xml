@@ -10,6 +10,7 @@
                     <group>
                         <group>
                             <field name="nomen_nomen_id"/>
+                            <field name="active"/>
                             
                         </group>
                         <group>
@@ -17,7 +18,14 @@
                         </group>
                      </group>
                    
-                    
+                      <div class="oe_button_box" name="button_box">
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Расчитать"
+                               >
+                            </button>
+                        </div>
                        
                             <notebook>
                                 <page string="Состав комбикорма">
@@ -27,6 +35,8 @@
                                             <field name="korm_analiz_pit_id"/>
                                             <field name="ed_izm_id"/>
                                             <field name="kol"/>
+                                            <field name="kol_tonna"/>
+                                            <field name="procent"/>
                                                                                 
                                         </tree>
                                     </field>
@@ -174,6 +184,7 @@
             <field name="arch" type="xml">
                 <tree string="Рецептура комбикорма">
                     
+                    <field name="active"/>
                     <field name="date"/>
                     <field name="nomen_nomen_id"/>
                   

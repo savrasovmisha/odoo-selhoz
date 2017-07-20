@@ -24,15 +24,26 @@
 
         <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" parent="korm_menu_doc" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_svod_report_menu" name="Анализ кормления" parent="korm_menu_doc"
-                  action="korm_svod_report_action" groups="group_korm_manager,group_korm_users"/>
+        
+
+        
 <!--
          Левое меню
 -->
-       
+        <menuitem id="korm_menu_report" name="Отчеты" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_receptura_report_menu" name="Анализ комбикормов" parent="korm_menu_report" action="korm_receptura_report_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_svod_report_menu" name="Анализ кормления" parent="korm_menu_report"
+                  action="korm_svod_report_action" groups="group_korm_manager,group_korm_users"/>
 
 
-        <menuitem id="korm_menu" name="Справочники" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+
+
+
+
+
+        <menuitem id="korm_menu" name="Справочники" sequence="3" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>
 

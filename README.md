@@ -45,3 +45,9 @@ List of Domain operators: ! (Not), | (Or), & (And)
 _sql_constraints = [
 						    ('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
 						]
+
+
+
+
+Если не отображаются свойства css при формировании отчета, например table-bordered не выводит линии и т.п, то необходимо в режиме debug зайти в Настройки - Структура БД - Вложения
+Найти web_editor.assets_editor.js и удалить его

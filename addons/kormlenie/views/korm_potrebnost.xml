@@ -71,6 +71,26 @@
                                     
                                     <field name="nomen_group_id"/>
                                     <field name="nomen_nomen_id"/>
+                                    <field name="korm_receptura_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="kol_za_period"/>
+                          
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        <page string="Состав комбикорма">
+                            <field name="korm_potrebnost_kombikorm_line">
+                                <tree string="korm_potrebnost_zagon_line" editable="botton">
+                                    
+                                    <field name="nomen_group_id"/>
+                                    <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
                                     <field name="kol_za_period"/>

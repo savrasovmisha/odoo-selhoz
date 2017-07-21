@@ -101,6 +101,56 @@
                             Итого в сутки: голов <t t-esc="doc.kol_golov"/> 
                             корма <t t-esc="doc.kol_korma"/>
                          </div>
+                         <div style="font-size:14px; margin-top: 10px;">   
+                        Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
+                        </div>
+
+
+
+
+
+                        <div style="margin-top: 30px;page-break-inside: avoid; width: 100%;">
+                            <h3 style="margin-top: 18px;">
+                                    Расчет потребности в ингридиентах для производства комбикормов к Расчету № <t t-esc="doc.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                            </h3>  
+                            <h3 style="margin-top: 18px;">
+                                    на <t t-esc="doc.period_day"/> дней с <span t-field="doc.date_start" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
+                                    по <span t-field="doc.date_end" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
+                                     <br/>
+                            </h3>
+                                 <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
+                                    <tr>
+                                        <th> Группа </th>
+                                            
+                                        <th>Наименование</th>
+                                        <th>Кол-во в сутки</th>
+                                        <th>Кол-во за период</th>
+                                     </tr>
+
+                                    <t t-foreach="doc.korm_potrebnost_kombikorm_line" t-as="korm">
+                                     <tr >
+                                        <td >
+                                            <t t-esc="korm.nomen_group_id.name"/> 
+                                        </td>
+                                        <td >
+                                            <t t-esc="korm.nomen_nomen_id.name"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="korm.kol"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="korm.kol_za_period"/>
+                                        </td>
+                                        
+                                           
+                                       
+                                    </tr>
+
+                                        
+                                    </t>  
+                                 </table>
+                        
+                         </div>
                         <div style="font-size:14px; margin-top: 10px;">   
                         Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
                         </div>

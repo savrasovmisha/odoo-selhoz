@@ -1156,10 +1156,14 @@ class korm_korm_ostatok(models.Model):
 					#kol_korma_norma += korm_korm_svod_line_id.kol_korma * kol_golov_zagon / korm_korm_svod_line_id.kol_golov_zagon
 
 			if k>0: sr_kol_golov_zagon = sum_kol_golov_zagon/k
-			print stado_zagon_ids
+			#print stado_zagon_ids
 
+			#Находим предыдущий документ и смотрим какой там был остаток
+			korm_ostatok = self.env['korm.korm_ostatok']
+			prev_korm_ostatok_id = korm_ostatok.search([('date', '<', self.date)], order="date desc",limit=1).id
 
-
+			procent_ostatkov_prev = line.search([('korm_korm_ostatok_id', '=', prev_korm_ostatok_id), 
+													  ('stado_zagon_id', '=', stado_zagon_id)],limit=1).procent_ostatkov
 
 			line.create({'korm_korm_ostatok_id':   self.id,
 								'name': self.name,
@@ -1169,6 +1173,7 @@ class korm_korm_ostatok(models.Model):
 								'kol_korma_fakt':    kol_korma_fakt,
 								'kol_korma_norma':    kol_korma_norma,
 								'kol_korma_otk':    kol_korma_fakt-kol_korma_norma,
+								'procent_ostatkov_prev':    procent_ostatkov_prev,
 								})
 
 		
@@ -1180,7 +1185,7 @@ class korm_korm_ostatok(models.Model):
 				for line in self.korm_korm_ostatok_line:
 					if stado_zagon_id == line.stado_zagon_id:
 						kol_golov_zagon += line.kol_golov_zagon
-						print 'kol_golov_zagon=',line.kol_golov_zagon
+						#print 'kol_golov_zagon=',line.kol_golov_zagon
 			svod_line.kol_golov_zagon = kol_golov_zagon
 
 		for svod_line in self.korm_korm_ostatok_svod_line:
@@ -1191,9 +1196,9 @@ class korm_korm_ostatok(models.Model):
 							line.kol_ostatok = svod_line.kol_ostatok * line.kol_golov_zagon / svod_line.kol_golov_zagon
 						if line.kol_korma_fakt>0:
 							line.procent_ostatkov = round(line.kol_ostatok / line.kol_korma_fakt, 3) * 100
-							print 'line.kol_ostatok=',line.kol_ostatok
-							print 'line.kol_korma_fakt=',line.kol_korma_fakt
-							print 'line.procent_ostatkov=',line.procent_ostatkov
+							#print 'line.kol_ostatok=',line.kol_ostatok
+							#print 'line.kol_korma_fakt=',line.kol_korma_fakt
+							#print 'line.procent_ostatkov=',line.procent_ostatkov
 			#Заполняем сводные данные
 								  
 			# for g in groupby( d,key=lambda x:x[1]):
@@ -1243,6 +1248,7 @@ class korm_korm_ostatok_line(models.Model):
 	
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False, readonly=True)
 	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", copy=False, readonly=True)
+	procent_ostatkov_prev = fields.Float(digits=(10, 1), string=u"% ост. пред. день", copy=False, readonly=True)
    
 	
 	
@@ -1338,6 +1344,10 @@ class korm_potrebnost(models.Model):
 		del_line = korma_line.search([('korm_potrebnost_id',	'=',	self.id)])
 		del_line.unlink()
 
+		kombikorm_line = self.env['korm.potrebnost_kombikorm_line']
+		del_line = kombikorm_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line.unlink()
+
 		zapros = """SELECT r.nomen_nomen_id,
 						sum(r.kol*z.kol_golov) as kol_korma
 
@@ -1353,9 +1363,13 @@ class korm_potrebnost(models.Model):
 		self._cr.execute(zapros,)
 		korms = self._cr.fetchall()
 		for k in korms:
+			receptura = self.env['korm.receptura']
+			receptura_id = receptura.search([('nomen_nomen_id', '=',k[0]), ('date', '<=', self.date)], order="date desc",limit=1).id
+	
 			korma_line.create({
 								'korm_potrebnost_id':	self.id,
 								'nomen_nomen_id':	k[0],
+								'korm_receptura_id':	receptura_id,
 								'kol':	k[1],
 								'kol_za_period': k[1] * self.period_day,
 								})
@@ -1364,6 +1378,33 @@ class korm_potrebnost(models.Model):
 		for line in self.korm_potrebnost_zagon_line:
 			self.kol_golov += line.kol_golov
 			self.kol_korma += line.kol_korma
+
+
+		zapros = """SELECT r.nomen_nomen_id,
+						sum(r.kol*z.kol/l.amount) as kol_korma
+
+					FROM korm_receptura_line r
+					left join korm_potrebnost_korm_line z on z.korm_receptura_id=r.korm_receptura_id
+					left join korm_receptura l on l.id=r.korm_receptura_id
+					WHERE r.korm_receptura_id IN ( SELECT korm_receptura_id 
+												FROM korm_potrebnost_korm_line 
+												WHERE korm_potrebnost_id=%s and korm_receptura_id>0) 
+					group by r.nomen_nomen_id
+					Order by r.nomen_nomen_id
+				""" %(self.id,)
+		#print zapros
+		self._cr.execute(zapros,)
+		kombikorms = self._cr.fetchall()
+		for k in kombikorms:
+			
+			kombikorm_line.create({
+								'korm_potrebnost_id':	self.id,
+								'nomen_nomen_id':	k[0],
+								'kol':	k[1],
+								'kol_za_period': k[1] * self.period_day,
+								})
+
+
 
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
@@ -1377,7 +1418,7 @@ class korm_potrebnost(models.Model):
 
 	korm_potrebnost_zagon_line = fields.One2many('korm.potrebnost_zagon_line', 'korm_potrebnost_id', string=u"Структура стада", copy=True)
 	korm_potrebnost_korm_line = fields.One2many('korm.potrebnost_korm_line', 'korm_potrebnost_id', string=u"Потребность в кормах")
-	#korm_potrebnost_kombikorm_line = fields.One2many('korm.potrebnost_kombikorm_line', 'korm_potrebnost_id', string=u"Расчет для комбикормов")
+	korm_potrebnost_kombikorm_line = fields.One2many('korm.potrebnost_kombikorm_line', 'korm_potrebnost_id', string=u"Расчет для комбикормов")
 	
 	
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
@@ -1459,11 +1500,42 @@ class korm_potrebnost_korm_line(models.Model):
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
 	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	korm_receptura_id = fields.Many2one('korm.receptura', string=u"Рецептура", readonly=True,  store=True)
 	
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во в сутки", copy=False, readonly=True)
 	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, readonly=True, store=True)
 	#поля для сортировки
 	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
 	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)
-
+		
 	
+class korm_potrebnost_kombikorm_line(models.Model):
+	_name = 'korm.potrebnost_kombikorm_line'
+	_description = u'Строки Потребность для производства комбикормов'
+	_order = 'sorting_group, sorting_name'
+
+
+	@api.one
+	def return_name(self):
+		if self.nomen_nomen_id:
+			self.name = self.nomen_nomen_id.name
+		#self.kol_za_period = self.kol * self.korm_potrebnost_id.period_day
+
+	# @api.multi
+	# def return_sorting(self):
+	# 	for line in self:
+	# 		line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
+	# 		print 'ddddddddddddddddd=====', line.sorting
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
+	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во в сутки", copy=False, readonly=True)
+	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, readonly=True, store=True)
+	#поля для сортировки
+	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
+	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)

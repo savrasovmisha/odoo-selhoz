@@ -44,6 +44,7 @@
                                     <field name="kol_korma_otk"/>
                                     <field name="kol_ostatok"/>
                                     <field name="procent_ostatkov"/>
+                                    <field name="procent_ostatkov_prev"/>
                                     
                                     
                                     

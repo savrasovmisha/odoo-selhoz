@@ -26,6 +26,7 @@
     'data': [
         'security/korm_security.xml',
         'security/ir.model.access.csv',
+        #'views/resources.xml',
         
         'views/korm_pit_standart.xml',
         'views/korm_analiz_pit.xml',
@@ -47,7 +48,6 @@
         'views/korm_potrebnost_report.xml',
         'views/seq_korm_potrebnost.xml',
         'views/menu.xml',
-        #'views/resources.xml',
         
         #'report/sale_milk_report_view.xml',
         

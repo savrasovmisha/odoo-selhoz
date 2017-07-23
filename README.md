@@ -51,3 +51,9 @@ _sql_constraints = [
 
 Если не отображаются свойства css при формировании отчета, например table-bordered не выводит линии и т.п, то необходимо в режиме debug зайти в Настройки - Структура БД - Вложения
 Найти web_editor.assets_editor.js и удалить его
+
+Если не помогла смотрим ошибки в логах:
+2017-07-20 17:12:47,917 10155 INFO db openerp.addons.base.ir.ir_attachment: _read_file reading /var/lib/odoo/.local/share/Odoo/filestore/evikaagro/7d/7d7ddab2ebe
+efedcf8be9e6b4fa5663529e619de
+Выполняем в БД:
+delete FROM "public"."ir_attachment" WHERE "public"."ir_attachment"."store_fname" LIKE '%efedcf8be9e6b4fa5663529e619de%'

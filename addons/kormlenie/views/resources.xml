@@ -2,7 +2,7 @@
 <openerp>
     <data>
 	<!-- Adds all assets in Odoo -->
-        <template id="korm_assets_backend" name="korm assets" inherit_id="report.assets_pdf">
+        <template id="korm_assets_backend" name="korm assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
 		         <!-- All links to CSS and JS files should be added in here. -->
 		         <link rel="stylesheet" href="/kormlenie/static/src/css/korm.css"/>

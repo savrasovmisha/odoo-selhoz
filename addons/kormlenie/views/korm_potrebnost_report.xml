@@ -1,17 +1,22 @@
 <openerp>
     <data>
 
-
+   
         
 
        <template id="report_korm_potrebnost_view">
+          
+
             
    
-            <t t-call="report.html_container">                    
+            <t t-call="report.html_container">   
+
+
+
                 <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
                 <t t-foreach="docs" t-as="doc">
                     <t>          
-                     <div class="page" style="font-size:16px;">   
+                     <div class="page korm" style="font-size:16px;">   
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         

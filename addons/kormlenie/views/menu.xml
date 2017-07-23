@@ -44,6 +44,10 @@
 
 
         <menuitem id="korm_menu" name="Справочники" sequence="3" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+        
+
+        <menuitem id="korm_nomen_nomen_list_menu" name="Номенклатура" parent="korm_menu" action="sklad.nomen_nomen_list_action" groups="group_korm_manager,group_korm_users"/>
+
 
         <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>
 

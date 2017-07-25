@@ -1,0 +1,51 @@
+<openerp>
+    <data>
+
+   
+        
+
+       <template id="report_korm_buh_report_view">
+          
+
+            
+   
+            <t t-call="report.html_container">   
+
+
+
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
+
+                        
+                        <t t-esc="doc.date" /> 
+                        <t t-esc="doc.stado_vid_fiz_group_id" /> 
+                        
+                        Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
+                        
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_korm_buh_report"
+        model="korm.buh_report"
+        string="Отчетность в бухгалтерию"
+        name="kormlenie.report_korm_buh_report_view"
+        file="kormlenie.report_korm_buh_report"
+        report_type="qweb-pdf" />
+
+
+
+        <record id="kormlenie.report_korm_buh_report" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+        </record>
+
+        
+
+    </data>
+</openerp>

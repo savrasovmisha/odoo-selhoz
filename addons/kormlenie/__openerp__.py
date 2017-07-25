@@ -47,6 +47,8 @@
         'views/korm_potrebnost.xml',
         'views/korm_potrebnost_report.xml',
         'views/seq_korm_potrebnost.xml',
+        'reports/korm_buh_report.xml',
+        'reports/korm_buh_report_view.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

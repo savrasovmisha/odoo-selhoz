@@ -97,3 +97,65 @@ class korm_receptura_report(models.Model):
 
                 )
         """ % self.pool['res.currency']._select_companies_rates())
+
+
+
+class korm_buh_report(models.Model):
+    _name = "korm.buh_report"
+    _description = "Korm buh report"
+    #_auto = False
+    # _rec_name = 'nomen_nomen_id'
+
+    
+    date = fields.Date(string='Дата')
+    # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
+    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+
+    month = fields.Text(string=u"Месяц")
+    year = fields.Text(string=u"Год")
+    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+    
+    # _order = 'nomen_nomen_id desc'
+    @api.multi
+    def report_print(self):
+        datas = {"date":self.date, "stado_vid_fiz_group_id":self.stado_vid_fiz_group_id[0].name}
+        s = self.read()
+        print s
+
+        return {
+                    'type': 'ir.actions.report.xml',
+                    'report_name': 'kormlenie.report_korm_buh_report_view',
+                    'datas': datas,
+                }
+
+
+    # def init(self, cr):
+    #     tools.sql.drop_view_if_exists(cr, self._table)
+    #     cr.execute("""
+    #         create or replace view korm_korm_svod_report as (
+    #             WITH currency_rate as (%s)
+    #             select 
+    #                 s.id as id,
+    #                 s.date as date,
+    #                 to_char(s.date, 'MM') as month,
+    #                 to_char(s.date, 'YYYY') as year,
+    #                 s.nomen_nomen_id as nomen_nomen_id,
+                    
+    #                 s.kol_norma as kol_norma,
+    #                 s.kol_fakt as kol_fakt,
+    #                 sv.kol_golov,
+    #                 kl.stado_fiz_group_id,
+    #                 fg.stado_vid_fiz_group_id
+                    
+    #             from korm_korm_detail_line s
+    #             left join korm_korm_svod_line sv on 
+    #                                     ( sv.korm_korm_id = s.korm_korm_id and 
+    #                                         sv.sorting = s.sorting)
+    #             left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
+    #                                         kl.sorting = s.sorting)
+    #             left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+
+    #             )
+    #     """ % self.pool['res.currency']._select_companies_rates())
+

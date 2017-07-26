@@ -21,6 +21,9 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'sklad', 'milk','report'],
+    "external_dependencies": {
+            'python': ['pandas']
+       },
 
     # always loaded
     'data': [

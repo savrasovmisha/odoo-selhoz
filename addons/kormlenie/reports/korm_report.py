@@ -117,11 +117,51 @@ class korm_buh_report(models.Model):
     #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     
     # _order = 'nomen_nomen_id desc'
+
+    def get_list(self):
+        zapros = """ SELECT 
+                        n.name,
+                        v.date, 
+                        v.nomen_nomen_id, 
+                        
+                        v.kol_fakt 
+                         
+                    FROM korm_korm_svod_report v
+                    left join nomen_nomen n on (v.nomen_nomen_id=n.id)
+                    limit 20; """ #%(self.id,)
+        #print zapros
+        self._cr.execute(zapros,)
+        korms = self._cr.fetchall()
+
+        print korms
+        
+        try:
+            from pandas import DataFrame, pivot_table, np
+        except ImportError:
+            pass
+        datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+        table = pivot_table(datas, values='kol_fakt', index=['date'],
+                columns=['name'], aggfunc=np.sum)
+
+        print table
+
+        return [{'dd':'dddddd'},]
+
     @api.multi
     def report_print(self):
-        datas = {"date":self.date, "stado_vid_fiz_group_id":self.stado_vid_fiz_group_id[0].name}
+        vid1 = self.read()
+        
+        datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
         s = self.read()
         print s
+
+        data = self.read()[0]
+        datas = {
+            'ids': self.ids,
+            'model': 'korm.buh_report',
+            'form': data,
+            'get_list': self.get_list()
+        }
 
         return {
                     'type': 'ir.actions.report.xml',

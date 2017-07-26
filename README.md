@@ -57,3 +57,11 @@ _sql_constraints = [
 efedcf8be9e6b4fa5663529e619de
 Выполняем в БД:
 delete FROM "public"."ir_attachment" WHERE "public"."ir_attachment"."store_fname" LIKE '%efedcf8be9e6b4fa5663529e619de%'
+
+
+
+
+@api.depends('line_ids.value')
+def _compute_total(self):
+    for record in self:
+        record.total = sum(line.value for line in record.line_ids)

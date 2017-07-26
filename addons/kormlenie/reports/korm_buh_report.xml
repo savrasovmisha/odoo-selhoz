@@ -20,8 +20,12 @@
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         
-                        <t t-esc="doc.date" /> 
-                        <t t-esc="doc.stado_vid_fiz_group_id" /> 
+                        <t t-esc="doc.date" /> <br/>
+                       <t t-esc="doc.stado_vid_fiz_group_id.name" /> <br/>
+
+                        <t t-foreach="doc.get_list()" t-as="a">
+                            <span t-esc="a['dd']"/>
+                        </t>
                         
                         Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
                         

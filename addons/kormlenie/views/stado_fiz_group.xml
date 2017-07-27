@@ -29,6 +29,7 @@
                     
                     
                     <field name="name"/>
+                    <field name="stado_vid_fiz_group_id"/>
                   
                     
                     

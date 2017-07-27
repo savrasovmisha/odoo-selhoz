@@ -1233,12 +1233,19 @@ class korm_korm_ostatok_line(models.Model):
 	@api.one
 	def return_name(self):
 		self.name = self.stado_zagon_id.nomer
+
+	#@api.multi
+	@api.depends('korm_korm_ostatok_id.date')
+	def return_date(self):
+		for rec in self:
+			rec.date = rec.korm_korm_ostatok_id.date
 		
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
 	
+	date = fields.Date(string='Дата', store=True, compute='return_date')
 	stado_zagon_id = fields.Many2one('stado.zagon', readonly=True, string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, compute='return_name')
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", store=True, readonly=True)

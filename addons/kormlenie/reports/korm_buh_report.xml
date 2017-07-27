@@ -23,9 +23,9 @@
                         <t t-esc="doc.date" /> <br/>
                        <t t-esc="doc.stado_vid_fiz_group_id.name" /> <br/>
 
-                        <t t-foreach="doc.get_list()" t-as="a">
-                            <span t-esc="a['dd']"/>
-                        </t>
+                        <!-- <t t-foreach="doc.get_list()" t-as="a"> -->
+                           <!--  <span t-esc="doc.get_list()"/> -->
+                       <!--  </t> -->
                         
                         Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
                         

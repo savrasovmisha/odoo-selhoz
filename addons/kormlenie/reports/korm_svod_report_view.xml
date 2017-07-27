@@ -12,6 +12,7 @@
                  
                  <field name="kol_norma" type="measure"/>
                  <field name="kol_fakt" type="measure"/>
+                 <field name="kol_otk" type="measure"/>
                  <!-- <field name="otk_zachet" type="measure"/> -->
                  
              </pivot>
@@ -26,12 +27,7 @@
         <field name="model">korm.korm_svod_report</field>
         <field name="arch" type="xml">
             <search string="Анализ кормления">
-                <!-- <field name="date_ucheta"/>
-                <filter string="This Year" name="year" invisible="1" domain="[('year','&lt;=', time.strftime('%%Y-12-31')),('date_ucheta','&gt;=',time.strftime('%%Y-01-01'))]"/> -->
-                <!-- <filter name="fact_zachet" string="Quotations"/> -->
-                
-                <separator/>
-                <!-- <field name="partner_id"/> -->
+            
                 
                 
             </search>

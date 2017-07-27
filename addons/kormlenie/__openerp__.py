@@ -21,9 +21,9 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'sklad', 'milk','report'],
-    "external_dependencies": {
-            'python': ['pandas']
-       },
+    # "external_dependencies": {
+    #         'python': ['pandas']
+    #    },
 
     # always loaded
     'data': [
@@ -50,8 +50,8 @@
         'views/korm_potrebnost.xml',
         'views/korm_potrebnost_report.xml',
         'views/seq_korm_potrebnost.xml',
-        'reports/korm_buh_report.xml',
-        'reports/korm_buh_report_view.xml',
+        #'reports/korm_buh_report.xml',
+        #'reports/korm_buh_report_view.xml',
         'views/menu.xml',
         
         #'report/sale_milk_report_view.xml',

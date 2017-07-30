@@ -1062,7 +1062,7 @@ class korm_korm_detail_line(models.Model):
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", readonly=True)
-	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", default=0.0)
 	formula = fields.Char(string=u"Формула сложения")
 	description = fields.Text(string=u"Коментарии")
 

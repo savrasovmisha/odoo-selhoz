@@ -25,7 +25,6 @@
     #         'python': ['pandas']
     #    },
 
-    #'update_xml': ["update.sql",],
     # always loaded
     'data': [
         'security/korm_security.xml',
@@ -59,6 +58,7 @@
         
         #'views/templates.xml',
     ],
+    'update_xml': ["update.sql",],
     #'css': ['static/css/style.css'],
    
 

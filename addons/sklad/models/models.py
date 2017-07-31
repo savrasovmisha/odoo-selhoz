@@ -41,6 +41,7 @@ class nomen_group(models.Model):
 class nomen_nomen(models.Model):
     _name = 'nomen.nomen'
     _description = u'Номенклатура'
+    _order = 'name'
 
     name = fields.Char(string=u"Наименование", required=True)
     nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)

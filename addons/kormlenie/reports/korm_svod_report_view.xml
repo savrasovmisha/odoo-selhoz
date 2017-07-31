@@ -13,6 +13,7 @@
                  <field name="kol_norma" type="measure"/>
                  <field name="kol_fakt" type="measure"/>
                  <field name="kol_otk" type="measure"/>
+                 <field name="kol_racion" type="measure"/>
                  <!-- <field name="otk_zachet" type="measure"/> -->
                  
              </pivot>

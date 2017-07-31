@@ -11,17 +11,31 @@ class korm_svod_report(models.Model):
     _description = "Korm Statistics"
     _auto = False
     _rec_name = 'nomen_nomen_id'
+    _order = 'nomen_nomen_id'
 
     
     date = fields.Date(string='Дата')
     name = fields.Char(string='Номер')
     
     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+    #nomen_name = fields.Char(string='Номенклатура')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
     kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
+    kol_racion = fields.Float(digits=(10, 3), string=u"Кол-во по рациону")
     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
     kol_otk = fields.Float(digits=(10, 3), string=u"Кол-во отклонение")
+    kol_otk_racion = fields.Float(digits=(10, 3), string=u"Кол-во откл. от рациона")
+
+
+
+    price = fields.Float(digits=(10, 2), string=u"Цена" , group_operator="avg")
+    # amount_norma = fields.Float(digits=(10, 2), string=u"Сумма по норме")
+    # amount_racion = fields.Float(digits=(10, 2), string=u"Сумма по рациону")
+    # amount_fakt = fields.Float(digits=(10, 2), string=u"Сумма по факту")
+    # amount_otk = fields.Float(digits=(10, 2), string=u"Сумма отклонение")
+    # amount_otk_racion = fields.Float(digits=(10, 2), string=u"Сумма откл. от рациона")
+
     kol_golov = fields.Integer(string=u"Кол-во голов для расчета", group_operator="sum")
     month = fields.Text(string=u"Месяц", store=True)
     year = fields.Text(string=u"Год", store=True)
@@ -42,11 +56,13 @@ class korm_svod_report(models.Model):
                     to_char(s.date, 'MM') as month,
                     to_char(s.date, 'YYYY') as year,
                     s.nomen_nomen_id as nomen_nomen_id,
-                    
                     sum(s.kol_norma) as kol_norma,
+                    sum(rl.kol*sv.kol_golov) as kol_racion,
                     sum(s.kol_fakt) as kol_fakt,
                     sum(s.kol_fakt-s.kol_norma) as kol_otk,
+                    sum(s.kol_fakt-rl.kol*sv.kol_golov) as kol_otk_racion,
                     sum(sv.kol_golov) as kol_golov,
+                    avg(pll.price) as price,
                     kl.stado_fiz_group_id,
                     fg.stado_vid_fiz_group_id
                     
@@ -58,7 +74,23 @@ class korm_svod_report(models.Model):
                                             kl.sorting = s.sorting)
                 left join korm_korm d on (d.id = s.korm_korm_id)
                 left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+                left join korm_racion_line rl on 
+                                            (rl.nomen_nomen_id = s.nomen_nomen_id and
+                                             rl.korm_racion_id = sv.korm_racion_id)
+                left join ( Select DISTINCT ON (pl.nomen_nomen_id)
+                                pl.price,
+                                pl.nomen_nomen_id
+                            From nomen_price_line pl
+                            Order by  pl.nomen_nomen_id, pl.date desc
+                             ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
+           
                 Group by d.name, s.date,
+                         to_char(s.date, 'MM') ,
+                         to_char(s.date, 'YYYY'),
+                         s.nomen_nomen_id,
+                         kl.stado_fiz_group_id,
+                         fg.stado_vid_fiz_group_id
+                Order by d.name, s.date,
                          to_char(s.date, 'MM') ,
                          to_char(s.date, 'YYYY'),
                          s.nomen_nomen_id,

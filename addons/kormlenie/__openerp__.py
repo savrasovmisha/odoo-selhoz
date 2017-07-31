@@ -25,7 +25,7 @@
     #         'python': ['pandas']
     #    },
 
-    'update_xml': ["update.sql",],
+    #'update_xml': ["update.sql",],
     # always loaded
     'data': [
         'security/korm_security.xml',

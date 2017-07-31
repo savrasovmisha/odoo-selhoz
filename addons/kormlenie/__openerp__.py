@@ -58,7 +58,7 @@
         
         #'views/templates.xml',
     ],
-    'update_xml': ["update.sql",],
+    #'update_xml': ["update.sql",],
     #'css': ['static/css/style.css'],
    
 

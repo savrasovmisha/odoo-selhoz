@@ -15,7 +15,7 @@ class korm_svod_report(models.Model):
 
     
     date = fields.Date(string='Дата')
-    name = fields.Char(string='Номер')
+    name = fields.Char(string='Номер документа')
     
     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
     #nomen_name = fields.Char(string='Номенклатура')
@@ -30,19 +30,20 @@ class korm_svod_report(models.Model):
 
 
     price = fields.Float(digits=(10, 2), string=u"Цена" , group_operator="avg")
-    # amount_norma = fields.Float(digits=(10, 2), string=u"Сумма по норме")
-    # amount_racion = fields.Float(digits=(10, 2), string=u"Сумма по рациону")
-    # amount_fakt = fields.Float(digits=(10, 2), string=u"Сумма по факту")
-    # amount_otk = fields.Float(digits=(10, 2), string=u"Сумма отклонение")
-    # amount_otk_racion = fields.Float(digits=(10, 2), string=u"Сумма откл. от рациона")
+    amount_norma = fields.Float(digits=(10, 2), string=u"Сумма по норме")
+    amount_racion = fields.Float(digits=(10, 2), string=u"Сумма по рациону")
+    amount_fakt = fields.Float(digits=(10, 2), string=u"Сумма по факту")
+    amount_otk = fields.Float(digits=(10, 2), string=u"Сумма отклонение")
+    amount_otk_racion = fields.Float(digits=(10, 2), string=u"Сумма откл. от рациона")
 
     kol_golov = fields.Integer(string=u"Кол-во голов для расчета", group_operator="sum")
+    kol_golov_srednee = fields.Integer(string=u"Кол-во голов по среднему")
     month = fields.Text(string=u"Месяц", store=True)
     year = fields.Text(string=u"Год", store=True)
     #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     
     _order = 'nomen_nomen_id desc'
-
+    #Н462ВВ89
     def init(self, cr):
 
         tools.sql.drop_view_if_exists(cr, self._table)
@@ -62,7 +63,15 @@ class korm_svod_report(models.Model):
                     sum(s.kol_fakt-s.kol_norma) as kol_otk,
                     sum(s.kol_fakt-rl.kol*sv.kol_golov) as kol_otk_racion,
                     sum(sv.kol_golov) as kol_golov,
+                    avg(sv.kol_golov_zagon) as kol_golov_srednee,
                     avg(pll.price) as price,
+                    sum(s.kol_norma)*avg(pll.price) as amount_norma,
+                    sum(rl.kol*sv.kol_golov)*avg(pll.price) as amount_racion,
+                    sum(s.kol_fakt)*avg(pll.price) as amount_fakt,
+                    sum(s.kol_fakt-s.kol_norma)*avg(pll.price) as amount_otk,
+                    sum(s.kol_fakt-rl.kol*sv.kol_golov)*avg(pll.price) as amount_otk_racion,
+
+
                     kl.stado_fiz_group_id,
                     fg.stado_vid_fiz_group_id
                     

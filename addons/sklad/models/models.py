@@ -5,6 +5,26 @@ from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 
 #----------------------------------------------------------
+# Бухгалтерия
+#----------------------------------------------------------
+
+class buh_nomen_group(models.Model):
+    _name = 'buh.nomen_group'
+    _description = u'Номенклатурные группы (бух)'
+    name = fields.Char(string=u"Наименование", required=True)
+    id_1c = fields.Char(string=u"Номер в 1С")
+
+class buh_stati_zatrat(models.Model):
+    _name = 'buh.stati_zatrat'
+    _description = u'Статьи затрат (бух)'
+    name = fields.Char(string=u"Наименование", required=True)
+    id_1c = fields.Char(string=u"Номер в 1С")
+
+
+
+
+
+#----------------------------------------------------------
 # Единицы измерения
 #----------------------------------------------------------
 
@@ -48,6 +68,8 @@ class nomen_nomen(models.Model):
     nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", default=None)
     nalog_nds_id = fields.Many2one('nalog.nds', string=u"Ставка НДС %", default=None)
+    buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
+    buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат')
     id_1c = fields.Char(string=u"Номер в 1С")
 
 #----------------------------------------------------------
@@ -712,6 +734,169 @@ class prodaja_prodaja_line(models.Model):
     amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
+
+
+
+class sklad_trebovanie_nakladnaya(models.Model):
+    _name = 'sklad.trebovanie_nakladnaya'
+    _description = u'Требование-накладная'
+    _order = 'date desc, id desc'
+
+    @api.model
+    def create(self, vals):
+        print '******************',vals
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('sklad.trebovanie_nakladnaya') or 'New'
+            vals['state'] = 'draft'
+
+
+        result = super(sklad_trebovanie_nakladnaya, self).create(vals)
+        return result
+
+    @api.multi
+    def unlink(self):
+        
+        #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
+        for pp in self:
+            if pp.state != 'done':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+        return super(sklad_trebovanie_nakladnaya, self).unlink()
+
+
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    sklad_trebovanie_nakladnaya_line = fields.One2many('sklad.trebovanie_nakladnaya_line', 'sklad_trebovanie_nakladnaya_id', string=u"Строка Списание товаров", copy=True)
+    buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
+    buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат')
+    mol_id = fields.Many2one('res.partner', string='МОЛ')
+    utverdil_id = fields.Many2one('res.partner', string='Утвердил')
+    predsedatel_id = fields.Many2one('res.partner', string='Председатель')
+    chlen1_id = fields.Many2one('res.partner', string='Член1')
+    chlen2_id = fields.Many2one('res.partner', string='Член2')
+    chlen3_id = fields.Many2one('res.partner', string='Член3')
+    #chlen4_id = fields.Many2one('res.partner', string='Член4')
+
+    proveden = fields.Boolean(string=u"Проводен")
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Черновик"),
+        ('confirmed', "Проведен"),
+        ('done', "Отменен"),
+        
+    ], default='create')
+
+
+       
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            vals = []
+            for line in doc.sklad_trebovanie_nakladnaya_line:
+                vals.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
+
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                
+            if reg_ostatok_move(self, vals, 'rashod-draft')==True:
+                self.state = 'draft'
+
+        
+    
+
+    @api.multi
+    def action_confirm(self):
+        #self.write({'state': 'confirmed'})
+        
+        for doc in self:
+            vals = []
+            for line in doc.sklad_trebovanie_nakladnaya_line:
+                vals.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
+
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                
+            if reg_ostatok_move(self, vals, 'rashod')==True:
+                self.state = 'confirmed'
+
+
+
+
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+
+class sklad_trebovanie_nakladnaya_line(models.Model):
+    _name = 'sklad.trebovanie_nakladnaya_line'
+    _description = u'Требование-накладная строки'
+
+
+    # @api.model
+    # def create(self, vals):
+    #     if vals.get('sklad_trebovanie_nakladnaya_id.buh_nomen_group_id', 'New') != None:
+    #         vals['buh_nomen_group_id'] = self.sklad_trebovanie_nakladnaya_id.buh_nomen_group_id
+            
+
+
+    #     result = super(sklad_trebovanie_nakladnaya_line, self).create(vals)
+    #     return result
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        """
+        Compute the total amounts.
+        """
+
+        print "---------------------**********************"  
+        if self.nomen_nomen_id:
+            # func_model = self.env['nomen.ed_izm']
+            # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+            
+            #Подставляем , вначале по Номенклатуре потом Общую если есть
+            if self.sklad_trebovanie_nakladnaya_id.buh_nomen_group_id:
+                self.buh_nomen_group_id = self.sklad_trebovanie_nakladnaya_id.buh_nomen_group_id
+            else:
+                self.buh_nomen_group_id = self.nomen_nomen_id.buh_nomen_group_id
+            
+            if self.sklad_trebovanie_nakladnaya_id.buh_stati_zatrat_id:
+                self.buh_stati_zatrat_id = self.sklad_trebovanie_nakladnaya_id.buh_stati_zatrat_id
+            else:
+                self.buh_stati_zatrat_id = self.nomen_nomen_id.buh_stati_zatrat_id
+
+
+    def return_name(self):
+        self.name = self.sklad_trebovanie_nakladnaya_id.name
+
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    sklad_trebovanie_nakladnaya_id = fields.Many2one('sklad.trebovanie_nakladnaya', ondelete='cascade', string=u"Требование-Накладная", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+
+    buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)', required=True)
+    buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
+
+
+
+
+
+
+
+
 
 
 class sklad_spisanie(models.Model):

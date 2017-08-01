@@ -13,6 +13,8 @@
         <menuitem id="pokupka_pokupka_menu" name="Поступление товаров" parent="sklad_menu_doc" action="pokupka_pokupka_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
         <menuitem id="sklad_peremeshenie_menu" name="Перемещение товаров" parent="sklad_menu_doc" action="sklad_peremeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="sklad_trebovanie_nakladnaya_menu" name="Требование-накладная" parent="sklad_menu_doc" action="sklad_trebovanie_nakladnaya_list_action" groups="group_sklad_manager,group_sklad_users"/>
     
         <menuitem id="prodaja_prodaja_menu" name="Реализация товаров" parent="sklad_menu_doc" action="prodaja_prodaja_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
@@ -43,6 +45,9 @@
     
         <menuitem id="sklad_sklad_menu" name="Склады" parent="sklad_menu" action="sklad_sklad_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
+        <menuitem id="buh_nomen_group_menu" name="Номенклатурные группы (бух)" parent="sklad_menu" action="buh_nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+        <menuitem id="buh_stati_zatrat_menu" name="Статьи затрат" parent="sklad_menu" action="buh_stati_zatrat_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
         
     </data>

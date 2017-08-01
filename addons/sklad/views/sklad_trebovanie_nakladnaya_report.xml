@@ -1,0 +1,207 @@
+<openerp>
+    <data>
+
+   
+        
+
+       <template id="report_sklad_trebovanie_nakladnaya_view">
+          
+
+            
+   
+            <t t-call="report.html_container">   
+
+
+
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/skladlenie/static/src/css/sklad.css'/> -->
+                    <div class="text-right" style="font-size:16px">
+                        Утверждаю:<br/>
+                        <t t-esc="doc.utverdil_id.function"/><br/>
+                        <t t-esc="doc.utverdil_id.parent_id.name"/> <br/>
+                        ______________<t t-esc="doc.utverdil_id.name"/>
+                    </div>
+                     
+
+                     <h4 class="text-center" style="margin-top: 16px;">
+                                Акт № <t t-esc="doc.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                                на списание материалов
+                        </h4>  
+                        Склад: <t t-esc="doc.sklad_sklad_id.name"/>  <br/>
+                        Счет затрат: ______
+                       
+                        <div style="margin-top: 30px;">
+                          
+                                <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
+                                    <tr>
+                                        <th> № </th>
+                                            
+                                        <!-- <th>Физ. группа</th> -->
+                                        <th>Наименование</th>
+                                        <th>Ед. изм.</th>
+                                        <th>Кол-во</th>
+                                        <th>Номенклатурная группа</th>
+                                        <th>Статья затрат</th> 
+                                     </tr>
+
+                                    <t t-foreach="doc.sklad_trebovanie_nakladnaya_line" t-as="line">
+                                     <tr >
+                                        <td >
+                                             <t t-esc="line_index+1"/>
+                                        </td>
+                                        <td >
+                                            <t t-esc="line.nomen_nomen_id.name"/> 
+                                        </td>
+                                        <td align="center">
+                                            <t t-esc="line.ed_izm_id.name"/> 
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="'{0:,.3f}'.format(line.kol)"/> 
+                                        </td>
+                                        <td >
+                                            <t t-esc="line.buh_nomen_group_id.name"/> 
+                                        </td>
+                                        <td >
+                                            <t t-esc="line.buh_stati_zatrat_id.name"/> 
+                                        </td>
+                                       
+                                           
+                                       
+                                    </tr>
+
+                                        
+                                    </t>  
+                                 </table>
+                               
+                            <!-- Итого в сутки: голов <t t-esc="doc.kol_golov"/> 
+                            корма <t t-esc="doc.kol_sklada"/> -->
+                         </div>
+                     
+
+                         <table >
+                            <tr >
+                                <td style="padding: 10px;">
+                                    Председатель комиссии:
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.predsedatel_id.function"/> 
+                                </td>
+                                <td>
+                                    ______________
+                                </td>
+                                <td  style="padding: 10px;">
+                                    <t t-esc="doc.predsedatel_id.name"/> 
+                                </td>
+
+                            </tr>
+                            <tr >
+                                <td style="padding: 10px;">
+                                    Члены комиссии:
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen1_id.function"/> 
+                                </td>
+                                <td>
+                                    ______________
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen1_id.name"/> 
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">
+                                    
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen2_id.function"/> 
+                                </td>
+                                <td>
+                                    ______________
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen2_id.name"/> 
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">
+                                    
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen3_id.function"/> 
+                                </td>
+                                <td>
+                                    ______________
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.chlen3_id.name"/> 
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style="padding: 20px;">
+                                    М.О.Л.
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.mol_id.function"/> 
+                                </td>
+                                <td>
+                                    ______________
+                                </td>
+                                <td style="padding: 10px;">
+                                    <t t-esc="doc.mol_id.name"/> 
+                                </td>
+
+                            </tr>
+
+
+                         </table>
+
+
+                        
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_sklad_trebovanie_nakladnaya"
+        model="sklad.trebovanie_nakladnaya"
+        string="Требование-накладная"
+        name="sklad.report_sklad_trebovanie_nakladnaya_view"
+        file="sklad.report_sklad_trebovanie_nakladnaya"
+        report_type="qweb-pdf" />
+
+
+        <record id="paperformat_normal10" model="report.paperformat">
+            <field name="name">European A4 normal 10</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+ 
+
+        <record id="sklad.report_sklad_trebovanie_nakladnaya" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="sklad.paperformat_normal10" />
+        </record>
+
+        
+
+    </data>
+</openerp>

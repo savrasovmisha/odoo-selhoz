@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    <record model="ir.ui.view" id="buh_nomen_group_form_view">
+        <field name="name">buh_nomen_group.form</field>
+        <field name="model">buh.nomen_group</field>
+        <field name="arch" type="xml">
+            <form string="Форма Номенклатурные группы (бух)">
+                <sheet>
+                    <group>
+                        <field name="name" string="Наименование"/>
+                        <field name="id_1c"/>
+                        
+                        
+                        
+                    </group>
+                    
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_buh_nomen_group_tree">
+            <field name="name">buh_nomen_group.tree</field>
+            <field name="model">buh.nomen_group</field>
+            <field name="arch" type="xml">
+                <tree string="Номенклатурные группы (бух)">
+                    <field name="name" string="Ноименование"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>   
+    
+    <record model="ir.ui.view" id="buh_nomen_group_search_view">
+            <field name="name">buh_nomen_group.search</field>
+            <field name="model">buh.nomen_group</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Ноименование"/>
+                   
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="buh_nomen_group_list_action">
+            <field name="name">Номенклатурные группы (бух)</field>
+            <field name="res_model">buh.nomen_group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Номенклатурные группы (бух)
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

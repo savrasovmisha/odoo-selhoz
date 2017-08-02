@@ -58,7 +58,7 @@
                                             <t t-esc="zagon.procent_raciona"/>
                                         </td>
                                         <td align="right">
-                                            <t t-esc="zagon.kol_korma"/>
+                                            <t t-esc="'{0:,.1f}'.format(zagon.kol_korma)"/>
                                         </td>
                                            
                                        
@@ -87,10 +87,10 @@
                                             <t t-esc="korm.nomen_nomen_id.name"/>
                                         </td>
                                         <td align="right">
-                                            <t t-esc="korm.kol"/>
+                                            <t t-esc="'{0:,.1f}'.format(korm.kol)"/>
                                         </td>
                                         <td align="right">
-                                            <t t-esc="korm.kol_za_period"/>
+                                            <t t-esc="'{0:,.1f}'.format(korm.kol_za_period)"/>
                                         </td>
                                         
                                            
@@ -141,10 +141,10 @@
                                             <t t-esc="korm.nomen_nomen_id.name"/>
                                         </td>
                                         <td align="right">
-                                            <t t-esc="korm.kol"/>
+                                            <t t-esc="'{0:,.1f}'.format(korm.kol)"/>
                                         </td>
                                         <td align="right">
-                                            <t t-esc="korm.kol_za_period"/>
+                                            <t t-esc="'{0:,.1f}'.format(korm.kol_za_period)"/>
                                         </td>
                                         
                                            

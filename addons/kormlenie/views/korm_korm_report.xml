@@ -120,9 +120,15 @@
                                              <t t-foreach="doc.korm_korm_line" t-as="line">
                                                  <t t-if="line.sorting==svod.sorting">
                                                      <tr>
-                                                         <td class="text-center" style="padding: 2px;"><t t-esc="line.stado_zagon_id.nomer"/></td>
-                                                         <td class="text-right" style="padding: 2px;"><t t-esc="line.kol_golov"/></td>
-                                                         <td class="text-right" style="padding: 2px;"><t t-esc="'%.0f'%(line.kol_korma)"/></td>
+                                                        <td class="text-center" style="padding: 2px;">
+                                                            <t t-esc="line.stado_zagon_id.nomer"/>
+                                                        </td>
+                                                         <td class="text-right" style="padding: 2px;">
+                                                            <t t-esc="line.kol_golov_zagon"/> (<t t-esc="line.kol_golov"/>)
+                                                        </td>
+                                                         <td class="text-right" style="padding: 2px;">
+                                                            <t t-esc="'%.0f'%(line.kol_korma)"/>
+                                                        </td>
                                                         <!--  <td></td> -->
                                                          
                                                          

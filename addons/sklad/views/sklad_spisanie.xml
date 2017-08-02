@@ -41,10 +41,25 @@
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
+                                    <field name="amaunt"/>
+                                    <field name="osnovanie" nolabel="1"/>
                                     
                                     
                                 </tree>
                             </field>
+                            
+                        </page>
+                        <page string="Параметры">
+                           <group> 
+                                <field name="mol_id"/>
+                                <field name="utverdil_id"/>
+                                <field name="predsedatel_id"/>
+                                <field name="chlen1_id"/>
+                                <field name="chlen2_id"/>
+                                <field name="chlen3_id"/>
+                           </group>  
+                            
+                         
                             
                         </page>
                     </notebook>

@@ -929,6 +929,13 @@ class sklad_spisanie(models.Model):
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     sklad_spisanie_line = fields.One2many('sklad.spisanie_line', 'sklad_spisanie_id', string=u"Строка Списание товаров")
+    mol_id = fields.Many2one('res.partner', string='МОЛ')
+    utverdil_id = fields.Many2one('res.partner', string='Утвердил')
+    predsedatel_id = fields.Many2one('res.partner', string='Председатель')
+    chlen1_id = fields.Many2one('res.partner', string='Член1')
+    chlen2_id = fields.Many2one('res.partner', string='Член2')
+    chlen3_id = fields.Many2one('res.partner', string='Член3')
+    #chlen4_id = fields.Many2one('res.partner', string='Член4')
     proveden = fields.Boolean(string=u"Проводен")
     state = fields.Selection([
         ('create', "Создан"),
@@ -1014,6 +1021,8 @@ class sklad_spisanie_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    amaunt = fields.Float(digits=(10, 2), string=u"Сумма", required=True)
+    osnovanie = fields.Text(string=u"Основание")
 
 
 

@@ -43,6 +43,7 @@
         'views/sklad_peremeshenie.xml',
         'views/seq_sklad_peremeshenie.xml',
         'views/sklad_spisanie.xml',
+        'views/sklad_spisanie_report.xml',
         'views/seq_sklad_spisanie.xml',
         'views/sklad_trebovanie_nakladnaya.xml',
         'views/sklad_trebovanie_nakladnaya_report.xml',

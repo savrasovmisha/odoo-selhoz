@@ -9,6 +9,7 @@
                 <sheet>
                     <group>
                         <field name="name" string="Наименование"/>
+                        <field name="sorting"/>
                         <field name="id_1c"/>
                         
                         

@@ -18,6 +18,7 @@ class buh_stati_zatrat(models.Model):
     _name = 'buh.stati_zatrat'
     _description = u'Статьи затрат (бух)'
     name = fields.Char(string=u"Наименование", required=True)
+    sorting = fields.Char(string=u"Сортировка")
     id_1c = fields.Char(string=u"Номер в 1С")
 
 
@@ -840,7 +841,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
 class sklad_trebovanie_nakladnaya_line(models.Model):
     _name = 'sklad.trebovanie_nakladnaya_line'
     _description = u'Требование-накладная строки'
-
+    _order = 'sorting'
 
     # @api.model
     # def create(self, vals):
@@ -876,6 +877,18 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
                 self.buh_stati_zatrat_id = self.sklad_trebovanie_nakladnaya_id.buh_stati_zatrat_id
             else:
                 self.buh_stati_zatrat_id = self.nomen_nomen_id.buh_stati_zatrat_id
+                self.sorting = self.buh_stati_zatrat_id.sorting
+    @api.one
+    @api.onchange('buh_stati_zatrat_id')
+    def _buh_stati_zatrat_id(self):
+        """
+        Compute the total amounts.
+        """
+
+        #print "---------------------**********************"  
+        if self.buh_stati_zatrat_id:
+            self.sorting = self.buh_stati_zatrat_id.sorting
+            
 
 
     def return_name(self):
@@ -889,6 +902,7 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
 
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)', required=True)
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
+    sorting = fields.Char(string=u"С.", help="Сортировка")
 
 
 

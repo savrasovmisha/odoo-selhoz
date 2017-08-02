@@ -14,6 +14,7 @@ class Partner(models.Model):
 		
 	
 	name_official = fields.Char('Полное наименование')
+	#name_print_doc = fields.Char('Наименование для печати')
 	
 	inn = fields.Char(u'ИНН', size=12)
 	kpp = fields.Char(u'КПП', size=9)

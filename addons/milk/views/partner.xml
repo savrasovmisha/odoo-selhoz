@@ -20,6 +20,7 @@
                             
                             <group>
                                 <field name="name_official"/>
+                                <!-- <field name="name_print_doc"/>  -->
                             </group>
                             <group>
                                 

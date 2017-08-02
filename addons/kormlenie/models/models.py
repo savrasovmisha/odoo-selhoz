@@ -1396,10 +1396,11 @@ class korm_potrebnost(models.Model):
 					left join korm_receptura l on l.id=r.korm_receptura_id
 					WHERE r.korm_receptura_id IN ( SELECT korm_receptura_id 
 												FROM korm_potrebnost_korm_line 
-												WHERE korm_potrebnost_id=%s and korm_receptura_id>0) 
+												WHERE korm_potrebnost_id=%s and korm_receptura_id>0) and
+						  z.korm_potrebnost_id=%s 
 					group by r.nomen_nomen_id
 					Order by r.nomen_nomen_id
-				""" %(self.id,)
+				""" %(self.id,self.id,)
 		#print zapros
 		self._cr.execute(zapros,)
 		kombikorms = self._cr.fetchall()

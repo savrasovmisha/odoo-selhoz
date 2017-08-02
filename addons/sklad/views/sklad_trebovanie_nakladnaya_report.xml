@@ -29,7 +29,12 @@
                      <h4 class="text-center" style="margin-top: 16px;">
                                 Акт № <t t-esc="doc.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
                                 на списание материалов
-                        </h4>  
+                        </h4> 
+
+                        <h5 class="text-center" style="margin-top: 16px;">
+                                Приказ №__________ от "____"___________201___г.
+                        </h5> 
+
                         Склад: <t t-esc="doc.sklad_sklad_id.name"/>  <br/>
                         Счет затрат: ______
                        

@@ -1362,10 +1362,11 @@ class korm_potrebnost(models.Model):
 					left join korm_potrebnost_zagon_line z on z.korm_racion_id=r.korm_racion_id
 					WHERE r.korm_racion_id IN ( SELECT korm_racion_id 
 												FROM korm_potrebnost_zagon_line 
-												WHERE korm_potrebnost_id=%s) 
+												WHERE korm_potrebnost_id=%s) and
+						  z.korm_potrebnost_id=%s
 					group by r.nomen_nomen_id
 					Order by r.nomen_nomen_id
-				""" %(self.id,)
+				""" %(self.id,self.id,)
 		#print zapros
 		self._cr.execute(zapros,)
 		korms = self._cr.fetchall()

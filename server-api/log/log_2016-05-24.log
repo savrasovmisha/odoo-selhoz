@@ -1,0 +1,94 @@
+------------------------------------------------------------
+2016-05-24 14:11:08.637728 - integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 49, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 14:11:52.467954  Error!!! integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 49, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 14:13:06.613578  Error!!! integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 49, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 14:13:28.715437  Error!!! integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 49, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 14:14:18.045464  Error!!! integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 49, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 15:15:10.508244  Error!!! integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 25, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 71, in milk
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 15:49:22.428623  Error!!! global name 'menu' is not defined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 43, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/index.py", line 11, in index
+    web_menu=menu.get_web_menu()
+NameError: global name 'menu' is not defined
+------------------------------------------------------------
+2016-05-24 15:49:56.788914  Error!!! global name 'datetime' is not defined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 43, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/index.py", line 13, in index
+    today=datetime.date.today()
+NameError: global name 'datetime' is not defined
+------------------------------------------------------------
+2016-05-24 16:00:04.169734  Error!!! HTTP Response 303
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 43, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/login.py", line 53, in logout
+    redirect('/')
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 1837, in redirect
+    raise HTTPResponse("", status=code, header=dict(Location=location))
+HTTPResponse: HTTP Response 303
+------------------------------------------------------------
+2016-05-24 16:01:41.033071  Error!!! HTTP Response 303
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 43, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/login.py", line 41, in do_login
+    redirect('/')
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 1837, in redirect
+    raise HTTPResponse("", status=code, header=dict(Location=location))
+HTTPResponse: HTTP Response 303
+------------------------------------------------------------
+2016-05-24 16:03:01.330120  Error!!! HTTP Response 303
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 43, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/login.py", line 41, in do_login
+    redirect('/')
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 1837, in redirect
+    raise HTTPResponse("", status=code, header=dict(Location=location))
+HTTPResponse: HTTP Response 303

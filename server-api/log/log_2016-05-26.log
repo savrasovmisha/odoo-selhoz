@@ -1,0 +1,19 @@
+------------------------------------------------------------
+2016-05-26 14:52:11.580335  Error!!! panel.html
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 63, in kontragenti
+    return template('kontragenti_list.html', kontragenti=kontragenti, poisk=poisk)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 2829, in template
+    return TEMPLATES[tpl].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 2619, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 42, in top-level template code
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 306, in get_source
+    raise TemplateNotFound(template)
+TemplateNotFound: panel.html

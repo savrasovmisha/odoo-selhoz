@@ -49,14 +49,14 @@
                         </group>
                                        
                     </group>
-                     <!-- <div class="oe_button_box" name="button_box">
-                            <button name="action_raschet"
+                     <div class="oe_button_box" name="button_box">
+                            <button name="action_zagruzit"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"
-                                icon="fa-refresh" string="Заполнить"
+                                icon="fa-refresh" string="Загрузить"
                                >
                             </button>
-                        </div> -->
+                        </div>
                                     
             
                        

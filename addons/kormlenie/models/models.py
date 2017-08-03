@@ -789,8 +789,8 @@ class korm_korm(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление", copy=True)
-	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=True)
-	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=True)
+	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=False)
+	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=False)
 	
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
@@ -805,7 +805,10 @@ class korm_korm(models.Model):
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 
-		
+	
+	@api.one
+	def action_zapolnit_golovi(self):
+		print 'ddd'
 
 
 	@api.one
@@ -1572,7 +1575,27 @@ class stado_struktura(models.Model):
 		self.kol_golov = self.kol_doy + self.kol_zapusk + self.kol_netel + self.kol_telok + self.kol_bikov 
 		self.kol_telok_15 = self.kol_telok_15_stel + self.kol_telok_15_osem + self.kol_telok_15_ne_osem
 
-	
+	@api.one
+	def action_zagruzit(self):
+		# import requests as r
+		# import json
+
+		# url = 'http://127.0.0.1:9000/api/struktura_stada'
+		# data = {"params": {"data":"123"}}
+		# response=r.get(url)
+		print '==================================='
+		# print response.status_code
+		# print response.text
+		# j = json.loads(response.text)
+		# print j
+		# print '------------'
+		# print j['tasks'][0]['title']
+
+
+
+
+
+
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	stado_struktura_line = fields.One2many('stado.struktura_line', 'stado_struktura_id', string=u"Строка Структура стада", copy=True)

@@ -1,0 +1,492 @@
+------------------------------------------------------------
+2016-05-29 20:51:05.576344  Error!!! cannot concatenate 'str' and 'int' objects
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 74, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, offset=offset, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 8, in get_web_panel
+    nachalo = offset + 1
+TypeError: cannot concatenate 'str' and 'int' objects
+------------------------------------------------------------
+2016-05-29 21:08:04.384977  Error!!! get_web_form_list() got an unexpected keyword argument 'page'
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+TypeError: get_web_form_list() got an unexpected keyword argument 'page'
+------------------------------------------------------------
+2016-05-29 21:08:37.261495  Error!!! global name 'next_offset' is not defined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 30, in get_web_panel
+    next_offset=next_offset,
+NameError: global name 'next_offset' is not defined
+------------------------------------------------------------
+2016-05-29 21:09:20.992742  Error!!! 'next_offset' is undefined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 34, in top-level template code
+UndefinedError: 'next_offset' is undefined
+------------------------------------------------------------
+2016-05-29 21:13:33.213356  Error!!! Encountered unknown tag 'elseif'. Jinja was looking for the following tags: 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3591, in template
+    TEMPLATES[tplid] = adapter(name=tpl, lookup=lookup, **settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3215, in __init__
+    self.prepare(**self.settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3316, in prepare
+    self.tpl = self.env.get_template(self.filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 791, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 765, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 125, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 554, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<unknown>", line 31, in template
+TemplateSyntaxError: Encountered unknown tag 'elseif'. Jinja was looking for the following tags: 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+------------------------------------------------------------
+2016-05-29 21:15:05.769340  Error!!! (psycopg2.DataError) OFFSET must not be negative
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti \n LIMIT %(param_1)s OFFSET %(param_2)s'] [parameters: {'param_1': 4, 'param_2': -4}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 68, in kontragenti
+    kontragenti = session.query(Kontragenti).offset(offset).limit(LIMIT_PAGE).all()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2398, in all
+    return list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+DataError: (psycopg2.DataError) OFFSET must not be negative
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti \n LIMIT %(param_1)s OFFSET %(param_2)s'] [parameters: {'param_1': 4, 'param_2': -4}]
+------------------------------------------------------------
+2016-05-29 21:15:16.087918  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 66, in kontragenti
+    vsego = session.query(func.count(Kontragenti.id)).scalar()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2503, in scalar
+    ret = self.one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-29 21:15:17.713800  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 66, in kontragenti
+    vsego = session.query(func.count(Kontragenti.id)).scalar()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2503, in scalar
+    ret = self.one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-29 21:15:19.974970  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 29), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 96, in milk
+    for n in milk:
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 29), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-29 21:15:21.772548  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 66, in kontragenti
+    vsego = session.query(func.count(Kontragenti.id)).scalar()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2503, in scalar
+    ret = self.one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT count(gs_kontragenti.id) AS count_1 \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-29 21:15:38.932709  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/organizacii.py", line 36, in organizacii
+    organizacii=session.query(Organicacii).one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+------------------------------------------------------------
+2016-05-29 21:15:40.572727  Error!!! 'prev_page' is undefined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 274, in milk
+    return template('milk_doyka_list.html', milk=milk, NDate=NDate, KDate=KDate)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 42, in top-level template code
+  File "<template>", line 29, in top-level template code
+UndefinedError: 'prev_page' is undefined
+------------------------------------------------------------
+2016-05-29 21:15:44.287632  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 29), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 96, in milk
+    for n in milk:
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 29), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-29 21:15:46.358588  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/organizacii.py", line 36, in organizacii
+    organizacii=session.query(Organicacii).one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+------------------------------------------------------------
+2016-05-29 21:19:43.882409  Error!!! 'prev_page' is undefined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 42, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 274, in milk
+    return template('milk_doyka_list.html', milk=milk, NDate=NDate, KDate=KDate)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 42, in top-level template code
+  File "<template>", line 29, in top-level template code
+UndefinedError: 'prev_page' is undefined
+------------------------------------------------------------
+2016-05-29 21:25:02.532868  Error!!! expected token 'end of statement block', got '='
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 42, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3591, in template
+    TEMPLATES[tplid] = adapter(name=tpl, lookup=lookup, **settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3215, in __init__
+    self.prepare(**self.settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3316, in prepare
+    self.tpl = self.env.get_template(self.filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 791, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 765, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 125, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 554, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<unknown>", line 29, in template
+TemplateSyntaxError: expected token 'end of statement block', got '='
+------------------------------------------------------------
+2016-05-29 21:31:50.412134  Error!!! unexpected '<'
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 42, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3591, in template
+    TEMPLATES[tplid] = adapter(name=tpl, lookup=lookup, **settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3215, in __init__
+    self.prepare(**self.settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3316, in prepare
+    self.tpl = self.env.get_template(self.filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 791, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 765, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 125, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 554, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<unknown>", line 31, in template
+TemplateSyntaxError: unexpected '<'
+------------------------------------------------------------
+2016-05-29 21:46:57.540558  Error!!! unexpected ')'
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 42, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3591, in template
+    TEMPLATES[tplid] = adapter(name=tpl, lookup=lookup, **settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3215, in __init__
+    self.prepare(**self.settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3316, in prepare
+    self.tpl = self.env.get_template(self.filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 791, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 765, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 125, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 554, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<unknown>", line 37, in template
+TemplateSyntaxError: unexpected ')'
+------------------------------------------------------------
+2016-05-29 21:47:05.469358  Error!!! unexpected ')'
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 42, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 77, in kontragenti
+    vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name, page=page, vsego=vsego)
+  File "/home/smv/pro/evikaagro/project/erp/web/panel.py", line 31, in get_web_panel
+    prev_page=prev_page)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3591, in template
+    TEMPLATES[tplid] = adapter(name=tpl, lookup=lookup, **settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3215, in __init__
+    self.prepare(**self.settings)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3316, in prepare
+    self.tpl = self.env.get_template(self.filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 791, in get_template
+    return self._load_template(name, self.make_globals(globals))
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 765, in _load_template
+    template = self.loader.load(self, name, globals)
+  File "/usr/lib/python2.7/dist-packages/jinja2/loaders.py", line 125, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 554, in compile
+    self.handle_exception(exc_info, source_hint=source)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<unknown>", line 37, in template
+TemplateSyntaxError: unexpected ')'

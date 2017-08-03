@@ -1,0 +1,46 @@
+------------------------------------------------------------
+------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 32, in applicator
+    return f(*args,**kwargs)
+UnboundLocalError: local variable 'f' referenced before assignment
+------------------------------------------------------------
+2016-05-24 - local variable 'f' referenced before assignment
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 36, in applicator
+    return f(*args,**kwargs)
+UnboundLocalError: local variable 'f' referenced before assignment
+------------------------------------------------------------
+2016-05-24 - local variable 'f' referenced before assignment
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 36, in applicator
+    return f(*args,**kwargs)
+UnboundLocalError: local variable 'f' referenced before assignment
+------------------------------------------------------------
+2016-05-24 - local variable 'f' referenced before assignment
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 37, in applicator
+    res=f(*args,**kwargs)
+UnboundLocalError: local variable 'f' referenced before assignment
+------------------------------------------------------------
+2016-05-24 - local variable 'f' referenced before assignment
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 37, in applicator
+    res=f(*args,**kwargs)
+UnboundLocalError: local variable 'f' referenced before assignment
+------------------------------------------------------------
+2016-05-24 - integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 37, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 53, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero
+------------------------------------------------------------
+2016-05-24 - integer division or modulo by zero
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 37, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 53, in index
+    d=2/0
+ZeroDivisionError: integer division or modulo by zero

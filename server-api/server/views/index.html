@@ -1,0 +1,121 @@
+<html>
+<head>
+    <title>SMV</title>
+
+
+    <!--Основной файл css-->
+
+    <LINK rel="stylesheet" type="text/css" href="css/style.css">
+    
+    <!--jquery-->
+    <script src="js/jquery-1.11.3.js"></script>
+    
+    <!--Для постороения дерева элементов Левого меню-->
+    <link rel="stylesheet" href="js/treeview/jquery.treeview.css" />  
+    <script type="text/javascript" src="js/treeview/jquery.treeview.js"></script>
+    <script type="text/javascript" src="js/treeview/jquery.cookie.js"></script>
+    
+    <!--Левое меню-->
+    <script src="js/menu-left.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!--Правое меню-->
+    <script src="js/menu-right.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!--Редактор кода ACE в контенте-->
+    <script src="js/editor/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/editor/src-noconflict/ext-language_tools.js"></script>
+    
+    <!--Контент-->
+    <script src="js/content.js" type="text/javascript" charset="utf-8"></script>
+    
+    
+    <!--Выподающий список-->
+    <link rel="stylesheet" href="js/jquery-ui/jquery-ui.css" />  
+    <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
+    
+    
+    
+</head>
+<body>
+    
+    <table width="100%" height="100%" border="1" cellpadding="0" cellspacing="0"  >
+        <!--Заголовок-->
+        <tr width="100%" height="50px">
+            <td colspan="3">
+                <div align="right">
+                        <a class="knopka" name="zapustit" href="#">Запустить</a> 
+                </div>
+            
+            </td>
+        </tr>
+        <!---->
+        <tr>
+            <!--Левое меню-->
+            <td width="200px" >
+                <div class="menu-left" style='position:relative; left:0; top:0; width:100%; height:100%; overflow:auto;'>
+                    
+                </div>
+            
+            </td>
+            <!--Контент-->
+            <td width="500px">
+                <div class="content"   style='position:relative; left:0; top:0; width:100%; height:100%; overflow:auto;'>
+                   <div id="editor" style='position:relative; left:0; top:0; width:100%; height:100%; overflow:auto;'>
+                    # -*- coding: utf-8 -*-
+from project.config import app
+from bottle import static_file
+
+
+@app.route('/:file#(favicon.ico|humans.txt)#')
+def favicon(file):
+    return static_file(file, root='project/config/static/misc')
+
+
+@app.route('/:path#(images|css|js|fonts)\/.+#')
+def server_static(path):
+    return static_file(path, root='project/config/static')
+    
+@app.route('/<filename:re:.*\.html>')
+def server_static_html(filename):
+    
+    return static_file(filename, root='project/config/views')
+                    </div>
+    
+    
+                </div>
+                
+            </td>
+            
+            <!--Правое меню-->
+            <td width="200px">
+                <div class="error"></div>
+                <div class="svoystva" style='position:relative; width:100%; height:100%; overflow:auto; '>
+                    
+                   
+                         
+                    
+
+                    
+                </div>
+            
+            </td>
+        
+        </tr>
+    
+    
+    </table>
+    
+    
+
+    
+     
+
+    
+       
+
+    
+    
+    
+
+</body>
+</html>

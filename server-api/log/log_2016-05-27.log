@@ -1,0 +1,405 @@
+------------------------------------------------------------
+2016-05-27 12:07:46.143584  Error!!! get_web_form_list() got an unexpected keyword argument 'route'
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 68, in kontragenti
+    list_doc=list_doc )
+TypeError: get_web_form_list() got an unexpected keyword argument 'route'
+------------------------------------------------------------
+2016-05-27 12:10:54.330780  Error!!! global name 'get_web_panel' is not defined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 68, in kontragenti
+    list_doc=list_doc )
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name)
+NameError: global name 'get_web_panel' is not defined
+------------------------------------------------------------
+2016-05-27 12:10:59.062110  Error!!! global name 'get_web_panel' is not defined
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 68, in kontragenti
+    list_doc=list_doc )
+  File "/home/smv/pro/evikaagro/project/erp/web/forms.py", line 13, in get_web_form_list
+    web_panel = get_web_panel(panel_name=panel_name)
+NameError: global name 'get_web_panel' is not defined
+------------------------------------------------------------
+2016-05-27 19:59:22.891179  Error!!! (psycopg2.ProgrammingError) relation "gs_kontragenti" does not exist
+LINE 2: FROM gs_kontragenti
+             ^
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 61, in kontragenti
+    kontragenti = session.query(Kontragenti).all()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2398, in all
+    return list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+ProgrammingError: (psycopg2.ProgrammingError) relation "gs_kontragenti" does not exist
+LINE 2: FROM gs_kontragenti
+             ^
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-27 20:00:40.671406  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 96, in milk
+    for n in milk:
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:00:45.095951  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 61, in kontragenti
+    kontragenti = session.query(Kontragenti).all()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2398, in all
+    return list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-27 20:00:46.240539  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/kontragenti.py", line 61, in kontragenti
+    kontragenti = session.query(Kontragenti).all()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2398, in all
+    return list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_kontragenti.id AS gs_kontragenti_id, gs_kontragenti.name AS gs_kontragenti_name, gs_kontragenti.full_name AS gs_kontragenti_full_name, gs_kontragenti.inn AS gs_kontragenti_inn, gs_kontragenti.kpp AS gs_kontragenti_kpp, gs_kontragenti.address AS gs_kontragenti_address, gs_kontragenti.is_fizlico AS gs_kontragenti_is_fizlico \nFROM gs_kontragenti']
+------------------------------------------------------------
+2016-05-27 20:00:47.785588  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 274, in milk
+    return template('milk_doyka_list.html', milk=milk, NDate=NDate, KDate=KDate)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 73, in top-level template code
+  File "/usr/lib/python2.7/dist-packages/jinja2/runtime.py", line 284, in __init__
+    self._iterator = iter(iterable)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:00:49.074405  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 274, in milk
+    return template('milk_doyka_list.html', milk=milk, NDate=NDate, KDate=KDate)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 73, in top-level template code
+  File "/usr/lib/python2.7/dist-packages/jinja2/runtime.py", line 284, in __init__
+    self._iterator = iter(iterable)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:00:49.448731  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 274, in milk
+    return template('milk_doyka_list.html', milk=milk, NDate=NDate, KDate=KDate)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3595, in template
+    return TEMPLATES[tplid].render(kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/bottle.py", line 3322, in render
+    return self.tpl.render(**_defaults)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 969, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/usr/lib/python2.7/dist-packages/jinja2/environment.py", line 742, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "<template>", line 73, in top-level template code
+  File "/usr/lib/python2.7/dist-packages/jinja2/runtime.py", line 284, in __init__
+    self._iterator = iter(iterable)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.id AS md_milk_id, md_milk.date AS md_milk_date, md_milk.valoviy_nadoy AS md_milk_valoviy_nadoy, md_milk.vipoyka AS md_milk_vipoyka, md_milk.util AS md_milk_util, md_milk.realizovanno AS md_milk_realizovanno, md_milk.zachet AS md_milk_zachet, md_milk.jir AS md_milk_jir, md_milk.belok AS md_milk_belok, md_milk.furajnie AS md_milk_furajnie, md_milk.doynie AS md_milk_doynie, md_milk.zapusk AS md_milk_zapusk, md_milk.netel AS md_milk_netel, md_milk.itogo AS md_milk_itogo, md_milk.nadoy_na_fur AS md_milk_nadoy_na_fur, md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:00:51.867804  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 96, in milk
+    for n in milk:
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:01:13.459138  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/milk/milk.py", line 96, in milk
+    for n in milk:
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT md_milk.nadoy_na_doy AS md_milk_nadoy_na_doy \nFROM md_milk \nWHERE md_milk.date >= %(date_1)s AND md_milk.date <= %(date_2)s'] [parameters: {'date_2': datetime.date(2016, 5, 27), 'date_1': datetime.date(2016, 5, 1)}]
+------------------------------------------------------------
+2016-05-27 20:01:16.068996  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/organizacii.py", line 36, in organizacii
+    organizacii=session.query(Organicacii).one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+------------------------------------------------------------
+2016-05-27 20:01:17.139196  Error!!! (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']
+Traceback (most recent call last):
+  File "/home/smv/pro/evikaagro/project/erp/main.py", line 41, in applicator
+    res=fn(*args,**kwargs)
+  File "/home/smv/pro/evikaagro/project/erp/spravochniki/organizacii.py", line 36, in organizacii
+    organizacii=session.query(Organicacii).one()
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2472, in one
+    ret = list(self)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2515, in __iter__
+    return self._execute_and_instances(context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/orm/query.py", line 2530, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 914, in execute
+    return meth(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/sql/elements.py", line 323, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1010, in _execute_clauseelement
+    compiled_sql, distilled_params
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1146, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1341, in _handle_dbapi_exception
+    exc_info
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/util/compat.py", line 199, in raise_from_cause
+    reraise(type(exception), exception, tb=exc_tb)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/base.py", line 1139, in _execute_context
+    context)
+  File "/usr/local/lib/python2.7/dist-packages/sqlalchemy/engine/default.py", line 450, in do_execute
+    cursor.execute(statement, parameters)
+InternalError: (psycopg2.InternalError) current transaction is aborted, commands ignored until end of transaction block
+ [SQL: 'SELECT gs_organizacii.id AS gs_organizacii_id, gs_organizacii.name AS gs_organizacii_name, gs_organizacii.full_name AS gs_organizacii_full_name, gs_organizacii.inn AS gs_organizacii_inn, gs_organizacii.kpp AS gs_organizacii_kpp, gs_organizacii.address AS gs_organizacii_address \nFROM gs_organizacii']

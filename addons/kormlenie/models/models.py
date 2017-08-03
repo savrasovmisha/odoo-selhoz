@@ -1548,3 +1548,84 @@ class korm_potrebnost_kombikorm_line(models.Model):
 	#поля для сортировки
 	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
 	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)
+
+
+
+class stado_struktura(models.Model):
+	_name = 'stado.struktura'
+	_description = u'Структура стада'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('stado.struktura') or 'New'
+
+		result = super(stado_struktura, self).create(vals)
+		return result
+
+	@api.one
+	@api.depends('kol_doy','kol_zapusk','kol_netel','kol_telok','kol_bikov',
+					'kol_telok_15_stel','kol_telok_15_osem','kol_telok_15_ne_osem')
+	def _raschet(self):
+		self.kol_fur = self.kol_doy + self.kol_zapusk
+		self.kol_golov = self.kol_doy + self.kol_zapusk + self.kol_netel + self.kol_telok + self.kol_bikov 
+		self.kol_telok_15 = self.kol_telok_15_stel + self.kol_telok_15_osem + self.kol_telok_15_ne_osem
+
+	
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	stado_struktura_line = fields.One2many('stado.struktura_line', 'stado_struktura_id', string=u"Строка Структура стада", copy=True)
+	
+	kol_fur = fields.Integer(string=u"Поголовье фуражных коров", store=True, copy=True, compute='_raschet')
+	kol_doy = fields.Integer(string=u"Лактирующие коровы", store=True, copy=True)
+	kol_zapusk = fields.Integer(string=u"Запущенные коровы", store=True, copy=True)
+	kol_netel = fields.Integer(string=u"Нетели", store=True, copy=True)
+	kol_telok = fields.Integer(string=u"Телки", store=True, copy=True)
+	kol_bikov = fields.Integer(string=u"Бычки", store=True, copy=True)
+	kol_korov_stel = fields.Integer(string=u"Стельных коров в стаде", store=True, copy=True)
+	kol_korov_ne_stel = fields.Integer(string=u"Не стельные коровы в стаде", store=True, copy=True)
+	kol_telok_15 = fields.Integer(string=u"Всего Телки старше 15 мес (в т.ч. нетели)", store=True, copy=True, compute='_raschet')
+	kol_telok_15_stel = fields.Integer(string=u"Стельных", store=True, copy=True)
+	kol_telok_15_osem = fields.Integer(string=u"Осемененных", store=True, copy=True)
+	kol_telok_15_ne_osem = fields.Integer(string=u"Не осемененных", store=True, copy=True)
+	
+
+	kol_golov = fields.Integer(string=u"Поголовье", store=True, copy=True, compute='_raschet')
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
+	description = fields.Text(string=u"Коментарии")
+
+		
+
+
+	
+
+class stado_struktura_line(models.Model):
+	_name = 'stado.struktura_line'
+	_description = u'Строка Структура стада'
+	#_order = 'sorting'
+
+
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		self.name = self.stado_zagon_id.nomer
+		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+		
+	
+	@api.one
+	@api.depends('stado_struktura_id.date')
+	def return_date(self):
+		self.date = self.stado_struktura_id.date
+
+	date = fields.Date(string='Дата', store=True, compute='return_date')
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	stado_struktura_id = fields.Many2one('stado.struktura', ondelete='cascade', string=u"Структура стада", required=True)
+	
+	
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True)
+	
+	

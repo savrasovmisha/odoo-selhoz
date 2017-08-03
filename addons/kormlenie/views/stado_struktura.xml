@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="stado_struktura_form_view">
+        <field name="name">stado_struktura.form</field>
+        <field name="model">stado.struktura</field>
+        <field name="arch" type="xml">
+            <form string="Форма Структура стада">
+               
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date"/>
+
+                        </group>
+                     </group>
+
+                     <group>
+                        <group>
+                            <field name="kol_fur"/>
+                            <field name="kol_doy"/>
+                            <field name="kol_zapusk"/>
+                            <field name="kol_netel"/>
+                            <field name="kol_telok"/>
+                            <field name="kol_bikov"/>
+                            
+                        </group>
+                        <group>
+                            <field name="kol_korov_stel"/>
+                            <field name="kol_korov_ne_stel"/>
+                            <field name="kol_telok_15"/>
+                            <field name="kol_telok_15_stel"/>
+                            <field name="kol_telok_15_osem"/>
+                            <field name="kol_telok_15_ne_osem"/>
+                            
+                           
+
+                        </group>
+                     </group>
+                     <group>
+                        <h2> Итого: </h2>
+                        <group>
+                            <field name="kol_golov"/>
+                            <field name="kol_golov_zagon"/>
+                        </group>
+                                       
+                    </group>
+                     <!-- <div class="oe_button_box" name="button_box">
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                               >
+                            </button>
+                        </div> -->
+                                    
+            
+                       
+                    <notebook>
+                        <page string="По загонам">
+                            <field name="stado_struktura_line">
+                                <tree string="stado_struktura_line" editable="botton">
+                                    
+                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_fiz_group_id"/>
+                                    <field name="kol_golov_zagon"/>
+                                                                      
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        
+
+                    </notebook>
+                    
+
+                       
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>    
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_stado_struktura_tree">
+            <field name="name">stado_struktura.tree</field>
+            <field name="model">stado.struktura</field>
+            <field name="arch" type="xml">
+                <tree string="Структура стада">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="stado_struktura_search_view">
+            <field name="name">stado_struktura.search</field>
+            <field name="model">stado.struktura</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                    
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="stado_struktura_list_action">
+            <field name="name">Структура стада</field>
+            <field name="res_model">stado.struktura</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Структура стада
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

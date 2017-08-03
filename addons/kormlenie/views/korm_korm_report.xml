@@ -48,13 +48,11 @@
                                             (<t t-esc="svod.kol_zamesov"/> замеса массой по <t t-esc="'%.0f'% svod.kol_korma_zames"/> в расчете на <t t-esc="svod.kol_golov_zames"/> голов. Всего: <t t-esc="'%.0f'% svod.kol_korma"/>)
                                         </span>
                                     </th>
-                                        
-                                    <!-- <th></th> -->
-                                    <th class="table-bordered" style="font-size:14px; font-weight: normal; text-align: center;">Примечание</th>
+                                   
                                  </tr>
 
                                  <tr >
-                                    <td style="width:500px;">
+                                    <td style="width:600px;">
                                         <table class="table-bordered" style="margin: 3px;">
                                              <tr>
                                                 <th style="padding: 2px; text-align: right;"> Расчет на <t t-esc="svod.kol_golov_zames"/> гол.</th>
@@ -88,7 +86,7 @@
                                                      <t t-if="detail.sorting==svod.sorting">
                                                         <tr> 
                                                             <td style="padding: 2px;">
-                                                                <div style="overflow: auto; width:200px;">
+                                                                <div style="overflow: auto; width:300px;">
                                                                     <t t-esc="detail.nomen_nomen_id.name"  />
                                                                 </div>
                                                             </td>
@@ -111,7 +109,7 @@
                                         <table class="table-bordered">
                                              <tr>
                                                 <th style="padding: 2px;">Загон</th>
-                                                <th style="padding: 2px;">Гол.</th>
+                                                <th style="padding: 2px; width:90px;">Гол.</th>
                                                 <th style="padding: 2px;">Масса</th>
                                                 <!-- <th style="padding: 2px;">Остатки</th> -->
 
@@ -138,11 +136,6 @@
                                      
                                              </t>
                                         </table>
-
-
-
-                                    </td>
-                                    <td class="table-bordered">
                                         <t t-foreach="doc.korm_korm_line" t-as="line">
                                              <t t-if="line.sorting==svod.sorting">
                                                 <div style="font-size:14px; margin: 2px;">
@@ -157,6 +150,7 @@
 
 
                                     </td>
+                                    
                                    
                                 </tr>
 

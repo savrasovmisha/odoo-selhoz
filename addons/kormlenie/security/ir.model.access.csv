@@ -63,3 +63,7 @@ access_milk_transport_manager,milk.transport,milk.model_milk_transport,group_kor
 access_milk_transport_users,milk.transport,milk.model_milk_transport,group_korm_users,1,0,0,0
 access_milk_pricep_manager,milk.pricep,milk.model_milk_pricep,group_korm_manager,1,1,1,1
 access_milk_pricep_users,milk.pricep,milk.model_milk_pricep,group_korm_users,1,0,0,0
+access_stado_struktura_manager,stado.struktura,model_stado_struktura,group_korm_manager,1,1,1,1
+access_stado_struktura_users,stado.struktura,model_stado_struktura,group_korm_users,1,0,0,0
+access_stado_struktura_line_manager,stado.struktura_line,model_stado_struktura_line,group_korm_manager,1,1,1,1
+access_stado_struktura_line_users,stado.struktura_line,model_stado_struktura_line,group_korm_users,1,0,0,0

@@ -31,6 +31,8 @@ spisok.append(['sklad.sklad','sklad'])
 spisok.append(['milk.type_transport','milk'])
 spisok.append(['milk.transport','milk'])
 spisok.append(['milk.pricep','milk'])
+spisok.append(['stado.struktura',''])
+spisok.append(['stado.struktura_line',''])
 
 
 print "id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink"

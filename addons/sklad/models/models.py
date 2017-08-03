@@ -841,7 +841,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
 class sklad_trebovanie_nakladnaya_line(models.Model):
     _name = 'sklad.trebovanie_nakladnaya_line'
     _description = u'Требование-накладная строки'
-    _order = 'sorting'
+    _order = 'sorting, nomen_name'
 
     # @api.model
     # def create(self, vals):
@@ -866,6 +866,7 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
             self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
             self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+            self.nomen_name = self.nomen_nomen_id.name
             
             #Подставляем , вначале по Номенклатуре потом Общую если есть
             if self.sklad_trebovanie_nakladnaya_id.buh_nomen_group_id:
@@ -897,6 +898,7 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_trebovanie_nakladnaya_id = fields.Many2one('sklad.trebovanie_nakladnaya', ondelete='cascade', string=u"Требование-Накладная", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_name = fields.Char(string=u"Наименование для сортировки", compute='_nomen', store=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 

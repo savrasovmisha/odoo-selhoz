@@ -9,7 +9,7 @@ from db_connect import con_uniform
 def index():
  
 	zapros=r"""SELECT 
-					r.GROEPID,
+					g.GROEPNR,
 					g.OMSCHRIJVING as ZAGON,
 					count(r.DIERID)
 					
@@ -20,7 +20,7 @@ def index():
                                 else r.GROEPID 
                             end=g.GROEPID
 					Where r.STATUS!='9' and r.STATUS!='10'  
-					Group by r.GROEPID, g.OMSCHRIJVING
+					Group by g.GROEPNR, g.OMSCHRIJVING
 					Order by g.OMSCHRIJVING"""
    
 	result=con_uniform(zapros,'',2)
@@ -28,7 +28,7 @@ def index():
 	for line in result:
 		zagon.append(
 					{
-						'id':line[0],
+						'GROEPNR':line[0],
 						'name': line[1],
 						'kol_golov_zagon': line[2]
 					}

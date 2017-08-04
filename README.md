@@ -71,7 +71,7 @@ def _compute_total(self):
 ЗАПУСК Python как сервиса
 sudo apt-get install supervisor
 
-Создать файл /etc/supervisor/conf.d/ИмяСервиса.conf
+Создать файл /etc/supervisor/conf.d/server-api.conf
 [program:server-api]
 command = python2.7 /home/smv/odoo-selhoz/server-api/server.py
 autorestart = true
@@ -79,8 +79,8 @@ stderr_logfile = /var/log/server-api.err.log
 stdout_logfile = /dev/null
 
 Обновить конфигурацию
-sudo service supervisord reload
-sudo service supervisord restart
+sudo service supervisor reload
+sudo service supervisor restart
 
 Запуск скрипта сервиса
 sudo supervisorctl start server-api

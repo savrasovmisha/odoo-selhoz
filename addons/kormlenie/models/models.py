@@ -119,7 +119,7 @@ class stado_zagon(models.Model):
 	name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
 	nomer = fields.Integer(string=u"Номер", required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
-	uniform_id = fields.Integer(string=u"ID Uniform")
+	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
 
@@ -787,7 +787,7 @@ class korm_korm(models.Model):
 		return result
 	
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
-	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление", copy=True)
 	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=False)
 	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=False)
@@ -808,7 +808,13 @@ class korm_korm(models.Model):
 	
 	@api.one
 	def action_zapolnit_golovi(self):
-		print 'ddd'
+		struktura = self.env['stado.struktura_line']
+		for line in self.korm_korm_line:
+			struktura_id = struktura.search([('stado_zagon_id', '=', line.stado_zagon_id.id), ('date', '<=', self.date)], order="date desc",limit=1)
+			if len(struktura_id)>0:
+				line.kol_golov_zagon = struktura_id.kol_golov_zagon
+
+
 
 
 	@api.one
@@ -1603,7 +1609,7 @@ class stado_struktura(models.Model):
 				struktura = json.loads(response.text)
 				for line in struktura:
 					#print line['name']
-					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['id'])], limit=1)
+					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['GROEPNR'])], limit=1)
 					if len(zagon_id)>0:
 
 						stado_struktura_line.create({
@@ -1680,7 +1686,7 @@ class stado_struktura_line(models.Model):
 	def return_date(self):
 		self.date = self.stado_struktura_id.date
 
-	date = fields.Date(string='Дата', store=True, compute='return_date')
+	date = fields.Datetime(string='Дата', store=True, compute='return_date')
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	stado_struktura_id = fields.Many2one('stado.struktura', ondelete='cascade', string=u"Структура стада", required=True)

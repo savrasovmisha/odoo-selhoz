@@ -1577,19 +1577,57 @@ class stado_struktura(models.Model):
 
 	@api.one
 	def action_zagruzit(self):
-		# import requests as r
-		# import json
+		import requests as r
+		import json
+		err=''
+		url = 'http://127.0.0.1:9000/api/struktura_stada'
+		data = {"params": {"data":"123"}}
+		try:
+			response=r.get(url)
+		except:
+			err=u'НЕ удалось соединиться с сервером'
+			
 
-		# url = 'http://127.0.0.1:9000/api/struktura_stada'
-		# data = {"params": {"data":"123"}}
-		# response=r.get(url)
-		print '==================================='
-		# print response.status_code
-		# print response.text
-		# j = json.loads(response.text)
-		# print j
-		# print '------------'
-		# print j['tasks'][0]['title']
+		
+		self.description = ''
+		self.err = ''
+		if len(err)==0:
+
+			if response.status_code == 200:
+				err=''
+				stado_struktura_line = self.env['stado.struktura_line']
+				del_line = stado_struktura_line.search([('stado_struktura_id',	'=',	self.id)])
+				del_line.unlink()
+				
+				stado_zagon = self.env['stado.zagon']
+				struktura = json.loads(response.text)
+				for line in struktura:
+					print line['name']
+					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['id'])], limit=1)
+					if len(zagon_id)>0:
+
+						stado_struktura_line.create({
+									'stado_struktura_id':	self.id,
+									'stado_zagon_id':	zagon_id.id,
+									'kol_golov_zagon':	line['kol_golov_zagon'],
+									
+									})
+					else:
+
+						err += u"Загон не найден:"+line['name'] + '   '
+					
+		print err
+		if len(err)>0:
+			self.err=u"Ошибка. Смотрите комментарии"
+			self.description = err
+			print '0000000000000000000000000000000000000000'
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.err = 'OK'	
+
+
+
+		#print j['tasks'][0]['title']
 
 
 
@@ -1617,6 +1655,7 @@ class stado_struktura(models.Model):
 	kol_golov = fields.Integer(string=u"Поголовье", store=True, copy=True, compute='_raschet')
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
+	err = fields.Char(string=u"Результат загрузки", readonly=True)
 
 		
 

@@ -7,27 +7,10 @@ from db_connect import con_uniform
 
 @app.route('/api/struktura_stada', method='GET')
 def index():
-   #tree=menuleft()
-   tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol', 
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web', 
-        'done': False
-    }
-	]
-   #return  json.dumps({'tasks': tasks})
-   """SELECT 
-r.status,
-g.OMSCHRIJVING as ZAGON,
-
  
+	zapros=r"""SELECT 
+					r.GROEPID,
+					g.OMSCHRIJVING as ZAGON,
 					count(r.DIERID)
 					
 					FROM DIER r
@@ -36,9 +19,25 @@ g.OMSCHRIJVING as ZAGON,
                                 when r.GROEPID is Null then '-2147483645' 
                                 else r.GROEPID 
                             end=g.GROEPID
-					Where r.STATUS!='9' and r.STATUS!='10'-- and r.STATUS!='5'
-					--where ((r.STATUS!='9' and r.STATUS!='10') or ((r.STATUS='9' or r.STATUS='10') ))  
-					Group by r.GROEPID, g.OMSCHRIJVING, r.status Order by r.status"""
+					Where r.STATUS!='9' and r.STATUS!='10'  
+					Group by r.GROEPID, g.OMSCHRIJVING
+					Order by g.OMSCHRIJVING"""
    
-   
+	result=con_uniform(zapros,'',2)
+	zagon = []
+	for line in result:
+		zagon.append(
+					{
+						'id':line[0],
+						'name': line[1],
+						'kol_golov_zagon': line[2]
+					}
+		
+		)
+	print zagon
+	
+	data = json.dumps(zagon)
+	print data
+	
+	return data
    

@@ -5,6 +5,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 from config import dsn_selex, user_selex, password_selex
 from config import dsn_uniform, user_uniform, password_uniform
+import fdb
 
 #######################################################
 #######---ПОДКЛЮЧЕНИЕ К БАЗАМ-----###############################

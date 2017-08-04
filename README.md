@@ -65,3 +65,23 @@ delete FROM "public"."ir_attachment" WHERE "public"."ir_attachment"."store_fname
 def _compute_total(self):
     for record in self:
         record.total = sum(line.value for line in record.line_ids)
+
+
+
+ЗАПУСК Python как сервиса
+sudo apt-get install supervisor
+
+Создать файл /etc/supervisor/conf.d/ИмяСервиса.conf
+[program:server-api]
+command = python2.7 /home/smv/odoo-selhoz/server-api/server.py
+autorestart = true
+stderr_logfile = /var/log/server-api.err.log
+stdout_logfile = /dev/null
+
+Обновить конфигурацию
+sudo service supervisord reload
+sudo service supervisord restart
+
+Запуск скрипта сервиса
+sudo supervisorctl start server-api
+

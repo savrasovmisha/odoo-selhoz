@@ -56,6 +56,12 @@
                                 icon="fa-refresh" string="Загрузить"
                                >
                             </button>
+                            <button name="action_zagruzit_milk"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Загрузить Молоко"
+                               >
+                            </button>
                             <field name="err"/>
                         </div>
                                     
@@ -69,6 +75,7 @@
                                     <field name="stado_zagon_id"/>
                                     <field name="stado_fiz_group_id"/>
                                     <field name="kol_golov_zagon"/>
+                                    <field name="sred_kol_milk"/>
                                                                       
                                     
                                                                         

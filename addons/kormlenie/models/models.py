@@ -1641,7 +1641,48 @@ class stado_struktura(models.Model):
 		else:
 			self.err = 'OK'	
 
+	@api.one
+	def action_zagruzit_milk(self):
+		import requests as r
+		import json
+		err=''
+		conf = self.env['ir.config_parameter']
+		ip = conf.get_param('ip_server_api')
+		print '>>>>>>>>>>>>>>>>> connect to ', ip
+		url = 'http://'+ip+'/api/struktura_stada_milk/'+self.date
+		try:
+			response=r.get(url)
+		except:
+			err=u'НЕ удалось соединиться с сервером'
+			
 
+		
+		self.description = ''
+		self.err = ''
+		if len(err)==0:
+
+			if response.status_code == 200:
+				err=''
+
+				
+				
+				milk = json.loads(response.text)
+				for line in milk:
+					
+					for z in self.stado_struktura_line:
+						if z.stado_zagon_id.uniform_id == line['GROEPNR']:
+							z.sred_kol_milk = line['sred_kol_milk']
+
+						
+					
+		#print err
+		if len(err)>0:
+			self.err=u"Ошибка. Смотрите комментарии"
+			self.description = err
+			#print '0000000000000000000000000000000000000000'
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.err = 'OK'	
 
 		#print j['tasks'][0]['title']
 
@@ -1705,5 +1746,6 @@ class stado_struktura_line(models.Model):
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True)
+	sred_kol_milk = fields.Integer(string=u"Средний надой", store=True)
 	
 	

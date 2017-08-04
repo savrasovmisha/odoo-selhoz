@@ -10,6 +10,7 @@ class milk_config_settings(models.TransientModel):
 	_name = 'milk.config.settings'
 	_inherit = 'res.config.settings'
 
+	ip_server_api = fields.Char(string=u'IP адрес сервера API')
 	dsn_selex = fields.Char(string=u'DNS Селекс')
 	user_selex = fields.Char(string=u'Пользователь Селекс')
 	password_selex = fields.Char(string=u'Пароль Селекс')
@@ -45,6 +46,7 @@ class milk_config_settings(models.TransientModel):
 		conf = self.env['ir.config_parameter']
 		#company = self.env.user.company_id
 		return {
+			'ip_server_api': conf.get_param('ip_server_api'),
 			'dsn_selex': conf.get_param('dsn_selex'),
 			'user_selex': conf.get_param('user_selex'),
 			'password_selex': conf.get_param('password_selex'),
@@ -56,6 +58,7 @@ class milk_config_settings(models.TransientModel):
 	@api.one
 	def set_values(self):
 		conf = self.env['ir.config_parameter']
+		conf.set_param('ip_server_api', str(self.ip_server_api))
 		conf.set_param('dsn_selex', str(self.dsn_selex))
 		conf.set_param('user_selex', str(self.user_selex))
 		conf.set_param('password_selex', str(self.password_selex))

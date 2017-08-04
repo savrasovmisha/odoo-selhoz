@@ -15,6 +15,14 @@
                             name="cancel" class="oe_link"/>
                     </header>
                     <sheet>
+                        <separator string="Подключение к серверу API" />
+                        <group>
+                            
+                            <field name="ip_server_api" />
+                       
+                            
+                            
+                        </group>
 
                         <separator string="Подключение к Селекс" />
                         <group>

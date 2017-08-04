@@ -1586,7 +1586,10 @@ class stado_struktura(models.Model):
 		import requests as r
 		import json
 		err=''
-		url = 'http://127.0.0.1:9000/api/struktura_stada'
+		conf = self.env['ir.config_parameter']
+		ip = conf.get_param('ip_server_api')
+		print '>>>>>>>>>>>>>>>>> connect to ', ip
+		url = 'http://'+ip+'/api/struktura_stada'
 		data = {"params": {"data":"123"}}
 		try:
 			response=r.get(url)

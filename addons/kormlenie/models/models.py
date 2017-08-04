@@ -1602,7 +1602,7 @@ class stado_struktura(models.Model):
 				stado_zagon = self.env['stado.zagon']
 				struktura = json.loads(response.text)
 				for line in struktura:
-					print line['name']
+					#print line['name']
 					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['id'])], limit=1)
 					if len(zagon_id)>0:
 
@@ -1616,11 +1616,11 @@ class stado_struktura(models.Model):
 
 						err += u"Загон не найден:"+line['name'] + '   '
 					
-		print err
+		#print err
 		if len(err)>0:
 			self.err=u"Ошибка. Смотрите комментарии"
 			self.description = err
-			print '0000000000000000000000000000000000000000'
+			#print '0000000000000000000000000000000000000000'
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
 			self.err = 'OK'	

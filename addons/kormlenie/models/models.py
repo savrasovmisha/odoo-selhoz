@@ -1582,6 +1582,13 @@ class stado_struktura(models.Model):
 		self.kol_telok_15 = self.kol_telok_15_stel + self.kol_telok_15_osem + self.kol_telok_15_ne_osem
 
 	@api.one
+	@api.depends('stado_struktura_line.kol_golov_zagon')
+	def _raschet_golov_zagon(self):
+		for line in self.stado_struktura_line:
+			self.kol_golov_zagon += line.kol_golov_zagon
+
+
+	@api.one
 	def action_zagruzit(self):
 		import requests as r
 		import json
@@ -1662,7 +1669,7 @@ class stado_struktura(models.Model):
 	
 
 	kol_golov = fields.Integer(string=u"Поголовье", store=True, copy=True, compute='_raschet')
-	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", compute='_raschet_golov_zagon', readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 	err = fields.Char(string=u"Результат загрузки", readonly=True)
 

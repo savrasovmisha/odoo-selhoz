@@ -11,12 +11,12 @@ DB_USER='postgres'
 DB_PASSWORD='gfhjkm'
 
 #Параметры подключения к базе selex.fdb
-dsn_selex='192.168.1.9/3050:selex'
+dsn_selex='172.16.0.25/3051:selex'
 user_selex='SYSDBA'
 password_selex='masterkey'
 
 #Параметры подключения к базе uniform.fdb
-dsn_uniform='127.0.0.1/3050:/home/smv/bottle/uniform.fdb'
+dsn_uniform='172.16.0.20/3356:uniform.fdb'
 user_uniform='DAIRYLAND'
 password_uniform='83457389'
 

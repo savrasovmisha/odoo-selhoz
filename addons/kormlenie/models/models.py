@@ -785,9 +785,15 @@ class korm_korm(models.Model):
 
 		result = super(korm_korm, self).create(vals)
 		return result
+
+	@api.one
+	@api.depends('date')
+	def return_date(self):
+		self.date_doc = self.date
 	
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	date_doc = fields.Date(string='Дата_', store=True, copy=False, compute="return_date")
 	korm_korm_line = fields.One2many('korm.korm_line', 'korm_korm_id', string=u"Строка Кормление", copy=True)
 	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=False)
 	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=False)
@@ -1102,9 +1108,10 @@ class korm_korm_ostatok(models.Model):
 		# svod_line = self.env['korm.korm_ostatok_svod_line']
 		# del_line = svod_line.search([('korm_korm_ostatok_id',   '=',    self.id)])
 		# del_line.unlink()
-
+		# d1 = datetime.strftime(self.date, "%Y-%m-%d %H:%M:%S")
+		# d2 = datetime.strftime(self.date, "%Y-%m-%d 24:59:59")
 		korm_korm = self.env['korm.korm']
-		korm_korm_ids = korm_korm.search([('date', '=', self.date)],)
+		korm_korm_ids = korm_korm.search([('date_doc', '=', self.date)],)
 		from itertools import groupby #Преобразует список в иерархический по группировке сортинг
 		d = []
 		for korm_korm_id in korm_korm_ids:

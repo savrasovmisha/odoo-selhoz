@@ -96,7 +96,8 @@ class sale_milk_dashboard(models.Model):
                 print 'dddddddddddd===', ostalos_dney.days
                 
                 v_den = self.zachet_plan/day_month
-                self.zachet_prognoz = (self.zachet_fact + v_den*ostalos_dney.days)/self.zachet_plan*100
+                if self.zachet_plan>0:
+                    self.zachet_prognoz = (self.zachet_fact + v_den*ostalos_dney.days)/self.zachet_plan*100
                 
                 if trace_milk.valoviy_nadoy>0:
                     from openerp.tools.float_utils import float_round

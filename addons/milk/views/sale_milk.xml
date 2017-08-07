@@ -45,9 +45,11 @@
                                             <field name="plotnost" string="Плотность"/>
                                             <field name="ves_natura" string="Натура"/>
                                             <field name="ves_zachet" string="Зачет"/>
-                                            <field name="som_kletki" width="200" string="Сом.клетки" help="Соматические клетки, тыс.ед.см3 "/>
+                                            <field name="som_kletki" width="200" string="Сом. клетки" help="Соматические клетки, тыс.ед.см3 "/>
                                             <field name="somo" string="СОМО,%"/>
                                             <field name="antibiotik" width="200" help="Проверка на содержание антибиотиков"/>
+                                            <field name="kislotnost" width="200" help="Кислотность, градусы"/>
+                                            <field name="temperatura" width="200"/>
                                         </tree>
                                     </field>
                                 </page>
@@ -63,6 +65,11 @@
                                     <field name="avg_jir" string="Жир"/>
                                     <field name="avg_belok" string="Белок"/>
                                     <field name="avg_plotnost" string="Плотность"/>
+                                    <field name="avg_som_kletki"/>
+                                    <field name="avg_somo"/>
+                                    <field name="avg_kislotnost"/>
+                                    <field name="avg_temperatura"/>
+                                    <field name="avg_antibiotik"/>
                                 </group>
                         
                             </group>

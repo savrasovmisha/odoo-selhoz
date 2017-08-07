@@ -1185,8 +1185,8 @@ class sklad_inventarizaciya_line(models.Model):
         """
         Compute the total amounts.
         """
-        if self.kol and self.kol_fact:
-            self.kol_otk = self.kol_fact - self.kol
+        
+        self.kol_otk = self.kol_fact - self.kol
         
 
     @api.one
@@ -1210,9 +1210,9 @@ class sklad_inventarizaciya_line(models.Model):
     sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string=u"Инвентаризация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True)
-    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True)
-    kol_otk = fields.Float(digits=(10, 3), string=u"Отклонение от факта", compute='_amount',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True, default=0)
+    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)
+    kol_otk = fields.Float(digits=(10, 3), string=u"Отклонение от факта", compute='_amount',  store=True, default=0)
  
 
 class nomen_price(models.Model):

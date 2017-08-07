@@ -54,7 +54,7 @@ class korm_svod_report(models.Model):
                     min(s.id) as id,
                     d.name as name,
                     s.date as date,
-                    to_char(s.date, 'MM') as month,
+                    date_part('month',s.date) as month,
                     to_char(s.date, 'YYYY') as year,
                     s.nomen_nomen_id as nomen_nomen_id,
                     sum(s.kol_norma)/count(s.id) as kol_norma,
@@ -94,13 +94,13 @@ class korm_svod_report(models.Model):
                              ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
            
                 Group by d.name, s.date,
-                         to_char(s.date, 'MM') ,
+                         date_part('month',s.date),
                          to_char(s.date, 'YYYY'),
                          s.nomen_nomen_id,
                          kl.stado_fiz_group_id,
                          fg.stado_vid_fiz_group_id
                 Order by d.name, s.date,
-                         to_char(s.date, 'MM') ,
+                         date_part('month',s.date),
                          to_char(s.date, 'YYYY'),
                          s.nomen_nomen_id,
                          kl.stado_fiz_group_id,

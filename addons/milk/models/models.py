@@ -104,6 +104,13 @@ class sale_milk(models.Model):
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
 	avg_plotnost = fields.Float(digits=(4, 2), string=u"Среднее плотность", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
+	
+	avg_som_kletki = fields.Integer(string=u"Сом. клетки", compute='_amount_all', store=True, group_operator="avg")
+	avg_somo = fields.Float(digits=(4, 2), string=u"СОМО, %", compute='_amount_all', store=True, group_operator="avg")
+	avg_antibiotik = fields.Char(string=u"Антиб.", default=u'отр.')
+	avg_kislotnost = fields.Integer(string=u"Кислот- ность", default=u'17', compute='_amount_all', store=True, group_operator="avg")
+	avg_temperatura = fields.Integer(string=u"Темпе- ратура", default=u'4', compute='_amount_all', store=True, group_operator="avg")
+
 	description = fields.Text(string=u"Коментарии")
 
 	@api.one
@@ -137,8 +144,17 @@ class sale_milk(models.Model):
 
 	#@api.one
 	#@api.onchange('sale_milk_line.ves_natura', 'sale_milk_line.ves_zachet')
-	@api.depends('sale_milk_line.tanker_id','sale_milk_line.meter_value',
-				'sale_milk_line.jir','sale_milk_line.belok','sale_milk_line.plotnost', 'sale_milk_line.ves_natura')
+	@api.depends(	'sale_milk_line.tanker_id',
+					'sale_milk_line.meter_value',
+					'sale_milk_line.jir',
+					'sale_milk_line.belok',
+					'sale_milk_line.plotnost', 
+					'sale_milk_line.ves_natura',
+					'sale_milk_line.som_kletki',
+					'sale_milk_line.somo',
+					'sale_milk_line.kislotnost',
+					'sale_milk_line.temperatura'
+					)
 	def _amount_all(self):
 		"""
 		Compute the total amounts of the SO.
@@ -149,9 +165,17 @@ class sale_milk(models.Model):
 		self.avg_jir = 0
 		self.avg_belok = 0
 		self.avg_plotnost = 0
-		_sum_jir = 0
-		_sum_belok = 0
-		_sum_plotnost = 0
+		self.avg_som_kletki = 0
+		self.avg_somo = 0
+		self.avg_kislotnost = 0
+		self.avg_temperatura = 0
+		_sum_jir = 0.00
+		_sum_belok = 0.00
+		_sum_plotnost = 0.0
+		_sum_som_kletki = 0.0
+		_sum_somo = 0.00
+		_sum_kislotnost = 0.0
+		_sum_temperatura = 0.0
 		
 		for line in self.sale_milk_line:
 			self.amount_ves_natura += line.ves_natura
@@ -159,11 +183,19 @@ class sale_milk(models.Model):
 			_sum_jir += line.jir * line.ves_natura
 			_sum_belok += line.belok * line.ves_natura
 			_sum_plotnost += line.plotnost * line.ves_natura
+			_sum_som_kletki += line.som_kletki * line.ves_natura
+			_sum_somo += line.somo * line.ves_natura
+			_sum_kislotnost += line.kislotnost * line.ves_natura
+			_sum_temperatura += line.temperatura * line.ves_natura
 		
 		if self.amount_ves_natura>0:
 			self.avg_jir = _sum_jir / self.amount_ves_natura
 			self.avg_belok = _sum_belok / self.amount_ves_natura	
 			self.avg_plotnost = _sum_plotnost / self.amount_ves_natura	
+			self.avg_som_kletki = round(_sum_som_kletki / self.amount_ves_natura)	
+			self.avg_somo = _sum_somo / self.amount_ves_natura	
+			self.avg_kislotnost = round(_sum_kislotnost / self.amount_ves_natura)	
+			self.avg_temperatura = round(_sum_temperatura / self.amount_ves_natura)	
 
 
 	def create_ttn(self, cr, uid, ids, context=None):
@@ -173,7 +205,16 @@ class sale_milk(models.Model):
 		if s_m.split_line:
 			s_m_line = s_m.sale_milk_line
 		else:
-			s_m_line = [{"jir": s_m.avg_jir, "belok": s_m.avg_belok, "plotnost": s_m.avg_plotnost, "ves_natura": s_m.amount_ves_natura, "antibiotik": ''},]
+			s_m_line = [{"jir": s_m.avg_jir,
+						 "belok": s_m.avg_belok, 
+						 "plotnost": s_m.avg_plotnost, 
+						 "ves_natura": s_m.amount_ves_natura, 
+						 "antibiotik": s_m.avg_antibiotik,
+						 "som_kletki": s_m.avg_som_kletki,
+						 "somo": s_m.avg_somo,
+						 "kislotnost": s_m.avg_kislotnost,
+						 "temperatura": s_m.avg_temperatura
+						 },]
 
 		import sys
 		import os
@@ -300,11 +341,14 @@ class sale_milk_line(models.Model):
 	jir = fields.Float(digits=(3, 1))
 	belok = fields.Float(digits=(3, 2))
 	plotnost = fields.Float(digits=(4, 2))
-	ves_natura = fields.Integer(string=u"natura",  store=True)
-	ves_zachet = fields.Integer(string=u"zachetniy ves", compute='_raschet', store=True)
-	som_kletki = fields.Integer(string=u"somaticheskie kletki")
+	ves_natura = fields.Integer(string=u"В натуре",  store=True)
+	ves_zachet = fields.Integer(string=u"Зачетный вес", compute='_raschet', store=True)
+	som_kletki = fields.Integer(string=u"Сом. клетки")
 	somo = fields.Float(digits=(4, 2))
 	antibiotik = fields.Char(string=u"Антиб.", default=u'отр.')
+	kislotnost = fields.Integer(string=u"Кислот- ность", default=u'17')
+	temperatura = fields.Integer(string=u"Темпе- ратура", default=u'4')
+
 	
 	sale_milk_id = fields.Many2one('milk.sale_milk',
         ondelete='cascade', string=u"Sale milk", required=True)

@@ -1435,7 +1435,7 @@ class korm_potrebnost(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
 	date_start = fields.Date(string='Дата начала', required=True, copy=False, default=fields.Datetime.now)
-	date_end = fields.Date(string='Дата окончания', required=True, copy=False)
+	date_end = fields.Date(string='Дата окончания', required=True, copy=False, default=fields.Datetime.now)
 	
 	kol_day = fields.Integer(string=u"Расчет поголовья за, дней назад", default=7, store=True, copy=True)
 	period_day = fields.Integer(string=u"Кол-во дней в периоде", compute='get_period_day', store=True, copy=True)

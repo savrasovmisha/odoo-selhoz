@@ -98,7 +98,7 @@ class sale_milk(models.Model):
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
 	amount_ves_zachet = fields.Integer(string=u"Зачетный вес", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="sum")
-	avg_jir = fields.Float(digits=(3, 1), string=u"Среднее жир", default=0, 
+	avg_jir = fields.Float(digits=(3, 2), string=u"Среднее жир", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
 	avg_belok = fields.Float(digits=(3, 2), string=u"Среднее белок", default=0, 
 										readonly=True, compute='_amount_all', store=True, group_operator="avg")
@@ -171,7 +171,7 @@ class sale_milk(models.Model):
 		self.avg_temperatura = 0
 		_sum_jir = 0.00
 		_sum_belok = 0.00
-		_sum_plotnost = 0.0
+		_sum_plotnost = 0.00
 		_sum_som_kletki = 0.0
 		_sum_somo = 0.00
 		_sum_kislotnost = 0.0
@@ -338,7 +338,7 @@ class sale_milk_line(models.Model):
 	name = fields.Text(string='Description', required=True, default='New', compute='return_name', store=True)
 	tanker_id = fields.Many2one('milk.tanker', string=u"tanker", required=True)
 	meter_value = fields.Integer(string=u"meter value", required=True)
-	jir = fields.Float(digits=(3, 1))
+	jir = fields.Float(digits=(3, 2))
 	belok = fields.Float(digits=(3, 2))
 	plotnost = fields.Float(digits=(4, 2))
 	ves_natura = fields.Integer(string=u"В натуре",  store=True)

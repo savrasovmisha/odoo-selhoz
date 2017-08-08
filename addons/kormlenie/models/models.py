@@ -644,8 +644,8 @@ class korm_racion(models.Model):
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
-	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
-	korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string=u"Строка Рацион кормления")
+	date = fields.Date(string='Дата', required=True,copy=False, default=fields.Datetime.now)
+	korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string=u"Строка Рацион кормления", copy=True)
 	kol = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
 	amount = fields.Float(digits=(10, 2), string=u"Всего стоимость", store=True, compute='_raschet')
 	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы", store=True, compute='_raschet')
@@ -732,7 +732,7 @@ class korm_racion(models.Model):
 class korm_racion_line(models.Model):
 	_name = 'korm.racion_line'
 	_description = u'Строка Рацион кормления'
-	#_order = 'date desc, nomen_nomen_id'
+	_order = 'sorting'
 
 
 	@api.one
@@ -770,7 +770,7 @@ class korm_racion_line(models.Model):
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 	price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
 	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
-   
+	sorting = fields.Integer(string=u"Порядок", required=True, default=100)
 
 
 class korm_korm(models.Model):

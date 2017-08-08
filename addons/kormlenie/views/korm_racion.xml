@@ -33,6 +33,7 @@
                                 <page string="Состав">
                                     <field name="korm_racion_line">
                                         <tree string="korm_racion_line" editable="botton">
+                                            <field name="sorting"/>
                                             <field name="nomen_nomen_id"/>
                                             <field name="korm_analiz_pit_id"/>
                                             <field name="ed_izm_id"/>

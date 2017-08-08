@@ -34,4 +34,4 @@ access_milk_sale_milk_report_users,milk.sale_milk_report,model_milk_sale_milk_re
 access_milk_sale_milk_dashboard_manager,milk.sale_milk_dashboard,model_milk_sale_milk_dashboard,group_milk_manager,1,1,1,1
 access_milk_sale_milk_dashboard_users,milk.sale_milk_dashboard,model_milk_sale_milk_dashboard,group_milk_users,1,0,0,0
 access_res_partner_manager,res.partner,model_res_partner,group_milk_manager,1,1,1,1
-access_res_partner_users,res.partner,model_res_partner,group_milk_users,1,0,0,0
+access_res_partner_users,res.partner,model_res_partner,group_milk_users,1,1,1,0

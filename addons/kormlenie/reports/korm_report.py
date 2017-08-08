@@ -179,6 +179,56 @@ class korm_receptura_report(models.Model):
         """ % self.pool['res.currency']._select_companies_rates())
 
 
+class korm_ostatok_report(models.Model):
+    _name = "korm.korm_ostatok_report"
+    _description = "Korm Ostatok Statistics"
+    _auto = False
+    _rec_name = 'stado_zagon_name'
+
+    
+    date = fields.Date(string='Дата')
+    
+    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+    stado_zagon_name = fields.Char(string=u'Загон наименование')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+    kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+    kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="avg")
+    kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="avg")
+    kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="avg")
+    
+    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="avg")
+    procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+    
+    _order = 'stado_zagon_name'
+
+    def init(self, cr):
+        tools.sql.drop_view_if_exists(cr, self._table)
+        cr.execute("""
+            create or replace view korm_korm_ostatok_report as (
+                WITH currency_rate as (%s)
+                select 
+                    l.id as id,
+                    l.date as date,
+                    l.stado_zagon_id as stado_zagon_id,
+                    l.stado_fiz_group_id as stado_fiz_group_id,
+                    l.kol_golov_zagon as kol_golov_zagon,
+                    l.kol_korma_norma as kol_korma_norma,
+                    l.kol_korma_fakt as kol_korma_fakt,
+                    l.kol_korma_otk as kol_korma_otk,
+                    l.kol_ostatok as kol_ostatok,
+                    l.procent_ostatkov as procent_ostatkov,
+                    z.name as stado_zagon_name
+
+                    
+                from korm_korm_ostatok_line l
+                left join stado_zagon z on 
+                                        ( z.id = l.stado_zagon_id)
+
+                )
+        """ % self.pool['res.currency']._select_companies_rates())
+
+
+
 
 # class korm_buh_report(models.Model):
 #     _name = "korm.buh_report"

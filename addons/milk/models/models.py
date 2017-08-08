@@ -199,9 +199,9 @@ class sale_milk(models.Model):
 
 
 	def create_ttn(self, cr, uid, ids, context=None):
-		
 		s_m = self.browse(cr, uid, ids[0], context=context)
 		
+		#print "жжжжжжжжжжж===",s_m.date_doc
 		if s_m.split_line:
 			s_m_line = s_m.sale_milk_line
 		else:

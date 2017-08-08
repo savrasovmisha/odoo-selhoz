@@ -67,3 +67,5 @@ access_stado_struktura_manager,stado.struktura,model_stado_struktura,group_korm_
 access_stado_struktura_users,stado.struktura,model_stado_struktura,group_korm_users,1,0,0,0
 access_stado_struktura_line_manager,stado.struktura_line,model_stado_struktura_line,group_korm_manager,1,1,1,1
 access_stado_struktura_line_users,stado.struktura_line,model_stado_struktura_line,group_korm_users,1,0,0,0
+access_korm_korm_ostatok_report_manager,korm.korm_ostatok_report,model_korm_korm_ostatok_report,group_korm_manager,1,1,1,1
+access_korm_korm_ostatok_report_users,korm.korm_ostatok_report,model_korm_korm_ostatok_report,group_korm_users,1,0,0,0

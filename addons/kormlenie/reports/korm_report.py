@@ -107,7 +107,7 @@ class korm_svod_report(models.Model):
                          fg.stado_vid_fiz_group_id
                 )
         """ % self.pool['res.currency']._select_companies_rates())
-
+        
     # @api.model
     # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
     #     " Overwrite the read_group in order to sum the function field 'inventory_value' in group by "

@@ -1761,3 +1761,65 @@ class stado_struktura_line(models.Model):
 	sred_kol_milk = fields.Integer(string=u"Средний надой", store=True)
 	
 	
+
+
+
+
+
+class korm_rashod_kormov(models.Model):
+	_name = 'korm.rashod_kormov'
+	_description = u'Расход кормов и добавок'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('korm.rashod_kormov') or 'New'
+
+		result = super(korm_rashod_kormov, self).create(vals)
+		return result
+
+
+
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	
+	korm_rashod_kormov_line = fields.One2many('korm.rashod_kormov_line', 'korm_rashod_kormov_id', string=u"Строка Расход кормов и добавок", copy=True)
+	
+	description = fields.Text(string=u"Коментарии")
+		
+
+
+	
+
+class korm_rashod_kormov_line(models.Model):
+	_name = 'korm.rashod_kormov_line'
+	_description = u'Строка Расход кормов и добавок'
+	#_order = 'sorting'
+
+
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		self.name = self.stado_zagon_id.nomer
+		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+		
+	
+	@api.one
+	@api.depends('korm_rashod_kormov_id.date')
+	def return_date(self):
+		self.date = self.korm_rashod_kormov_id.date
+
+	date = fields.Datetime(string='Дата', store=True, compute='return_date')
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_rashod_kormov_id = fields.Many2one('korm.rashod_kormov', ondelete='cascade', string=u"Расход кормов и добавок", required=True)
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+	

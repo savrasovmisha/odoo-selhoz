@@ -53,6 +53,8 @@
         'views/seq_korm_potrebnost.xml',
         'views/stado_struktura.xml',
         'views/seq_stado_struktura.xml',
+        'views/korm_rashod_kormov.xml',
+        'views/seq_korm_rashod_kormov.xml',
         #'reports/korm_buh_report.xml',
         #'reports/korm_buh_report_view.xml',
         'views/menu.xml',

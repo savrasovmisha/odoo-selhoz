@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_rashod_kormov_form_view">
+        <field name="name">korm_rashod_kormov.form</field>
+        <field name="model">korm.rashod_kormov</field>
+        <field name="arch" type="xml">
+            <form string="Форма Расход кормов и добавок">
+               
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            
+                            
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            
+                        </group>
+                     </group>
+                    
+                                    
+            
+                       
+                    <notebook>
+                        <page string="Данные">
+                            <field name="korm_rashod_kormov_line" >
+                                <tree string="korm_rashod_kormov_line" editable="botton">
+                                    
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_fiz_group_id"/>
+                                
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        
+                        
+
+                    </notebook>
+
+
+                       
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>    
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_rashod_kormov_tree">
+            <field name="name">korm_rashod_kormov.tree</field>
+            <field name="model">korm.rashod_kormov</field>
+            <field name="arch" type="xml">
+                <tree string="Расход кормов и добавок">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_rashod_kormov_search_view">
+            <field name="name">korm_rashod_kormov.search</field>
+            <field name="model">korm.rashod_kormov</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_rashod_kormov_list_action">
+            <field name="name">Расход кормов и добавок</field>
+            <field name="res_model">korm.rashod_kormov</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Расход кормов и добавок
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -92,6 +92,12 @@ class korm_svod_report(models.Model):
                             From nomen_price_line pl
                             Order by  pl.nomen_nomen_id, pl.date desc
                              ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
+                full join (Select 
+                                rk.nomen_nomen_id, 
+                                rk.kol as kol_fakt 
+                            From korm_rashod_kormov_line rk) rkk on (
+                                                                rkk.nomen_nomen_id=s.nomen_nomen_id)
+
            
                 Group by d.name, s.date,
                          date_part('month',s.date),
@@ -107,7 +113,7 @@ class korm_svod_report(models.Model):
                          fg.stado_vid_fiz_group_id
                 )
         """ % self.pool['res.currency']._select_companies_rates())
-        
+
     # @api.model
     # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
     #     " Overwrite the read_group in order to sum the function field 'inventory_value' in group by "
@@ -192,12 +198,13 @@ class korm_ostatok_report(models.Model):
     stado_zagon_name = fields.Char(string=u'Загон наименование')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
     kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="avg")
-    kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="avg")
-    kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="avg")
+    kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
+    kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
+    kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
     
-    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="avg")
+    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
     procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+    sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
     
     _order = 'stado_zagon_name'
 
@@ -217,12 +224,16 @@ class korm_ostatok_report(models.Model):
                     l.kol_korma_otk as kol_korma_otk,
                     l.kol_ostatok as kol_ostatok,
                     l.procent_ostatkov as procent_ostatkov,
-                    z.name as stado_zagon_name
+                    z.name as stado_zagon_name,
+                    s.sred_kol_milk as sred_kol_milk
 
                     
                 from korm_korm_ostatok_line l
                 left join stado_zagon z on 
                                         ( z.id = l.stado_zagon_id)
+                left join stado_struktura_line s on
+                                        (date_trunc('day',s.date) = date_trunc('day',l.date) and 
+                                         s.stado_zagon_id = l.stado_zagon_id)
 
                 )
         """ % self.pool['res.currency']._select_companies_rates())

@@ -754,6 +754,7 @@ class korm_racion_line(models.Model):
 			self.price = price
 
 			self.amount = self.price * self.kol
+			self.sorting = self.nomen_nomen_id.nomen_group_id.sorting
 
 	@api.one
 	@api.depends('kol')
@@ -1656,7 +1657,11 @@ class stado_struktura(models.Model):
 		conf = self.env['ir.config_parameter']
 		ip = conf.get_param('ip_server_api')
 		print '>>>>>>>>>>>>>>>>> connect to ', ip
-		url = 'http://'+ip+'/api/struktura_stada_milk/'+self.date
+		
+		dt = datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S')
+		
+		date = dt.date().strftime('%d.%m.%Y')
+		url = 'http://'+ip+'/api/struktura_stada_milk/'+date
 		try:
 			response=r.get(url)
 		except:

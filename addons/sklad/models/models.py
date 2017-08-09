@@ -57,7 +57,8 @@ class nomen_group(models.Model):
     _description = u'Группы номенклатуры'
     """Группы используются для отнесения номенклатуры к типу номенклатуры"""
    
-    name = fields.Char(string=u"Наименование", required=True)  
+    name = fields.Char(string=u"Наименование", required=True) 
+    sorting = fields.Integer(string=u"Порядок", required=True, default=100) 
 
 class nomen_nomen(models.Model):
     _name = 'nomen.nomen'

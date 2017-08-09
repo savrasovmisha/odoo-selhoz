@@ -58,7 +58,7 @@ def index():
 def struktura_stada_milk(date):
 	if date is None:
 		return 'error'
-	date = "{date:%Y-%m-%d}"
+	print date
 	zapros=r"""SELECT 
 					g.GROEPNR,
 					Count(r.DIERID)/2 as kol_golov,

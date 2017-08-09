@@ -44,6 +44,9 @@
 
         <menuitem id="korm_ostatok_report_menu" name="Анализ остатков кормления" parent="korm_menu_report"
                   action="korm_ostatok_report_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_rashod_kormov_report_menu" name="Анализ расхода кормов и добавок" parent="korm_menu_report"
+                  action="korm_rashod_kormov_report_action" groups="group_korm_manager,group_korm_users"/>
         <!-- <menuitem id="korm_buh_report_menu" name="Отчетность в бухгалтерию" parent="korm_menu_report"
                   action="korm_buh_report_action" groups="group_korm_manager,group_korm_users"/>
  -->

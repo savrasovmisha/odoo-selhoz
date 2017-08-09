@@ -92,12 +92,7 @@ class korm_svod_report(models.Model):
                             From nomen_price_line pl
                             Order by  pl.nomen_nomen_id, pl.date desc
                              ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
-                full join (Select 
-                                rk.nomen_nomen_id, 
-                                rk.kol as kol_fakt 
-                            From korm_rashod_kormov_line rk) rkk on (
-                                                                rkk.nomen_nomen_id=s.nomen_nomen_id)
-
+             
            
                 Group by d.name, s.date,
                          date_part('month',s.date),
@@ -234,6 +229,93 @@ class korm_ostatok_report(models.Model):
                 left join stado_struktura_line s on
                                         (date_trunc('day',s.date) = date_trunc('day',l.date) and 
                                          s.stado_zagon_id = l.stado_zagon_id)
+
+                )
+        """ % self.pool['res.currency']._select_companies_rates())
+
+
+
+
+
+
+
+class korm_rashod_kormov_report(models.Model):
+    _name = "korm.rashod_kormov_report"
+    _description = "Korm rashod kormov"
+    _auto = False
+    _rec_name = 'nomen_nomen_id'
+    _order = 'nomen_nomen_id'
+
+    
+    date = fields.Date(string='Дата')
+    
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+    #kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+    #kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
+    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
+    #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+    
+    #kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+    #procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+    #sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+    
+
+    def init(self, cr):
+        tools.sql.drop_view_if_exists(cr, self._table)
+        cr.execute("""
+            create or replace view korm_rashod_kormov_report as (
+                WITH currency_rate as (%s)
+                SELECT
+    *
+
+FROM (select 
+                    min(s.id) as id,
+                    
+                    date_trunc('day',s.date) as date,
+                    
+                    s.nomen_nomen_id as nomen_nomen_id,
+           
+                    sum(s.kol_fakt) as kol_fakt,
+                    
+                    kl.stado_fiz_group_id as stado_fiz_group_id,
+                    fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id
+                    
+                from korm_korm_detail_line s
+
+                left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
+                                            kl.sorting = s.sorting)
+                
+                left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+                           
+                Group by date_trunc('day',s.date),
+                         
+                         s.nomen_nomen_id,
+                         kl.stado_fiz_group_id,
+                         fg.stado_vid_fiz_group_id
+UNION ALL
+    Select
+            min(s.id) as id,
+                    
+            date_trunc('day',s.date) as date,
+            
+            s.nomen_nomen_id as nomen_nomen_id,
+       
+            sum(s.kol) as kol_fakt,
+            
+            s.stado_fiz_group_id as stado_fiz_group_id,
+            fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id
+    From korm_rashod_kormov_line s
+                   
+    left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
+           
+    Group by date_trunc('day',s.date),
+         
+         s.nomen_nomen_id,
+         s.stado_fiz_group_id,
+         fg.stado_vid_fiz_group_id) t1
 
                 )
         """ % self.pool['res.currency']._select_companies_rates())

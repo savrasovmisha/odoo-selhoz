@@ -56,6 +56,8 @@
         'views/seq_stado_struktura.xml',
         'views/korm_rashod_kormov.xml',
         'views/seq_korm_rashod_kormov.xml',
+        #'views/korm_korm_view.xml',
+        'wizard/korm_korm_wiz_view.xml',
         #'reports/korm_buh_report.xml',
         #'reports/korm_buh_report_view.xml',
         'views/menu.xml',

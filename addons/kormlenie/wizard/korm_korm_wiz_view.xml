@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Multi Sale Order Confirmation Wizard -->
+	<record id="multi_korm_korm_confirm_view_wiz" model="ir.ui.view">
+        <field name="name">multi.korm_korm_wiz.form.view.wiz</field>
+        <field name="model">multi.korm_korm_wiz</field>
+        <field name="arch" type="xml">
+            <form string="Confirm">
+                <h3>Нажмине Провести для проведения выделенных документов или Отмена проведения для отмены проведенных документов </h3>
+                <footer>
+                    <button name="confirm_multi_korm_korm" string="Провести" type="object" class="oe_highlight"/>
+                    или
+                    <button name="draft_multi_korm_korm" string="Отмена проведения" type="object" class="oe_highlight"/>
+                    или
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_multi_korm_korm_confirm_wiz" model="ir.actions.act_window">
+        <field name="name">Multi Quotation Confirmation</field>
+        <field name="res_model">multi.korm_korm_wiz</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

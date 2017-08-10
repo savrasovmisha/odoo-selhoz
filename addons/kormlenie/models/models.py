@@ -774,6 +774,68 @@ class korm_racion_line(models.Model):
 	sorting = fields.Integer(string=u"Порядок", required=True, default=100)
 
 
+
+class reg_rashod_kormov(models.Model):
+	_name = 'reg.rashod_kormov'
+	_description = u'Регистр Расход кормов и добавок'
+  
+	name = fields.Char(string=u"Регистратор", required=True)
+	obj = fields.Char(string=u"Регистратор", required=True)
+	obj_id = fields.Integer(string=u"ID Регистратора", required=True)
+	date = fields.Datetime(string='Дата', required=True)
+	
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', required=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во")
+
+def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
+	"""
+		Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
+		vid_dvijeniya='create' Создать записи
+		vid_dvijeniya='unlink' Удалить записи
+	"""
+
+	message = ''
+		
+
+	reg = obj.env['reg.rashod_kormov']
+	if vid_dvijeniya == 'create':
+		if len(vals) == 0:
+			message = u"Нет данных для проведения документа. Не заполненна табличная часть"
+			raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+			return False
+		for line in vals:
+			line['id'] = False
+			line['obj'] = obj.__class__.__name__
+			line['obj_id'] = obj.id
+			line['date'] = obj.date
+
+			if line['kol']<0:
+				
+				message = u"Кол-во должно быть больше нуля"
+				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+				return False
+				
+		for line in vals:
+			reg.create(line)
+
+
+	elif vid_dvijeniya == 'unlink':
+		ids_del = reg.search([  ('obj_id', '=', obj.id),
+								('obj', '=', obj.__class__.__name__),
+								])
+		ids_del.unlink()
+	
+
+	return True
+
+
+
+
 class korm_korm(models.Model):
 	_name = 'korm.korm'
 	_description = u'Кормление'
@@ -783,9 +845,18 @@ class korm_korm(models.Model):
 	def create(self, vals):
 		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
 			vals['name'] = self.env['ir.sequence'].next_by_code('korm.korm') or 'New'
-
+			vals['state'] = 'draft'
 		result = super(korm_korm, self).create(vals)
 		return result
+   
+	@api.multi
+	def unlink(self):
+
+		for pp in self:
+			if pp.state != 'done':
+				raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+		return super(korm_korm, self).unlink()
 
 	@api.one
 	@api.depends('date')
@@ -811,8 +882,75 @@ class korm_korm(models.Model):
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True, copy=True)
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
-
+	state = fields.Selection([
+		('create', "Создан"),
+		('draft', "Черновик"),
+		('confirmed', "Проведен"),
+		('done', "Отменен"),
+		
+	], default='draft')
 	
+	@api.multi
+	def action_draft(self):
+		for doc in self:
+			
+			if reg_rashod_kormov_move(self, [], 'unlink')==True:
+				self.state = 'draft'
+			
+
+		
+	
+
+	@api.multi
+	def action_confirm(self):
+		#self.write({'state': 'confirmed'})
+		
+		for doc in self:
+			vals = []
+			k = 0.000
+			for svod in doc.korm_korm_svod_line:
+				korm_korm_line = doc.korm_korm_line.search([('sorting',	'=', svod.sorting),
+															('korm_korm_id','=', svod.korm_korm_id.id)
+															])
+				for line in korm_korm_line:
+					k = round(line.kol_korma/svod.kol_korma, 3)
+					print k
+					if k>1.000:
+						err = u'Ошибка в данных. Кол-во корма в Порядке кормления больше чем в Своде кормления. Смотрите порядок №'+str(svod.sorting)
+						raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+						return False
+
+					korm_detail_line = doc.korm_korm_detail_line.search([('sorting',	'=', svod.sorting),
+															('korm_korm_id','=', svod.korm_korm_id.id)
+															])
+
+					for detail in korm_detail_line:
+						vals.append({
+									'name': detail.nomen_nomen_id.name, 
+									'nomen_nomen_id': detail.nomen_nomen_id.id, 
+									'stado_zagon_id': line.stado_zagon_id.id, 
+									'stado_fiz_group_id': line.stado_zagon_id.stado_fiz_group_id.id, 
+									'kol': detail.kol_fakt*k, 
+
+
+
+
+									})
+
+				
+			if reg_rashod_kormov_move(self, vals, 'create')==True:
+				self.state = 'confirmed'
+			
+
+
+
+
+
+	@api.multi
+	def action_done(self):
+		self.state = 'done'
+
+
 	@api.one
 	def action_zapolnit_golovi(self):
 		struktura = self.env['stado.struktura_line']

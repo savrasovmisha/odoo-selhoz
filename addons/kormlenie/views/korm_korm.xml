@@ -6,36 +6,51 @@
         <field name="model">korm.korm</field>
         <field name="arch" type="xml">
             <form string="Форма Кормление">
+                <header>
+                    <button name="action_draft" type="object"
+                            string="Отменить проведение"
+                            states="confirmed"/>
+                    <button name="action_confirm" type="object"
+                            string="Провести" states="draft"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object"
+                            string="Удалить" 
+                            states="draft"  style="margin-left: 100px;"/>
+                    
+                    <field name="state" widget="statusbar"/>
+                </header>
                
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="transport_id"/>
-                            <field name="voditel_id" domain="[('company_type','=','person')]"/>
-                            <field name="is_vremya_dnya"/>
+                            <field name="name" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="transport_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="voditel_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="is_vremya_dnya" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                         <group>
-                            <field name="date"/>
-                            <field name="sostavil_id" domain="[('company_type','=','person')]"/>
-                            <field name="utverdil_id" domain="[('company_type','=','person')]"/>
-                            <field name="vremya_dnya" attrs="{'invisible': [('is_vremya_dnya', '=', False)]}" />
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sostavil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="utverdil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="vremya_dnya" attrs="{'invisible': [('is_vremya_dnya', '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" />
 
                         </group>
                      </group>
-                     <div class="oe_button_box" name="button_box">
+                     <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state',  'in', ['confirmed',])]}">
                             <button name="action_zapolnit_golovi"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"
                                 icon="fa-refresh" string="Пересчитать головы"
+                                
                                >
                             </button>
                         </div>
-                     <div class="oe_button_box" name="button_box">
+                     <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state',  'in', ['confirmed',])]}">
                             <button name="action_raschet"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"
                                 icon="fa-refresh" string="Заполнить"
+                                
                                >
                             </button>
                         </div>
@@ -44,7 +59,7 @@
                        
                     <notebook>
                         <page string="Порядок кормления">
-                            <field name="korm_korm_line">
+                            <field name="korm_korm_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="korm_korm_line" editable="botton">
                                     <field name="sorting"/>
                                     <field name="stado_zagon_id"/>
@@ -68,8 +83,8 @@
                             
                         </page>
 
-                        <page string="Свод кормления">
-                            <field name="korm_korm_svod_line">
+                        <page string="Свод кормления" >
+                            <field name="korm_korm_svod_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="korm_korm_svod_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sorting"/>
                                     <field name="korm_racion_id"/>
@@ -93,7 +108,7 @@
 
                         <page string="Детали кормления">
                             
-                            <field name="korm_korm_detail_line">
+                            <field name="korm_korm_detail_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="korm_korm_detail_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sorting"/>
                                     <field name="nomen_nomen_id"/>
@@ -141,11 +156,12 @@
             <field name="name">korm_korm.tree</field>
             <field name="model">korm.korm</field>
             <field name="arch" type="xml">
-                <tree string="Кормление">
+                <tree string="Кормление" colors="green:state=='draft';red:state == 'done'">
                     
                     <field name="date"/>
                     <field name="name"/>
                     <field name="vremya_dnya"/>
+                    <field name="state"/>
                   
                     
                     
@@ -181,7 +197,10 @@
             </field>
         </record>
 
+    
         
     </data>
+
+    <act_window id="multiple_confirm_korm_korm" multi="True" name="Провести документы" res_model="multi.korm_korm_wiz" src_model="korm.korm" view_mode="form" target="new" view_type="form"/>
 </openerp>
 

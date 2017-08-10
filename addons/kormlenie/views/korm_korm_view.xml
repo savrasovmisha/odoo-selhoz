@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    
+<!-- Assign Multiple Employee -->
+    <act_window id="multiple_confirm_korm_korm" multi="True" name="Confirm Quotations" res_model="multi.korm_korm_wiz" src_model="korm.korm" view_mode="form" target="new" view_type="form"/>
+
+</openerp>

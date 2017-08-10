@@ -6,16 +6,29 @@
         <field name="model">korm.rashod_kormov</field>
         <field name="arch" type="xml">
             <form string="Форма Расход кормов и добавок">
+                <header>
+                    <button name="action_draft" type="object"
+                            string="Отменить проведение"
+                            states="confirmed"/>
+                    <button name="action_confirm" type="object"
+                            string="Провести" states="draft"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object"
+                            string="Удалить" 
+                            states="draft"  style="margin-left: 100px;"/>
+                    
+                    <field name="state" widget="statusbar"/>
+                </header>
                
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
+                            <field name="name" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             
                             
                         </group>
                         <group>
-                            <field name="date"/>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             
                         </group>
                      </group>
@@ -25,7 +38,7 @@
                        
                     <notebook>
                         <page string="Данные">
-                            <field name="korm_rashod_kormov_line" >
+                            <field name="korm_rashod_kormov_line"  attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="korm_rashod_kormov_line" editable="botton">
                                     
                                     <field name="nomen_nomen_id"/>

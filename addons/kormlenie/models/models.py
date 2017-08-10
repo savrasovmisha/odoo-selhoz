@@ -929,7 +929,7 @@ class korm_korm(models.Model):
 									'name': detail.nomen_nomen_id.name, 
 									'nomen_nomen_id': detail.nomen_nomen_id.id, 
 									'stado_zagon_id': line.stado_zagon_id.id, 
-									'stado_fiz_group_id': line.stado_zagon_id.stado_fiz_group_id.id, 
+									'stado_fiz_group_id': line.korm_racion_id.stado_fiz_group_id.id, 
 									'kol': detail.kol_fakt*k, 
 
 
@@ -1913,7 +1913,7 @@ class korm_rashod_kormov(models.Model):
 	def create(self, vals):
 		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
 			vals['name'] = self.env['ir.sequence'].next_by_code('korm.rashod_kormov') or 'New'
-
+			vals['state'] = 'draft'
 		result = super(korm_rashod_kormov, self).create(vals)
 		return result
 
@@ -1925,6 +1925,53 @@ class korm_rashod_kormov(models.Model):
 	korm_rashod_kormov_line = fields.One2many('korm.rashod_kormov_line', 'korm_rashod_kormov_id', string=u"Строка Расход кормов и добавок", copy=True)
 	
 	description = fields.Text(string=u"Коментарии")
+	state = fields.Selection([
+		('create', "Создан"),
+		('draft', "Черновик"),
+		('confirmed', "Проведен"),
+		('done', "Отменен"),
+		
+	], default='draft')
+
+	@api.multi
+	def action_draft(self):
+		for doc in self:
+			
+			if reg_rashod_kormov_move(self, [], 'unlink')==True:
+				self.state = 'draft'
+			
+
+		
+	@api.multi
+	def action_confirm(self):
+		#self.write({'state': 'confirmed'})
+		
+		for doc in self:
+			vals = []
+			k = 0.000
+			for line in doc.korm_rashod_kormov_line:
+				vals.append({
+							'name': line.nomen_nomen_id.name, 
+							'nomen_nomen_id': line.nomen_nomen_id.id, 
+							'stado_zagon_id': line.stado_zagon_id.id, 
+							'stado_fiz_group_id': line.stado_fiz_group_id.id, 
+							'kol': line.kol, 
+
+							})
+
+				
+			if reg_rashod_kormov_move(self, vals, 'create')==True:
+				self.state = 'confirmed'
+			
+
+
+
+
+
+	@api.multi
+	def action_done(self):
+		self.state = 'done'
+
 		
 
 

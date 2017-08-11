@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, _
 
+#Проведение документов
 class MultiKormKormWiz(models.TransientModel):
     _name = 'multi.korm_korm_wiz'
 

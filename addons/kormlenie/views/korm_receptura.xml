@@ -7,10 +7,17 @@
         <field name="arch" type="xml">
             <form string="Форма Рецептура комбикорма">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "active"}'/>
+                        </button>
+                    </div>
                     <group>
                         <group>
                             <field name="nomen_nomen_id"/>
-                            <field name="active"/>
+                            
                             
                         </group>
                         <group>
@@ -182,11 +189,11 @@
             <field name="name">korm_receptura.tree</field>
             <field name="model">korm.receptura</field>
             <field name="arch" type="xml">
-                <tree string="Рецептура комбикорма">
+                <tree string="Рецептура комбикорма" colors="red:active == False">
                     
-                    <field name="active"/>
                     <field name="date"/>
                     <field name="nomen_nomen_id"/>
+                    <field name="active"/>
                   
                     
                     
@@ -204,6 +211,16 @@
                     <field name="nomen_nomen_id"/>
                 </search>
             </field>
+        </record>
+
+
+        <record id="filter_korm_receptura" model="ir.filters">
+            <field name="name">Архивные</field>
+            <field name="model_id">korm.receptura</field>
+            <field name="domain">[('active','=',False)]</field>
+            <!-- <field name="is_default">0</field> -->
+            <field name="user_id"></field>
+            
         </record>
         <!-- window action Верхняя панель -->
         <!--

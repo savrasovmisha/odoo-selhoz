@@ -73,6 +73,7 @@ class nomen_nomen(models.Model):
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат')
     id_1c = fields.Char(string=u"Номер в 1С")
+    active = fields.Boolean(string=u"Используется", default=True)
 
 #----------------------------------------------------------
 # Склад

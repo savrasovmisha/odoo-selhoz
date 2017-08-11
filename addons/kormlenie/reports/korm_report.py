@@ -253,8 +253,9 @@ class korm_rashod_kormov_report(models.Model):
     stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
-    #kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    #kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
+    kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+    #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
+    kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
     #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
     
@@ -276,15 +277,19 @@ class korm_rashod_kormov_report(models.Model):
                             s.nomen_nomen_id as nomen_nomen_id,
                    
                             s.kol as kol_fakt,
+                            s.kol/z.kol_golov_zagon as kol_korma_golova,
                             
                             s.stado_fiz_group_id as stado_fiz_group_id,
                             s.stado_zagon_id as stado_zagon_id,
-                            fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id
+                            fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id,
+                            z.kol_golov_zagon as kol_golov_zagon
                     
                         from reg_rashod_kormov s
 
                         left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
-                           
+                        
+                        left join stado_struktura_line z on (z.date::date = s.date::date and
+                                                            z.stado_zagon_id = s.stado_zagon_id)   
                         
 
                     )

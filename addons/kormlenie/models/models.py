@@ -122,7 +122,7 @@ class stado_zagon(models.Model):
 	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
-
+	active = fields.Boolean(string=u"Используется", default=True)
 
 class korm_analiz_pit(models.Model):
 	_name = 'korm.analiz_pit'
@@ -653,6 +653,7 @@ class korm_racion(models.Model):
 	jir = fields.Float(digits=(10, 2), string=u"Жир, %", store=True)
 	belok = fields.Float(digits=(10, 2), string=u"Белок, %", store=True)
 	massa = fields.Integer(string=u"Живая масса, кг", store=True)
+	active = fields.Boolean(string=u"Используется", default=True)
 
 	ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
 	sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
@@ -974,6 +975,38 @@ class korm_korm(models.Model):
 
 		sorted=''
 		kol_golov=kol_golov_zagon=kol_korma=racion_id=self.kol_golov_zagon=self.kol_golov=0
+
+		#Проверка и исправление введенных данных
+		for line in self.korm_korm_line:
+			line.name = line.stado_zagon_id.nomer
+			line.date = self.date
+
+			line.stado_fiz_group_id = line.stado_zagon_id.stado_fiz_group_id
+			racion = self.env['korm.racion']
+			racion_id = racion.search([('stado_fiz_group_id', '=', line.stado_fiz_group_id.id), 
+										('date', '<=', self.date),'|',
+										('active', '=', False),
+										('active', '=', True),
+										], order="date desc",limit=1).id
+			line.korm_racion_id = racion_id
+			if self.is_vremya_dnya == False:
+				line.procent_dachi = 100
+			else:
+				if self.vremya_dnya == u'Утро':
+					line.procent_dachi = line.stado_zagon_id.utro
+				else:
+					line.procent_dachi = line.stado_zagon_id.vecher
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			if line.kol_golov>0 and line.korm_racion_id!=False:
+				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
+			else:
+				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
+				return False	
+
+
+
+
+
 		d = []
 		for line in self.korm_korm_line:
 			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
@@ -1035,7 +1068,7 @@ class korm_korm(models.Model):
 class korm_korm_line(models.Model):
 	_name = 'korm.korm_line'
 	_description = u'Строка Кормление'
-	_order = 'sorting'
+	_order = 'sorting, name'
 
 
 	@api.one
@@ -1045,7 +1078,12 @@ class korm_korm_line(models.Model):
 
 		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
 		racion = self.env['korm.racion']
-		racion_id = racion.search([('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), ('date', '<=', self.korm_korm_id.date)], order="date desc",limit=1).id
+		racion_id = racion.search([ ('stado_fiz_group_id', '=', self.stado_fiz_group_id.id),
+									('date', '<=', self.korm_korm_id.date),
+									 '|',
+									('active', '=', False),
+									('active', '=', True),
+									 ], order="date desc",limit=1).id
 		self.korm_racion_id = racion_id
 		if self.korm_korm_id.is_vremya_dnya == False:
 			self.procent_dachi = 100
@@ -1076,10 +1114,11 @@ class korm_korm_line(models.Model):
 	@api.depends('korm_korm_id.date')
 	def return_date(self):
 		self.date = self.korm_korm_id.date
+		
 
 	date = fields.Date(string='Дата', store=True, compute='return_date')
 
-	name = fields.Char(string=u"Наименование", compute='return_name')
+	name = fields.Char(string=u"Наименование", compute='return_name', store=True)
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
 	
 	sorting = fields.Integer(string=u"Порядок", required=True)
@@ -1087,7 +1126,7 @@ class korm_korm_line(models.Model):
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", compute='_raschet', store=True)
-	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True, readonly=True)
 	procent_dachi = fields.Integer(string=u"% дачи", store=True, compute='return_name')
 	procent_raciona = fields.Integer(string=u"% дачи рациона", store=True, default=100)
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')
@@ -1610,7 +1649,13 @@ class korm_potrebnost_zagon_line(models.Model):
 
 		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
 		racion = self.env['korm.racion']
-		racion_id = racion.search([('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), ('date', '<=', self.korm_potrebnost_id.date)], order="date desc",limit=1).id
+		racion_id = racion.search([ ('stado_fiz_group_id', '=', self.stado_fiz_group_id.id), 
+									('date', '<=', self.korm_potrebnost_id.date),
+									'|',
+									('active', '=', False),
+									('active', '=', True),
+
+									], order="date desc",limit=1).id
 		self.korm_racion_id = racion_id
 				
 		self.kol_golov = 0
@@ -1736,6 +1781,7 @@ class stado_struktura(models.Model):
 
 	@api.one
 	def action_zagruzit(self):
+
 		import requests as r
 		import json
 		err=''
@@ -1763,6 +1809,7 @@ class stado_struktura(models.Model):
 				
 				stado_zagon = self.env['stado.zagon']
 				struktura = json.loads(response.text)
+				zagon_ids = []
 				for line in struktura:
 					#print line['name']
 					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['GROEPNR'])], limit=1)
@@ -1774,9 +1821,22 @@ class stado_struktura(models.Model):
 									'kol_golov_zagon':	line['kol_golov_zagon'],
 									
 									})
+						zagon_ids.append(zagon_id.id)
+
 					else:
 
 						err += u"Загон не найден:"+line['name'] + '   '
+				#Дополняем список загонов которые не получены из Uniform
+				not_zagon_ids = stado_zagon.search([('id',	'not in',	zagon_ids)], )
+				for line in not_zagon_ids:
+					stado_struktura_line.create({
+									'stado_struktura_id':	self.id,
+									'stado_zagon_id':	line.id,
+									'kol_golov_zagon':	0,
+									
+									})
+
+
 					
 		#print err
 		if len(err)>0:

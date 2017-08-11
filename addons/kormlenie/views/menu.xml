@@ -18,15 +18,22 @@
 
         <menuitem id="stado_struktura_menu" name="Структура стада" sequence="4" parent="korm_menu_doc" action="stado_struktura_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" sequence="5" parent="korm_menu_doc" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_racion_menu" name="Рацион кормления" sequence="6" parent="korm_menu_doc" action="korm_racion_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" sequence="7" parent="korm_menu_doc" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>
+
         
-        <menuitem id="korm_analiz_pit_menu" name="Анализ питательности корма" sequence="8" parent="korm_menu_doc" action="korm_analiz_pit_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_menu_norm" name="Нормы" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_norm_menu" name="Нормы кормления" sequence="9" parent="korm_menu_doc" action="korm_norm_list_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" sequence="5" parent="korm_menu_norm" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_racion_menu" name="Рацион кормления" sequence="6" parent="korm_menu_norm" action="korm_racion_list_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" sequence="7" parent="korm_menu_norm" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>
+        
+        <menuitem id="korm_analiz_pit_menu" name="Анализ питательности корма" sequence="8" parent="korm_menu_norm" action="korm_analiz_pit_list_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_norm_menu" name="Нормы кормления" sequence="9" parent="korm_menu_norm" action="korm_norm_list_action" groups="group_korm_manager,group_korm_users"/>
     
 
 
@@ -35,7 +42,7 @@
 <!--
          Левое меню
 -->
-        <menuitem id="korm_menu_report" name="Отчеты" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_menu_report" name="Отчеты" sequence="3" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_receptura_report_menu" name="Анализ комбикормов" parent="korm_menu_report" action="korm_receptura_report_action" groups="group_korm_manager,group_korm_users"/>
 
@@ -56,7 +63,7 @@
 
 
 
-        <menuitem id="korm_menu" name="Справочники" sequence="3" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_menu" name="Справочники" sequence="4" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
         
 
         <menuitem id="korm_nomen_nomen_list_menu" name="Номенклатура" parent="korm_menu" action="sklad.nomen_nomen_list_action" groups="group_korm_manager,group_korm_users"/>

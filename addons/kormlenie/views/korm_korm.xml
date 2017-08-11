@@ -61,6 +61,7 @@
                         <page string="Порядок кормления">
                             <field name="korm_korm_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="korm_korm_line" editable="botton">
+                                    <field name="name" attrs="{'invisible': True}" string=""/>
                                     <field name="sorting"/>
                                     <field name="stado_zagon_id"/>
                                     <field name="korm_racion_id"/>

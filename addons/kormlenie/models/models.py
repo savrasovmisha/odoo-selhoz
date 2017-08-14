@@ -1061,7 +1061,92 @@ class korm_korm(models.Model):
 									})
 
 
+	#Только для исправления ошибок
+	#Пересчитывает таблицу Свод при этом Детальные данные не затрагиваются
+	@api.one
+	def action_raschet_err(self):
+		svod_line = self.env['korm.korm_svod_line']
+		del_line = svod_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line.unlink()
 
+		sorted=''
+		kol_golov=kol_golov_zagon=kol_korma=racion_id=self.kol_golov_zagon=self.kol_golov=0
+
+		#Проверка и исправление введенных данных
+		for line in self.korm_korm_line:
+			line.name = line.stado_zagon_id.nomer
+			line.date = self.date
+
+			line.stado_fiz_group_id = line.stado_zagon_id.stado_fiz_group_id
+			racion = self.env['korm.racion']
+			racion_id = racion.search([('stado_fiz_group_id', '=', line.stado_fiz_group_id.id), 
+										('date', '<=', self.date),'|',
+										('active', '=', False),
+										('active', '=', True),
+										], order="date desc",limit=1).id
+			line.korm_racion_id = racion_id
+			if self.is_vremya_dnya == False:
+				line.procent_dachi = 100
+			else:
+				if self.vremya_dnya == u'Утро':
+					line.procent_dachi = line.stado_zagon_id.utro
+				else:
+					line.procent_dachi = line.stado_zagon_id.vecher
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			if line.kol_golov>0 and line.korm_racion_id!=False:
+				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
+			else:
+				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
+				return False	
+
+
+
+
+
+		d = []
+		for line in self.korm_korm_line:
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
+						line.kol_korma, line.procent_dachi, line.kol_golov_zagon, line.procent_raciona])
+			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером
+			self.kol_golov_zagon += line.kol_golov_zagon
+			self.kol_golov += line.kol_golov
+
+		#print d
+					
+		from itertools import groupby
+		for g in groupby( d,key=lambda x:x[1]):
+			sorting = g[0]
+			print g[0]
+			kol_golov=kol_golov_zagon=kol_korma=kol_golov_detail=racion_id=sum_procent_raciona=0
+			t = 0
+			for i in g[1]:
+				t +=1
+				print ' - ',i
+				kol_golov += i[3]
+				kol_korma += i[4]
+				kol_golov_zagon += i[6]
+				sum_procent_raciona += i[7] 
+				
+
+				if racion_id !=0 and racion_id != i[2]:
+					#print "111EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
+
+					raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не соответствуют рационы!" % (i[1])))
+					#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
+				racion_id = i[2]
+
+			procent_raciona = sum_procent_raciona/t
+			svod_line.create({'korm_korm_id':	self.id,
+								'name':	racion_id.stado_fiz_group_id.name,
+								'sorting':	sorting,
+								'korm_racion_id':	racion_id.id,
+								'kol_golov':	kol_golov,
+								'kol_golov_zagon':	kol_golov_zagon,
+								'kol_korma':	kol_korma,
+								})
+			#racion_line = self.env['korm.racion_line']
+			#search_racion_line = racion_line.search([('korm_racion_id',	'=',	i[2])])
 
 
 
@@ -1126,7 +1211,7 @@ class korm_korm_line(models.Model):
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", compute='_raschet', store=True)
-	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True, readonly=True)
+	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True, readonly=True, default=0)
 	procent_dachi = fields.Integer(string=u"% дачи", store=True, compute='return_name')
 	procent_raciona = fields.Integer(string=u"% дачи рациона", store=True, default=100)
 	kol_korma = fields.Float(digits=(10, 3), string=u"Кол-во корма", copy=False, compute='_raschet')

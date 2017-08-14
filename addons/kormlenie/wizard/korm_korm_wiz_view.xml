@@ -7,12 +7,16 @@
         <field name="model">multi.korm_korm_wiz</field>
         <field name="arch" type="xml">
             <form string="Confirm">
-                <h3>Нажмине Провести для проведения выделенных документов или Отмена проведения для отмены проведенных документов </h3>
+                <h3>Нажмине Провести для проведения выделенных документов или Отмена проведения для отмены проведенных документов <br/>
+                Кнопка Исправить: Пересчитывает дынне в таблицах Порядок кормления и Свод кормления, исправлянт некорректные данные. Таблица Детальных записей не затрагивается.
+
+                 </h3>
                 <footer>
                     <button name="confirm_multi_korm_korm" string="Провести" type="object" class="oe_highlight"/>
                     или
                     <button name="draft_multi_korm_korm" string="Отмена проведения" type="object" class="oe_highlight"/>
                     или
+                     <button name="err_multi_korm_korm" string="Исправить" type="object" class="oe_highlight"/>
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
             </form>

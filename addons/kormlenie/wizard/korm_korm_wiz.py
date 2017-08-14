@@ -19,3 +19,10 @@ class MultiKormKormWiz(models.TransientModel):
     	for korm_korm in korm_korm_ids:
     		if korm_korm.state == 'confirmed':
     			korm_korm.action_draft()
+
+    @api.multi
+    def err_multi_korm_korm(self):
+    	korm_korm_ids = self.env['korm.korm'].browse(self._context.get('active_ids'))
+    	for korm_korm in korm_korm_ids:
+    		if korm_korm.state == 'draft':
+    			korm_korm.action_raschet_err()

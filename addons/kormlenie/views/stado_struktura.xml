@@ -62,6 +62,14 @@
                                 icon="fa-refresh" string="Загрузить Молоко"
                                >
                             </button>
+                            <button name="action_zagruzit_iz_korm"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Загрузить головы из кормления"
+                                groups="base.group_system"
+                               >
+                            </button>
+                            
                             <field name="err"/>
                         </div>
                                     

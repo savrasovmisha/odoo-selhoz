@@ -862,7 +862,7 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
         Compute the total amounts.
         """
 
-        print "---------------------**********************"  
+        #print "---------------------**********************"  
         if self.nomen_nomen_id:
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id

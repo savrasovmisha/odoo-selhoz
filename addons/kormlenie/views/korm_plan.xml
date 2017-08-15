@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="korm_plan_form_view">
+        <field name="name">korm_plan.form</field>
+        <field name="model">korm.plan</field>
+        <field name="arch" type="xml">
+            <form string="Форма План расхода кормов и добавок">
+                
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер"/>
+                            <field name="date" string="Дата"/>
+                            
+                        </group>
+
+                        <group>
+                            <field name="month" string="Месяц"/>
+                            <field name="year" string="Год"/>
+                            
+                        </group>
+
+                    </group>
+                    
+                                    
+            
+                       
+                    <notebook>
+                        <page string="Данные">
+                            <field name="korm_plan_line" >
+                                <tree string="korm_plan_line" editable="botton">
+                                    
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    
+                                    <field name="buh_stati_zatrat_id"/>
+                                
+                                    
+                                    
+                                                                        
+                                </tree>
+                            </field>
+                            
+                            
+                        </page>
+
+                        
+                        
+
+                    </notebook>
+
+
+                       
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>    
+                        
+                        
+                   
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_korm_plan_tree">
+            <field name="name">korm_plan.tree</field>
+            <field name="model">korm.plan</field>
+            <field name="arch" type="xml">
+                <tree string="План расхода кормов и добавок">
+                    
+                    <field name="date"/>
+                    <field name="name"/>
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="korm_plan_search_view">
+            <field name="name">korm_plan.search</field>
+            <field name="model">korm.plan</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="korm_plan_list_action">
+            <field name="name">План расхода кормов и добавок</field>
+            <field name="res_model">korm.plan</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись План расхода кормов и добавок
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

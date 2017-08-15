@@ -775,7 +775,7 @@ class plan_sale_milk(models.Model):
         ('10', "Октябрь"),
         ('11', "Ноябрь"),
         ('12', "Декабрь"),
-    ], default=str(datetime.today().month), required=True)
+    ], default=str(datetime.today().month).rjust(2, '0'), required=True)
 	
 	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
 

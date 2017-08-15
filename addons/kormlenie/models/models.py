@@ -5,9 +5,34 @@ from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 import math
 
+
 parametrs = ['ov', 'sv', 'oe', 'sp', 'pp', 'sk', 'sj', 'ca', 'p', 
 		'sahar', 'krahmal', 'bev', 'magniy', 'natriy', 'kaliy', 'hlor', 'sera', 
 		'udp', 'me', 'xp', 'nrp', 'rnb', 'nrp_p']
+
+
+def week_magic(day):
+	if type(day)==str:
+		day = datetime.strptime(day, "%Y-%m-%d").date()
+	day_of_week = day.weekday()
+
+	to_beginning_of_week = timedelta(days=day_of_week)
+	beginning_of_week = day - to_beginning_of_week
+
+	to_end_of_week = timedelta(days=6 - day_of_week)
+	end_of_week = day + to_end_of_week
+	number_of_week = day.isocalendar()[1]
+
+	return (beginning_of_week, end_of_week, number_of_week)
+
+def last_day_of_month(date):
+	if type(date)==str:
+		date = datetime.strptime(date, "%Y-%m-%d").date()
+	if date.month == 12:
+		return date.replace(day=31)
+	return date.replace(month=date.month+1, day=1) - timedelta(days=1)
+
+
 
 class korm_pit_standart(models.Model):
 	_name = 'korm.pit_standart'
@@ -442,16 +467,16 @@ class korm_receptura_line(models.Model):
 	#@api.onchange('kol')
 	# @api.one
 	# def _raschet_tonna(self):
-	# 	self.kol_tonna = 100 * self.kol
+	#   self.kol_tonna = 100 * self.kol
 		# amount = self.korm_receptura_id.amount
 		# # for line in self:
-		# # 	amount += line.kol
+		# #     amount += line.kol
 		# print "werwrwerwerwer========", amount
 		# # for line in self:
 		# if amount>0:
-		# 	k = round(1000 / amount, 3)
-		# 	self.kol_tonna = k * self.kol
-		# 	self.procent = self.kol_tonna / 1000 * 100
+		#   k = round(1000 / amount, 3)
+		#   self.kol_tonna = k * self.kol
+		#   self.procent = self.kol_tonna / 1000 * 100
 
 
 
@@ -910,7 +935,7 @@ class korm_korm(models.Model):
 			vals = []
 			k = 0.000
 			for svod in doc.korm_korm_svod_line:
-				korm_korm_line = doc.korm_korm_line.search([('sorting',	'=', svod.sorting),
+				korm_korm_line = doc.korm_korm_line.search([('sorting', '=', svod.sorting),
 															('korm_korm_id','=', svod.korm_korm_id.id)
 															])
 				for line in korm_korm_line:
@@ -921,7 +946,7 @@ class korm_korm(models.Model):
 						raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
 						return False
 
-					korm_detail_line = doc.korm_korm_detail_line.search([('sorting',	'=', svod.sorting),
+					korm_detail_line = doc.korm_korm_detail_line.search([('sorting',    '=', svod.sorting),
 															('korm_korm_id','=', svod.korm_korm_id.id)
 															])
 
@@ -966,11 +991,11 @@ class korm_korm(models.Model):
 	@api.one
 	def action_raschet(self):
 		svod_line = self.env['korm.korm_svod_line']
-		del_line = svod_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line = svod_line.search([('korm_korm_id',   '=',    self.id)])
 		del_line.unlink()
 
 		detail_line = self.env['korm.korm_detail_line']
-		del_line = detail_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line = detail_line.search([('korm_korm_id', '=',    self.id)])
 		del_line.unlink()
 
 		sorted=''
@@ -1001,7 +1026,7 @@ class korm_korm(models.Model):
 				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
-				return False	
+				return False    
 
 
 
@@ -1030,7 +1055,7 @@ class korm_korm(models.Model):
 				kol_golov += i[3]
 				kol_korma += i[4]
 				kol_golov_zagon += i[6]
-				sum_procent_raciona += i[7] 
+				sum_procent_raciona += i[7] * i[4] 
 				
 
 				if racion_id !=0 and racion_id != i[2]:
@@ -1040,24 +1065,24 @@ class korm_korm(models.Model):
 					#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
 				racion_id = i[2]
 
-			procent_raciona = sum_procent_raciona/t
-			svod_line.create({'korm_korm_id':	self.id,
-								'name':	racion_id.stado_fiz_group_id.name,
-								'sorting':	sorting,
-								'korm_racion_id':	racion_id.id,
-								'kol_golov':	kol_golov,
-								'kol_golov_zagon':	kol_golov_zagon,
-								'kol_korma':	kol_korma,
+			procent_raciona = sum_procent_raciona/kol_korma
+			svod_line.create({'korm_korm_id':   self.id,
+								'name': racion_id.stado_fiz_group_id.name,
+								'sorting':  sorting,
+								'korm_racion_id':   racion_id.id,
+								'kol_golov':    kol_golov,
+								'kol_golov_zagon':  kol_golov_zagon,
+								'kol_korma':    kol_korma,
 								})
 			#racion_line = self.env['korm.racion_line']
-			#search_racion_line = racion_line.search([('korm_racion_id',	'=',	i[2])])
+			#search_racion_line = racion_line.search([('korm_racion_id',    '=',    i[2])])
 			for rl in racion_id.korm_racion_line:
 
-				detail_line.create({'korm_korm_id':	self.id,
-									'name':	rl.nomen_nomen_id.name,
-									'sorting':	i[1],
-									'nomen_nomen_id':	rl.nomen_nomen_id.id,
-									'kol_norma':	rl.kol * kol_golov * procent_raciona/100,
+				detail_line.create({'korm_korm_id': self.id,
+									'name': rl.nomen_nomen_id.name,
+									'sorting':  i[1],
+									'nomen_nomen_id':   rl.nomen_nomen_id.id,
+									'kol_norma':    rl.kol * kol_golov * procent_raciona/100,
 									})
 
 
@@ -1066,7 +1091,7 @@ class korm_korm(models.Model):
 	@api.one
 	def action_raschet_err(self):
 		svod_line = self.env['korm.korm_svod_line']
-		del_line = svod_line.search([('korm_korm_id',	'=',	self.id)])
+		del_line = svod_line.search([('korm_korm_id',   '=',    self.id)])
 		del_line.unlink()
 
 		sorted=''
@@ -1097,7 +1122,7 @@ class korm_korm(models.Model):
 				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
-				return False	
+				return False    
 
 
 
@@ -1137,16 +1162,16 @@ class korm_korm(models.Model):
 				racion_id = i[2]
 
 			procent_raciona = sum_procent_raciona/t
-			svod_line.create({'korm_korm_id':	self.id,
-								'name':	racion_id.stado_fiz_group_id.name,
-								'sorting':	sorting,
-								'korm_racion_id':	racion_id.id,
-								'kol_golov':	kol_golov,
-								'kol_golov_zagon':	kol_golov_zagon,
-								'kol_korma':	kol_korma,
+			svod_line.create({'korm_korm_id':   self.id,
+								'name': racion_id.stado_fiz_group_id.name,
+								'sorting':  sorting,
+								'korm_racion_id':   racion_id.id,
+								'kol_golov':    kol_golov,
+								'kol_golov_zagon':  kol_golov_zagon,
+								'kol_korma':    kol_korma,
 								})
 			#racion_line = self.env['korm.racion_line']
-			#search_racion_line = racion_line.search([('korm_racion_id',	'=',	i[2])])
+			#search_racion_line = racion_line.search([('korm_racion_id',    '=',    i[2])])
 
 
 
@@ -1189,11 +1214,11 @@ class korm_korm_line(models.Model):
 			self.kol_korma = self.korm_racion_id.kol * self.kol_golov * self.procent_raciona/100
 			# max_value = self.korm_korm_id.transport_id.max_value
 			# if self.kol_korma>max_value and max_value>0:
-			# 	self.kol_zamesov = math.ceil(self.kol_korma / max_value)
-			# 	self.kol_korma_zames = self.kol_korma / self.kol_zamesov
+			#   self.kol_zamesov = math.ceil(self.kol_korma / max_value)
+			#   self.kol_korma_zames = self.kol_korma / self.kol_zamesov
 			# else:
-			# 	self.kol_zamesov = 1
-			# 	self.kol_korma_zames = self.kol_korma
+			#   self.kol_zamesov = 1
+			#   self.kol_korma_zames = self.kol_korma
 
 	@api.one
 	@api.depends('korm_korm_id.date')
@@ -1240,7 +1265,7 @@ class korm_korm_svod_line(models.Model):
 					line.kol_golov_zames = line.kol_golov / line.kol_zamesov    
 				else:
 					line.kol_zamesov = 1
-					line.kol_korma_zames = line.kol_korma	
+					line.kol_korma_zames = line.kol_korma   
 					line.kol_golov_zames = line.kol_golov    
 
 	@api.one
@@ -1382,10 +1407,10 @@ class korm_korm_ostatok(models.Model):
 			korm_korm_line_ids = korm_korm_line.search([('korm_korm_id', '=', korm_korm_id.id)],)
 			for korm_line in korm_korm_line_ids:
 				# line.create({'korm_korm_ostatok_id':   self.id,
-				# 				'name': self.name,
-				# 				'stado_zagon_id':  korm_line.stado_zagon_id.id,
-				# 				'stado_fiz_group_id':   korm_line.stado_fiz_group_id.id,
-				# 				})
+				#               'name': self.name,
+				#               'stado_zagon_id':  korm_line.stado_zagon_id.id,
+				#               'stado_fiz_group_id':   korm_line.stado_fiz_group_id.id,
+				#               })
 				d.append([  korm_line.id, 
 							korm_line.sorting, 
 							korm_line.stado_fiz_group_id, 
@@ -1481,19 +1506,19 @@ class korm_korm_ostatok(models.Model):
 			#Заполняем сводные данные
 								  
 			# for g in groupby( d,key=lambda x:x[1]):
-			# 	sorting = g[0]
-			# 	kol_golov=kol_korma=racion_id=0
-			# 	stado_zagon_id = []
-			# 	for i in g[1]:
-			# 		stado_zagon_id.append(i[3])
-			# 		stado_fiz_group_id = i[2]
+			#   sorting = g[0]
+			#   kol_golov=kol_korma=racion_id=0
+			#   stado_zagon_id = []
+			#   for i in g[1]:
+			#       stado_zagon_id.append(i[3])
+			#       stado_fiz_group_id = i[2]
 
-			# 	print stado_zagon_id
-			# 	svod_line.create({'korm_korm_ostatok_id':   self.id,
-			# 						'name': self.name,
-			# 						'stado_zagon_id':   [(6, 0, stado_zagon_id)],
-			# 						'stado_fiz_group_id':    stado_fiz_group_id.id,
-			# 						})
+			#   print stado_zagon_id
+			#   svod_line.create({'korm_korm_ostatok_id':   self.id,
+			#                       'name': self.name,
+			#                       'stado_zagon_id':   [(6, 0, stado_zagon_id)],
+			#                       'stado_fiz_group_id':    stado_fiz_group_id.id,
+			#                       })
 
 		
 
@@ -1590,7 +1615,7 @@ class korm_potrebnost(models.Model):
 	def action_zapolnit_zagoni(self):
 
 		zagon_line = self.env['korm.potrebnost_zagon_line']
-		del_line = zagon_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line = zagon_line.search([('korm_potrebnost_id',    '=',    self.id)])
 		del_line.unlink()
 
 
@@ -1606,7 +1631,7 @@ class korm_potrebnost(models.Model):
 							max(korm_racion_id),
 							avg(kol_golov_zagon)
 					FROM korm_korm_line
-					WHERE date>='%s' and date<='%s'	
+					WHERE date>='%s' and date<='%s' 
 					GROUP BY stado_zagon_id
 					Order by stado_zagon_id
 				""" %(ras_date_start.date(), ras_date_end.date())
@@ -1615,11 +1640,11 @@ class korm_potrebnost(models.Model):
 		zagons = self._cr.fetchall()
 		for z in zagons:
 			zagon_line.create({
-								'korm_potrebnost_id':	self.id,
-								'stado_zagon_id':	z[0],
-								'stado_fiz_group_id':	z[1],
-								'korm_racion_id':	z[2],
-								'kol_golov':	z[3],
+								'korm_potrebnost_id':   self.id,
+								'stado_zagon_id':   z[0],
+								'stado_fiz_group_id':   z[1],
+								'korm_racion_id':   z[2],
+								'kol_golov':    z[3],
 								})
 
 	
@@ -1627,11 +1652,11 @@ class korm_potrebnost(models.Model):
 	def action_raschet(self):
 
 		korma_line = self.env['korm.potrebnost_korm_line']
-		del_line = korma_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line = korma_line.search([('korm_potrebnost_id',    '=',    self.id)])
 		del_line.unlink()
 
 		kombikorm_line = self.env['korm.potrebnost_kombikorm_line']
-		del_line = kombikorm_line.search([('korm_potrebnost_id',	'=',	self.id)])
+		del_line = kombikorm_line.search([('korm_potrebnost_id',    '=',    self.id)])
 		del_line.unlink()
 
 		zapros = """SELECT r.nomen_nomen_id,
@@ -1654,10 +1679,10 @@ class korm_potrebnost(models.Model):
 			receptura_id = receptura.search([('nomen_nomen_id', '=',k[0]), ('date', '<=', self.date)], order="date desc",limit=1).id
 	
 			korma_line.create({
-								'korm_potrebnost_id':	self.id,
-								'nomen_nomen_id':	k[0],
-								'korm_receptura_id':	receptura_id,
-								'kol':	k[1],
+								'korm_potrebnost_id':   self.id,
+								'nomen_nomen_id':   k[0],
+								'korm_receptura_id':    receptura_id,
+								'kol':  k[1],
 								'kol_za_period': k[1] * self.period_day,
 								})
 
@@ -1686,9 +1711,9 @@ class korm_potrebnost(models.Model):
 		for k in kombikorms:
 			
 			kombikorm_line.create({
-								'korm_potrebnost_id':	self.id,
-								'nomen_nomen_id':	k[0],
-								'kol':	k[1],
+								'korm_potrebnost_id':   self.id,
+								'nomen_nomen_id':   k[0],
+								'kol':  k[1],
 								'kol_za_period': k[1] * self.period_day,
 								})
 
@@ -1784,9 +1809,9 @@ class korm_potrebnost_korm_line(models.Model):
 
 	# @api.multi
 	# def return_sorting(self):
-	# 	for line in self:
-	# 		line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
-	# 		print 'ddddddddddddddddd=====', line.sorting
+	#   for line in self:
+	#       line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
+	#       print 'ddddddddddddddddd=====', line.sorting
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
@@ -1817,9 +1842,9 @@ class korm_potrebnost_kombikorm_line(models.Model):
 
 	# @api.multi
 	# def return_sorting(self):
-	# 	for line in self:
-	# 		line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
-	# 		print 'ddddddddddddddddd=====', line.sorting
+	#   for line in self:
+	#       line.sorting = line.nomen_group_id.name + ' ' + line.nomen_nomen_id.name
+	#       print 'ddddddddddddddddd=====', line.sorting
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
@@ -1889,7 +1914,7 @@ class stado_struktura(models.Model):
 			if response.status_code == 200:
 				err=''
 				stado_struktura_line = self.env['stado.struktura_line']
-				del_line = stado_struktura_line.search([('stado_struktura_id',	'=',	self.id)])
+				del_line = stado_struktura_line.search([('stado_struktura_id',  '=',    self.id)])
 				del_line.unlink()
 				
 				stado_zagon = self.env['stado.zagon']
@@ -1897,13 +1922,13 @@ class stado_struktura(models.Model):
 				zagon_ids = []
 				for line in struktura:
 					#print line['name']
-					zagon_id = stado_zagon.search([('uniform_id',	'=',	line['GROEPNR'])], limit=1)
+					zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
 					if len(zagon_id)>0:
 
 						stado_struktura_line.create({
-									'stado_struktura_id':	self.id,
-									'stado_zagon_id':	zagon_id.id,
-									'kol_golov_zagon':	line['kol_golov_zagon'],
+									'stado_struktura_id':   self.id,
+									'stado_zagon_id':   zagon_id.id,
+									'kol_golov_zagon':  line['kol_golov_zagon'],
 									
 									})
 						zagon_ids.append(zagon_id.id)
@@ -1912,12 +1937,12 @@ class stado_struktura(models.Model):
 
 						err += u"Загон не найден:"+line['name'] + '   '
 				#Дополняем список загонов которые не получены из Uniform
-				not_zagon_ids = stado_zagon.search([('id',	'not in',	zagon_ids)], )
+				not_zagon_ids = stado_zagon.search([('id',  'not in',   zagon_ids)], )
 				for line in not_zagon_ids:
 					stado_struktura_line.create({
-									'stado_struktura_id':	self.id,
-									'stado_zagon_id':	line.id,
-									'kol_golov_zagon':	0,
+									'stado_struktura_id':   self.id,
+									'stado_zagon_id':   line.id,
+									'kol_golov_zagon':  0,
 									
 									})
 
@@ -1930,7 +1955,7 @@ class stado_struktura(models.Model):
 			#print '0000000000000000000000000000000000000000'
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
-			self.err = 'OK'	
+			self.err = 'OK' 
 
 	@api.one
 	def action_zagruzit_milk(self):
@@ -1977,11 +2002,46 @@ class stado_struktura(models.Model):
 			#print '0000000000000000000000000000000000000000'
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
-			self.err = 'OK'	
+			self.err = 'OK' 
 
 		#print j['tasks'][0]['title']
 
+	@api.one
+	def action_zagruzit_iz_korm(self):
+		zagon_line = self.env['stado.struktura_line']
+		del_line = zagon_line.search([('stado_struktura_id',    '=',    self.id)])
+		del_line.unlink()
 
+
+		ras_date_start = ras_date_end = 0
+		
+		dt = datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S')
+		
+		date = dt.date().strftime('%d.%m.%Y')
+		#ras_date_end = date - timedelta(days=1)
+		
+		#ras_date_start = ras_date_end - timedelta(days=self.kol_day)
+		#print 'ddddddddddddddd=', (ras_date_start,ras_date_end )
+		zapros = """SELECT  stado_zagon_id, 
+							max(stado_fiz_group_id),
+							avg(kol_golov_zagon)
+					FROM korm_korm_line
+					WHERE date::date='%s'   
+					GROUP BY stado_zagon_id
+					Order by stado_zagon_id
+				""" %(date, )
+		#print zapros
+		self._cr.execute(zapros,)
+		zagons = self._cr.fetchall()
+		for z in zagons:
+			zagon_line.create({
+								'stado_struktura_id':   self.id,
+								'date': self.date,
+								'stado_zagon_id':   z[0],
+								'stado_fiz_group_id':   z[1],
+								'kol_golov_zagon':  z[2],
+								})
+		
 
 
 
@@ -2017,13 +2077,14 @@ class stado_struktura(models.Model):
 class stado_struktura_line(models.Model):
 	_name = 'stado.struktura_line'
 	_description = u'Строка Структура стада'
-	#_order = 'sorting'
+	_order = 'sorting'
 
 
 	@api.one
 	@api.depends('stado_zagon_id')
 	def return_name(self):
-		self.name = self.stado_zagon_id.nomer
+		self.name = self.stado_zagon_id.name
+		self.sorting = self.stado_zagon_id.nomer
 		self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
 		
 	
@@ -2034,9 +2095,9 @@ class stado_struktura_line(models.Model):
 
 	date = fields.Datetime(string='Дата', store=True, compute='return_date')
 
-	name = fields.Char(string=u"Наименование", compute='return_name')
+	name = fields.Char(string=u"Наименование", compute='return_name', store=True)
 	stado_struktura_id = fields.Many2one('stado.struktura', ondelete='cascade', string=u"Структура стада", required=True)
-	
+	sorting = fields.Integer(string=u"Порядок", default=100, compute='return_name', store=True)
 	
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
@@ -2152,4 +2213,106 @@ class korm_rashod_kormov_line(models.Model):
 
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
+	
+
+
+
+class korm_plan(models.Model):
+	_name = 'korm.plan'
+	_description = u'План Расхода кормов и добавок'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('korm.plan') or 'New'
+			
+		result = super(korm_plan, self).create(vals)
+		return result
+
+	@api.one
+	@api.depends('month', 'year')
+	def return_name(self):
+		if self.month and self.year:
+			self.name = self.year + '-' + self.month
+			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+			last_day = last_day_of_month(self.date_start)
+			self.date_end = last_day
+			self.count_day = last_day.day
+
+
+
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	
+	korm_plan_line = fields.One2many('korm.plan_line', 'korm_plan_id', string=u"Строка План Расхода кормов и добавок", copy=True)
+	
+	description = fields.Text(string=u"Коментарии")
+
+	month = fields.Selection([
+		('01', "Январь"),
+		('02', "Февряль"),
+		('03', "Март"),
+		('04', "Апрель"),
+		('05', "Май"),
+		('06', "Июнь"),
+		('07', "Июль"),
+		('08', "Август"),
+		('09', "Сентябрь"),
+		('10', "Октябрь"),
+		('11', "Ноябрь"),
+		('12', "Декабрь"),
+	], default='', required=True)
+	
+	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+
+	date_start = fields.Date(string='Дата начала', required=True, index=True, copy=False, compute='return_name')
+	date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
+	count_day = fields.Integer(string='Кол-во дней в месяце', store=True, copy=False, compute='return_name')
+	
+
+		
+
+
+	
+
+class korm_plan_line(models.Model):
+	_name = 'korm.plan_line'
+	_description = u'Строка План Расхода кормов и добавок'
+	_order = 'sorting, nomen_name'
+
+	@api.one
+	@api.depends('nomen_nomen_id')
+	def return_name(self):
+		print "--------------===========+++++++++++++"
+		if self.nomen_nomen_id:
+			self.name = self.nomen_nomen_id.name
+			self.buh_stati_zatrat_id = self.nomen_nomen_id.buh_stati_zatrat_id
+			if self.buh_stati_zatrat_id:
+				self.sorting = self.buh_stati_zatrat_id.sorting
+
+	@api.one
+	@api.onchange('buh_stati_zatrat_id')
+	def _buh_stati_zatrat_id(self):
+		"""
+		Compute the total amounts.
+		"""
+
+		#print "---------------------**********************"  
+		if self.buh_stati_zatrat_id:
+			self.sorting = self.buh_stati_zatrat_id.sorting
+			
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_plan_id = fields.Many2one('korm.plan', ondelete='cascade', string=u"План Расхода кормов и добавок", required=True)
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+	nomen_name = fields.Char(string=u"Наименование для сортировки", compute='return_name', store=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+
+	buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
+	sorting = fields.Char(string=u"С.", help="Сортировка")
 	

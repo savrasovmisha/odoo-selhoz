@@ -77,3 +77,7 @@ access_korm_rashod_kormov_report_manager,korm.rashod_kormov_report,model_korm_ra
 access_korm_rashod_kormov_report_users,korm.rashod_kormov_report,model_korm_rashod_kormov_report,group_korm_users,1,0,0,0
 access_reg_rashod_kormov_manager,reg.rashod_kormov,model_reg_rashod_kormov,group_korm_manager,1,1,1,1
 access_reg_rashod_kormov_users,reg.rashod_kormov,model_reg_rashod_kormov,group_korm_users,1,0,0,0
+access_korm_plan_manager,korm.plan,model_korm_plan,group_korm_manager,1,1,1,1
+access_korm_plan_users,korm.plan,model_korm_plan,group_korm_users,1,0,0,0
+access_korm_plan_line_manager,korm.plan_line,model_korm_plan_line,group_korm_manager,1,1,1,1
+access_korm_plan_line_users,korm.plan_line,model_korm_plan_line,group_korm_users,1,0,0,0

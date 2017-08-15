@@ -21,8 +21,12 @@
 
 
 
+
+
         
         <menuitem id="korm_menu_norm" name="Нормы" sequence="2" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_plan_menu" name="План расхода кормов и добавок" sequence="4" parent="korm_menu_norm" action="korm_plan_list_action" groups="group_korm_manager,group_korm_users"/>
 
 
         <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" sequence="5" parent="korm_menu_norm" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
@@ -54,6 +58,9 @@
 
         <menuitem id="korm_rashod_kormov_report_menu" name="Анализ расхода кормов и добавок" parent="korm_menu_report"
                   action="korm_rashod_kormov_report_action" groups="group_korm_manager,group_korm_users"/>
+
+        <menuitem id="korm_plan_fakt_report_menu" name="Выполнение плана кормления" parent="korm_menu_report"
+                  action="korm_plan_fakt_report_action" groups="group_korm_manager,group_korm_users"/>
         <!-- <menuitem id="korm_buh_report_menu" name="Отчетность в бухгалтерию" parent="korm_menu_report"
                   action="korm_buh_report_action" groups="group_korm_manager,group_korm_users"/>
  -->

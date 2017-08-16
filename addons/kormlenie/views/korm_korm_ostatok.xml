@@ -56,10 +56,11 @@
                         </page>
 
                         <page string="Свод остатков">
-                            <field name="korm_korm_ostatok_svod_line" context="{'zagon_tolko_nomer': True}" attrs="{'readonly': [('svodno', '=', False)]}">
+                            <!-- context="{'zagon_tolko_nomer': True}" -->
+                            <field name="korm_korm_ostatok_svod_line"  attrs="{'readonly': [('svodno', '=', False)]}">
                                 <tree string="korm_korm_ostatok_svod_line" editable="botton" edit="true" create="true" delete="true">
                                     <field name="stado_zagon_id" widget="many2many_tags"
-    options="{'no_create_edit': True}"/>
+    options="{'no_create_edit': True}" mode="tree" domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
                                     <field name="kol_golov_zagon"/>
                                     
@@ -133,6 +134,7 @@
                 <p class="oe_view_nocontent_create">Создайте первую запись Остатки Кормления
                 </p>
             </field>
+
         </record>
 
         

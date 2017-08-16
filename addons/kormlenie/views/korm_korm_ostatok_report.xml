@@ -30,7 +30,7 @@
                                  <tr  style="border: 1px solid black;">
                                     <td >
                                         <t t-foreach="svod.stado_zagon_id" t-as="stado_zagon_id">
-                                            <t t-esc="stado_zagon_id.nomer"/>, 
+                                            <t t-esc="stado_zagon_id.name"/>, 
                                         </t> 
                                     </td>
                                     <td >

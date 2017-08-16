@@ -139,7 +139,13 @@ class stado_zagon(models.Model):
 
 
 		return res
-
+	@api.one
+	def toggle_activ(self):
+		if self.activ == True:
+			self.activ = False
+		else:
+			self.activ =True
+		
 
 	name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
 	nomer = fields.Integer(string=u"Номер", required=True)
@@ -147,7 +153,8 @@ class stado_zagon(models.Model):
 	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
-	active = fields.Boolean(string=u"Используется", default=True)
+	active = fields.Boolean(string=u"Активный", default=True)
+	activ = fields.Boolean(string=u"Используется", default=True)
 
 class korm_analiz_pit(models.Model):
 	_name = 'korm.analiz_pit'
@@ -1041,12 +1048,12 @@ class korm_korm(models.Model):
 			self.kol_golov_zagon += line.kol_golov_zagon
 			self.kol_golov += line.kol_golov
 
-		print d
+		#print d
 					
 		from itertools import groupby
 		for g in groupby( d,key=lambda x:x[1]):
 			sorting = g[0]
-			print g[0]
+			#print g[0]
 			kol_golov=kol_golov_zagon=kol_korma=kol_golov_detail=racion_id=sum_procent_raciona=0
 			t = 0
 			for i in g[1]:
@@ -1062,11 +1069,12 @@ class korm_korm(models.Model):
 					#print "111EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
 
 					raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не соответствуют рационы!" % (i[1])))
-					#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR"
 				racion_id = i[2]
-
+			procent_raciona = 0.000
 			procent_raciona = sum_procent_raciona/kol_korma
-			svod_line.create({'korm_korm_id':   self.id,
+			print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", procent_raciona
+			print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", sorting
+			svod_line.create({'korm_korm_id': self.id,
 								'name': racion_id.stado_fiz_group_id.name,
 								'sorting':  sorting,
 								'korm_racion_id':   racion_id.id,

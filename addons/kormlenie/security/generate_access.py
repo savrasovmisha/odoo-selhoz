@@ -40,6 +40,7 @@ spisok.append(['korm.rashod_kormov_report',''])
 spisok.append(['reg.rashod_kormov',''])
 spisok.append(['korm.plan',''])
 spisok.append(['korm.plan_line',''])
+spisok.append(['korm.plan_fakt_report',''])
 
 
 print "id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink"

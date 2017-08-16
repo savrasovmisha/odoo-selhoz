@@ -81,3 +81,5 @@ access_korm_plan_manager,korm.plan,model_korm_plan,group_korm_manager,1,1,1,1
 access_korm_plan_users,korm.plan,model_korm_plan,group_korm_users,1,0,0,0
 access_korm_plan_line_manager,korm.plan_line,model_korm_plan_line,group_korm_manager,1,1,1,1
 access_korm_plan_line_users,korm.plan_line,model_korm_plan_line,group_korm_users,1,0,0,0
+access_korm_plan_fakt_report_manager,korm.plan_fakt_report,model_korm_plan_fakt_report,group_korm_manager,1,1,1,1
+access_korm_plan_fakt_report_users,korm.plan_fakt_report,model_korm_plan_fakt_report,group_korm_users,1,0,0,0

@@ -7,11 +7,12 @@
         <field name="arch" type="xml">
             <form string="Форма Загон">
                 <sheet>
+                    
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object"
+                        <button name="toggle_activ" type="object"
                                 class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button"
-                                options='{"terminology": "active"}'/>
+                            <field name="activ" widget="boolean_button"
+                                options='{"terminology": "activ"}'/>
                         </button>
                     </div>
                     <group>
@@ -35,14 +36,15 @@
             <field name="name">stado_zagon.tree</field>
             <field name="model">stado.zagon</field>
             <field name="arch" type="xml">
-                <tree string="Загоны" colors="red:active == False">
+                <tree string="Загоны" colors="red:activ == False">
                     
-                    <field name="nomer" width="50"/>
                     <field name="name"/>
+                    <field name="nomer" width="50"/>
                     <field name="stado_fiz_group_id"/>
                     <field name="utro"/>
                     <field name="vecher"/>
-                    <field name="active"/>
+                    <!-- <field name="active"/> -->
+                    <field name="activ"/>
                     
                     
                    
@@ -63,10 +65,10 @@
         </record>
 
     <record id="filter_stado_zagon" model="ir.filters">
-            <field name="name">Архивные</field>
+            <field name="name">Активные</field>
             <field name="model_id">stado.zagon</field>
-            <field name="domain">[('active','=',False)]</field>
-            <!-- <field name="is_default">0</field> -->
+            <field name="domain">[('activ','=',True)]</field>
+            <field name="is_default">0</field>
             <field name="user_id"></field>
             
     </record>
@@ -84,6 +86,7 @@
                 <p class="oe_view_nocontent_create">Создайте первую запись Загон
                 </p>
             </field>
+            <!-- <field name="domain">['|',('activ','=',False),('activ','=',True)]</field> -->
         </record>
 
         

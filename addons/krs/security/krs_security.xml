@@ -1,0 +1,21 @@
+<openerp>
+    <data>
+    	<record model="ir.module.category" id="module_category_krs">
+            <field name="name">КРС</field>
+            <field name="description">Helps you manage</field>
+            <field name="sequence">6</field>
+        </record>
+        
+        <record id="group_krs_manager" model="res.groups">
+            <field name="name">Редактор</field>
+            <field name="category_id" ref="module_category_krs"></field>
+        </record>
+        <record id="group_krs_users" model="res.groups">
+            <field name="name">Просмотр</field>
+            <field name="category_id" ref="module_category_krs"></field>
+        </record>
+
+
+    </data>
+   
+</openerp>

@@ -44,6 +44,14 @@
                             
                             
                         </group>
+
+                        <separator string="Параметры получения данных" />
+                        <group>
+                            
+                            <field name="kod_otel" />
+                       
+                            
+                        </group>
                     </sheet>
                 </form>
             </field>

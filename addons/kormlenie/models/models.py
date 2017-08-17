@@ -153,7 +153,7 @@ class stado_zagon(models.Model):
 	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
-	active = fields.Boolean(string=u"Активный", default=True)
+	#active = fields.Boolean(string=u"Активный", default=True)
 	activ = fields.Boolean(string=u"Используется", default=True)
 
 class korm_analiz_pit(models.Model):

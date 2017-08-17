@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- top level menu: no parent -->
+        <menuitem id="base.main_krs_menu" name="КРС"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+        
+
+        <menuitem id="krs_menu_doc" name="Документы" sequence="1" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>
+
+        <menuitem id="krs_otel_menu" name="Отелы" sequence="1" parent="krs_menu_doc" action="krs_otel_list_action" groups="group_krs_manager,group_krs_users"/>
+
+       
+
+        <menuitem id="krs_menu_load" name="Обработки" sequence="2" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>
+
+        <menuitem id="krs_load_menu" name="Загрузить" sequence="1" parent="krs_menu_load" action="action_krs_load_wiz" groups="group_krs_manager,group_krs_users"/>
+
+
+        
+<!--
+         Левое меню
+-->
+        <menuitem id="krs_menu_report" name="Отчеты" sequence="3" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>
+
+
+
+
+
+        <menuitem id="krs_menu" name="Справочники" sequence="4" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>
+
+        <menuitem id="krs_result_otel_menu" name="Результаты отелов" sequence="1" parent="krs_menu" action="krs_result_otel_list_action" groups="group_krs_manager,group_krs_users"/>
+        
+        <menuitem id="krs_hoz_menu" name="Хозяйства" sequence="2" parent="krs_menu" action="krs_hoz_list_action" groups="group_krs_manager,group_krs_users"/>
+
+
+    
+
+
+        
+    </data>
+</openerp>

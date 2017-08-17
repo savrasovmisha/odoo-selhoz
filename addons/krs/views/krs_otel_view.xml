@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_otel_form_view">
+        <field name="name">krs_otel.form</field>
+        <field name="model">krs.otel</field>
+        <field name="arch" type="xml">
+            <form string="Форма Отел">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        <field name="inv_nomer"/>
+                        <field name="kod_hoz"/>
+                        <field name="krs_hoz_id"/>
+                        <field name="date"/>
+                        <field name="nomer_lakt"/>
+                        <field name="result"/>
+                        <field name="krs_result_otel_id"/>
+                        <field name="kol_itog"/>
+                        <field name="kol_itog_jiv"/>
+                        <field name="kol_itog_mert"/>
+                        <field name="kol_telok_jiv"/>
+                        <field name="kol_telok_mert"/>
+                        <field name="kol_bik_jiv"/>
+                        <field name="kol_bik_mert"/>
+                        <field name="kol_mert"/>
+                       
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_otel_tree">
+            <field name="name">krs_otel.tree</field>
+            <field name="model">krs.otel</field>
+            <field name="arch" type="xml">
+                <tree string="Отелы">
+                    
+                    
+                    <field name="name"/>
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_otel_search_view">
+            <field name="name">krs_otel.search</field>
+            <field name="model">krs.otel</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_otel_list_action">
+            <field name="name">Отел</field>
+            <field name="res_model">krs.otel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Отел
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

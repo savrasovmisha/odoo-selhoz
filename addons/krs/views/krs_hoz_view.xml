@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_hoz_form_view">
+        <field name="name">krs_hoz.form</field>
+        <field name="model">krs.hoz</field>
+        <field name="arch" type="xml">
+            <form string="Форма Хозяйства">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        <field name="kod"/>
+                        <field name="nashe"/>
+
+                       
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_hoz_tree">
+            <field name="name">krs_hoz.tree</field>
+            <field name="model">krs.hoz</field>
+            <field name="arch" type="xml">
+                <tree string="Хозяйства">
+                    
+                    
+                    <field name="name"/>
+                    <field name="kod"/>
+                    <field name="nashe"/>
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_hoz_search_view">
+            <field name="name">krs_hoz.search</field>
+            <field name="model">krs.hoz</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="name"/>
+                    <field name="kod"/>
+        
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_hoz_list_action">
+            <field name="name">Хозяйства</field>
+            <field name="res_model">krs.hoz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Хозяйства
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

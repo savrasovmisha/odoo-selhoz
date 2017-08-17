@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_result_otel_form_view">
+        <field name="name">krs_result_otel.form</field>
+        <field name="model">krs.result_otel</field>
+        <field name="arch" type="xml">
+            <form string="Форма Результаты отелов">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        
+                        <field name="kol_itog"/>
+                        <field name="kol_itog_jiv"/>
+                        <field name="kol_itog_mert"/>
+                        <field name="kol_telok_jiv"/>
+                        <field name="kol_telok_mert"/>
+                        <field name="kol_bik_jiv"/>
+                        <field name="kol_bik_mert"/>
+                        <field name="kol_mert"/>
+                       
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_result_otel_tree">
+            <field name="name">krs_result_otel.tree</field>
+            <field name="model">krs.result_otel</field>
+            <field name="arch" type="xml">
+                <tree string="Результаты отелов">
+                    
+                    
+                    <field name="name"/>
+                    <field name="kol_itog"/>
+                    <field name="kol_itog_jiv"/>
+                    <field name="kol_itog_mert"/>
+                    <field name="kol_telok_jiv"/>
+                    <field name="kol_telok_mert"/>
+                    <field name="kol_bik_jiv"/>
+                    <field name="kol_bik_mert"/>
+                    <field name="kol_mert"/>
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_result_otel_search_view">
+            <field name="name">krs_result_otel.search</field>
+            <field name="model">krs.result_otel</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_result_otel_list_action">
+            <field name="name">Результаты отелов</field>
+            <field name="res_model">krs.result_otel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Результаты отелов
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

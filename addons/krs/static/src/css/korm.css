@@ -1,0 +1,88 @@
+.openerp h3 {
+    margin: 5px;
+    text-align: right;
+    
+   }
+
+.openerp table.kanban {
+
+    width: 100%;
+    padding: 5px;
+    text-align: right;
+    border: 2px solid #f3f3f3;
+
+    
+    
+   }
+
+.openerp th.kanban {
+	border: 0px solid #f3f3f3;
+    text-align: center;
+    color: #333;
+   
+   }
+ .openerp td.data {
+
+    
+    padding: 2px;
+    text-align: right;
+    border: 2px solid #f3f3f3;
+
+    
+    
+   }
+
+.openerp td.name_amount {
+    text-align: right;
+    font-size: 10pt;
+    width: 70%;
+    padding-top: 5px;
+    
+    
+   }
+
+.openerp td.amount {
+    text-align: right;
+    font-size: 15pt;
+    background-color: #f3f3f3;
+    border: 2px solid #fff;
+    border-color: #fff;
+    width: 40%;
+    padding-right: 10px;
+    padding-left: 10px;
+    
+   }
+ .openerp td.amount_small {
+    
+    text-align: right;
+    font-size: 10pt;
+    background-color: #f3f3f3;
+    border: 2px solid #fff;
+    border-color: #fff;
+    width: 40%;
+    padding-right: 10px;
+    padding-left: 10px;
+    
+    
+   }
+
+
+ .openerp span.value_up {
+ 	color: green;
+	    
+    
+   }
+
+ .openerp span.value_down {
+ 	color: red;
+	    
+    
+   }
+
+  .openerp .border-black td {
+  border-top: 1px solid black !important;
+ }
+
+ .openerp table.border-black{
+  border-top: 1px solid black !important;
+ }

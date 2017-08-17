@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_krs_hoz_manager,krs.hoz,model_krs_hoz,group_krs_manager,1,1,1,1
+access_krs_hoz_users,krs.hoz,model_krs_hoz,group_krs_users,1,0,0,0
+access_krs_result_otel_manager,krs.result_otel,model_krs_result_otel,group_krs_manager,1,1,1,1
+access_krs_result_otel_users,krs.result_otel,model_krs_result_otel,group_krs_users,1,0,0,0
+access_krs_otel_manager,krs.otel,model_krs_otel,group_krs_manager,1,1,1,1
+access_krs_otel_users,krs.otel,model_krs_otel,group_krs_users,1,0,0,0

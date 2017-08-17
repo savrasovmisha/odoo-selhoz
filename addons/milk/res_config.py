@@ -17,6 +17,7 @@ class milk_config_settings(models.TransientModel):
 	dsn_uniform = fields.Char(string=u'DNS uniform')
 	user_uniform = fields.Char(string=u'Пользователь uniform')
 	password_uniform = fields.Char(string=u'Пароль uniform')
+	kod_otel = fields.Integer(string=u'Код события Отелов в Селекс')
 
 	# #@api.one
 	# def get_default_dsn_selex(self, cr, uid, ids, context=None):
@@ -52,7 +53,8 @@ class milk_config_settings(models.TransientModel):
 			'password_selex': conf.get_param('password_selex'),
 			'dsn_uniform': conf.get_param('dsn_uniform'),
 			'user_uniform': conf.get_param('user_uniform'),
-			'password_uniform': conf.get_param('password_uniform')
+			'password_uniform': conf.get_param('password_uniform'),
+			'kod_otel': int(conf.get_param('kod_otel'))
 			
 		}
 	@api.one
@@ -65,3 +67,4 @@ class milk_config_settings(models.TransientModel):
 		conf.set_param('dsn_uniform', str(self.dsn_uniform))
 		conf.set_param('user_uniform', str(self.user_uniform))
 		conf.set_param('password_uniform', str(self.password_uniform))
+		conf.set_param('kod_otel', int(self.kod_otel))

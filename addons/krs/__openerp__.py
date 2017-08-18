@@ -36,6 +36,7 @@
         'views/krs_otel_view.xml',
 
         'wizard/krs_load_wiz_view.xml',
+        'wizard/message_view.xml',
        
         
         'views/menu.xml',

@@ -28,8 +28,6 @@ def krs_load_otel(date_start, date_end, kod_otel):
 					T0.NINV As NINV0,
 					T1.HOZ As HOZ1,
 					T2.EVENT_DATE As EVENT_DATE2,
-					T2.EVENT_KOD As EVENT_KOD3,
-					T2.EVENT_IM As EVENT_IM4,
 					T2.LAKT As LAKT5,
 					T2.OTEL_REZ As OTEL_REZ6,
 					T0.NANIMAL 
@@ -46,18 +44,21 @@ def krs_load_otel(date_start, date_end, kod_otel):
 	
 	param=(date_start,date_end,int(kod_otel),)
 	result=con_selex(zapros,param,2)
-	zagon = []
+	otels = []
 	for line in result:
-		zagon.append(
+		otels.append(
 					{
-						'GROEPNR':line[0],
-						'sred_kol_milk': float(line[3])
+						'inv_nomer':line[0],
+						'kod_hoz': int(line[1]),
+						'date': str(line[2]),
+						'nomer_lakt': int(line[3]),
+						'result': line[4]
 					}
 		
 		)
 	#print zagon
 	
-	data = json.dumps(zagon)
+	data = json.dumps(otels)
 	#print data
 	
 	return data

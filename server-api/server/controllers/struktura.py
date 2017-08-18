@@ -53,6 +53,9 @@ def index():
 	print data
 	
 	return data
+  
+
+
    
 @app.route('/api/struktura_stada_milk/:date', method='GET')
 def struktura_stada_milk(date):

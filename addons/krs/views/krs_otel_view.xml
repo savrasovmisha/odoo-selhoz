@@ -43,8 +43,16 @@
                 <tree string="Отелы">
                     
                     
-                    <field name="name"/>
+                    <field name="date"/>
                     
+                    <field name="inv_nomer"/>
+                    
+                    <field name="result"/>
+                   
+                    <field name="kol_itog"/>
+                    <field name="kol_itog_jiv"/>
+                    <field name="kol_itog_mert"/>
+                
                   
                     
                     
@@ -61,6 +69,8 @@
                     
                     
                     <field name="name"/>
+                    <field name="date"/>
+                    <field name="result"/>
                 </search>
             </field>
         </record>
@@ -73,7 +83,7 @@
             <field name="name">Отел</field>
             <field name="res_model">krs.otel</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Отел
                 </p>

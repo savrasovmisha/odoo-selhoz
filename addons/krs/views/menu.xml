@@ -35,7 +35,9 @@
         
         <menuitem id="krs_hoz_menu" name="Хозяйства" sequence="2" parent="krs_menu" action="krs_hoz_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_spv_menu" name="Причины выбытия" sequence="3" parent="krs_menu" action="krs_spv_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_srashod_menu" name="Виды расхода" sequence="3" parent="krs_menu" action="krs_srashod_list_action" groups="group_krs_manager,group_krs_users"/>
     
 
 

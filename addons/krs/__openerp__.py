@@ -34,6 +34,8 @@
         'views/krs_hoz_view.xml',
         'views/krs_result_otel_view.xml',
         'views/krs_otel_view.xml',
+        'views/krs_spv_view.xml',
+        'views/krs_srashod_view.xml',
 
         'wizard/krs_load_wiz_view.xml',
         'wizard/message_view.xml',

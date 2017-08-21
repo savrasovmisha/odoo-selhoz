@@ -5,3 +5,7 @@ access_krs_result_otel_manager,krs.result_otel,model_krs_result_otel,group_krs_m
 access_krs_result_otel_users,krs.result_otel,model_krs_result_otel,group_krs_users,1,0,0,0
 access_krs_otel_manager,krs.otel,model_krs_otel,group_krs_manager,1,1,1,1
 access_krs_otel_users,krs.otel,model_krs_otel,group_krs_users,1,0,0,0
+access_krs_spv_manager,krs.spv,model_krs_spv,group_krs_manager,1,1,1,1
+access_krs_spv_users,krs.spv,model_krs_spv,group_krs_users,1,0,0,0
+access_krs_srashod_manager,krs.srashod,model_krs_srashod,group_krs_manager,1,1,1,1
+access_krs_srashod_users,krs.srashod,model_krs_srashod,group_krs_users,1,0,0,0

@@ -42,6 +42,32 @@ class krs_hoz(models.Model):
 
 	kod = fields.Integer(string=u"Код", store=True)
 	nashe = fields.Boolean(string=u"Наше хозяйство", default=False)
+	selex_id = fields.Integer(string=u"selex_id", default=False)
+
+
+
+class krs_spv(models.Model):
+	_name = 'krs.spv'
+	_description = u'Справочник Причины выбытия'
+	_order = 'name'
+
+	name = fields.Char(string=u"Наименование", required=True)
+	
+	kod = fields.Integer(string=u"Код",required=True)
+
+
+class krs_srashod(models.Model):
+	_name = 'krs.srashod'
+	_description = u'Справочник Расход КРС'
+	_order = 'name'
+
+	name = fields.Char(string=u"Наименование", required=True)
+	
+	kod = fields.Integer(string=u"Код",required=True)
+
+
+
+
 
 
 class krs_otel(models.Model):
@@ -124,3 +150,6 @@ class krs_otel(models.Model):
 	kol_bik_jiv = fields.Integer(string=u"Живых бычков", store=True, compute='_raschet')
 	kol_bik_mert = fields.Integer(string=u"Мертв. бычков", store=True, compute='_raschet')
 	kol_mert = fields.Integer(string=u"Мертвородов", store=True, compute='_raschet')
+
+
+

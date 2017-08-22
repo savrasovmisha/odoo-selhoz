@@ -30,11 +30,11 @@ def krs_load_otel(date_start, date_end, kod_otel):
 	#return 'error'
 	#print date
 	zapros=r"""Select 
-					T0.NINV As NINV0,
-					T1.HOZ As HOZ1,
-					T2.EVENT_DATE As EVENT_DATE2,
-					T2.LAKT As LAKT5,
-					T2.OTEL_REZ As OTEL_REZ6,
+					T0.NINV As inv_nomer,
+					T1.NHOZ As hoz_selex_id,
+					T2.EVENT_DATE As date_o,
+					T2.LAKT As nomer_lakt,
+					T2.OTEL_REZ As result,
 					T0.NANIMAL 
 				 From REGISTER T0
 				 left join SHOZ_ALL T1 on T0.NHOZ_ROGD=T1.NHOZ
@@ -54,7 +54,7 @@ def krs_load_otel(date_start, date_end, kod_otel):
 		otels.append(
 					{
 						'inv_nomer':line[0],
-						'kod_hoz': int(line[1]),
+						'hoz_selex_id': int(line[1]),
 						'date': str(line[2]),
 						'nomer_lakt': int(line[3]),
 						'result': line[4]
@@ -165,5 +165,115 @@ def krs_sync_srashod():
 		)
 	
 	data = json.dumps(spv)
+	
+	return data
+
+
+
+
+@app.route('/api/krs_load_cow_vibitiya/<date_start>/<date_end>/', method='GET')
+def krs_load_cow_vibitiya(date_start, date_end):
+	
+	"""Загрузка Выбытия коров за выбранный период"""
+
+
+	if date_end is None or date_start is None:
+		return 'error'
+
+	zapros=r""" Select 
+					T0.NINV As inv_nomer,
+					T0.DATE_ROGD As date_rogd,
+					T1.NHOZ As hoz_selex_id,
+					T0.DATE_V As date_v,
+					T2.PV As kod_spv,
+					T3.RASHOD As kod_srashod,
+					T4.LAKTAC As nomer_lakt,
+					T0.NANIMAL 
+				 From REGISTER T0
+				 left join SHOZ_ALL T1 on T0.NHOZ_ROGD=T1.NHOZ
+				 left join SPV T2 on T0.NPV=T2.NPV
+				 left join SRASHOD T3 on T0.NRASHOD=T3.NRASHOD
+				 left join SUP_CLCFLDFTL_SELEX(T0.NANIMAL,'2') T4 on 2=2  
+								 
+				 Where  (T0.NHOZ=6263931) and 
+				 		(((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000))) and 
+				 		(T0.DATE_V>=?) and 
+				 		(T0.DATE_V<=?) 
+				 """
+	
+	param=(date_start,date_end,)
+	result=con_selex(zapros,param,2)
+	datas = []
+	for line in result:
+		datas.append({
+						'inv_nomer':line[0],
+						'date_rogd':str(line[1]),
+						'hoz_selex_id':int(line[2]),
+						'date':str(line[3]),
+						'kod_spv':int(line[4]),
+						'kod_srashod':int(line[5]),
+						'nomer_lakt': int(line[6])
+		
+					})
+	#print zagon
+	
+	data = json.dumps(datas)
+	#print data
+	
+	return data
+
+
+
+
+
+@app.route('/api/krs_load_tel_vibitiya/<date_start>/<date_end>/', method='GET')
+def krs_load_tel_vibitiya(date_start, date_end):
+	
+	"""Загрузка Выбытия телят за выбранный период"""
+
+
+	if date_end is None or date_start is None:
+		return 'error'
+
+	zapros=r""" Select 
+						T0.NINV As inv_nomer,
+						T0.DATE_ROGD As date_rogd,
+						T1.NHOZ As hoz_selex_id,
+						T0.DATE_V As date_v,
+						T2.PV As kod_spv,
+						T3.RASHOD As kod_srashod,
+						T4.STATUS As status,
+						T0.NANIMAL 
+				 From REGISTER T0
+				 left join SHOZ_ALL T1 on T0.NHOZ_ROGD=T1.NHOZ
+				 left join SPV T2 on T0.NPV=T2.NPV
+				 left join SRASHOD T3 on T0.NRASHOD=T3.NRASHOD
+				 left join GET_STATUSANIMAL(T0.NANIMAL) T4 on 2=2  
+								 
+				 Where  (T0.NHOZ=6263931) and 
+				 		(((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000)) or 
+				 		 ((T0.NANIMAL>1000000000000 AND T0.NANIMAL<2000000000000))) and 
+				 		(T0.DATE_V>=?) and 
+				 		(T0.DATE_V<=?) 
+				 """
+	
+	param=(date_start,date_end,)
+	result=con_selex(zapros,param,2)
+	datas = []
+	for line in result:
+		datas.append({
+						'inv_nomer':line[0],
+						'date_rogd':str(line[1]),
+						'hoz_selex_id':int(line[2]),
+						'date':str(line[3]),
+						'kod_spv':int(line[4]),
+						'kod_srashod':int(line[5]),
+						'status': line[6]
+		
+					})
+	#print zagon
+	
+	data = json.dumps(datas)
+	#print data
 	
 	return data

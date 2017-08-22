@@ -9,3 +9,7 @@ access_krs_spv_manager,krs.spv,model_krs_spv,group_krs_manager,1,1,1,1
 access_krs_spv_users,krs.spv,model_krs_spv,group_krs_users,1,0,0,0
 access_krs_srashod_manager,krs.srashod,model_krs_srashod,group_krs_manager,1,1,1,1
 access_krs_srashod_users,krs.srashod,model_krs_srashod,group_krs_users,1,0,0,0
+access_krs_cow_vibitiya_manager,krs.cow_vibitiya,model_krs_cow_vibitiya,group_krs_manager,1,1,1,1
+access_krs_cow_vibitiya_users,krs.cow_vibitiya,model_krs_cow_vibitiya,group_krs_users,1,0,0,0
+access_krs_tel_vibitiya_manager,krs.tel_vibitiya,model_krs_tel_vibitiya,group_krs_manager,1,1,1,1
+access_krs_tel_vibitiya_users,krs.tel_vibitiya,model_krs_tel_vibitiya,group_krs_users,1,0,0,0

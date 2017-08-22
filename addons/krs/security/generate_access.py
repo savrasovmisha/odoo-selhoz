@@ -4,6 +4,8 @@ spisok.append(['krs.result_otel',''])
 spisok.append(['krs.otel',''])
 spisok.append(['krs.spv',''])
 spisok.append(['krs.srashod',''])
+spisok.append(['krs.cow_vibitiya',''])
+spisok.append(['krs.tel_vibitiya',''])
 
 
 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_tel_vibitiya_form_view">
+        <field name="name">krs_tel_vibitiya.form</field>
+        <field name="model">krs.tel_vibitiya</field>
+        <field name="arch" type="xml">
+            <form string="Форма Выбытия телят">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        <field name="inv_nomer"/>
+                        <field name="date_rogd"/>
+                        <field name="date"/>
+                        <field name="status"/>
+                        <field name="krs_hoz_id"/>
+                        <field name="krs_spv_id"/>
+                        <field name="krs_srashod_id"/>
+                        
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_tel_vibitiya_tree">
+            <field name="name">krs_tel_vibitiya.tree</field>
+            <field name="model">krs.tel_vibitiya</field>
+            <field name="arch" type="xml">
+                <tree string="Выбытия телят">
+                    
+                    
+                    <field name="date"/>
+                    <field name="inv_nomer"/>
+                    <field name="status"/>
+                    <field name="krs_hoz_id"/>
+                    <field name="krs_spv_id"/>
+                    <field name="krs_srashod_id"/>
+                   
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_tel_vibitiya_search_view">
+            <field name="name">krs_tel_vibitiya.search</field>
+            <field name="model">krs.tel_vibitiya</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="inv_nomer"/>
+                    <field name="date"/>
+        
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_tel_vibitiya_list_action">
+            <field name="name">Выбытия телят</field>
+            <field name="res_model">krs.tel_vibitiya</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Выбытия телят
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

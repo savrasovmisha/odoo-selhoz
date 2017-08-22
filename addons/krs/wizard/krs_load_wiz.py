@@ -64,6 +64,8 @@ class KRSLoadWiz(models.TransientModel):
 	hoz = fields.Boolean(string=u"Хозяйства рождения", default=False)
 	spv = fields.Boolean(string=u"Причины выбытия", default=False)
 	srashod = fields.Boolean(string=u"Виды расхода", default=False)
+	cow_vibitiya = fields.Boolean(string=u"Выбытия коров", default=False)
+	tel_vibitiya = fields.Boolean(string=u"Выбытия телят", default=False)
 
 	description = fields.Text(string=u"Коментарии", default=u'Результат:\n ')
 
@@ -109,98 +111,17 @@ class KRSLoadWiz(models.TransientModel):
 		if self.srashod == True:
 			self.sync_srashod()
 
+		if self.cow_vibitiya == True:
+			self.load_cow_vibitiya()
+
+		if self.tel_vibitiya == True:
+			self.load_tel_vibitiya()
+
 		return self.return_form_wizard()
 
 
 	
-	def load_otel(self):
-		"""
-			Загрузка Отелов
-		"""
-		
-		self.description += u'.... Загрузка Отелов .... \n' 
-		err=''
-		conf = self.env['ir.config_parameter']
-		
-		kod_otel = conf.get_param('kod_otel')
-		
-		
-		
-		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
-		
-		date_start = dt_start.date().strftime('%d.%m.%Y')
-
-		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
-		
-		date_end = dt_end.date().strftime('%d.%m.%Y')
-
-
-
-		url_name = '/api/krs_load_otel/'+date_start+'/'+date_end+'/'+str(kod_otel)
-		
-		
-		res = connect_server(self, url_name)
-		
-		if len(res['err'])==0:
-
-			otels = res['data']
-			
-			#ПРОВЕРКА данных
-			spisok_hoz_full = []
-			spisok_result_full = []
-			for line in otels:
-				spisok_hoz_full.append(line['kod_hoz'])
-				spisok_result_full.append(line['result'])
-
-			#Группируем список, по уникальым значениям
-			spisok_hoz = [el for el, _ in groupby(spisok_hoz_full)]
-			spisok_result = [el for el, _ in groupby(spisok_result_full)]
-			#print spisok_result
-			#Проверяем существуют ли справочники
-			for line in spisok_result:
-				result_otel = self.env['krs.result_otel'].search([('name', '=', line)],limit=1)
-				if len(result_otel) == 0:
-					err += u"Для Результата отела: %s нет соответствия в справочники Результатов отела. \n " % (line,)
 	
-	
-			for line in spisok_hoz:
-				result_hoz = self.env['krs.hoz'].search([('kod', '=', line)],limit=1)
-				if len(result_hoz) == 0:
-					err += u"Для № хозяйства: %s нет соответствия в справочники Хозяйства. \n " % (line,)
-
-			if len(err) == 0:
-				
-				krs_otel = self.env['krs.otel']
-				del_line = krs_otel.search([ ('date',  '>=',    self.date_start),
-											 ('date',  '<=',    self.date_end)
-										   ])
-				del_line.unlink()
-				
-				
-				otel_ids = []
-				for line in otels:
-					
-
-					new_otel = krs_otel.create({
-									'inv_nomer':line['inv_nomer'],
-									'kod_hoz': int(line['kod_hoz']),
-									'date': line['date'],
-									'nomer_lakt': int(line['nomer_lakt']),
-									'result': line['result']
-								
-								})
-					new_otel._raschet()
-				
-		#print err
-		if len(res['err']) or len(err)>0:
-			
-			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
-			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
-		else:
-			self.description += u'Данные загружены. \n' 
-
-		
-
 
 
 	
@@ -327,3 +248,289 @@ class KRSLoadWiz(models.TransientModel):
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
 			self.description += u'Синхронизация прошла успешна. \n'
+
+
+
+
+
+
+
+	def load_otel(self):
+		"""
+			Загрузка Отелов
+		"""
+		
+		self.description += u'.... Загрузка Отелов .... \n' 
+		err=''
+		conf = self.env['ir.config_parameter']
+		
+		kod_otel = conf.get_param('kod_otel')
+		
+		
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+
+
+		url_name = '/api/krs_load_otel/'+date_start+'/'+date_end+'/'+str(kod_otel)
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			otels = res['data']
+			
+			#ПРОВЕРКА данных
+			spisok_hoz_full = []
+			spisok_result_full = []
+			for line in otels:
+				spisok_hoz_full.append(line['hoz_selex_id'])
+				spisok_result_full.append([line['result']])
+
+			#Группируем список, по уникальым значениям
+			# spisok_hoz = [el for el, _ in groupby(spisok_hoz_full)]
+			# spisok_result = [el for el, _ in groupby(spisok_result_full)]
+			#print spisok_result
+			#Проверяем существуют ли справочники
+			for line, ob in groupby( sorted(spisok_result_full, key=lambda x:x[0]), key=lambda x:x[0] ):
+				result_otel = self.env['krs.result_otel'].search([('name', '=', line)],limit=1)
+				if len(result_otel) == 0:
+					err += u"Для Результата отела: %s нет соответствия в справочники Результатов отела. \n " % (line,)
+	
+	
+			for line in groupby( sorted(spisok_hoz_full) ):
+				result_hoz = self.env['krs.hoz'].search([('selex_id', '=', line[0])],limit=1)
+				if len(result_hoz) == 0:
+					err += u"Для № хозяйства: %s нет соответствия в справочники Хозяйства. \n " % (line[0],)
+
+			if len(err) == 0:
+				
+				krs_otel = self.env['krs.otel']
+				del_line = krs_otel.search([ ('date',  '>=',    self.date_start),
+											 ('date',  '<=',    self.date_end)
+										   ])
+				del_line.unlink()
+				
+				
+				otel_ids = []
+				for line in otels:
+					
+
+					new_otel = krs_otel.create({
+									'inv_nomer':line['inv_nomer'],
+									'date': line['date'],
+									'nomer_lakt': int(line['nomer_lakt'])
+								
+								})
+					new_otel._raschet_load(	 hoz_selex_id = int(line['hoz_selex_id']),
+											 result = line['result']
+
+											 )
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n' 
+
+
+
+	def load_cow_vibitiya(self):
+		"""
+			Загрузка Выбытия коров
+		"""
+		
+		self.description += u'.... Загрузка Выбытия коров .... \n' 
+		err=''
+				
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+
+
+		url_name = '/api/krs_load_cow_vibitiya/'+date_start+'/'+date_end+'/'
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			data = res['data']
+			
+			#ПРОВЕРКА данных
+			spisok_hoz_full = []
+			spisok_spv_full = []
+			spisok_srashod_full = []
+			for line in data:
+				spisok_hoz_full.append(line['hoz_selex_id'])
+				spisok_spv_full.append(line['kod_spv'])
+				spisok_srashod_full.append(line['kod_srashod'])
+				
+			#print spisok_hoz_full
+			#Группируем список, по уникальым значениям
+			
+			for line in groupby( sorted(spisok_hoz_full) ):
+
+				result = self.env['krs.hoz'].search([('selex_id', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № хозяйства: %s нет соответствия в справочники Хозяйства. \n " % (line[0],)
+
+
+			for line in groupby( sorted(spisok_spv_full) ):
+
+				result = self.env['krs.spv'].search([('kod', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № %s нет соответствия в справочники Причины выбития. \n " % (line[0],)
+
+			for line in groupby( sorted(spisok_srashod_full) ):
+
+				result = self.env['krs.srashod'].search([('kod', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № %s нет соответствия в справочники Вид расхода. \n " % (line[0],)
+
+
+
+			if len(err) == 0:
+				
+				krs_cow_vibitiya = self.env['krs.cow_vibitiya']
+				del_line = krs_cow_vibitiya.search([ ('date',  '>=',    self.date_start),
+													 ('date',  '<=',    self.date_end)
+												   ])
+				del_line.unlink()
+				
+				
+				cow_vibitiya_ids = []
+
+				for line in data:
+					
+					new_cow_vibitiya = krs_cow_vibitiya.create({
+									'inv_nomer':line['inv_nomer'],
+									'date_rogd': line['date_rogd'],
+									'date': line['date'],
+									'nomer_lakt': int(line['nomer_lakt'])								
+								})
+
+					new_cow_vibitiya._raschet(	 hoz_selex_id = int(line['hoz_selex_id']),
+												 kod_spv = int(line['kod_spv']), 
+												 kod_srashod = int(line['kod_srashod'])
+												 )
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n' 
+
+
+
+	def load_tel_vibitiya(self):
+		"""
+			Загрузка Выбытия телят
+		"""
+		
+		self.description += u'.... Загрузка Выбытия телят .... \n' 
+		err=''
+				
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+
+
+		url_name = '/api/krs_load_tel_vibitiya/'+date_start+'/'+date_end+'/'
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			data = res['data']
+			
+			#ПРОВЕРКА данных
+			spisok_hoz_full = []
+			spisok_spv_full = []
+			spisok_srashod_full = []
+			for line in data:
+				spisok_hoz_full.append(line['hoz_selex_id'])
+				spisok_spv_full.append(line['kod_spv'])
+				spisok_srashod_full.append(line['kod_srashod'])
+				
+			#print spisok_hoz_full
+			#Группируем список, по уникальым значениям
+			
+			for line in groupby( sorted(spisok_hoz_full) ):
+
+				result = self.env['krs.hoz'].search([('selex_id', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № хозяйства: %s нет соответствия в справочники Хозяйства. \n " % (line[0],)
+
+
+			for line in groupby( sorted(spisok_spv_full) ):
+
+				result = self.env['krs.spv'].search([('kod', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № %s нет соответствия в справочники Причины выбития. \n " % (line[0],)
+
+			for line in groupby( sorted(spisok_srashod_full) ):
+
+				result = self.env['krs.srashod'].search([('kod', '=', line[0])],limit=1)
+				if len(result) == 0:
+					err += u"Для № %s нет соответствия в справочники Вид расхода. \n " % (line[0],)
+
+
+
+			if len(err) == 0:
+				
+				krs_tel_vibitiya = self.env['krs.tel_vibitiya']
+				del_line = krs_tel_vibitiya.search([ ('date',  '>=',    self.date_start),
+													 ('date',  '<=',    self.date_end)
+												   ])
+				del_line.unlink()
+				
+				
+				tel_vibitiya_ids = []
+
+				for line in data:
+					
+					new_tel_vibitiya = krs_tel_vibitiya.create({
+									'inv_nomer':line['inv_nomer'],
+									'status':line['status'],
+									'date_rogd': line['date_rogd'],
+									'date': line['date']
+																
+								})
+
+					new_tel_vibitiya._raschet(	 hoz_selex_id = int(line['hoz_selex_id']),
+												 kod_spv = int(line['kod_spv']), 
+												 kod_srashod = int(line['kod_srashod'])
+												 )
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n'

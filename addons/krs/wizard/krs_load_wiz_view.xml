@@ -17,6 +17,8 @@
                         
                         <group string="Загрузить">
                             <field name="otel"/>
+                            <field name="cow_vibitiya"/>
+                            <field name="tel_vibitiya"/>
 
                         </group>
                             
@@ -34,10 +36,7 @@
                 
                 <footer>
                     <button name="loads" string="Загрузить" type="object" class="oe_highlight"/>
-                    или
-                     <button name="sync_hoz" string="СПВ" type="object" class="oe_highlight"/>
-                    или
-                     <button name="sync_spv" string="СПВ" type="object" class="oe_highlight"/>
+                    
                      или
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>

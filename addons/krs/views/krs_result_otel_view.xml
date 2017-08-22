@@ -10,7 +10,7 @@
                     <group>
                         
                         <field name="name"/>
-                        
+                        <field name="abort"/>
                         <field name="kol_itog"/>
                         <field name="kol_itog_jiv"/>
                         <field name="kol_itog_mert"/>
@@ -38,6 +38,7 @@
                     
                     
                     <field name="name"/>
+                    <field name="abort"/>
                     <field name="kol_itog"/>
                     <field name="kol_itog_jiv"/>
                     <field name="kol_itog_mert"/>

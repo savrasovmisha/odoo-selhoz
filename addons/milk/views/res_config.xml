@@ -49,6 +49,7 @@
                         <group>
                             
                             <field name="kod_otel" />
+                            <field name="kod_osemeneniya" />
                        
                             
                         </group>

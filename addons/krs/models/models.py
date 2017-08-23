@@ -205,10 +205,36 @@ class krs_tel_vibitiya(models.Model):
 
 
 	@api.one
+	@api.depends('date_rogd', 'date')
+	def _vozrast(self):
+
+		if self.date_rogd and self.date:
+			date_rogd = datetime.strptime(self.date_rogd,'%Y-%m-%d')
+			date_v = datetime.strptime(self.date,'%Y-%m-%d')
+			year = date_v.year - date_rogd.year
+			month = date_v.month - date_rogd.month
+			day = date_v.day - date_rogd.day
+
+			if month<0:
+				month = 12 + month
+				year = year - 1
+
+			month = month + year*12
+
+			if day<0:
+				month = month - 1
+
+			self.vozrast = month
+			self.vozrast_txt = str(self.vozrast).rjust(2, '0')
+
+
+	@api.one
 	@api.depends('inv_nomer')
 	def _get_name(self):
 
 		self.name = self.inv_nomer
+		self._vozrast()
+		
 
 
 	@api.one
@@ -229,6 +255,8 @@ class krs_tel_vibitiya(models.Model):
 				self.krs_srashod_id = result_srashod
 
 		self.name = self.inv_nomer
+		self._vozrast()
+
 		
 
 
@@ -237,9 +265,41 @@ class krs_tel_vibitiya(models.Model):
 	status = fields.Char(string=u"Статус", required=True)
 	date_rogd = fields.Date(string='Дата рождения', required=True)
 	date = fields.Date(string='Дата выбытия', required=True, default=fields.Datetime.now)
+	vozrast = fields.Integer(string='Возраст (мес)' , compute='_vozrast', store=True)
+	vozrast_txt = fields.Char(string='Возраст (мес)', compute='_vozrast', store=True)
 
 	krs_hoz_id = fields.Many2one('krs.hoz', string='Хозяйство рождения')
 
 	krs_spv_id = fields.Many2one('krs.spv', string='Причина выбытия')
 
 	krs_srashod_id = fields.Many2one('krs.srashod', string='Вид расхода')
+
+
+
+
+class krs_osemeneniya(models.Model):
+	_name = 'krs.osemeneniya'
+	_description = u'Осеменения'
+	_order = 'date desc'
+
+
+	@api.one
+	@api.depends('inv_nomer')
+	def _get_name(self):
+
+		self.name = self.inv_nomer
+		
+		
+
+
+	name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
+	inv_nomer = fields.Char(string=u"Инв. №", required=True)
+	status = fields.Char(string=u"Статус", required=True)
+	
+	date = fields.Date(string='Дата осеменения', required=True, default=fields.Datetime.now)
+	
+	fio = fields.Char(string='Осеменатор', required=True)
+	bik = fields.Char(string='Бык (семя)', required=True)
+	doz = fields.Integer(string='Доз спермы', required=True)
+
+	

@@ -38,6 +38,7 @@
         'views/krs_srashod_view.xml',
         'views/krs_cow_vibitiya_view.xml',
         'views/krs_tel_vibitiya_view.xml',
+        'views/krs_osemeneniya_view.xml',
 
         'wizard/krs_load_wiz_view.xml',
         'wizard/message_view.xml',

@@ -22,6 +22,7 @@ def connect_server(self, url_name):
 
 
 	err=''
+	data=''
 	conf = self.env['ir.config_parameter']
 	ip = conf.get_param('ip_server_api')
 
@@ -39,6 +40,9 @@ def connect_server(self, url_name):
 
 	except:
 		err=u'НЕ удалось соединиться с сервером. \n'
+
+	if err=='' and len(data) == 0:
+		err=u'Сервер не вернул данные. Ошибка сервера API \n'
 
 	return {
 			'err' : err,
@@ -66,6 +70,7 @@ class KRSLoadWiz(models.TransientModel):
 	srashod = fields.Boolean(string=u"Виды расхода", default=False)
 	cow_vibitiya = fields.Boolean(string=u"Выбытия коров", default=False)
 	tel_vibitiya = fields.Boolean(string=u"Выбытия телят", default=False)
+	osemeneniya = fields.Boolean(string=u"Осеменения", default=False)
 
 	description = fields.Text(string=u"Коментарии", default=u'Результат:\n ')
 
@@ -116,6 +121,9 @@ class KRSLoadWiz(models.TransientModel):
 
 		if self.tel_vibitiya == True:
 			self.load_tel_vibitiya()
+
+		if self.osemeneniya == True:
+			self.load_osemeneniya()
 
 		return self.return_form_wizard()
 
@@ -526,6 +534,71 @@ class KRSLoadWiz(models.TransientModel):
 												 kod_spv = int(line['kod_spv']), 
 												 kod_srashod = int(line['kod_srashod'])
 												 )
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n'
+
+
+
+	def load_osemeneniya(self):
+		"""
+			Загрузка Осеменения
+		"""
+		
+		self.description += u'.... Загрузка Осеменения .... \n' 
+		err=''
+				
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+		conf = self.env['ir.config_parameter']
+		
+		kod_osemeneniya = conf.get_param('kod_osemeneniya')
+
+		url_name = '/api/krs_load_osemeneniya/'+date_start+'/'+date_end+'/'+str(kod_osemeneniya)
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			data = res['data']
+			
+			if len(err) == 0:
+				
+				krs_osemeneniya = self.env['krs.osemeneniya']
+				del_line = krs_osemeneniya.search([ ('date',  '>=',    self.date_start),
+													 ('date',  '<=',    self.date_end)
+												   ])
+				del_line.unlink()
+				
+				
+				osemeneniya_ids = []
+
+				for line in data:
+					
+					new_osemeneniya = krs_osemeneniya.create({
+									'inv_nomer':line['inv_nomer'],
+									'status':line['status'],
+									'date': line['date'],
+									'fio': line['fio'],
+									'bik': line['bik'],
+									'doz': int(line['doz']),
+																
+								})
+
+					new_osemeneniya._get_name()
 				
 		#print err
 		if len(res['err'])>0 or len(err)>0:

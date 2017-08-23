@@ -6,6 +6,7 @@ spisok.append(['krs.spv',''])
 spisok.append(['krs.srashod',''])
 spisok.append(['krs.cow_vibitiya',''])
 spisok.append(['krs.tel_vibitiya',''])
+spisok.append(['krs.osemeneniya',''])
 
 
 

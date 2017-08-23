@@ -16,6 +16,9 @@
 
         <menuitem id="krs_tel_vibitiya_menu" name="Выбытия телят" sequence="1" parent="krs_menu_doc" action="krs_tel_vibitiya_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_osemeneniya_menu" name="Осеменения" sequence="1" parent="krs_menu_doc" action="krs_osemeneniya_list_action" groups="group_krs_manager,group_krs_users"/>
+
+
        
 
         <menuitem id="krs_menu_load" name="Обработки" sequence="2" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>

@@ -242,7 +242,20 @@ def krs_load_tel_vibitiya(date_start, date_end):
 						T0.DATE_V As date_v,
 						T2.PV As kod_spv,
 						T3.RASHOD As kod_srashod,
-						T4.STATUS As status,
+						case --Определяем была ли стельная, если да то это нетель
+				            when T4.STATUS='Бычок' then 'Бычок'
+				            when 
+				        	(
+					            Select FIRST 1 TT2.PROV_IM As PROV_IM4
+					            From REGISTER TT0
+					            left join SUP_CLCALT_SELEX(6263931,T0.NANIMAL,1) TT1 on 2=2
+					            left join SUP_EVENTS_SELEX(T0.NANIMAL) TT2 on 2=2
+					 
+					            Where (TT0.NHOZ=6263931) and (((TT0.NANIMAL>2000000000000 AND TT0.NANIMAL<3000000000000))) and
+					            (TT0.NINV=T0.NINV) and (TT2.PROV_IM='Стельная')
+					        )='Стельная' then 'Нетель'
+				        	else 'Телочка'
+				        end as status,
 						T0.NANIMAL 
 				 From REGISTER T0
 				 left join SHOZ_ALL T1 on T0.NHOZ_ROGD=T1.NHOZ
@@ -277,3 +290,61 @@ def krs_load_tel_vibitiya(date_start, date_end):
 	#print data
 	
 	return data
+
+
+
+
+@app.route('/api/krs_load_osemeneniya/<date_start>/<date_end>/<kod_osemeneniya>', method='GET')
+def krs_load_osemeneniya(date_start, date_end, kod_osemeneniya):
+	
+	"""Загрузка осеменения за выбранный период"""
+
+
+	if date_end is None or date_start is None or kod_osemeneniya is None:
+		return 'error'
+	#return 'error'
+	#print date
+	zapros=r"""Select
+				        T0.NINV As inv_nomer,
+				        case
+				            when T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000 then 'Корова'
+				            else 'Телочка'
+				        end as status,
+				        T1.EVENT_DATE As date_o,
+				        T2.IM As fio,
+				        T3.KLICHKA As bik,
+				        COALESCE(T1.DOZ_SPERMY,1) As doz
+				 From REGISTER T0
+				 left join SUP_EVENTS_SELEX(T0.NANIMAL) T1 on 2=2 
+				 left join TEXN T2 on T1.NTEXN=T2.NTEXN
+				 left join REGISTER T3 on T1.NBYK=T3.NANIMAL
+				 
+				 Where (T0.NHOZ=6263931) and (((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000)) or 
+				 ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000))) and 
+				 		(T1.EVENT_DATE>=?) and 
+				 		(T1.EVENT_DATE<=?) and 
+				 		(T1.EVENT_KOD=?)
+				 """
+	
+	param=(date_start,date_end,int(kod_osemeneniya),)
+	result=con_selex(zapros,param,2)
+	datas = []
+	for line in result:
+		datas.append(
+					{
+						'inv_nomer':line[0],
+						'status': line[1],
+						'date': str(line[2]),
+						'fio': line[3],
+						'bik': line[4],
+						'doz': int(line[5])
+					}
+		
+		)
+	#print zagon
+	
+	data = json.dumps(datas)
+	#print data
+	
+	return data
+

@@ -18,6 +18,8 @@
 
         <menuitem id="krs_osemeneniya_menu" name="Осеменения" sequence="1" parent="krs_menu_doc" action="krs_osemeneniya_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_abort_menu" name="Аборты" sequence="1" parent="krs_menu_doc" action="krs_abort_list_action" groups="group_krs_manager,group_krs_users"/>
+
 
        
 

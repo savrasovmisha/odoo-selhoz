@@ -50,6 +50,7 @@
                             
                             <field name="kod_otel" />
                             <field name="kod_osemeneniya" />
+                            <field name="kod_abort" />
                        
                             
                         </group>

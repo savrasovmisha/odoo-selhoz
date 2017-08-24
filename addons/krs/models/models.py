@@ -129,7 +129,7 @@ class krs_otel(models.Model):
 	name = fields.Char(string=u"Наименование", compute='_raschet', store=True)
 	inv_nomer = fields.Char(string=u"Инв. №", required=True)
 	
-	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+	date = fields.Date(string='Дата отела', required=True, default=fields.Datetime.now)
 	nomer_lakt = fields.Integer(string=u"Номер лактации",required=True)
 	nomer_lakt_str = fields.Char(string=u"Номер лактации")
 	
@@ -302,4 +302,27 @@ class krs_osemeneniya(models.Model):
 	bik = fields.Char(string='Бык (семя)', required=True)
 	doz = fields.Integer(string='Доз спермы', required=True)
 
+	
+
+class krs_abort(models.Model):
+	_name = 'krs.abort'
+	_description = u'Аборты'
+	_order = 'date desc'
+
+
+	@api.one
+	@api.depends('inv_nomer')
+	def _get_name(self):
+
+		self.name = self.inv_nomer
+		
+		
+
+
+	name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
+	inv_nomer = fields.Char(string=u"Инв. №", required=True)
+	status = fields.Char(string=u"Статус", required=True)
+	
+	date = fields.Date(string='Дата аборта', required=True, default=fields.Datetime.now)
+	
 	

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_abort_form_view">
+        <field name="name">krs_abort.form</field>
+        <field name="model">krs.abort</field>
+        <field name="arch" type="xml">
+            <form string="Форма Аборты">
+                <sheet>
+                    <group>
+                        
+                        <field name="name"/>
+                        <field name="inv_nomer"/>
+                        <field name="date"/>
+                        <field name="status"/>
+                                        
+                        
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_abort_tree">
+            <field name="name">krs_abort.tree</field>
+            <field name="model">krs.abort</field>
+            <field name="arch" type="xml">
+                <tree string="Аборты">
+                    
+                    
+                    <field name="date"/>
+                    <field name="inv_nomer"/>
+                    <field name="status"/>
+                   
+                   
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_abort_search_view">
+            <field name="name">krs_abort.search</field>
+            <field name="model">krs.abort</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="inv_nomer"/>
+                    <field name="date"/>
+        
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_abort_list_action">
+            <field name="name">Аборты</field>
+            <field name="res_model">krs.abort</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Аборты
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

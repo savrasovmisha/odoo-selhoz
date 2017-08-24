@@ -348,3 +348,54 @@ def krs_load_osemeneniya(date_start, date_end, kod_osemeneniya):
 	
 	return data
 
+
+
+
+
+@app.route('/api/krs_load_abort/<date_start>/<date_end>/<kod_abort>', method='GET')
+def krs_load_abort(date_start, date_end, kod_abort):
+	
+	"""Загрузка Аборты за выбранный период"""
+
+
+	if date_end is None or date_start is None or kod_abort is None:
+		return 'error'
+	#return 'error'
+	#print date
+	zapros=r"""Select
+				        T0.NINV As inv_nomer,
+				        case
+				            when T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000 then 'Корова'
+				            else 'Телочка'
+				        end as status,
+				        T1.EVENT_DATE As date_a
+				        
+				 From REGISTER T0
+				 left join SUP_EVENTS_SELEX(T0.NANIMAL) T1 on 2=2 
+				 
+				 Where (T0.NHOZ=6263931) and (((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000)) or 
+				 ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000))) and 
+				 		(T1.EVENT_DATE>=?) and 
+				 		(T1.EVENT_DATE<=?) and 
+				 		(T1.EVENT_KOD=?)
+				 """
+	
+	param=(date_start,date_end,int(kod_abort),)
+	result=con_selex(zapros,param,2)
+	datas = []
+	for line in result:
+		datas.append(
+					{
+						'inv_nomer':line[0],
+						'status': line[1],
+						'date': str(line[2])
+					}
+		
+		)
+	#print zagon
+	
+	data = json.dumps(datas)
+	#print data
+	
+	return data
+

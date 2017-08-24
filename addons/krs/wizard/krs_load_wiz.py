@@ -71,6 +71,7 @@ class KRSLoadWiz(models.TransientModel):
 	cow_vibitiya = fields.Boolean(string=u"Выбытия коров", default=False)
 	tel_vibitiya = fields.Boolean(string=u"Выбытия телят", default=False)
 	osemeneniya = fields.Boolean(string=u"Осеменения", default=False)
+	abort = fields.Boolean(string=u"Аборты", default=False)
 
 	description = fields.Text(string=u"Коментарии", default=u'Результат:\n ')
 
@@ -124,6 +125,9 @@ class KRSLoadWiz(models.TransientModel):
 
 		if self.osemeneniya == True:
 			self.load_osemeneniya()
+
+		if self.abort == True:
+			self.load_abort()
 
 		return self.return_form_wizard()
 
@@ -599,6 +603,69 @@ class KRSLoadWiz(models.TransientModel):
 								})
 
 					new_osemeneniya._get_name()
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n'
+
+
+
+
+	def load_abort(self):
+		"""
+			Загрузка Аборты
+		"""
+		
+		self.description += u'.... Загрузка Аборты .... \n' 
+		err=''
+				
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+		conf = self.env['ir.config_parameter']
+		
+		kod_abort = conf.get_param('kod_abort')
+
+		url_name = '/api/krs_load_abort/'+date_start+'/'+date_end+'/'+str(kod_abort)
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			data = res['data']
+			
+			if len(err) == 0:
+				
+				krs_abort = self.env['krs.abort']
+				del_line = krs_abort.search([ ('date',  '>=',    self.date_start),
+											  ('date',  '<=',    self.date_end)
+										    ])
+				del_line.unlink()
+				
+				
+				abort_ids = []
+
+				for line in data:
+					
+					new_abort = krs_abort.create({
+									'inv_nomer':line['inv_nomer'],
+									'status':line['status'],
+									'date': line['date']
+																
+								})
+
+					new_abort._get_name()
 				
 		#print err
 		if len(res['err'])>0 or len(err)>0:

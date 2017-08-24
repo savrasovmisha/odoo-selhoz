@@ -16,6 +16,7 @@ class korm_svod_report(models.Model):
     
     date = fields.Date(string='Дата')
     name = fields.Char(string='Номер документа')
+    sarting = fields.Char(string='Сортировка')
     
     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
     #nomen_name = fields.Char(string='Номенклатура')
@@ -50,62 +51,93 @@ class korm_svod_report(models.Model):
         cr.execute("""
             create or replace view korm_korm_svod_report as (
                 WITH currency_rate as (%s)
-                select 
-                    min(s.id) as id,
-                    d.name as name,
-                    s.date as date,
-                    date_part('month',s.date) as month,
-                    to_char(s.date, 'YYYY') as year,
-                    s.nomen_nomen_id as nomen_nomen_id,
-                    sum(s.kol_norma)/count(s.id) as kol_norma,
-                    sum(rl.kol*sv.kol_golov) as kol_racion,
-                    sum(s.kol_fakt)/count(s.id) as kol_fakt,
-                    sum(s.kol_fakt-s.kol_norma)/count(s.id) as kol_otk,
-                    sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov) as kol_otk_racion,
-                    sum(sv.kol_golov) as kol_golov,
-                    avg(sv.kol_golov_zagon) as kol_golov_srednee,
-                    avg(pll.price) as price,
-                    sum(s.kol_norma)/count(s.id)*avg(pll.price) as amount_norma,
-                    sum(rl.kol*sv.kol_golov)*avg(pll.price) as amount_racion,
-                    sum(s.kol_fakt)/count(s.id)*avg(pll.price) as amount_fakt,
-                    sum(s.kol_fakt-s.kol_norma)/count(s.id)*avg(pll.price) as amount_otk,
-                    (sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov))*avg(pll.price) as amount_otk_racion,
+                SELECT
+                    t.id as id,
+                    t.sorting as sorting,
+                    t.name as name,
+                    t.date as date,
+                    t.month as month,
+                    t.year as year,
+                    t.nomen_nomen_id as nomen_nomen_id,
+                    t.kol_norma as kol_norma,
+                    t.kol_racion as kol_racion,
+                    t.kol_fakt as kol_fakt,
+                    t.kol_fakt - t.kol_norma as kol_otk,
+                    t.kol_fakt - t.kol_racion as kol_otk_racion,
+                    t.kol_golov as kol_golov,
+                    t.kol_golov_srednee as kol_golov_srednee,
+                    t.price as price,
+                    t.kol_norma*t.price as amount_norma,
+                    t.kol_racion*t.price as amount_racion,
+                    t.kol_fakt*t.price as amount_fakt,
+                    (t.kol_fakt - t.kol_norma)*t.price as amount_otk,
+                    (t.kol_fakt - t.kol_racion)*t.price as amount_otk_racion,
 
 
-                    kl.stado_fiz_group_id,
-                    fg.stado_vid_fiz_group_id
-                    
-                from korm_korm_detail_line s
-                left join korm_korm_svod_line sv on 
-                                        ( sv.korm_korm_id = s.korm_korm_id and 
-                                            sv.sorting = s.sorting)
-                left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
-                                            kl.sorting = s.sorting)
-                left join korm_korm d on (d.id = s.korm_korm_id)
-                left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
-                left join korm_racion_line rl on 
-                                            (rl.nomen_nomen_id = s.nomen_nomen_id and
-                                             rl.korm_racion_id = sv.korm_racion_id)
-                left join ( Select DISTINCT ON (pl.nomen_nomen_id)
-                                pl.price,
-                                pl.nomen_nomen_id
-                            From nomen_price_line pl
-                            Order by  pl.nomen_nomen_id, pl.date desc
-                             ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
-             
-           
-                Group by d.name, s.date,
-                         date_part('month',s.date),
-                         to_char(s.date, 'YYYY'),
-                         s.nomen_nomen_id,
-                         kl.stado_fiz_group_id,
-                         fg.stado_vid_fiz_group_id
-                Order by d.name, s.date,
-                         date_part('month',s.date),
-                         to_char(s.date, 'YYYY'),
-                         s.nomen_nomen_id,
-                         kl.stado_fiz_group_id,
-                         fg.stado_vid_fiz_group_id
+                    t.stado_fiz_group_id,
+                    t.stado_vid_fiz_group_id
+
+
+                FROM (
+                        select 
+                                    min(s.id) as id,
+                                    s.sorting::text as sorting,
+                                    d.name as name,
+                                    s.date as date,
+                                    date_part('month',s.date) as month,
+                                    to_char(s.date, 'YYYY') as year,
+                                    s.nomen_nomen_id as nomen_nomen_id,
+                                    sum(s.kol_norma)/count(s.id) as kol_norma,
+                                    sum(rl.kol*sv.kol_golov)/count(s.id) as kol_racion,
+                                    sum(s.kol_fakt)/count(s.id) as kol_fakt,
+                                    sum(s.kol_fakt-s.kol_norma)/count(s.id) as kol_otk,
+                                    sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov)/count(s.id) as kol_otk_racion,
+                                    sum(sv.kol_golov) as kol_golov,
+                                    avg(sv.kol_golov_zagon) as kol_golov_srednee,
+                                    avg(pll.price) as price,
+                                    sum(s.kol_norma)/count(s.id)*avg(pll.price) as amount_norma,
+                                    sum(rl.kol*sv.kol_golov)*avg(pll.price)/count(s.id) as amount_racion,
+                                    sum(s.kol_fakt)/count(s.id)*avg(pll.price) as amount_fakt,
+                                    sum(s.kol_fakt-s.kol_norma)/count(s.id)*avg(pll.price) as amount_otk,
+                                    (sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov))*avg(pll.price)/count(s.id) as amount_otk_racion,
+
+
+                                    kl.stado_fiz_group_id,
+                                    fg.stado_vid_fiz_group_id
+                                    
+                                from korm_korm_detail_line s
+                                left join korm_korm_svod_line sv on 
+                                                        ( sv.korm_korm_id = s.korm_korm_id and 
+                                                            sv.sorting = s.sorting)
+                                left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
+                                                            kl.sorting = s.sorting)
+                                left join korm_korm d on (d.id = s.korm_korm_id)
+                                left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+                                left join korm_racion_line rl on 
+                                                            (rl.nomen_nomen_id = s.nomen_nomen_id and
+                                                             rl.korm_racion_id = sv.korm_racion_id)
+                                left join ( Select DISTINCT ON (pl.nomen_nomen_id)
+                                                pl.price,
+                                                pl.nomen_nomen_id
+                                            From nomen_price_line pl
+                                            Order by  pl.nomen_nomen_id, pl.date desc
+                                             ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
+                             
+                           
+                                Group by d.name, s.date,s.sorting,
+                                         date_part('month',s.date),
+                                         to_char(s.date, 'YYYY'),
+                                         s.nomen_nomen_id,
+                                         kl.stado_fiz_group_id,
+                                         fg.stado_vid_fiz_group_id
+                                Order by d.name, s.date,
+                                         date_part('month',s.date),
+                                         to_char(s.date, 'YYYY'),
+                                         s.nomen_nomen_id,
+                                         kl.stado_fiz_group_id,
+                                         fg.stado_vid_fiz_group_id
+
+                        ) t
                 )
         """ % self.pool['res.currency']._select_companies_rates())
 
@@ -255,7 +287,7 @@ class korm_rashod_kormov_report(models.Model):
     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
     kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
     #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
-    kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
+    kol_korma_golova = fields.Float(digits=(10, 3), string=u"Ср. Кол-во корма на голову", group_operator="sum")
     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
     #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
     
@@ -277,7 +309,10 @@ class korm_rashod_kormov_report(models.Model):
                             s.nomen_nomen_id as nomen_nomen_id,
                    
                             s.kol as kol_fakt,
-                            s.kol/z.kol_golov_zagon as kol_korma_golova,
+                            case 
+                                when z.kol_golov_zagon>0 then s.kol/z.kol_golov_zagon
+                                else 0
+                            end as kol_korma_golova,
                             
                             s.stado_fiz_group_id as stado_fiz_group_id,
                             s.stado_zagon_id as stado_zagon_id,
@@ -567,3 +602,66 @@ class korm_plan_fakt_report(models.Model):
 #                              s.nomen_nomen_id,
 #                              s.stado_fiz_group_id,
 #                              fg.stado_vid_fiz_group_id) t1
+
+
+
+
+
+
+#Запрос от 24,08,2017
+# select 
+#                     min(s.id) as id,
+#                     d.name as name,
+#                     s.date as date,
+#                     date_part('month',s.date) as month,
+#                     to_char(s.date, 'YYYY') as year,
+#                     s.nomen_nomen_id as nomen_nomen_id,
+#                     sum(s.kol_norma)/count(s.id) as kol_norma,
+#                     sum(rl.kol*sv.kol_golov)/count(s.id) as kol_racion,
+#                     sum(s.kol_fakt)/count(s.id) as kol_fakt,
+#                     sum(s.kol_fakt-s.kol_norma)/count(s.id) as kol_otk,
+#                     sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov)/count(s.id) as kol_otk_racion,
+#                     sum(sv.kol_golov) as kol_golov,
+#                     avg(sv.kol_golov_zagon) as kol_golov_srednee,
+#                     avg(pll.price) as price,
+#                     sum(s.kol_norma)/count(s.id)*avg(pll.price) as amount_norma,
+#                     sum(rl.kol*sv.kol_golov)*avg(pll.price)/count(s.id) as amount_racion,
+#                     sum(s.kol_fakt)/count(s.id)*avg(pll.price) as amount_fakt,
+#                     sum(s.kol_fakt-s.kol_norma)/count(s.id)*avg(pll.price) as amount_otk,
+#                     (sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov))*avg(pll.price)/count(s.id) as amount_otk_racion,
+
+
+#                     kl.stado_fiz_group_id,
+#                     fg.stado_vid_fiz_group_id
+                    
+#                 from korm_korm_detail_line s
+#                 left join korm_korm_svod_line sv on 
+#                                         ( sv.korm_korm_id = s.korm_korm_id and 
+#                                             sv.sorting = s.sorting)
+#                 left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
+#                                             kl.sorting = s.sorting)
+#                 left join korm_korm d on (d.id = s.korm_korm_id)
+#                 left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+#                 left join korm_racion_line rl on 
+#                                             (rl.nomen_nomen_id = s.nomen_nomen_id and
+#                                              rl.korm_racion_id = sv.korm_racion_id)
+#                 left join ( Select DISTINCT ON (pl.nomen_nomen_id)
+#                                 pl.price,
+#                                 pl.nomen_nomen_id
+#                             From nomen_price_line pl
+#                             Order by  pl.nomen_nomen_id, pl.date desc
+#                              ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
+             
+           
+#                 Group by d.name, s.date,
+#                          date_part('month',s.date),
+#                          to_char(s.date, 'YYYY'),
+#                          s.nomen_nomen_id,
+#                          kl.stado_fiz_group_id,
+#                          fg.stado_vid_fiz_group_id
+#                 Order by d.name, s.date,
+#                          date_part('month',s.date),
+#                          to_char(s.date, 'YYYY'),
+#                          s.nomen_nomen_id,
+#                          kl.stado_fiz_group_id,
+#                          fg.stado_vid_fiz_group_id

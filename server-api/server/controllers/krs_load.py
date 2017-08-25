@@ -366,7 +366,7 @@ def krs_load_abort(date_start, date_end, kod_abort):
 				        T0.NINV As inv_nomer,
 				        case
 				            when T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000 then 'Корова'
-				            else 'Телочка'
+				            else 'Нетель'
 				        end as status,
 				        T1.EVENT_DATE As date_a
 				        

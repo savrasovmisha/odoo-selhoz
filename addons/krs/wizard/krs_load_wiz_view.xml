@@ -21,6 +21,7 @@
                             <field name="tel_vibitiya"/>
                             <field name="osemeneniya"/>
                             <field name="abort"/>
+                            <field name="struktura"/>
 
                         </group>
                             

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_struktura_form_view">
+        <field name="name">krs_struktura.form</field>
+        <field name="model">krs.struktura</field>
+        <field name="arch" type="xml">
+            <form string="Форма Структура стада">
+                <sheet>
+                    <group>
+                        
+                        <field name="date"/>
+                                            
+                        
+                       
+                        
+                    </group>
+
+                    <group>
+                        <group string="Коровы по статусу">
+                            
+                            <field name="cow_neosem"/>
+                            <field name="cow_osem"/>
+                            <field name="cow_somnit"/>
+                            <field name="cow_stel"/>
+                            <field name="cow_zapusk"/>
+                            <field name="cow_itog_stel"/>
+                            <field name="cow_itog_lakt"/>
+                            <field name="cow_itog_fur"/>
+                            
+                        </group>
+                        
+                        
+                        <group string="В разрезе лактаций">
+                            
+                            <field name="cow_lakt_1"/>
+                            <field name="cow_lakt_2"/>
+                            <field name="cow_lakt_3"/>
+                            <field name="cow_lakt_4"/>
+                                
+                            <separator string="В разрезе дней лактаций"/>
+                            <newline/>   
+
+                            
+                            <field name="cow_040"/>
+                            <field name="cow_41150"/>
+                            <field name="cow_151300"/>
+                            <field name="cow_300"/>
+                            <field name="cow_suhostoy1"/>
+                            <field name="cow_suhostoy2"/>
+                            
+                            
+                        </group>
+                    </group>
+
+
+                    <group>
+                        <group string="Телки по статусу">
+                            
+                            <field name="tel_neosem"/>
+                            <field name="tel_osem"/>
+                            <field name="tel_somnit"/>
+                            <field name="tel_stel"/>
+                            <field name="tel_netel"/>
+                            <field name="tel_tranzit"/>
+                            <field name="tel_itog_stel"/>
+                            <field name="tel_itog_netel"/>
+                            <field name="tel_itog"/>
+                        </group>
+
+                        <group string="Телки старше 15 мес.">
+                            <field name="tel_15_neosem"/>
+                            <field name="tel_15_osem"/>
+                            <field name="tel_15_stel"/>
+                            <field name="tel_15_itog"/>
+
+                        </group>
+                        
+                    </group>
+
+
+                    <group>
+                        <group string="Телки по возрасту (мес.)">
+                            
+                            <field name="tel_0"/>
+                            <field name="tel_1"/>
+                            <field name="tel_2"/>
+                            <field name="tel_itog_03"/>
+                            <field name="tel_3"/>
+                            <field name="tel_4"/>
+                            <field name="tel_5"/>
+                            <field name="tel_itog_36"/>
+                            <field name="tel_69"/>
+                            <field name="tel_912"/>
+                            <field name="tel_1215"/>
+                            <field name="tel_15"/>
+                            <field name="tel_itog_618"/>
+                            
+                        </group>
+
+
+                        <group string="Быки по возрасту (мес.)">
+                            
+                            <field name="bik_0"/>
+                            <field name="bik_1"/>
+                            <field name="bik_2"/>
+                            <field name="bik_itog_03"/>
+                            <field name="bik_3"/>
+                            <field name="bik_4"/>
+                            <field name="bik_5"/>
+                            <field name="bik_itog_36"/>
+                            <field name="bik_69"/>
+                            <field name="bik_912"/>
+                            <field name="bik_1215"/>
+                            <field name="bik_15"/>
+                            <field name="bik_itog_618"/>
+                            
+                        </group>
+                    </group>
+
+
+                
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_struktura_tree">
+            <field name="name">krs_struktura.tree</field>
+            <field name="model">krs.struktura</field>
+            <field name="arch" type="xml">
+                <tree string="Структура стада">
+                    
+                    
+                    
+                    <field name="date"/>
+                   
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_struktura_search_view">
+            <field name="name">krs_struktura.search</field>
+            <field name="model">krs.struktura</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="date"/>
+                    
+        
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_struktura_list_action">
+            <field name="name">Структура стада</field>
+            <field name="res_model">krs.struktura</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Структура стада
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

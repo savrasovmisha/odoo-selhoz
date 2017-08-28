@@ -20,6 +20,8 @@
 
         <menuitem id="krs_abort_menu" name="Аборты" sequence="1" parent="krs_menu_doc" action="krs_abort_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_struktura_menu" name="Структура стада" sequence="1" parent="krs_menu_doc" action="krs_struktura_list_action" groups="group_krs_manager,group_krs_users"/>
+
 
        
 

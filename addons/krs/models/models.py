@@ -324,5 +324,161 @@ class krs_abort(models.Model):
 	status = fields.Char(string=u"Статус", required=True)
 	
 	date = fields.Date(string='Дата аборта', required=True, default=fields.Datetime.now)
+
+
+
+
+
+
+class krs_struktura(models.Model):
+	_name = 'krs.struktura'
+	_description = u'Структура стада'
+	_order = 'date desc'
+
+
+	@api.one
+	@api.depends('date')
+	def _get_name(self):
+
+		self.name = self.date
+
+	@api.one
+	@api.depends('cow_neosem','cow_osem','cow_somnit','cow_stel','cow_zapusk')
+	def _raschet_cow(self):
+
+		self.cow_itog_stel = self.cow_somnit + self.cow_stel + self.cow_zapusk
+		self.cow_itog_lakt = self.cow_neosem + self.cow_osem + self.cow_somnit + self.cow_stel
+		self.cow_itog_fur = self.cow_neosem + self.cow_osem + self.cow_somnit + self.cow_stel + self.cow_zapusk
+	
+	@api.one
+	@api.depends('tel_neosem','tel_osem','tel_somnit','tel_stel','tel_netel','tel_tranzit','tel_15_neosem','tel_15_osem','tel_15_stel' )
+	def _raschet_tel(self):
+		self.tel_itog_netel = self.tel_netel + self.tel_tranzit
+		self.tel_itog_stel = self.tel_itog_netel + self.tel_stel + self.tel_somnit
+		self.tel_itog = self.tel_itog_stel + self.tel_neosem + self.tel_osem
+		
+
+		self.tel_15_itog = 	self.tel_15_stel + self.tel_15_neosem +self.tel_15_osem
+	
+	@api.one
+	@api.depends(	'tel_0',
+					'tel_1',
+					'tel_2',
+					'tel_3',
+					'tel_4',
+					'tel_5',
+					'tel_69',
+					'tel_912',
+					'tel_1215', 
+					'tel_15' 
+					)
+	def _raschet_tel_itog(self):
+		self.tel_itog_03 = self.tel_0 + self.tel_1 + self.tel_2
+		self.tel_itog_36 = self.tel_3 + self.tel_4 + self.tel_5
+		self.tel_itog_618 = self.tel_69 + self.tel_912 + self.tel_1215 + self.tel_15
+
+
+	@api.one
+	@api.depends(	'bik_0',
+					'bik_1',
+					'bik_2',
+					'bik_3',
+					'bik_4',
+					'bik_5',
+					'bik_69',
+					'bik_912',
+					'bik_1215', 
+					'bik_15' 
+					)
+	def _raschet_bik_itog(self):
+		self.bik_itog_03 = self.bik_0 + self.bik_1 + self.bik_2
+		self.bik_itog_36 = self.bik_3 + self.bik_4 + self.bik_5
+		self.bik_itog_618 = self.bik_69 + self.bik_912 + self.bik_1215 + self.bik_15
+
+
+	@api.one
+	def _raschet(self):	
+		self._raschet_cow()
+		self._raschet_tel()
+		self._raschet_tel_itog()
+		self._raschet_bik_itog()
+
+
+	name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
+	date = fields.Date(string='Дата состояния', required=True, default=fields.Datetime.now)
 	
 	
+
+
+	cow_neosem = fields.Integer(string=u"Неосемененных коров")
+	cow_osem = fields.Integer(string=u"Осемененных коров")
+	cow_somnit = fields.Integer(string=u"Сомнительных коров")
+	cow_stel = fields.Integer(string=u"Стельных коров")
+	cow_zapusk = fields.Integer(string=u"Запущенных коров")
+	cow_itog_stel = fields.Integer(string=u"Всего стельных", compute='_raschet_cow')
+	cow_itog_lakt = fields.Integer(string=u"Всего лактирующих", compute='_raschet_cow')
+	cow_itog_fur = fields.Integer(string=u"Всего фуражных", compute='_raschet_cow')
+	
+	tel_neosem = fields.Integer(string=u"Неосемененная телка")
+	tel_osem = fields.Integer(string=u"Осемененная телка")
+	tel_somnit = fields.Integer(string=u"Сомнительная телка")
+	tel_stel = fields.Integer(string=u"Стельная телка (<5 мес стел)")
+	tel_netel = fields.Integer(string=u"Нетель (>5 мес стел, до 2 нед до отела)")
+	tel_tranzit = fields.Integer(string=u"Нетель транзит (2 недели до отела)")
+	tel_itog_stel = fields.Integer(string=u"Итого Стельных", compute='_raschet_tel')
+	tel_itog_netel = fields.Integer(string=u"Итого Нетелей (>5 мес стел)", compute='_raschet_tel')
+	tel_itog = fields.Integer(string=u"Итого телок", compute='_raschet_tel')
+	
+	tel_15_neosem = fields.Integer(string=u"Неосемененные телки страше 15 мес")
+	tel_15_osem = fields.Integer(string=u"Осемененные телки страше 15 мес")
+	tel_15_stel = fields.Integer(string=u"Стельные телки страше 15 мес")
+	tel_15_itog = fields.Integer(string=u"Итого страше 15 мес (в т.ч нетели)", compute='_raschet_tel')
+	
+	
+	tel_0 = fields.Integer(string=u"Телки 0-1 мес.")
+	tel_1 = fields.Integer(string=u"Телки 1-2 мес.")
+	tel_2 = fields.Integer(string=u"Телки 2-3 мес.")
+	tel_3 = fields.Integer(string=u"Телки 3-4 мес.")
+	tel_4 = fields.Integer(string=u"Телки 4-5 мес.")
+	tel_5 = fields.Integer(string=u"Телки 5-6 мес.")
+	tel_69 = fields.Integer(string=u"Телки 6-9 мес.")
+	tel_912 = fields.Integer(string=u"Телки 9-12 мес.")
+	tel_1215 = fields.Integer(string=u"Телки 12-15 мес.")
+	tel_15 = fields.Integer(string=u"Телки >15 мес.")
+	
+	tel_itog_03 = fields.Integer(string=u"Итого Телки 0-3 мес." , compute='_raschet_tel_itog')
+	tel_itog_36 = fields.Integer(string=u"ИтогоТелки 3-6 мес.", compute='_raschet_tel_itog')
+	tel_itog_618 = fields.Integer(string=u"Итого Телки >6 мес.", compute='_raschet_tel_itog')
+
+
+	bik_0 = fields.Integer(string=u"Быки 0-1 мес.")
+	bik_1 = fields.Integer(string=u"Быки 1-2 мес.")
+	bik_2 = fields.Integer(string=u"Быки 2-3 мес.")
+	bik_3 = fields.Integer(string=u"Быки 3-4 мес.")
+	bik_4 = fields.Integer(string=u"Быки 4-5 мес.")
+	bik_5 = fields.Integer(string=u"Быки 5-6 мес.")
+	bik_69 = fields.Integer(string=u"Быки 6-9 мес.")
+	bik_912 = fields.Integer(string=u"Быки 9-12 мес.")
+	bik_1215 = fields.Integer(string=u"Быки 12-15 мес.")
+	bik_15 = fields.Integer(string=u"Быки >15 мес.")
+	
+	bik_itog_03 = fields.Integer(string=u"Итого Быки 0-3 мес.", compute='_raschet_bik_itog')
+	bik_itog_36 = fields.Integer(string=u"Итого Быки 3-6 мес.", compute='_raschet_bik_itog')
+	bik_itog_618 = fields.Integer(string=u"Итого Быки >6 мес.", compute='_raschet_bik_itog')
+	
+
+	#Коровы в разрезе лактаций
+	cow_lakt_1 = fields.Integer(string=u"Коровы 1-я лактация")
+	cow_lakt_2 = fields.Integer(string=u"Коровы 2-я лактация")
+	cow_lakt_3 = fields.Integer(string=u"Коровы 3-я лактация")
+	cow_lakt_4 = fields.Integer(string=u"Коровы >3 лактации")
+
+	#Коровы в разрезе дней лактаций
+	cow_040 = fields.Integer(string=u"Коровы 0-40 д.л")
+	cow_41150 = fields.Integer(string=u"Коровы 41-150 д.л")
+	cow_151300 = fields.Integer(string=u"Коровы 151-300 д.л")
+	cow_300 = fields.Integer(string=u"Коровы >300 д.л")
+	cow_suhostoy1 = fields.Integer(string=u"Коровы ранний сухостой")
+	cow_suhostoy2 = fields.Integer(string=u"Коровы поздний сухостой")
+
+

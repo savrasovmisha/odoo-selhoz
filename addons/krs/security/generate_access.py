@@ -8,6 +8,7 @@ spisok.append(['krs.cow_vibitiya',''])
 spisok.append(['krs.tel_vibitiya',''])
 spisok.append(['krs.osemeneniya',''])
 spisok.append(['krs.abort',''])
+spisok.append(['krs.struktura',''])
 
 
 

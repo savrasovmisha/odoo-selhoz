@@ -399,3 +399,196 @@ def krs_load_abort(date_start, date_end, kod_abort):
 	
 	return data
 
+
+
+
+
+@app.route('/api/krs_load_struktura/<date>', method='GET')
+def krs_load_struktura(date):
+	
+	"""Загрузка Структуры стада за выбранный период"""
+
+
+	if date is None:
+		return 'error'
+	#return 'error'
+	#print date
+	zapros=r"""select
+				    case
+				        when TT.NSOST=4 then 'Осемененная телка'
+				        when TT.NSOST=41 then 'Сомнительная телка'
+				        when TT.NSOST=5 then 'Стельная телка'
+				        when TT.NSOST=52 then 'Нетель'
+				        when TT.NSOST=51 then 'Нетель транзит'
+				        when TT.NSOST=6 then 'Неосемененная корова'
+				        when TT.NSOST=7 then 'Осемененная корова'
+				        when TT.NSOST=71 then 'Сомнительная корова'
+				        when TT.NSOST=8 then 'Стельная корова'
+				        when TT.NSOST=9 then 'Запущенная корова'
+				        else 'Телочка'
+				    end,
+				    case
+				        when TT.NSOST>5 and TT.NSOST <> 51 and TT.NSOST <> 41 then 'Корова'
+				        when (TT.MONTHS>=15 and (TT.NSOST<=5 or TT.NSOST=51 or TT.NSOST=41)) or
+				              (TT.NSOST=5 or TT.NSOST=51 or TT.NSOST=41 )
+				         then 'Старше 15'
+				        else 'Телочка <15'
+				    end as age,
+
+				    TT.SOST_KOD,
+				    count(TT.NINV)
+				From
+				(
+				Select
+				        case
+				            when T1.NSOST=7 or (T1.NSOST=4)   then
+	                            case
+	                                when (
+	                                        Select first 1
+	                                            case
+	                                                 When K.PROV_IM='Сомнительная' then T1.NSOST*10+1
+	                                                 else T1.NSOST
+	                                              end
+	                                        
+
+	                                         from SUP_EVENTS_SELEX(T0.NANIMAL) K
+	                                         Where (K.EVENT_KOD=8 or K.EVENT_KOD=10 or K.EVENT_KOD=7)  and 
+	                                         		K.EVENT_DATE<=?
+	                                         order by K.EVENT_DATE desc)=T1.NSOST*10+1 then T1.NSOST*10+1
+	                             else T1.NSOST
+	                             end
+
+
+				            when T1.NSOST=5 then
+	                            case
+	                                when ( --Проверка. если дней стельности больше 256 (т.е за 2 недели до отела) то это нетель транзит
+	                                        Select first 1
+	                                              cast(? as date)-K.EVENT_DATE as SDAY
+
+	                                                from SUP_EVENTS_SELEX(T0.NANIMAL) K
+	                                                 Where (K.EVENT_KOD=7)  and K.EVENT_DATE<=?
+	                                                order by K.EVENT_DATE desc
+	                                    )>256 then T1.NSOST*10+1
+
+	                                when ( --Проверка. если дней стельности больше 150 то это нетель
+	                                        Select first 1
+	                                              cast(? as date)-K.EVENT_DATE as SDAY
+
+	                                                from SUP_EVENTS_SELEX(T0.NANIMAL) K
+	                                                 Where (K.EVENT_KOD=7)  and K.EVENT_DATE<=?
+	                                                order by K.EVENT_DATE desc
+	                                    )>150 then T1.NSOST*10+2
+	                                else T1.NSOST
+	                              end
+
+
+
+				            else T1.NSOST
+				        end as NSOST,
+				        D.MONTHS,
+				        T1.SOST_KOD ,
+				        T0.NINV
+				 From REGISTER T0
+				 left join S_GET_SOST(T0.NANIMAL, ?) T1 on 2=2
+				 left join get_agemol(T0.DATE_ROGD, ?, 0) D on 2=2
+				 
+				 Where (T0.NHOZ=6263931) and
+				        (((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000)) or
+				         ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000)))
+				
+				and T0.DATE_ROGD<=? and ( (T0.DATE_V>=?) or (T0.DATE_V is Null)   )
+
+				) TT
+
+				Group by  1,2,3 
+				 		 
+				 		
+				 """
+	
+	param=(date,date,date,date,date,date,date,date,date,)
+	result=con_selex(zapros,param,2)
+	cow_neosem = cow_osem = cow_somnit = cow_stel = 0
+	cow_zapusk = 0
+	tel_neosem = tel_osem = tel_somnit = tel_stel = tel_netel = tel_tranzit = 0
+	tel_15_neosem = tel_15_osem = tel_15_stel = 0
+	datas = []
+	
+	n= result
+	for line in result:
+		
+		#ТЕЛКИ
+		if line[0] == u"Телочка":
+			tel_neosem += line[3]
+
+		if line[0] == u'Телочка' and line[1] == u'Старше 15':
+			tel_15_neosem += line[3]
+
+		if line[0] == u'Осемененная телка':
+			tel_osem += line[3]
+
+		if line[0] == u'Осемененная телка' and line[1] == u'Старше 15':
+			tel_15_osem += line[3]
+
+		if line[0] == u'Сомнительная телка':
+			tel_somnit += line[3]
+
+		if line[0] == u'Сомнительная телка' and line[1] == u'Старше 15':
+			tel_15_stel += line[3]
+
+		if line[0] == u'Стельная телка':
+			tel_stel += line[3]
+
+		if line[0] == u'Стельная телка' and line[1] == u'Старше 15':
+			tel_15_stel += line[3]
+
+		if line[0] == u'Нетель':
+			tel_netel += line[3]
+
+		if line[0] == u'Нетель транзит':
+			tel_tranzit += line[3]
+
+		#КОРОВЫ
+		if line[0] == u'Неосемененная корова':
+			cow_neosem += line[3]
+
+		if line[0] == u'Осемененная корова':
+			cow_osem += line[3]
+
+		if line[0] == u'Сомнительная корова':
+			cow_somnit += line[3]
+
+		if line[0] == u'Стельная корова':
+			cow_stel += line[3]
+
+		if line[0] == u'Запущенная корова':
+			cow_zapusk += line[3]
+
+
+
+
+	datas.append(
+				{
+					'n':n,
+					'cow_neosem':cow_neosem,
+					'cow_osem': cow_osem,
+					'cow_somnit': cow_somnit,
+					'cow_stel': cow_stel,
+					'cow_zapusk': cow_zapusk,
+					'tel_neosem': tel_neosem,
+					'tel_osem': tel_osem,
+					'tel_somnit': tel_somnit,
+					'tel_stel': tel_stel,
+					'tel_netel': tel_netel,
+					'tel_tranzit': tel_tranzit,
+					'tel_15_neosem': tel_15_neosem,
+					'tel_15_osem': tel_15_osem,
+					'tel_15_stel': tel_15_stel
+				}
+	
+	)
+	#print zagon
+	
+	data = json.dumps(datas)
+	#print data
+	
+	return data

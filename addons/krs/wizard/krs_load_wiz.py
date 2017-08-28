@@ -72,6 +72,7 @@ class KRSLoadWiz(models.TransientModel):
 	tel_vibitiya = fields.Boolean(string=u"Выбытия телят", default=False)
 	osemeneniya = fields.Boolean(string=u"Осеменения", default=False)
 	abort = fields.Boolean(string=u"Аборты", default=False)
+	struktura = fields.Boolean(string=u"Структура стада", default=False)
 
 	description = fields.Text(string=u"Коментарии", default=u'Результат:\n ')
 
@@ -128,6 +129,10 @@ class KRSLoadWiz(models.TransientModel):
 
 		if self.abort == True:
 			self.load_abort()
+
+		if self.struktura == True:
+			self.load_struktura()
+
 
 		return self.return_form_wizard()
 
@@ -672,5 +677,76 @@ class KRSLoadWiz(models.TransientModel):
 			
 			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Данные загружены. \n'
+
+
+
+
+	def load_struktura(self):
+		"""
+			Загрузка Структура стада
+		"""
+		self.description += u'.... Загрузка Аборты .... \n' 
+		err=''
+				
+		
+		dt_start = datetime.strptime(self.date_start,'%Y-%m-%d')
+		
+		date_start = dt_start.date().strftime('%d.%m.%Y')
+
+		dt_end = datetime.strptime(self.date_end,'%Y-%m-%d')
+		
+		date_end = dt_end.date().strftime('%d.%m.%Y')
+
+		
+
+		url_name = '/api/krs_load_struktura/'+date
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+
+			data = res['data']
+			
+			if len(err) == 0:
+				
+				krs_struktura = self.env['krs.struktura']
+				del_line = krs_struktura.search([ ('date',  '>=',    self.date_start),
+											  ('date',  '<=',    self.date_end)
+										    ])
+				del_line.unlink()
+				
+				
+				struktura_ids = []
+
+				for line in data:
+					
+					new_struktura = krs_struktura.create({
+									'cow_neosem':line['cow_neosem']
+									'cow_osem':line[' cow_osem']
+									'cow_somnit':line[' cow_somnit']
+									'cow_stel':line[' cow_stel']
+									'cow_zapusk':line[' cow_zapusk']
+									'tel_neosem':line[' tel_neosem']
+									'tel_osem':line[' tel_osem']
+									'tel_somnit':line[' tel_somnit']
+									'tel_stel':line[' tel_stel']
+									'tel_netel':line[' tel_netel']
+									'tel_tranzit':line[' tel_tranzit']
+									'tel_15_neosem':line[' tel_15_neosem']
+									'tel_15_osem':line[' tel_15_osem']
+									'tel_15_stel':line[' tel_15_stel']
+																
+								})
+
+					new_struktura._raschet()
+				
+		#print err
+		if len(res['err'])>0 or len(err)>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err'] + err
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err'])))
 		else:
 			self.description += u'Данные загружены. \n'

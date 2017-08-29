@@ -687,7 +687,7 @@ class KRSLoadWiz(models.TransientModel):
 		"""
 			Загрузка Структура стада
 		"""
-		self.description += u'.... Загрузка Аборты .... \n' 
+		self.description += u'.... Загрузка Структуры стада .... \n' 
 		err=''
 				
 		
@@ -699,50 +699,90 @@ class KRSLoadWiz(models.TransientModel):
 		
 		date_end = dt_end.date().strftime('%d.%m.%Y')
 
-		
+		delta = timedelta(days=1)
+		date = dt_start
 
-		url_name = '/api/krs_load_struktura/'+date
-		
-		
-		res = connect_server(self, url_name)
-		
-		if len(res['err'])==0:
+		while date <= dt_end:
 
-			data = res['data']
+			date_str = date.date().strftime('%d.%m.%Y')
+			url_name = '/api/krs_load_struktura/'+date_str
+			res = connect_server(self, url_name)
 			
-			if len(err) == 0:
-				
-				krs_struktura = self.env['krs.struktura']
-				del_line = krs_struktura.search([ ('date',  '>=',    self.date_start),
-											  ('date',  '<=',    self.date_end)
-										    ])
-				del_line.unlink()
-				
-				
-				struktura_ids = []
+			if len(res['err'])==0:
 
-				for line in data:
+				data = res['data']
+				
+				if len(err) == 0:
 					
-					new_struktura = krs_struktura.create({
-									'cow_neosem':line['cow_neosem']
-									'cow_osem':line[' cow_osem']
-									'cow_somnit':line[' cow_somnit']
-									'cow_stel':line[' cow_stel']
-									'cow_zapusk':line[' cow_zapusk']
-									'tel_neosem':line[' tel_neosem']
-									'tel_osem':line[' tel_osem']
-									'tel_somnit':line[' tel_somnit']
-									'tel_stel':line[' tel_stel']
-									'tel_netel':line[' tel_netel']
-									'tel_tranzit':line[' tel_tranzit']
-									'tel_15_neosem':line[' tel_15_neosem']
-									'tel_15_osem':line[' tel_15_osem']
-									'tel_15_stel':line[' tel_15_stel']
-																
-								})
+					krs_struktura = self.env['krs.struktura']
+					del_line = krs_struktura.search([ ('date',  '>=',    date),
+												  ('date',  '<=',    date)
+											    ])
+					del_line.unlink()
+					
+					
+					struktura_ids = []
 
-					new_struktura._raschet()
-				
+					for line in data:
+						
+						new_struktura = krs_struktura.create({
+										'date':date,
+										'cow_neosem':line['cow_neosem'],
+										'cow_osem':line['cow_osem'],
+										'cow_somnit':line['cow_somnit'],
+										'cow_stel':line['cow_stel'],
+										'cow_zapusk':line['cow_zapusk'],
+										'tel_neosem':line['tel_neosem'],
+										'tel_osem':line['tel_osem'],
+										'tel_somnit':line['tel_somnit'],
+										'tel_stel':line['tel_stel'],
+										'tel_netel':line['tel_netel'],
+										'tel_tranzit':line['tel_tranzit'],
+										'tel_15_neosem':line['tel_15_neosem'],
+										'tel_15_osem':line['tel_15_osem'],
+										'tel_15_stel':line['tel_15_stel'],
+																	
+										'cow_lakt_1':line['cow_lakt_1'],
+										'cow_lakt_2':line['cow_lakt_2'],
+										'cow_lakt_3':line['cow_lakt_3'],
+										'cow_lakt_4':line['cow_lakt_4'],
+										
+										'cow_040':line['cow_040'],
+										'cow_41150':line['cow_41150'],
+										'cow_151300':line['cow_151300'],
+										'cow_300':line['cow_300'],
+										'cow_suhostoy1':line['cow_suhostoy1'],
+										'cow_suhostoy2':line['cow_suhostoy2'],
+
+										'tel_0':line['tel_0'],
+										'tel_1':line['tel_1'],
+										'tel_2':line['tel_2'],
+										'tel_3':line['tel_3'],
+										'tel_4':line['tel_4'],
+										'tel_5':line['tel_5'],
+										'tel_69':line['tel_69'],
+										'tel_912':line['tel_912'],
+										'tel_1215':line['tel_1215'],
+										'tel_15':line['tel_15'],
+
+										'bik_0':line['bik_0'],
+										'bik_1':line['bik_1'],
+										'bik_2':line['bik_2'],
+										'bik_3':line['bik_3'],
+										'bik_4':line['bik_4'],
+										'bik_5':line['bik_5'],
+										'bik_69':line['bik_69'],
+										'bik_912':line['bik_912'],
+										'bik_1215':line['bik_1215'],
+										'bik_15':line['bik_15'],
+										
+									})
+
+						new_struktura._raschet()
+			date = date + delta #Увеличиваем да один день
+
+
+
 		#print err
 		if len(res['err'])>0 or len(err)>0:
 			

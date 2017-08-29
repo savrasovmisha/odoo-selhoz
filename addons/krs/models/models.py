@@ -355,10 +355,11 @@ class krs_struktura(models.Model):
 	def _raschet_tel(self):
 		self.tel_itog_netel = self.tel_netel + self.tel_tranzit
 		self.tel_itog_stel = self.tel_itog_netel + self.tel_stel + self.tel_somnit
-		self.tel_itog = self.tel_itog_stel + self.tel_neosem + self.tel_osem
+		self.tel_itog_tel_netel = self.tel_itog_stel + self.tel_neosem + self.tel_osem
 		
 
 		self.tel_15_itog = 	self.tel_15_stel + self.tel_15_neosem +self.tel_15_osem
+
 	
 	@api.one
 	@api.depends(	'tel_0',
@@ -376,7 +377,7 @@ class krs_struktura(models.Model):
 		self.tel_itog_03 = self.tel_0 + self.tel_1 + self.tel_2
 		self.tel_itog_36 = self.tel_3 + self.tel_4 + self.tel_5
 		self.tel_itog_618 = self.tel_69 + self.tel_912 + self.tel_1215 + self.tel_15
-
+		self.tel_itog = self.tel_itog_03 + self.tel_itog_36 + self.tel_itog_618
 
 	@api.one
 	@api.depends(	'bik_0',
@@ -394,6 +395,7 @@ class krs_struktura(models.Model):
 		self.bik_itog_03 = self.bik_0 + self.bik_1 + self.bik_2
 		self.bik_itog_36 = self.bik_3 + self.bik_4 + self.bik_5
 		self.bik_itog_618 = self.bik_69 + self.bik_912 + self.bik_1215 + self.bik_15
+		self.bik_itog = self.bik_itog_03 + self.bik_itog_36 + self.bik_itog_618
 
 
 	@api.one
@@ -410,75 +412,77 @@ class krs_struktura(models.Model):
 	
 
 
-	cow_neosem = fields.Integer(string=u"Неосемененных коров")
-	cow_osem = fields.Integer(string=u"Осемененных коров")
-	cow_somnit = fields.Integer(string=u"Сомнительных коров")
-	cow_stel = fields.Integer(string=u"Стельных коров")
-	cow_zapusk = fields.Integer(string=u"Запущенных коров")
-	cow_itog_stel = fields.Integer(string=u"Всего стельных", compute='_raschet_cow')
-	cow_itog_lakt = fields.Integer(string=u"Всего лактирующих", compute='_raschet_cow')
-	cow_itog_fur = fields.Integer(string=u"Всего фуражных", compute='_raschet_cow')
+	cow_neosem = fields.Integer(string=u"Неосемененных коров", group_operator="avg")
+	cow_osem = fields.Integer(string=u"Осемененных коров", group_operator="avg")
+	cow_somnit = fields.Integer(string=u"Сомнительных коров", group_operator="avg")
+	cow_stel = fields.Integer(string=u"Стельных коров", group_operator="avg")
+	cow_zapusk = fields.Integer(string=u"Запущенных коров", group_operator="avg")
+	cow_itog_stel = fields.Integer(string=u"Всего стельных коров", store=True, compute='_raschet_cow', group_operator="avg")
+	cow_itog_lakt = fields.Integer(string=u"Всего лактирующих коров", store=True, compute='_raschet_cow', group_operator="avg")
+	cow_itog_fur = fields.Integer(string=u"Всего фуражных коров", store=True, compute='_raschet_cow', group_operator="avg")
 	
-	tel_neosem = fields.Integer(string=u"Неосемененная телка")
-	tel_osem = fields.Integer(string=u"Осемененная телка")
-	tel_somnit = fields.Integer(string=u"Сомнительная телка")
-	tel_stel = fields.Integer(string=u"Стельная телка (<5 мес стел)")
-	tel_netel = fields.Integer(string=u"Нетель (>5 мес стел, до 2 нед до отела)")
-	tel_tranzit = fields.Integer(string=u"Нетель транзит (2 недели до отела)")
-	tel_itog_stel = fields.Integer(string=u"Итого Стельных", compute='_raschet_tel')
-	tel_itog_netel = fields.Integer(string=u"Итого Нетелей (>5 мес стел)", compute='_raschet_tel')
-	tel_itog = fields.Integer(string=u"Итого телок", compute='_raschet_tel')
+	tel_neosem = fields.Integer(string=u"Неосемененная телка", group_operator="avg")
+	tel_osem = fields.Integer(string=u"Осемененная телка", group_operator="avg")
+	tel_somnit = fields.Integer(string=u"Сомнительная телка", group_operator="avg")
+	tel_stel = fields.Integer(string=u"Стельная телка (<5 мес стел)", group_operator="avg")
+	tel_netel = fields.Integer(string=u"Нетель (>5 мес стел, до 2 нед до отела)", group_operator="avg")
+	tel_tranzit = fields.Integer(string=u"Нетель транзит (2 недели до отела)", group_operator="avg")
+	tel_itog_stel = fields.Integer(string=u"Итого Стельных телок", store=True, compute='_raschet_tel', group_operator="avg")
+	tel_itog_netel = fields.Integer(string=u"Итого Нетелей (>5 мес стел)", store=True, compute='_raschet_tel', group_operator="avg")
+	tel_itog_tel_netel = fields.Integer(string=u"Итого телок+нетелей", store=True, compute='_raschet_tel', group_operator="avg")
 	
-	tel_15_neosem = fields.Integer(string=u"Неосемененные телки страше 15 мес")
-	tel_15_osem = fields.Integer(string=u"Осемененные телки страше 15 мес")
-	tel_15_stel = fields.Integer(string=u"Стельные телки страше 15 мес")
-	tel_15_itog = fields.Integer(string=u"Итого страше 15 мес (в т.ч нетели)", compute='_raschet_tel')
+	tel_15_neosem = fields.Integer(string=u"Неосемененные телки страше 15 мес", group_operator="avg")
+	tel_15_osem = fields.Integer(string=u"Осемененные телки страше 15 мес", group_operator="avg")
+	tel_15_stel = fields.Integer(string=u"Стельные телки страше 15 мес", group_operator="avg")
+	tel_15_itog = fields.Integer(string=u"Итого страше 15 мес (в т.ч нетели)", store=True, compute='_raschet_tel', group_operator="avg")
 	
 	
-	tel_0 = fields.Integer(string=u"Телки 0-1 мес.")
-	tel_1 = fields.Integer(string=u"Телки 1-2 мес.")
-	tel_2 = fields.Integer(string=u"Телки 2-3 мес.")
-	tel_3 = fields.Integer(string=u"Телки 3-4 мес.")
-	tel_4 = fields.Integer(string=u"Телки 4-5 мес.")
-	tel_5 = fields.Integer(string=u"Телки 5-6 мес.")
-	tel_69 = fields.Integer(string=u"Телки 6-9 мес.")
-	tel_912 = fields.Integer(string=u"Телки 9-12 мес.")
-	tel_1215 = fields.Integer(string=u"Телки 12-15 мес.")
-	tel_15 = fields.Integer(string=u"Телки >15 мес.")
+	tel_0 = fields.Integer(string=u"Телки 0-1 мес.", group_operator="avg")
+	tel_1 = fields.Integer(string=u"Телки 1-2 мес.", group_operator="avg")
+	tel_2 = fields.Integer(string=u"Телки 2-3 мес.", group_operator="avg")
+	tel_3 = fields.Integer(string=u"Телки 3-4 мес.", group_operator="avg")
+	tel_4 = fields.Integer(string=u"Телки 4-5 мес.", group_operator="avg")
+	tel_5 = fields.Integer(string=u"Телки 5-6 мес.", group_operator="avg")
+	tel_69 = fields.Integer(string=u"Телки 6-9 мес.", group_operator="avg")
+	tel_912 = fields.Integer(string=u"Телки 9-12 мес.", group_operator="avg")
+	tel_1215 = fields.Integer(string=u"Телки 12-15 мес.", group_operator="avg")
+	tel_15 = fields.Integer(string=u"Телки >15 мес.", group_operator="avg")
 	
-	tel_itog_03 = fields.Integer(string=u"Итого Телки 0-3 мес." , compute='_raschet_tel_itog')
-	tel_itog_36 = fields.Integer(string=u"ИтогоТелки 3-6 мес.", compute='_raschet_tel_itog')
-	tel_itog_618 = fields.Integer(string=u"Итого Телки >6 мес.", compute='_raschet_tel_itog')
+	tel_itog_03 = fields.Integer(string=u"Итого Телки 0-3 мес." , store=True, compute='_raschet_tel_itog', group_operator="avg")
+	tel_itog_36 = fields.Integer(string=u"ИтогоТелки 3-6 мес.", store=True, compute='_raschet_tel_itog', group_operator="avg")
+	tel_itog_618 = fields.Integer(string=u"Итого Телки >6 мес.", store=True, compute='_raschet_tel_itog', group_operator="avg")
+	tel_itog = fields.Integer(string=u"Итого телок", store=True, compute='_raschet_tel_itog', group_operator="avg")
 
 
-	bik_0 = fields.Integer(string=u"Быки 0-1 мес.")
-	bik_1 = fields.Integer(string=u"Быки 1-2 мес.")
-	bik_2 = fields.Integer(string=u"Быки 2-3 мес.")
-	bik_3 = fields.Integer(string=u"Быки 3-4 мес.")
-	bik_4 = fields.Integer(string=u"Быки 4-5 мес.")
-	bik_5 = fields.Integer(string=u"Быки 5-6 мес.")
-	bik_69 = fields.Integer(string=u"Быки 6-9 мес.")
-	bik_912 = fields.Integer(string=u"Быки 9-12 мес.")
-	bik_1215 = fields.Integer(string=u"Быки 12-15 мес.")
-	bik_15 = fields.Integer(string=u"Быки >15 мес.")
+	bik_0 = fields.Integer(string=u"Быки 0-1 мес.", group_operator="avg")
+	bik_1 = fields.Integer(string=u"Быки 1-2 мес.", group_operator="avg")
+	bik_2 = fields.Integer(string=u"Быки 2-3 мес.", group_operator="avg")
+	bik_3 = fields.Integer(string=u"Быки 3-4 мес.", group_operator="avg")
+	bik_4 = fields.Integer(string=u"Быки 4-5 мес.", group_operator="avg")
+	bik_5 = fields.Integer(string=u"Быки 5-6 мес.", group_operator="avg")
+	bik_69 = fields.Integer(string=u"Быки 6-9 мес.", group_operator="avg")
+	bik_912 = fields.Integer(string=u"Быки 9-12 мес.", group_operator="avg")
+	bik_1215 = fields.Integer(string=u"Быки 12-15 мес.", group_operator="avg")
+	bik_15 = fields.Integer(string=u"Быки >15 мес.", group_operator="avg")
 	
-	bik_itog_03 = fields.Integer(string=u"Итого Быки 0-3 мес.", compute='_raschet_bik_itog')
-	bik_itog_36 = fields.Integer(string=u"Итого Быки 3-6 мес.", compute='_raschet_bik_itog')
-	bik_itog_618 = fields.Integer(string=u"Итого Быки >6 мес.", compute='_raschet_bik_itog')
+	bik_itog_03 = fields.Integer(string=u"Итого Быки 0-3 мес.", store=True, compute='_raschet_bik_itog', group_operator="avg")
+	bik_itog_36 = fields.Integer(string=u"Итого Быки 3-6 мес.", store=True, compute='_raschet_bik_itog', group_operator="avg")
+	bik_itog_618 = fields.Integer(string=u"Итого Быки >6 мес.", store=True, compute='_raschet_bik_itog', group_operator="avg")
+	bik_itog = fields.Integer(string=u"Итого Быков", store=True, compute='_raschet_bik_itog', group_operator="avg")
 	
 
 	#Коровы в разрезе лактаций
-	cow_lakt_1 = fields.Integer(string=u"Коровы 1-я лактация")
-	cow_lakt_2 = fields.Integer(string=u"Коровы 2-я лактация")
-	cow_lakt_3 = fields.Integer(string=u"Коровы 3-я лактация")
-	cow_lakt_4 = fields.Integer(string=u"Коровы >3 лактации")
+	cow_lakt_1 = fields.Integer(string=u"Коровы 1-я лактация", group_operator="avg")
+	cow_lakt_2 = fields.Integer(string=u"Коровы 2-я лактация", group_operator="avg")
+	cow_lakt_3 = fields.Integer(string=u"Коровы 3-я лактация", group_operator="avg")
+	cow_lakt_4 = fields.Integer(string=u"Коровы >3 лактации", group_operator="avg")
 
 	#Коровы в разрезе дней лактаций
-	cow_040 = fields.Integer(string=u"Коровы 0-40 д.л")
-	cow_41150 = fields.Integer(string=u"Коровы 41-150 д.л")
-	cow_151300 = fields.Integer(string=u"Коровы 151-300 д.л")
-	cow_300 = fields.Integer(string=u"Коровы >300 д.л")
-	cow_suhostoy1 = fields.Integer(string=u"Коровы ранний сухостой")
-	cow_suhostoy2 = fields.Integer(string=u"Коровы поздний сухостой")
+	cow_040 = fields.Integer(string=u"Коровы 0-40 д.л", group_operator="avg")
+	cow_41150 = fields.Integer(string=u"Коровы 41-150 д.л", group_operator="avg")
+	cow_151300 = fields.Integer(string=u"Коровы 151-300 д.л", group_operator="avg")
+	cow_300 = fields.Integer(string=u"Коровы >300 д.л", group_operator="avg")
+	cow_suhostoy1 = fields.Integer(string=u"Коровы ранний сухостой", group_operator="avg")
+	cow_suhostoy2 = fields.Integer(string=u"Коровы поздний сухостой", group_operator="avg")
 
 

@@ -65,7 +65,7 @@
                             <field name="tel_tranzit"/>
                             <field name="tel_itog_stel"/>
                             <field name="tel_itog_netel"/>
-                            <field name="tel_itog"/>
+                            <field name="tel_itog_tel_netel"/>
                         </group>
 
                         <group string="Телки старше 15 мес.">
@@ -95,6 +95,7 @@
                             <field name="tel_1215"/>
                             <field name="tel_15"/>
                             <field name="tel_itog_618"/>
+                            <field name="tel_itog"/>
                             
                         </group>
 
@@ -114,6 +115,7 @@
                             <field name="bik_1215"/>
                             <field name="bik_15"/>
                             <field name="bik_itog_618"/>
+                            <field name="bik_itog"/>
                             
                         </group>
                     </group>
@@ -157,6 +159,8 @@
                 </search>
             </field>
         </record>
+
+       
         <!-- window action Верхняя панель -->
         <!--
             The following tag is an action definition for a "window action",
@@ -166,7 +170,7 @@
             <field name="name">Структура стада</field>
             <field name="res_model">krs.struktura</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Структура стада
                 </p>

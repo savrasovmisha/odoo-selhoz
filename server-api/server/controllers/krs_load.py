@@ -415,24 +415,24 @@ def krs_load_struktura(date):
 	#print date
 	zapros=r"""select
 				    case
-				        when TT.NSOST=4 then 'Осемененная телка'
-				        when TT.NSOST=41 then 'Сомнительная телка'
-				        when TT.NSOST=5 then 'Стельная телка'
-				        when TT.NSOST=52 then 'Нетель'
-				        when TT.NSOST=51 then 'Нетель транзит'
-				        when TT.NSOST=6 then 'Неосемененная корова'
-				        when TT.NSOST=7 then 'Осемененная корова'
-				        when TT.NSOST=71 then 'Сомнительная корова'
-				        when TT.NSOST=8 then 'Стельная корова'
-				        when TT.NSOST=9 then 'Запущенная корова'
-				        else 'Телочка'
+				        when TT.NSOST=4 then cast('Осемененная телка' as varchar(20))
+				        when TT.NSOST=41 then cast('Сомнительная телка' as varchar(20))
+				        when TT.NSOST=5 then cast('Стельная телка' as varchar(20))
+				        when TT.NSOST=52 then cast('Нетель' as varchar(20))
+				        when TT.NSOST=51 then cast('Нетель транзит' as varchar(20))
+				        when TT.NSOST=6 then cast('Неосемененная корова' as varchar(20))
+				        when TT.NSOST=7 then cast('Осемененная корова' as varchar(20))
+				        when TT.NSOST=71 then cast('Сомнительная корова' as varchar(20))
+				        when TT.NSOST=8 then cast('Стельная корова' as varchar(20))
+				        when TT.NSOST=9 then cast('Запущенная корова' as varchar(20))
+				        else cast('Телочка' as varchar(20))
 				    end,
 				    case
-				        when TT.NSOST>5 and TT.NSOST <> 51 and TT.NSOST <> 41 then 'Корова'
+				        when TT.NSOST>5 and TT.NSOST <> 51 and TT.NSOST <> 41 then cast('Корова'  as varchar(20))
 				        when (TT.MONTHS>=15 and (TT.NSOST<=5 or TT.NSOST=51 or TT.NSOST=41)) or
 				              (TT.NSOST=5 or TT.NSOST=51 or TT.NSOST=41 )
-				         then 'Старше 15'
-				        else 'Телочка <15'
+				         then cast('Старше 15' as varchar(20))
+				        else cast('Телочка <15' as varchar(20))
 				    end as age,
 
 				    TT.SOST_KOD,
@@ -461,14 +461,14 @@ def krs_load_struktura(date):
 
 				            when T1.NSOST=5 then
 	                            case
-	                                when ( --Проверка. если дней стельности больше 256 (т.е за 2 недели до отела) то это нетель транзит
+	                                when ( --Проверка. если дней стельности больше 270 (т.е за 2 недели до отела) то это нетель транзит
 	                                        Select first 1
 	                                              cast(? as date)-K.EVENT_DATE as SDAY
 
 	                                                from SUP_EVENTS_SELEX(T0.NANIMAL) K
 	                                                 Where (K.EVENT_KOD=7)  and K.EVENT_DATE<=?
 	                                                order by K.EVENT_DATE desc
-	                                    )>256 then T1.NSOST*10+1
+	                                    )>270 then T1.NSOST*10+1
 
 	                                when ( --Проверка. если дней стельности больше 150 то это нетель
 	                                        Select first 1
@@ -496,7 +496,7 @@ def krs_load_struktura(date):
 				        (((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000)) or
 				         ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000)))
 				
-				and T0.DATE_ROGD<=? and ( (T0.DATE_V>=?) or (T0.DATE_V is Null)   )
+				and T0.DATE_ROGD<=? and ( (T0.DATE_V>?) or (T0.DATE_V is Null)   )
 
 				) TT
 
@@ -513,11 +513,11 @@ def krs_load_struktura(date):
 	tel_15_neosem = tel_15_osem = tel_15_stel = 0
 	datas = []
 	
-	n= result
+	#n= result
 	for line in result:
 		
 		#ТЕЛКИ
-		if line[0] == u"Телочка":
+		if line[0] == u'Телочка':
 			tel_neosem += line[3]
 
 		if line[0] == u'Телочка' and line[1] == u'Старше 15':
@@ -566,9 +566,317 @@ def krs_load_struktura(date):
 
 
 
+	#Получение коров в разрезе лактация
+
+	zapros=r"""Select
+				    case
+				        when TT.CURRENT_LAKTAC>3 then 4
+				        else TT.CURRENT_LAKTAC
+				    end as CURRENT_LAKTAC,
+				    count(TT.NINV)
+				From
+				    (
+				    Select
+				        T1.CURRENT_LAKTAC As CURRENT_LAKTAC,
+				        T0.NINV As NINV
+
+				    From REGISTER T0
+				    left join s_get_paramslaktac(T0.NANIMAL,?) T1 on 2=2
+				 
+				     Where (T0.NHOZ=6263931) and
+				        (((T0.NANIMAL>2000000000000 AND T0.NANIMAL<5000000000000))) and
+
+				        T0.DATE_ROGD<=? and ( (T0.DATE_V>?) or (T0.DATE_V is Null)   )
+
+				 
+
+				    ) TT
+				 Group by 1 
+				 		 
+				 		
+				 """
+	
+	param=(date,date,date,)
+	result=con_selex(zapros,param,2)
+	cow_lakt_1 = cow_lakt_2 = cow_lakt_3 = cow_lakt_4 = 0
+	
+	
+	#n= result
+	for line in result:
+		if line[0] == 1:
+			cow_lakt_1 = line[1]
+
+		if line[0] == 2:
+			cow_lakt_2 = line[1]
+
+		if line[0] == 3:
+			cow_lakt_3 = line[1]
+
+		if line[0] == 4:
+			cow_lakt_4 = line[1]
+
+
+
+
+				       
+
+	#Получение коров в разрезе дней лактация
+
+	zapros=r"""Select
+				    case
+				        when TT.STEL = 'Стельная' and TT.DAY_S>270 then cast('Поздний сухостой' as varchar(20))
+				        when TT.STEL = 'Стельная' and TT.DAY_S>224 then cast('Ранний сухостой' as varchar(20))
+				        when TT.DOYD<=40 then cast('0-40' as varchar(20))
+				        when TT.DOYD>40 and TT.DOYD<=150 then cast('41-150' as varchar(20))
+				        when TT.DOYD>150 and TT.DOYD<=300 then cast('151-300' as varchar(20))
+				        when TT.DOYD>300 then cast('>300' as varchar(20))
+
+				    end as DOYD,
+				    count(TT.NINV)
+				From
+				    (
+				   Select
+
+				        cast(? as date)-T1.CURRENT_DATELAKTAC as DOYD,
+				        (
+				        select first 1
+				            case 
+				                when NS.IM='Сомнительная' or NS.IM='Стельная' then 'Стельная'
+				                else 'Не стельная'
+				            end
+				        from ev_steln  S
+				        left join ssteln NS on (S.KOD=NS.STELN)
+				        where S.NANIMAL=T0.NANIMAL and
+				                S.DATE_EVENT<=? and
+				                S.DATE_EVENT>=T1.CURRENT_DATELAKTAC
+				        Order by S.DATE_EVENT desc
+				        ) as STEL,
+
+				        (
+				        select first 1
+				            cast(? as date) - OS.DATE_EVENT as DAY_S
+				        From EV_OSEM OS
+				        Where OS.NANIMAL=T0.NANIMAL and
+				                OS.DATE_EVENT<=? and
+				                OS.DATE_EVENT>=T1.CURRENT_DATELAKTAC
+				        Order by OS.DATE_EVENT desc
+
+				        ) as DAY_S
+
+				        ,
+
+
+				        T0.NINV As NINV
+
+				    From REGISTER T0
+				    left join s_get_paramslaktac(T0.NANIMAL,?) T1 on 2=2
+
+				 
+				     Where (T0.NHOZ=6263931) and
+				        (((T0.NANIMAL>2000000000000 AND T0.NANIMAL<5000000000000))) and
+
+				        T0.DATE_ROGD<=? and ( (T0.DATE_V>?) or (T0.DATE_V is Null)   )
+				     ) TT
+				 Group by 1
+				 		 
+				 		
+				 """
+	
+	param=(date,date,date,date,date,date,date,)
+	result=con_selex(zapros,param,2)
+	cow_040 = cow_41150 = cow_151300 = cow_300 = 0
+	
+	
+	#n= result
+	for line in result:
+		if line[0] == '0-40':
+			cow_040 = line[1]
+
+		if line[0] == '41-150':
+			cow_41150 = line[1]
+
+		if line[0] == '151-300':
+			cow_151300 = line[1]
+
+		if line[0] == '>300':
+			cow_300 = line[1]
+
+		if line[0] == u'Ранний сухостой':
+			cow_suhostoy1 = line[1]
+
+		if line[0] == u'Поздний сухостой':
+			cow_suhostoy2 = line[1]
+	
+
+
+	#Получение телок по месяцам рождения
+	#В группе >15 сидят также нетели которых нужно потом отнять
+
+	zapros=r"""select
+
+				    case
+				        when TT.MONTHS>=15 then cast('>15' as varchar(20))
+				        when TT.MONTHS>=12 then cast('12-15' as varchar(20))
+				        when TT.MONTHS>=9 then cast('9-12' as varchar(20))
+				        when TT.MONTHS>=6 then cast('6-9' as varchar(20))
+				        when TT.MONTHS=0 then cast('0-1' as varchar(20))
+				        when TT.MONTHS=1 then cast('1-2' as varchar(20))
+				        when TT.MONTHS=2 then cast('2-3' as varchar(20))
+				        when TT.MONTHS=3 then cast('3-4' as varchar(20))
+				        when TT.MONTHS=4 then cast('4-5' as varchar(20))
+				        when TT.MONTHS=5 then cast('5-6' as varchar(20))
+				        else cast('-1' as varchar(20))
+				    end, 
+
+				    count(TT.NINV)
+				From
+				(
+				Select
+
+				        D.MONTHS,
+				        T1.SOST_KOD ,
+				        T0.NINV
+				 From REGISTER T0
+				 left join S_GET_SOST(T0.NANIMAL, ?) T1 on 2=2
+				 left join get_agemol(T0.DATE_ROGD, ?, 0) D on 2=2
+				 
+				 Where (T0.NHOZ=6263931) and
+				        (((T0.NANIMAL>4000000000000 AND T0.NANIMAL<5000000000000)) or
+				         ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000)))
+				         and (T1.NSOST<=5 ) -- т.е это толка и нетель
+				
+				and T0.DATE_ROGD<=? and ( (T0.DATE_V>?) or (T0.DATE_V is Null)   )
+
+				) TT
+
+				Group by  1
+				 		 
+				 		
+				 """
+	
+	param=(date,date,date,date,)
+	result=con_selex(zapros,param,2)
+	tel_0 = tel_1 = tel_2 = tel_3 = tel_4 = tel_5 = tel_69 = tel_912 = tel_1215 = tel_15 = 0
+	
+	
+	#n= result
+	for line in result:
+		if line[0] == '0-1':
+			tel_0 = line[1]
+
+		if line[0] == '1-2':
+			tel_1 = line[1]
+
+		if line[0] == '2-3':
+			tel_2 = line[1]
+
+		if line[0] == '3-4':
+			tel_3 = line[1]
+
+		if line[0] == '4-5':
+			tel_4 = line[1]
+
+		if line[0] == '5-6':
+			tel_5 = line[1]
+
+		if line[0] == '6-9':
+			tel_69 = line[1]
+
+		if line[0] == '9-12':
+			tel_912 = line[1]
+
+		if line[0] == '12-15':
+			tel_1215 = line[1]
+
+		if line[0] == '>15':
+			tel_15 = line[1]
+
+
+	#Получение Бычков по месяцам рождения
+	#
+
+	zapros=r"""select
+
+				    case
+				        when TT.MONTHS>=15 then cast('>15' as varchar(20))
+				        when TT.MONTHS>=12 then cast('12-15' as varchar(20))
+				        when TT.MONTHS>=9 then cast('9-12' as varchar(20))
+				        when TT.MONTHS>=6 then cast('6-9' as varchar(20))
+				        when TT.MONTHS=0 then cast('0-1' as varchar(20))
+				        when TT.MONTHS=1 then cast('1-2' as varchar(20))
+				        when TT.MONTHS=2 then cast('2-3' as varchar(20))
+				        when TT.MONTHS=3 then cast('3-4' as varchar(20))
+				        when TT.MONTHS=4 then cast('4-5' as varchar(20))
+				        when TT.MONTHS=5 then cast('5-6' as varchar(20))
+				        else cast('-1' as varchar(20))
+				    end, 
+
+				    count(TT.NINV)
+				From
+				(
+				Select
+
+				        D.MONTHS,
+				        
+				        T0.NINV
+				 From REGISTER T0
+				 left join get_agemol(T0.DATE_ROGD, ?, 0) D on 2=2
+				 
+				 Where (T0.NHOZ=6263931) and
+				        (((T0.NANIMAL>1000000000000 AND T0.NANIMAL<2000000000000)))
+				
+				and T0.DATE_ROGD<=? and ( (T0.DATE_V>?) or (T0.DATE_V is Null)   )
+
+				) TT
+
+				Group by  1
+				 		 
+				 		
+				 """
+	
+	param=(date,date,date,)
+	result=con_selex(zapros,param,2)
+	bik_0 = bik_1 = bik_2 = bik_3 = bik_4 = bik_5 = bik_69 = bik_912 = bik_1215 = bik_15 = 0
+	
+	
+	#n= result
+	for line in result:
+		if line[0] == '0-1':
+			bik_0 = line[1]
+
+		if line[0] == '1-2':
+			bik_1 = line[1]
+
+		if line[0] == '2-3':
+			bik_2 = line[1]
+
+		if line[0] == '3-4':
+			bik_3 = line[1]
+
+		if line[0] == '4-5':
+			bik_4 = line[1]
+
+		if line[0] == '5-6':
+			bik_5 = line[1]
+
+		if line[0] == '6-9':
+			bik_69 = line[1]
+
+		if line[0] == '9-12':
+			bik_912 = line[1]
+
+		if line[0] == '12-15':
+			bik_1215 = line[1]
+
+		if line[0] == '>15':
+			bik_15 = line[1]
+
+
+
+	datas = []
 	datas.append(
 				{
-					'n':n,
+					#'n':n,
 					'cow_neosem':cow_neosem,
 					'cow_osem': cow_osem,
 					'cow_somnit': cow_somnit,
@@ -582,7 +890,41 @@ def krs_load_struktura(date):
 					'tel_tranzit': tel_tranzit,
 					'tel_15_neosem': tel_15_neosem,
 					'tel_15_osem': tel_15_osem,
-					'tel_15_stel': tel_15_stel
+					'tel_15_stel': tel_15_stel + tel_netel + tel_tranzit,
+					
+					'cow_lakt_1': cow_lakt_1,
+					'cow_lakt_2': cow_lakt_2,
+					'cow_lakt_3': cow_lakt_3,
+					'cow_lakt_4': cow_lakt_4,
+
+					'cow_040': cow_040,
+					'cow_41150': cow_41150,
+					'cow_151300': cow_151300,
+					'cow_300': cow_300,
+					'cow_suhostoy1': cow_suhostoy1,
+					'cow_suhostoy2': cow_suhostoy2,
+
+					'tel_0': tel_0,
+					'tel_1': tel_1,
+					'tel_2': tel_2,
+					'tel_3': tel_3,
+					'tel_4': tel_4,
+					'tel_5': tel_5,
+					'tel_69': tel_69,
+					'tel_912': tel_912,
+					'tel_1215': tel_1215,
+					'tel_15': tel_15 - tel_netel - tel_tranzit, #Вычитаем нетелей
+
+					'bik_0': bik_0,
+					'bik_1': bik_1,
+					'bik_2': bik_2,
+					'bik_3': bik_3,
+					'bik_4': bik_4,
+					'bik_5': bik_5,
+					'bik_69': bik_69,
+					'bik_912': bik_912,
+					'bik_1215': bik_1215,
+					'bik_15': bik_15, 
 				}
 	
 	)

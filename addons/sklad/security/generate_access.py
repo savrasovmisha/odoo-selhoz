@@ -3,6 +3,7 @@ spisok.append(['sklad.trebovanie_nakladnaya',''])
 spisok.append(['sklad.trebovanie_nakladnaya_line',''])
 spisok.append(['buh.nomen_group',''])
 spisok.append(['buh.stati_zatrat',''])
+spisok.append(['sklad.ostatok',''])
 
 
 

@@ -23,9 +23,20 @@
                         <t t-esc="doc.date" /> <br/>
                        <t t-esc="doc.stado_vid_fiz_group_id.name" /> <br/>
 
-                        <!-- <t t-foreach="doc.get_list()" t-as="a"> -->
-                           <!--  <span t-esc="doc.get_list()"/> -->
-                       <!--  </t> -->
+                       <table class="table-bordered">
+                        <th> sef</th>
+
+                           <t t-foreach="doc.get_list()" t-as="line_group"> 
+                            <tr>
+                                <t t-foreach="line_group" t-as="line">
+                                    <td>
+                                        <span t-esc="line"/>
+                                    </td>
+                                </t>
+                            </tr>
+                           </t>
+
+                         </table>
                         
                         Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
                         
@@ -41,7 +52,7 @@
         string="Отчетность в бухгалтерию"
         name="kormlenie.report_korm_buh_report_view"
         file="kormlenie.report_korm_buh_report"
-        report_type="qweb-pdf" />
+        report_type="qweb-html" />
 
 
 

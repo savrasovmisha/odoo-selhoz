@@ -468,87 +468,94 @@ class korm_plan_fakt_report(models.Model):
 
 
 
-# class korm_buh_report(models.Model):
-#     _name = "korm.buh_report"
-#     _description = "Korm buh report"
-#     #_auto = False
-#     # _rec_name = 'nomen_nomen_id'
+class korm_buh_report(models.Model):
+    _name = "korm.buh_report"
+    _description = "Korm buh report"
+    #_auto = False
+    # _rec_name = 'nomen_nomen_id'
 
     
-#     date = fields.Date(string='Дата')
-#     # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-#     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
-#     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+    date = fields.Date(string='Дата')
+    # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
+    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
 
-#     month = fields.Text(string=u"Месяц")
-#     year = fields.Text(string=u"Год")
-#     #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+    month = fields.Text(string=u"Месяц")
+    year = fields.Text(string=u"Год")
+    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     
-#     # _order = 'nomen_nomen_id desc'
+    # _order = 'nomen_nomen_id desc'
 
-#     def get_list(self):
-#         zapros = """ SELECT 
-#                         n.name,
-#                         v.date, 
-#                         v.nomen_nomen_id, 
+    def get_list(self):
+        zapros = """ SELECT 
+                        n.name,
+                        v.date, 
+                        v.nomen_nomen_id, 
                         
-#                         v.kol_fakt 
+                        v.kol_fakt 
                          
-#                     FROM korm_korm_svod_report v
-#                     left join nomen_nomen n on (v.nomen_nomen_id=n.id)
-#                     limit 20; """ #%(self.id,)
-#         #print zapros
-#         self._cr.execute(zapros,)
-#         korms = self._cr.fetchall()
+                    FROM korm_korm_svod_report v
+                    left join nomen_nomen n on (v.nomen_nomen_id=n.id)
+                    limit 20; """ #%(self.id,)
+        #print zapros
+        self._cr.execute(zapros,)
+        korms = self._cr.fetchall()
 
-#         #print korms
+        #print korms
         
-#         try:
-#             from pandas import DataFrame, pivot_table, np, orient
-#         except ImportError:
-#             pass
-#         datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
-#         table = pivot_table(datas, values='kol_fakt', index=['date'],
-#                 columns=['name'], aggfunc=np.sum)
-#         # import json
-#         # j1 = json.loads(table)
-#         # print j1
+        try:
+            from pandas import DataFrame, pivot_table, np, orient
+        except ImportError:
+            pass
+        datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+        table = pivot_table(datas, values='kol_fakt', index=['date'],
+                columns=['name'], aggfunc=np.sum)
+        # import json
+        # j1 = json.loads(table)
+        # print j1
 
 
-#         # rr = []
-#         # for a in table.index: #Iterate through columns
-#         #     r = []
-#         #     r.append({'name':a})
-#         #     for b in table.columns: #Iterate through rows
-#         #         print table.ix[a,b]
-#         #         r.append(table.ix[a,b])
-#         #     rr.append(r)
-#         # #tt = datas.reset_index().to_json(orient='index')
-#         # print rr
+        nn = [0]
+        for c in table.columns:
+            #print c
+            nn.append(c)
+            
+        rr = []
+        rr.append(nn)
+        for a in table.index: #Iterate through columns
+            #print 'rrr=', a
+            r = []
+            r.append(a)
+            for b in table.columns: #Iterate through rows
+                #print table.ix[a,b]
+                r.append(table.ix[a,b])
+            rr.append(r)
+        #tt = datas.reset_index().to_json(orient='index')
+        print rr
 
-#         return table
+        return rr
 
-#     @api.multi
-#     def report_print(self):
-#         vid1 = self.read()
+    @api.multi
+    def report_print(self):
+        vid1 = self.read()
         
-#         datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
-#         s = self.read()
-#         print s
+        datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
+        s = self.read()
+        print s
 
-#         data = self.read()[0]
-#         datas = {
-#             'ids': self.ids,
-#             'model': 'korm.buh_report',
-#             'form': data,
-#             'get_list': self.get_list()
-#         }
+        data = self.read()[0]
+        datas = {
+            'ids': self.ids,
+            'model': 'korm.buh_report',
+            'form': data,
+            'get_list': self.get_list()
+        }
 
-#         return {
-#                     'type': 'ir.actions.report.xml',
-#                     'report_name': 'kormlenie.report_korm_buh_report_view',
-#                     'datas': datas,
-#                 }
+        return {
+                    'type': 'ir.actions.report.xml',
+                    'report_name': 'kormlenie.report_korm_buh_report_view',
+                    'datas': datas,
+                }
 
 
 

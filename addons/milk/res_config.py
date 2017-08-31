@@ -72,4 +72,5 @@ class milk_config_settings(models.TransientModel):
 		conf.set_param('user_uniform', str(self.user_uniform))
 		conf.set_param('password_uniform', str(self.password_uniform))
 		conf.set_param('kod_otel', int(self.kod_otel))
+		conf.set_param('kod_osemeneniya', int(self.kod_osemeneniya))
 		conf.set_param('kod_abort', int(self.kod_abort))

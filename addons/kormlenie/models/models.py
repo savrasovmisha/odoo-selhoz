@@ -1219,7 +1219,7 @@ class korm_korm_line(models.Model):
 		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
 		self.kol_golov = self.kol_golov_zagon * self.procent_dachi/100 * self.procent_raciona/100
 		if self.kol_golov>0 and self.korm_racion_id!=False:
-			self.kol_korma = self.korm_racion_id.kol * self.kol_golov * self.procent_raciona/100
+			self.kol_korma = self.korm_racion_id.kol * self.kol_golov
 			# max_value = self.korm_korm_id.transport_id.max_value
 			# if self.kol_korma>max_value and max_value>0:
 			#   self.kol_zamesov = math.ceil(self.kol_korma / max_value)

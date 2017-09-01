@@ -1028,9 +1028,9 @@ class korm_korm(models.Model):
 					line.procent_dachi = line.stado_zagon_id.utro
 				else:
 					line.procent_dachi = line.stado_zagon_id.vecher
-			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			if line.kol_golov>0 and line.korm_racion_id!=False:
-				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
+				line.kol_korma = line.korm_racion_id.kol * line.kol_golov
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
 				return False    
@@ -1041,7 +1041,7 @@ class korm_korm(models.Model):
 
 		d = []
 		for line in self.korm_korm_line:
-			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
 						line.kol_korma, line.procent_dachi, line.kol_golov_zagon, line.procent_raciona])
 			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером
@@ -1090,7 +1090,7 @@ class korm_korm(models.Model):
 									'name': rl.nomen_nomen_id.name,
 									'sorting':  i[1],
 									'nomen_nomen_id':   rl.nomen_nomen_id.id,
-									'kol_norma':    rl.kol * kol_golov * procent_raciona/100,
+									'kol_norma':    rl.kol * kol_golov,
 									})
 
 
@@ -1125,9 +1125,9 @@ class korm_korm(models.Model):
 					line.procent_dachi = line.stado_zagon_id.utro
 				else:
 					line.procent_dachi = line.stado_zagon_id.vecher
-			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			if line.kol_golov>0 and line.korm_racion_id!=False:
-				line.kol_korma = line.korm_racion_id.kol * line.kol_golov * line.procent_raciona/100
+				line.kol_korma = line.korm_racion_id.kol * line.kol_golov
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
 				return False    
@@ -1138,7 +1138,7 @@ class korm_korm(models.Model):
 
 		d = []
 		for line in self.korm_korm_line:
-			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100
+			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			d.append([line.id, line.sorting, line.korm_racion_id, line.kol_golov, 
 						line.kol_korma, line.procent_dachi, line.kol_golov_zagon, line.procent_raciona])
 			#kol_golov_detail = line.kol_golov*line.procent_dachi/100  --- Получаем кол-во голов для расчета дачи корма Утром и Вечером
@@ -1217,7 +1217,7 @@ class korm_korm_line(models.Model):
 	@api.depends('kol_golov_zagon', 'procent_raciona')
 	def _raschet(self):
 		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
-		self.kol_golov = self.kol_golov_zagon * self.procent_dachi/100
+		self.kol_golov = self.kol_golov_zagon * self.procent_dachi/100 * self.procent_raciona/100
 		if self.kol_golov>0 and self.korm_racion_id!=False:
 			self.kol_korma = self.korm_racion_id.kol * self.kol_golov * self.procent_raciona/100
 			# max_value = self.korm_korm_id.transport_id.max_value

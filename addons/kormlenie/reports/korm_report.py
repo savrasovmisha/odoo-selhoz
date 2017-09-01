@@ -331,139 +331,139 @@ class korm_rashod_kormov_report(models.Model):
         """ % self.pool['res.currency']._select_companies_rates())
 
 
-class korm_plan_fakt_report(models.Model):
-    _name = "korm.plan_fakt_report"
-    _description = "Korm plan fakt"
-    _auto = False
-    _rec_name = 'nomen_nomen_id'
-    _order = 'nomen_nomen_id'
+# class korm_plan_fakt_report(models.Model):
+#     _name = "korm.plan_fakt_report"
+#     _description = "Korm plan fakt"
+#     _auto = False
+#     _rec_name = 'nomen_nomen_id'
+#     _order = 'nomen_nomen_id'
 
     
-    year = fields.Char(string=u"Год")
-    month = fields.Char(string=u"Месяц")
+#     year = fields.Char(string=u"Год")
+#     month = fields.Char(string=u"Месяц")
     
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+#     nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
     
-    #stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
-    #stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
-    #kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
-    #kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
-    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
-    kol_plan = fields.Float(digits=(10, 3), string=u"Кол-во по плану", group_operator="sum")
-    prognoz = fields.Float(digits=(10, 3), string=u"Прогноз выполнения плана %", group_operator="avg")
-    kol_prognoz = fields.Float(digits=(10, 3), string=u"Кол-во прогноз", group_operator="sum")
-    price = fields.Float(digits=(10, 2), string=u"Цена", group_operator="avg")
-    sum_fakt = fields.Float(digits=(10, 2), string=u"Сумма факт", group_operator="sum")
-    sum_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз", group_operator="sum")
-    sum_plan = fields.Float(digits=(10, 2), string=u"Сумма план", group_operator="sum")
-    sum_otk_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз откл.", group_operator="sum")
-    #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+#     #stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+#     #stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+#     #kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+#     #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
+#     #kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
+#     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
+#     kol_plan = fields.Float(digits=(10, 3), string=u"Кол-во по плану", group_operator="sum")
+#     prognoz = fields.Float(digits=(10, 3), string=u"Прогноз выполнения плана %", group_operator="avg")
+#     kol_prognoz = fields.Float(digits=(10, 3), string=u"Кол-во прогноз", group_operator="sum")
+#     price = fields.Float(digits=(10, 2), string=u"Цена", group_operator="avg")
+#     sum_fakt = fields.Float(digits=(10, 2), string=u"Сумма факт", group_operator="sum")
+#     sum_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз", group_operator="sum")
+#     sum_plan = fields.Float(digits=(10, 2), string=u"Сумма план", group_operator="sum")
+#     sum_otk_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз откл.", group_operator="sum")
+#     #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
     
-    #kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
-    #procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
-    #sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+#     #kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+#     #procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+#     #sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
     
 
-    def init(self, cr):
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_plan_fakt_report as (
-                WITH currency_rate as (%s)
-                        SELECT
-                            tt.id,
-                            tt.month,
-                            tt.year,
-                            tt.nomen_nomen_id,
-                            tt.kol_plan,
-                            tt.kol_fakt,
-                            --tt.day,
-                            --tt.count_day,
-                            tt.kol_prognoz,
-                            tt.prognoz,
-                            tt.price,
-                            tt.price*tt.kol_fakt as sum_fakt,
-                            tt.price*tt.kol_prognoz as sum_prognoz,
-                            tt.price*tt.kol_plan as sum_plan,
-                            tt.price*tt.kol_prognoz-tt.price*tt.kol_plan as sum_otk_prognoz
+#     def init(self, cr):
+#         tools.sql.drop_view_if_exists(cr, self._table)
+#         cr.execute("""
+#             create or replace view korm_plan_fakt_report as (
+#                 WITH currency_rate as (%s)
+#                         SELECT
+#                             tt.id,
+#                             tt.month,
+#                             tt.year,
+#                             tt.nomen_nomen_id,
+#                             tt.kol_plan,
+#                             tt.kol_fakt,
+#                             --tt.day,
+#                             --tt.count_day,
+#                             tt.kol_prognoz,
+#                             tt.prognoz,
+#                             tt.price,
+#                             tt.price*tt.kol_fakt as sum_fakt,
+#                             tt.price*tt.kol_prognoz as sum_prognoz,
+#                             tt.price*tt.kol_plan as sum_plan,
+#                             tt.price*tt.kol_prognoz-tt.price*tt.kol_plan as sum_otk_prognoz
 
-                        FROM (
+#                         FROM (
 
-                                    SELECT
-                                                    min(t.id) as id,
-                                                    t.month as month,
-                                                    t.year as year,
-                                                    t.nomen_nomen_id as nomen_nomen_id,
-                                                    sum(t.kol_plan) as kol_plan,
-                                                    sum(t.kol_fakt) as kol_fakt,
-                                                    max(t.day) as day,
-                                                    max(t.count_day) as count_day,
+#                                     SELECT
+#                                                     min(t.id) as id,
+#                                                     t.month as month,
+#                                                     t.year as year,
+#                                                     t.nomen_nomen_id as nomen_nomen_id,
+#                                                     sum(t.kol_plan) as kol_plan,
+#                                                     sum(t.kol_fakt) as kol_fakt,
+#                                                     max(t.day) as day,
+#                                                     max(t.count_day) as count_day,
                                         
-                                                    case
-                                                        when max(t.day)>0 then
-                                                            sum(t.kol_fakt)/max(t.day)*max(t.count_day)
-                                                        else 0
-                                                    end as kol_prognoz,
-                                                    case
-                                                        when sum(t.kol_plan)>0 and max(t.day)>0 then
-                                                            sum(t.kol_fakt)/max(t.day)*max(t.count_day)/sum(t.kol_plan)*100 
-                                                        else 0
-                                                    end as prognoz,
-                                                    --avg(npl.price) as price,
+#                                                     case
+#                                                         when max(t.day)>0 then
+#                                                             sum(t.kol_fakt)/max(t.day)*max(t.count_day)
+#                                                         else 0
+#                                                     end as kol_prognoz,
+#                                                     case
+#                                                         when sum(t.kol_plan)>0 and max(t.day)>0 then
+#                                                             sum(t.kol_fakt)/max(t.day)*max(t.count_day)/sum(t.kol_plan)*100 
+#                                                         else 0
+#                                                     end as prognoz,
+#                                                     --avg(npl.price) as price,
                                                     
-                                                    (Select 
-                                         np.price
-                                                    From nomen_price_line np
-                                        Where np.nomen_nomen_id = t.nomen_nomen_id and
-                                            date_trunc('month',np.date)::date<=make_date(t.year::integer, t.month::integer,1)
-                                        Order by np.date desc
-                                        Limit 1
-                                        ) as price
+#                                                     (Select 
+#                                          np.price
+#                                                     From nomen_price_line np
+#                                         Where np.nomen_nomen_id = t.nomen_nomen_id and
+#                                             date_trunc('month',np.date)::date<=make_date(t.year::integer, t.month::integer,1)
+#                                         Order by np.date desc
+#                                         Limit 1
+#                                         ) as price
                                                     
                                                     
-                                                FROM    
-                                                (   select 
-                                                        pl.id as id,
-                                                        p.month as month,
-                                                        p.year as year,
-                                                        pl.nomen_nomen_id as nomen_nomen_id,
-                                                        pl.kol as kol_plan,
-                                                        0 as kol_fakt,
-                                                        0 as day,
-                                                        p.count_day as count_day
-                                                    from korm_plan_line pl
-                                                    left join korm_plan p on (p.id = pl.korm_plan_id)
+#                                                 FROM    
+#                                                 (   select 
+#                                                         pl.id as id,
+#                                                         p.month as month,
+#                                                         p.year as year,
+#                                                         pl.nomen_nomen_id as nomen_nomen_id,
+#                                                         pl.kol as kol_plan,
+#                                                         0 as kol_fakt,
+#                                                         0 as day,
+#                                                         p.count_day as count_day
+#                                                     from korm_plan_line pl
+#                                                     left join korm_plan p on (p.id = pl.korm_plan_id)
 
-                                                    UNION ALL
+#                                                     UNION ALL
 
-                                                    select
-                                                        min(s.id) as id,
-                                                        to_char(s.date, 'MM') as month,
-                                                        to_char(s.date, 'YYYY') as year,
-                                                        s.nomen_nomen_id as nomen_nomen_id,
-                                                        sum(0) as kol_plan,
-                                                        sum(s.kol) as kol_fakt,
-                                                        max(EXTRACT(day FROM s.date)) as day,
-                                                        max(EXTRACT(day FROM (date_trunc('month',s.date)+interval '1 month'-interval '1 second'))) as count_day
+#                                                     select
+#                                                         min(s.id) as id,
+#                                                         to_char(s.date, 'MM') as month,
+#                                                         to_char(s.date, 'YYYY') as year,
+#                                                         s.nomen_nomen_id as nomen_nomen_id,
+#                                                         sum(0) as kol_plan,
+#                                                         sum(s.kol) as kol_fakt,
+#                                                         max(EXTRACT(day FROM s.date)) as day,
+#                                                         max(EXTRACT(day FROM (date_trunc('month',s.date)+interval '1 month'-interval '1 second'))) as count_day
                                                         
 
-                                                    from reg_rashod_kormov s
-                                                    group by to_char(s.date, 'MM'),
-                                                        to_char(s.date, 'YYYY'),
-                                                        s.nomen_nomen_id
+#                                                     from reg_rashod_kormov s
+#                                                     group by to_char(s.date, 'MM'),
+#                                                         to_char(s.date, 'YYYY'),
+#                                                         s.nomen_nomen_id
 
-                                                ) t
+#                                                 ) t
                                     
                                     
-                                                GROUP BY t.month,
-                                                    t.year,
-                                                    t.nomen_nomen_id 
+#                                                 GROUP BY t.month,
+#                                                     t.year,
+#                                                     t.nomen_nomen_id 
 
-                                  ) tt
+#                                   ) tt
                         
 
-                    )
-        """ % self.pool['res.currency']._select_companies_rates())
+#                     )
+#         """ % self.pool['res.currency']._select_companies_rates())
 
 
 

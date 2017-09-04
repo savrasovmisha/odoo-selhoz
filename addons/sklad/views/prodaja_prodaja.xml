@@ -47,6 +47,7 @@
                                     <field name="nalog_nds_id"/>
                                     <field name="amount_nds"/>
                                     <field name="amount_total"/>
+                                     <field name="sequence" widget="handle"/>
                                     
                                 </tree>
                             </field>

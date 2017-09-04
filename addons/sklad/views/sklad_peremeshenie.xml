@@ -42,6 +42,7 @@
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
+                                     <field name="sequence" widget="handle"/>
                                                                         
                                 </tree>
                             </field>

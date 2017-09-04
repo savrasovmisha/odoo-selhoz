@@ -110,3 +110,47 @@ sudo supervisorctl start server-api
 
 ##############  ПРО API СЕРВЕР #################################
 ################################################################
+
+
+
+
+
+
+Reserved field names
+A few field names are reserved to be used by the ORM:
+•  id is an automatic number uniquely identifying each record, and used as the
+database primary key. It's automatically added to every model.
+The following fields are automatically created on new models, unless the _log_
+access=False model attribute is set:
+• 
+• 
+• 
+• 
+create_uid for the user that created the record
+create_date for the date and time when the record is created
+write_uid for the last user to modify the record
+write_date for the last date and time when the record was modified
+This information is available from the web client, using the Developer Mode menu
+and selecting the View Metadata option.
+There some built-in effects that expect specific field names. We should avoid using
+them for purposes other than the intended ones. Some of them are even reserved and
+can't be used for other purposes at all:
+•  name is used by default as the display name for the record. Usually it is a
+Char , but other field types are also allowed. It can be overridden by setting
+the _rec_name model attribute.
+[ 77 ]Models – Structuring the Application Data
+•  active (type Boolean ) allows inactivating records. Records with
+active==False will automatically be excluded from queries. To access them
+an ('active','=',False) condition must be added to the search domain,
+or 'active_test': False should be added to the current context.
+•  sequence (type Integer ) if present in a list view, allows to manually
+define the order of the records. To work properly it should also be in the
+model's _order .
+•  state (type Selection ) represents basic states of the record's life cycle, and
+can be used by the state's field attribute to dynamically modify the view:
+some form fields can be made read only, required or invisible in specific
+record states.
+•  parent_id , parent_left , and parent_right have special meaning for
+parent/child hierarchical relations. We will shortly discuss them in detail.
+So far we've discussed scalar value fields. But a good part of an application data
+structure is about describing the relationships between entities. Let's look at that now.

@@ -371,6 +371,7 @@ class pokupka_pokupka(models.Model):
 class pokupka_pokupka_line(models.Model):
     _name = 'pokupka.pokupka_line'
     _description = u'Поступление товаров строки'
+    _order = 'sequence'
 
 
     @api.one
@@ -428,7 +429,7 @@ class pokupka_pokupka_line(models.Model):
     amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
-
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
     
 
 class sklad_peremeshenie(models.Model):
@@ -534,6 +535,7 @@ class sklad_peremeshenie(models.Model):
 class sklad_peremeshenie_line(models.Model):
     _name = 'sklad.peremeshenie_line'
     _description = u'Перемещение товаров строки'
+    _order = 'sequence'
 
     @api.one
     @api.depends('nomen_nomen_id')
@@ -567,7 +569,7 @@ class sklad_peremeshenie_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
- 
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
    
 
 
@@ -681,6 +683,7 @@ class prodaja_prodaja(models.Model):
 class prodaja_prodaja_line(models.Model):
     _name = 'prodaja.prodaja_line'
     _description = u'Реализация товаров строки'
+    _order = 'sequence'
 
     
     @api.one
@@ -737,7 +740,7 @@ class prodaja_prodaja_line(models.Model):
     amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
-
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
 
 
 class sklad_trebovanie_nakladnaya(models.Model):
@@ -843,7 +846,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
 class sklad_trebovanie_nakladnaya_line(models.Model):
     _name = 'sklad.trebovanie_nakladnaya_line'
     _description = u'Требование-накладная строки'
-    _order = 'sorting, nomen_name'
+    _order = 'sequence'
 
     # @api.model
     # def create(self, vals):
@@ -906,7 +909,8 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
 
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)', required=True)
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
-    sorting = fields.Char(string=u"С.", help="Сортировка")
+    #sorting = fields.Char(string=u"С.", help="Сортировка")
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка", oldname='sorting')
 
 
 
@@ -1015,6 +1019,7 @@ class sklad_spisanie(models.Model):
 class sklad_spisanie_line(models.Model):
     _name = 'sklad.spisanie_line'
     _description = u'Списание товаров строки'
+    _order = 'sequence'
 
     @api.one
     @api.depends('nomen_nomen_id')
@@ -1041,6 +1046,7 @@ class sklad_spisanie_line(models.Model):
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     amaunt = fields.Float(digits=(10, 2), string=u"Сумма", required=True)
     osnovanie = fields.Text(string=u"Основание")
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
 
 
 

@@ -43,7 +43,7 @@
                     <field name="stado_fiz_group_id"/>
                     <field name="utro"/>
                     <field name="vecher"/>
-                    <!-- <field name="active"/> -->
+                    
                     <field name="activ"/>
                     
                     

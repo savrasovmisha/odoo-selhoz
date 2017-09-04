@@ -482,6 +482,7 @@ class korm_buh_report(models.Model):
 
     month = fields.Text(string=u"Месяц")
     year = fields.Text(string=u"Год")
+    
     #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     
     # _order = 'nomen_nomen_id desc'

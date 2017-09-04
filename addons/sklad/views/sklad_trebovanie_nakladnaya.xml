@@ -39,13 +39,14 @@
                     <notebook>
                         <page string="Товары">
                             <field name="sklad_trebovanie_nakladnaya_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
-                                <tree string="sklad_trebovanie_nakladnaya_line" editable="botton" default_order="sorting nomen_nomen_id">
+                                <tree string="sklad_trebovanie_nakladnaya_line" editable="botton" >
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
                                     <field name="buh_nomen_group_id"/>
                                     <field name="buh_stati_zatrat_id"/>
-                                    <field name="sorting"/>
+                                    <!-- <field name="sorting"/> -->
+                                    <field name="sequence" widget="handle"/>
                                     
                                     
                                 </tree>

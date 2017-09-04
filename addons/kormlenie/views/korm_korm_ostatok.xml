@@ -34,7 +34,7 @@
                         <page string="Остатки по загонам">
                             <field name="korm_korm_ostatok_line" attrs="{'readonly': [('svodno', '=', True)]}">
                                 <tree string="korm_korm_ostatok_line" editable="botton" edit="true" create="false" delete="false">
-                                    
+                                    <field name="sequence" widget="handle"/>
                                     <field name="stado_zagon_id"/>
                                     <field name="stado_fiz_group_id"/>
                                     
@@ -59,6 +59,7 @@
                             <!-- context="{'zagon_tolko_nomer': True}" -->
                             <field name="korm_korm_ostatok_svod_line"  attrs="{'readonly': [('svodno', '=', False)]}">
                                 <tree string="korm_korm_ostatok_svod_line" editable="botton" edit="true" create="true" delete="true">
+                                    <field name="sequence" widget="handle"/>
                                     <field name="stado_zagon_id" widget="many2many_tags"
     options="{'no_create_edit': True}" mode="tree" domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>

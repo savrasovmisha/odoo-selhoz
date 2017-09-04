@@ -154,7 +154,7 @@ class stado_zagon(models.Model):
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
 	#active = fields.Boolean(string=u"Активный", default=True)
-	activ = fields.Boolean(string=u"Используется", default=True)
+	activ = fields.Boolean(string=u"Используется", default=True, oldname='active')
 
 class korm_analiz_pit(models.Model):
 	_name = 'korm.analiz_pit'
@@ -765,7 +765,7 @@ class korm_racion(models.Model):
 class korm_racion_line(models.Model):
 	_name = 'korm.racion_line'
 	_description = u'Строка Рацион кормления'
-	_order = 'sorting'
+	_order = 'sequence'
 
 
 	@api.one
@@ -795,7 +795,7 @@ class korm_racion_line(models.Model):
 		self.amount = self.price * self.kol           
 
 
-
+	sequence = fields.Integer(string=u"Сорт.", help="Сортировка", oldname='sorting')
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
 	korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string=u'Анализ корма', store=True, compute='_nomen')
@@ -804,7 +804,13 @@ class korm_racion_line(models.Model):
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 	price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
 	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
-	sorting = fields.Integer(string=u"Порядок", required=True, default=100)
+	#sorting = fields.Integer(string=u"Порядок", required=True, default=100)
+	date_start = fields.Date(string='Дата начала перехода', copy=False)
+	day = fields.Integer(string=u"Дне на переход", help="Дней на переход на новый корм")
+	new_nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Новый корм', help="Корм на который необходимо перейти")
+	kol_new = fields.Float(digits=(10, 3), string=u"Кол-во новое", required=True)
+	stop = fields.Boolean(string=u"Стоп", default=False, help="Прекращать кормить основным кормом и кормить новым, или давать как в последний день")
+
 
 
 
@@ -1072,8 +1078,8 @@ class korm_korm(models.Model):
 				racion_id = i[2]
 			procent_raciona = 0.000
 			procent_raciona = sum_procent_raciona/kol_korma
-			print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", procent_raciona
-			print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", sorting
+			#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", procent_raciona
+			#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", sorting
 			svod_line.create({'korm_korm_id': self.id,
 								'name': racion_id.stado_fiz_group_id.name,
 								'sorting':  sorting,
@@ -1085,13 +1091,65 @@ class korm_korm(models.Model):
 			#racion_line = self.env['korm.racion_line']
 			#search_racion_line = racion_line.search([('korm_racion_id',    '=',    i[2])])
 			for rl in racion_id.korm_racion_line:
+				
+				#Если заполненны поля для перехода на другой корм тогда добавляем две строки старый и новый корм
+				if rl.date_start<=self.date_doc and rl.date_start and rl.new_nomen_nomen_id and rl.day>0 and rl.kol_new>0:
+					
+					kol_day = 0
+					k_new = k_old = 0.000
+					fmt = '%Y-%m-%d'
+					
+					d1 = datetime.strptime(rl.date_start, fmt)
+					d2 = datetime.strptime(self.date_doc, fmt)
+					#Кол-во дней прошедших с начала перехода
+					kol_day = int((d2-d1).days + 1)
 
-				detail_line.create({'korm_korm_id': self.id,
-									'name': rl.nomen_nomen_id.name,
-									'sorting':  i[1],
-									'nomen_nomen_id':   rl.nomen_nomen_id.id,
-									'kol_norma':    rl.kol * kol_golov,
-									})
+					#Если прошло больше отведенных дней и признак прекращения кормления Ложь
+					#Тогда даем минимальное количество старого корма      
+					if kol_day >= rl.day and rl.stop == False:
+						#коэффициенты пересчета нового и старого корма
+						k_new = round((rl.day - 1)/ rl.day, 3)
+						k_old = round(1 -  k_new, 3)
+
+					#Если прошло больше отведенных дней и признак прекращения кормления Истина
+					#Тогда даем только новый корм      
+					if kol_day >= rl.day and rl.stop == True:
+						#коэффициенты пересчета нового и старого корма
+						k_old = 0
+						k_new = 1
+
+					if kol_day < rl.day:
+						#коэффициенты пересчета нового и старого корма
+						k_new = round(kol_day / rl.day, 3)
+						k_old = round(1 - k_new, 3)
+						print 'ttttttttttttttttttttttt=',k_new					
+						print 'ttttttttttttttttttttttt=',k_old					
+
+					if k_old > 0:
+						detail_line.create({'korm_korm_id': self.id,
+											'name': rl.nomen_nomen_id.name,
+											'sorting':  i[1],
+											'nomen_nomen_id':   rl.nomen_nomen_id.id,
+											'kol_norma':    rl.kol * kol_golov * k_old,
+											})
+					if k_new > 0:
+						detail_line.create({'korm_korm_id': self.id,
+											'name': rl.new_nomen_nomen_id.name,
+											'sorting':  i[1],
+											'nomen_nomen_id':   rl.new_nomen_nomen_id.id,
+											'kol_norma':    rl.kol_new * kol_golov * k_new,
+											})
+					
+
+
+				else:
+
+					detail_line.create({'korm_korm_id': self.id,
+										'name': rl.nomen_nomen_id.name,
+										'sorting':  i[1],
+										'nomen_nomen_id':   rl.nomen_nomen_id.id,
+										'kol_norma':    rl.kol * kol_golov,
+										})
 
 
 	#Только для исправления ошибок
@@ -1186,7 +1244,7 @@ class korm_korm(models.Model):
 class korm_korm_line(models.Model):
 	_name = 'korm.korm_line'
 	_description = u'Строка Кормление'
-	_order = 'sorting, name'
+	_order = 'sorting, sequence'
 
 
 	@api.one
@@ -1238,7 +1296,7 @@ class korm_korm_line(models.Model):
 
 	name = fields.Char(string=u"Наименование", compute='return_name', store=True)
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
-	
+	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
 	sorting = fields.Integer(string=u"Порядок", required=True)
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
@@ -1540,6 +1598,7 @@ class korm_korm_ostatok(models.Model):
 class korm_korm_ostatok_line(models.Model):
 	_name = 'korm.korm_ostatok_line'
 	_description = u'Строка Остатки Кормления'
+	_order = 'sequence'
 	
 
 	@api.one
@@ -1569,13 +1628,13 @@ class korm_korm_ostatok_line(models.Model):
 	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", copy=False, readonly=True)
 	procent_ostatkov_prev = fields.Float(digits=(10, 1), string=u"% ост. пред. день", copy=False, readonly=True)
    
-	
+	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
 	
 
 class korm_korm_ostatok_svod_line(models.Model):
 	_name = 'korm.korm_ostatok_svod_line'
 	_description = u'Строка Свода Остатки Кормления'
-	
+	_order = 'sequence'
 
 	@api.one
 	@api.depends('stado_zagon_id')
@@ -1585,6 +1644,7 @@ class korm_korm_ostatok_svod_line(models.Model):
 			for line in self.stado_zagon_id:
 				self.stado_fiz_group_id = line.stado_fiz_group_id
 
+	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_ostatok_id = fields.Many2one('korm.korm_ostatok', ondelete='cascade', string=u"Остатки Кормления", required=True)
 	
@@ -1937,6 +1997,7 @@ class stado_struktura(models.Model):
 									'stado_struktura_id':   self.id,
 									'stado_zagon_id':   zagon_id.id,
 									'kol_golov_zagon':  line['kol_golov_zagon'],
+
 									
 									})
 						zagon_ids.append(zagon_id.id)
@@ -1945,7 +2006,7 @@ class stado_struktura(models.Model):
 
 						err += u"Загон не найден:"+line['name'] + '   '
 				#Дополняем список загонов которые не получены из Uniform
-				not_zagon_ids = stado_zagon.search([('id',  'not in',   zagon_ids)], )
+				not_zagon_ids = stado_zagon.search([('id',  'not in',   zagon_ids), ('activ','=', True)], )
 				for line in not_zagon_ids:
 					stado_struktura_line.create({
 									'stado_struktura_id':   self.id,

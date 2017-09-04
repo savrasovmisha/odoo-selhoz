@@ -40,13 +40,18 @@
                                 <page string="Состав">
                                     <field name="korm_racion_line">
                                         <tree string="korm_racion_line" editable="botton">
-                                            <field name="sorting"/>
+                                            <field name="sequence" widget="handle"/>
                                             <field name="nomen_nomen_id"/>
                                             <field name="korm_analiz_pit_id"/>
                                             <field name="ed_izm_id"/>
                                             <field name="kol"/>
                                             <field name="price"/>
                                             <field name="amount"/>
+                                            <field name="date_start"/>
+                                            <field name="day"/>
+                                            <field name="new_nomen_nomen_id"/>
+                                            <field name="kol_new"/>
+                                            <field name="stop"/>
                                                                                 
                                         </tree>
                                     </field>

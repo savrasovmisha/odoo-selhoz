@@ -461,14 +461,14 @@ def krs_load_struktura(date):
 
 				            when T1.NSOST=5 then
 	                            case
-	                                when ( --Проверка. если дней стельности больше 270 (т.е за 2 недели до отела) то это нетель транзит
+	                                when ( --Проверка. если дней стельности больше 254 (т.е за 2 недели до отела) то это нетель транзит
 	                                        Select first 1
 	                                              cast(? as date)-K.EVENT_DATE as SDAY
 
 	                                                from SUP_EVENTS_SELEX(T0.NANIMAL) K
 	                                                 Where (K.EVENT_KOD=7)  and K.EVENT_DATE<=?
 	                                                order by K.EVENT_DATE desc
-	                                    )>270 then T1.NSOST*10+1
+	                                    )>254 then T1.NSOST*10+1
 
 	                                when ( --Проверка. если дней стельности больше 150 то это нетель
 	                                        Select first 1
@@ -624,8 +624,8 @@ def krs_load_struktura(date):
 
 	zapros=r"""Select
 				    case
-				        when TT.STEL = 'Стельная' and TT.DAY_S>270 then cast('Поздний сухостой' as varchar(20))
-				        when TT.STEL = 'Стельная' and TT.DAY_S>224 then cast('Ранний сухостой' as varchar(20))
+				        when TT.STEL = 'Стельная' and TT.DAY_S>254 then cast('Поздний сухостой' as varchar(20))
+				        when TT.STEL = 'Стельная' and TT.DAY_S>219 then cast('Ранний сухостой' as varchar(20))
 				        when TT.DOYD<=40 then cast('0-40' as varchar(20))
 				        when TT.DOYD>40 and TT.DOYD<=150 then cast('41-150' as varchar(20))
 				        when TT.DOYD>150 and TT.DOYD<=300 then cast('151-300' as varchar(20))

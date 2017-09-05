@@ -22,6 +22,7 @@ class korm_svod_report(models.Model):
     #nomen_name = fields.Char(string='Номенклатура')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+    stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
     kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
     kol_racion = fields.Float(digits=(10, 3), string=u"Кол-во по рациону")
     kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
@@ -75,7 +76,8 @@ class korm_svod_report(models.Model):
 
 
                     t.stado_fiz_group_id,
-                    t.stado_vid_fiz_group_id
+                    t.stado_vid_fiz_group_id,
+                    t.stado_podvid_fiz_group_id
 
 
                 FROM (
@@ -103,7 +105,8 @@ class korm_svod_report(models.Model):
 
 
                                     kl.stado_fiz_group_id,
-                                    fg.stado_vid_fiz_group_id
+                                    fg.stado_vid_fiz_group_id,
+                                    fg.stado_podvid_fiz_group_id
                                     
                                 from korm_korm_detail_line s
                                 left join korm_korm_svod_line sv on 
@@ -129,13 +132,15 @@ class korm_svod_report(models.Model):
                                          to_char(s.date, 'YYYY'),
                                          s.nomen_nomen_id,
                                          kl.stado_fiz_group_id,
-                                         fg.stado_vid_fiz_group_id
+                                         fg.stado_vid_fiz_group_id,
+                                         fg.stado_podvid_fiz_group_id
                                 Order by d.name, s.date,
                                          date_part('month',s.date),
                                          to_char(s.date, 'YYYY'),
                                          s.nomen_nomen_id,
                                          kl.stado_fiz_group_id,
-                                         fg.stado_vid_fiz_group_id
+                                         fg.stado_vid_fiz_group_id,
+                                         fg.stado_podvid_fiz_group_id
 
                         ) t
                 )
@@ -285,6 +290,7 @@ class korm_rashod_kormov_report(models.Model):
     stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
     stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
     stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+    stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
     kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
     #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
     kol_korma_golova = fields.Float(digits=(10, 3), string=u"Ср. Кол-во корма на голову", group_operator="sum")
@@ -317,6 +323,7 @@ class korm_rashod_kormov_report(models.Model):
                             s.stado_fiz_group_id as stado_fiz_group_id,
                             s.stado_zagon_id as stado_zagon_id,
                             fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id,
+                            fg.stado_podvid_fiz_group_id as stado_podvid_fiz_group_id,
                             z.kol_golov_zagon as kol_golov_zagon
                     
                         from reg_rashod_kormov s

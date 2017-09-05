@@ -154,3 +154,13 @@ record states.
 parent/child hierarchical relations. We will shortly discuss them in detail.
 So far we've discussed scalar value fields. But a good part of an application data
 structure is about describing the relationships between entities. Let's look at that now.
+
+
+
+
+DATE
+To facilitate conversion between formats, both fields.Date and fields.Datetime
+objects provide these functions:
+•  from_string(value) : This converts a string into a date or datetime object.
+•  to_string(value) : This converts a date or datetime object into a string in
+the format expected by the server.

@@ -1,0 +1,113 @@
+<openerp>
+    <data>
+
+   
+        
+
+       <template id="report_korm_racion_view">
+          
+
+            
+   
+            <t t-call="report.html_container">   
+
+
+
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page korm" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
+
+                        
+                     <h3 style="margin-top: 18px;">
+                                Рацион кормления <br/>
+                                Физиологическая группа: <t t-esc="doc.stado_fiz_group_id.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                        </h3>  
+                        
+                        <div style="margin-top: 30px;">
+                                Продуктивность:<br/>
+                                Молоко, л: <t t-esc="doc.milk"/><br/>
+                                Масса, кг: <t t-esc="doc.massa"/><br/>
+                                Жир, %: <t t-esc="doc.jir"/><br/>
+                                Белок, %: <t t-esc="doc.belok"/><br/>
+
+                            
+                                <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
+                                    <tr>
+                                        <th> Наименование корма </th>
+                                            
+                                        <!-- <th>Физ. группа</th> -->
+                                        <th>Ед. изм.</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена</th>
+                                        <th>Сумма</th>
+                                        <th>Дата анализа корма</th>
+                                     </tr>
+
+                                    <t t-foreach="doc.korm_racion_line" t-as="line">
+                                     <tr >
+                                        <td >
+                                            <t t-esc="line.nomen_nomen_id.name"/> 
+                                        </td>
+                                        <!-- <td >
+                                            <t t-esc="zagon.stado_fiz_group_id.name"/>
+                                        </td> -->
+                                        <td align="center">
+                                            <t t-esc="line.ed_izm_id.name"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="'{0:,.3f}'.format(line.kol)"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="'{0:,.2f}'.format(line.price)"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="'{0:,.2f}'.format(line.amount)"/>
+                                        </td>
+                                        <td align="right">
+                                            <t t-esc="line.korm_analiz_pit_id.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/>
+                                        </td>
+                                        
+                                           
+                                       
+                                    </tr>
+
+                                        
+                                    </t>  
+                                 </table>
+                            Итого: <br/>   
+                            Кол-во <t t-esc="'{0:,.3f}'.format(doc.kol)"/> <br/>
+                            Сумма <t t-esc="'{0:,.2f}'.format(doc.amount)"/> <br/>
+                            Стоимость еденицы <t t-esc="'{0:,.2f}'.format(doc.price)"/>
+                         </div>
+                         <div style="font-size:14px; margin-top: 20px;">   
+                        Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
+                        </div>
+
+                      
+                        
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_korm_racion"
+        model="korm.racion"
+        string="Рацион кормления"
+        name="kormlenie.report_korm_racion_view"
+        file="kormlenie.report_korm_racion"
+        report_type="qweb-pdf" />
+
+
+
+        <record id="kormlenie.report_korm_racion" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+        </record>
+
+        
+
+    </data>
+</openerp>

@@ -41,6 +41,7 @@ spisok.append(['reg.rashod_kormov',''])
 spisok.append(['korm.plan',''])
 spisok.append(['korm.plan_line',''])
 spisok.append(['korm.plan_fakt_report',''])
+spisok.append(['stado.podvid_fiz_group',''])
 
 
 print "id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink"

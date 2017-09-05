@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division #при делении будет возвращаться float
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 import math
-
 
 parametrs = ['ov', 'sv', 'oe', 'sp', 'pp', 'sk', 'sj', 'ca', 'p', 
 		'sahar', 'krahmal', 'bev', 'magniy', 'natriy', 'kaliy', 'hlor', 'sera', 
@@ -107,6 +107,17 @@ class stado_vid_fiz_group(models.Model):
 							('name_unique', 'unique(name)', u'Такой вид физиологической группы уже существует!')
 						]
 
+class stado_podvid_fiz_group(models.Model):
+	_name = 'stado.podvid_fiz_group'
+	_description = u'Подвид физиологической группы'
+	_order = 'name'
+
+	name = fields.Char(string=u"Наименование", required=True)
+	_sql_constraints = [
+							('name_unique', 'unique(name)', u'Такой подвид физиологической группы уже существует!')
+						]
+
+
 class stado_fiz_group(models.Model):
 	_name = 'stado.fiz_group'
 	_description = u'Физиологическая группа'
@@ -114,6 +125,7 @@ class stado_fiz_group(models.Model):
 
 	name = fields.Char(string=u"Наименование", required=True)
 	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string='Вид физ. группы')
+	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string='Подвид физ. группы')
 	_sql_constraints = [
 							('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
 						]
@@ -1108,8 +1120,8 @@ class korm_korm(models.Model):
 					#Тогда даем минимальное количество старого корма      
 					if kol_day >= rl.day and rl.stop == False:
 						#коэффициенты пересчета нового и старого корма
-						k_new = round((rl.day - 1)/ rl.day, 3)
-						k_old = round(1 -  k_new, 3)
+						k_new = (rl.day - 1)/ rl.day
+						k_old = 1 -  k_new
 
 					#Если прошло больше отведенных дней и признак прекращения кормления Истина
 					#Тогда даем только новый корм      
@@ -1120,12 +1132,13 @@ class korm_korm(models.Model):
 
 					if kol_day < rl.day:
 						#коэффициенты пересчета нового и старого корма
-						k_new = round(kol_day / rl.day, 3)
-						k_old = round(1 - k_new, 3)
-						print 'ttttttttttttttttttttttt=',k_new					
-						print 'ttttttttttttttttttttttt=',k_old					
+						k_new = kol_day / rl.day
+						k_old = 1 - k_new
 
-					if k_old > 0:
+					# print 'ttttttttttttttttttttttt=',kol_day					
+					# print 'ttttttttttttttttttttttt=',k_new					
+					# print 'ttttttttttttttttttttttt=',k_old					
+					if k_old > 0 and rl.kol > 0:
 						detail_line.create({'korm_korm_id': self.id,
 											'name': rl.nomen_nomen_id.name,
 											'sorting':  i[1],

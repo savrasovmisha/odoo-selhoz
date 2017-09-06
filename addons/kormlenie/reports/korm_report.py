@@ -504,7 +504,7 @@ class korm_buh_report(models.Model):
                          
                     FROM korm_korm_svod_report v
                     left join nomen_nomen n on (v.nomen_nomen_id=n.id)
-                    limit 20; """ #%(self.id,)
+                    limit 100; """ #%(self.id,)
         #print zapros
         self._cr.execute(zapros,)
         korms = self._cr.fetchall()
@@ -522,6 +522,7 @@ class korm_buh_report(models.Model):
         # j1 = json.loads(table)
         # print j1
 
+        print table
 
         nn = [0]
         for c in table.columns:

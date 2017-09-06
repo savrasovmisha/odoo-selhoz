@@ -19,7 +19,7 @@
                      <div class="page" style="font-size:16px;">   
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
-                        
+                        <h2>Report title</h2>
                         <t t-esc="doc.date" /> <br/>
                        <t t-esc="doc.stado_vid_fiz_group_id.name" /> <br/>
 

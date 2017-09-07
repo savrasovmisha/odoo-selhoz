@@ -9,6 +9,7 @@ spisok.append(['krs.tel_vibitiya',''])
 spisok.append(['krs.osemeneniya',''])
 spisok.append(['krs.abort',''])
 spisok.append(['krs.struktura',''])
+spisok.append(['krs.otchet_day',''])
 
 
 

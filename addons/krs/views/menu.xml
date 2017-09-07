@@ -22,6 +22,8 @@
 
         <menuitem id="krs_struktura_menu" name="Структура стада" sequence="1" parent="krs_menu_doc" action="krs_struktura_list_action" groups="group_krs_manager,group_krs_users"/>
 
+        <menuitem id="krs_otchet_day_menu" name="Ежедневная сводка по животноводству" sequence="1" parent="krs_menu_doc" action="krs_otchet_day_list_action" groups="group_krs_manager,group_krs_users"/>
+
 
        
 

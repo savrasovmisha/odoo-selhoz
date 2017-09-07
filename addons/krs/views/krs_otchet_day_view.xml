@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="krs_otchet_day_form_view">
+        <field name="name">krs_otchet_day.form</field>
+        <field name="model">krs.otchet_day</field>
+        <field name="arch" type="xml">
+            <form string="Форма Ежедневная сводка по животноводству">
+                <sheet>
+                    <group>
+                        
+                        <field name="date"/>
+                        
+                        <field name="krs_otchet_day_lastday_id"/>
+                        <field name="krs_otchet_day_lastgod_id"/>
+
+                     
+
+                    </group>
+
+
+
+                    <group string="Валовое производство молока">
+                        <group string="за день">
+                            <field name="valoviy_nadoy_day"/>
+                            <field name="otk_valoviy_nadoy_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="valoviy_nadoy_god"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Реализация молока за день">
+                        
+                       
+                        <group>
+                            <field name="sale_milk_day"/>
+                            <field name="otk_sale_milk_day"/>
+                            
+                        </group>
+
+                         <group>
+                           <field name="sort"/>
+                           <field name="sale_jir"/>
+                           <field name="sale_belok"/>
+                        </group>
+                        
+                    </group>
+
+
+                    <group string="Удой">
+                        <group string="за день">
+                            <field name="nadoy_fur_day"/>
+                            <field name="nadoy_doy_day"/>
+                            <field name="otk_nadoy_fur_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="nadoy_fur_god"/>
+                           <field name="nadoy_doy_god"/>
+                        </group>
+                    </group>
+
+
+
+
+
+                      
+                    <group string="Отелы">
+                        <group string="за день">
+                            <field name="otel_day"/>
+                            <field name="otel_day_jiv"/>
+                            <field name="otel_day_mert"/>
+
+                            <separator string="от коров"/>
+                            <newline/>   
+
+
+                            <field name="cow_otel_day"/>
+                            <field name="cow_otel_day_jiv"/>
+                            <field name="cow_otel_day_mert"/>
+
+                            <separator string="от завезенных нетелей"/>
+                            <newline/> 
+
+                            <field name="netel_imp_otel_day"/>
+                            <field name="netel_imp_otel_day_jiv"/>
+                            <field name="netel_imp_otel_day_mert"/>
+
+                            <separator string="от нетелей своих"/>
+                            <newline/> 
+
+                            <field name="netel_otel_day"/>
+                            <field name="netel_otel_day_jiv"/>
+                            <field name="netel_otel_day_mert"/>
+
+                        </group>
+
+                         <group string="с н/г">
+                            <field name="otel_god"/>
+                            <field name="otel_god_jiv"/>
+                            <field name="otel_god_mert"/>
+
+                            <separator string="от коров"/>
+                            <newline/> 
+
+                            <field name="cow_otel_god"/>
+                            <field name="cow_otel_god_jiv"/>
+                            <field name="cow_otel_god_mert"/>
+
+                            <separator string="от завезенных нетелей"/>
+                            <newline/> 
+
+                            <field name="netel_imp_otel_god"/>
+                            <field name="netel_imp_otel_god_jiv"/>
+                            <field name="netel_imp_otel_god_mert"/>
+
+                            <separator string="от нетелей своих"/>
+                            <newline/> 
+
+                            <field name="netel_otel_god"/>
+                            <field name="netel_otel_god_jiv"/>
+                            <field name="netel_otel_god_mert"/>
+                        </group>
+                    </group>
+
+
+
+
+                    <group string="Пало телят">
+                        <group string="за день">
+                            <field name="palo_tel_day"/>
+                            <field name="palo_tel01_day"/>
+                            <field name="palo_tel12_day"/>
+                            <field name="palo_tel23_day"/>
+                            <field name="palo_tel3_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                            <field name="palo_tel_god"/>
+                            <field name="palo_tel01_god"/>
+                            <field name="palo_tel12_god"/>
+                            <field name="palo_tel23_god"/>
+                            <field name="palo_tel3_god"/>
+                        </group>
+                    </group>
+
+                    <group string="Пало коров">
+                        <group string="за день">
+                            <field name="palo_cow_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="palo_cow_god"/>
+                        </group>
+                    </group>
+
+                    <group string="Осеменено коров">
+                        <group string="за день">
+                            <field name="osem_cow_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="osem_cow_god"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Осеменено телок">
+                        <group string="за день">
+                            <field name="osem_tel_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="osem_tel_god"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Продажа телят">
+                        <group string="за день">
+                            <field name="prodaja_tel_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="prodaja_tel_god"/>
+                        </group>
+                    </group>
+
+                    <group string="Сдача на м/к телят">
+                        <group string="за день">
+                            <field name="sdacha_tel_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="sdacha_tel_god"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Сдача на м/к коров">
+                        <group string="за день">
+                            <field name="sdacha_cow_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                           <field name="sdacha_cow_god"/>
+                        </group>
+                    </group>
+
+
+                    <group string="Абортов">
+                        <group string="за день">
+                            <field name="abort_day"/>
+                            <field name="abort_cow_day"/>
+                            <field name="abort_netel_day"/>
+
+
+                        </group>
+
+                         <group string="с н/г">
+                            <field name="abort_god"/>
+                            <field name="abort_cow_god"/>
+                            <field name="abort_netel_god"/>
+                           
+                        </group>
+                    </group>
+
+
+
+
+                    <group string="Структура">
+
+                        
+        
+
+                        <field name="cow_fur"/>
+                        <field name="cow_lakt"/>
+                        <field name="cow_zapusk"/>
+
+                        <field name="netel"/>
+                        <field name="tel"/>
+                        <field name="bik"/>
+
+                        <field name="cow_stel"/>
+                        <field name="cow_nestel"/>
+                        <field name="tel_15_itog"/>
+                        <field name="tel_15_stel"/>
+                        <field name="tel_15_osem"/>
+                        <field name="tel_15_neosem"/>
+
+
+                        
+                                          
+                        
+                       
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_krs_otchet_day_tree">
+            <field name="name">krs_otchet_day.tree</field>
+            <field name="model">krs.otchet_day</field>
+            <field name="arch" type="xml">
+                <tree string="Ежедневная сводка по животноводству">
+                    
+                    
+                    <field name="date"/>
+                   
+                    
+                  
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="krs_otchet_day_search_view">
+            <field name="name">krs_otchet_day.search</field>
+            <field name="model">krs.otchet_day</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    
+                    <field name="name"/>
+                   
+        
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="krs_otchet_day_list_action">
+            <field name="name">Ежедневная сводка по животноводству</field>
+            <field name="res_model">krs.otchet_day</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Ежедневная сводка по животноводству
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -486,3 +486,153 @@ class krs_struktura(models.Model):
 	cow_suhostoy2 = fields.Integer(string=u"Коровы поздний сухостой", group_operator="avg")
 
 
+
+
+class krs_otchet_day(models.Model):
+	_name = 'krs.otchet_day'
+	_description = u'Ежедневная сводка по животноводству'
+	_order = 'date desc'
+
+
+	@api.one
+	@api.depends('date')
+	def _get_name(self):
+
+		self.name = u"Ежедневная сводка по животноводсту за " + str(self.date)
+
+
+	@api.one
+	def action_zapolnit(self):
+		pass
+
+		
+	
+		
+
+
+	name = fields.Char(string=u"Наименование", compute='_get_name', store=True, default=u"Ежедневная сводка по животноводсту за " + str(fields.Datetime.now))
+	date = fields.Date(string='Дата сводки', required=True, default=fields.Datetime.now)
+
+	krs_otchet_day_lastday_id = fields.Many2one('krs.otchet_day', string=u"Сводка за предыдущий день")
+	krs_otchet_day_lastgod_id = fields.Many2one('krs.otchet_day', string=u"Сводка за предыдущий день года")
+
+	valoviy_nadoy_day = fields.Integer(string=u"Валовое производство молока за день, кг", default=0)
+	otk_valoviy_nadoy_day = fields.Integer(string=u"Разница с предыдущим днем +/-", default=0)
+	
+	valoviy_nadoy_god = fields.Integer(string=u"Валовое производство молока с н/г, кг", default=0)
+
+	sale_milk_day = fields.Integer(string=u"Реализация молока за день, кг", default=0)
+	sort = fields.Char(string=u"Сорт", default=u'в/с')
+	
+	sale_jir = fields.Float(digits=(3, 2), string=u"Жир, %")
+	sale_belok = fields.Float(digits=(3, 2), string=u"Белок, %")
+	otk_sale_milk_day = fields.Integer(string=u"Разница реализации с предудыщим днем, +/-", default=0)
+	
+	nadoy_fur_day = fields.Float(digits=(3, 2), string=u"Удой на фуражную за день, кг")
+	nadoy_doy_day = fields.Float(digits=(3, 2), string=u"Удой на дойную за день, кг")
+	
+	otk_nadoy_fur_day = fields.Float(digits=(3, 2), string=u"Разница с предыдущим днем (фуражных), кг")
+
+
+	nadoy_fur_god = fields.Float(digits=(3, 2), string=u"Удой на фуражную с н/г, кг")
+	nadoy_doy_god = fields.Float(digits=(3, 2), string=u"Удой на дойную с н/г, кг")
+
+
+
+
+	
+	otel_day = fields.Integer(string=u"Отел за день всего", default=0)
+	otel_day_jiv = fields.Integer(string=u"Отел за день живых", default=0)
+	otel_day_mert = fields.Integer(string=u"Отел за день мертв.", default=0)
+
+	cow_otel_day = fields.Integer(string=u"Отел за день от коров всего", default=0)
+	cow_otel_day_jiv = fields.Integer(string=u"Отел за день от коров живых", default=0)
+	cow_otel_day_mert = fields.Integer(string=u"Отел за день от коров мертв.", default=0)
+
+	netel_imp_otel_day = fields.Integer(string=u"Отел за день от завезенных нетелей всего", default=0)
+	netel_imp_otel_day_jiv = fields.Integer(string=u"Отел за день от завезенных нетелей живых", default=0)
+	netel_imp_otel_day_mert = fields.Integer(string=u"Отел за день от завезенных нетелей мертв.х", default=0)
+
+	netel_otel_day = fields.Integer(string=u"Отел за день от своих нетелей всего", default=0)
+	netel_otel_day_jiv = fields.Integer(string=u"Отел за день от своих нетелей живых", default=0)
+	netel_otel_day_mert = fields.Integer(string=u"Отел за день от своих нетелей мертв.", default=0)
+
+
+
+	otel_god = fields.Integer(string=u"Отел с н/г всего", default=0)
+	otel_god_jiv = fields.Integer(string=u"Отел с н/г живых", default=0)
+	otel_god_mert = fields.Integer(string=u"Отел с н/г мертв.", default=0)
+
+	cow_otel_god = fields.Integer(string=u"Отел с н/г от коров всего", default=0)
+	cow_otel_god_jiv = fields.Integer(string=u"Отел с н/г от коров живых", default=0)
+	cow_otel_god_mert = fields.Integer(string=u"Отел с н/г от коров мертв.", default=0)
+
+	netel_imp_otel_god = fields.Integer(string=u"Отел с н/г от завезенных нетелей всего", default=0)
+	netel_imp_otel_god_jiv = fields.Integer(string=u"Отел с н/г от завезенных нетелей живых", default=0)
+	netel_imp_otel_god_mert = fields.Integer(string=u"Отел с н/г от завезенных нетелей мертв.", default=0)
+
+	netel_otel_god = fields.Integer(string=u"Отел с н/г от своих нетелей всего", default=0)
+	netel_otel_god_jiv = fields.Integer(string=u"Отел с н/г от своих нетелей живых", default=0)
+	netel_otel_god_mert = fields.Integer(string=u"Отел с н/г от своих нетелей мертв.", default=0)
+
+	
+
+	palo_tel_day = fields.Integer(string=u"Пало телят за день всего", default=0)
+	palo_tel01_day = fields.Integer(string=u"Пало телят за день 0-1", default=0)
+	palo_tel12_day = fields.Integer(string=u"Пало телят за день 1-2", default=0)
+	palo_tel23_day = fields.Integer(string=u"Пало телят за день 2-3", default=0)
+	palo_tel3_day = fields.Integer(string=u"Пало телят за день 3 и старше", default=0)
+
+	palo_tel_god = fields.Integer(string=u"Пало телят с н/г всего", default=0)
+	palo_tel01_god = fields.Integer(string=u"Пало телят с н/г 0-1", default=0)
+	palo_tel12_god = fields.Integer(string=u"Пало телят с н/г 1-2", default=0)
+	palo_tel23_god = fields.Integer(string=u"Пало телят с н/г 2-3", default=0)
+	palo_tel3_god = fields.Integer(string=u"Пало телят с н/г 3 и старше", default=0)
+
+
+	palo_cow_day = fields.Integer(string=u"Пало взрослого скота за день", default=0)
+	palo_cow_god = fields.Integer(string=u"Пало взрослого скота с н/г", default=0)
+
+
+	osem_cow_day = fields.Integer(string=u"Осеменено коров за день", default=0)
+	osem_cow_god = fields.Integer(string=u"Осеменено коров с н/г", default=0)
+
+	osem_tel_day = fields.Integer(string=u"Осеменено телок за день", default=0)
+	osem_tel_god = fields.Integer(string=u"Осеменено телок с н/г", default=0)
+
+	prodaja_tel_day = fields.Integer(string=u"Продажа телят за день", default=0)
+	prodaja_tel_god = fields.Integer(string=u"Продажа телят с н/г", default=0)
+
+	sdacha_tel_day = fields.Integer(string=u"Сдача на м/к молодняка КРС за день", default=0)
+	sdacha_tel_god = fields.Integer(string=u"Сдача на м/к молодняка КРС с н/г", default=0)
+
+	sdacha_cow_day = fields.Integer(string=u"Сдача на м/к взрослый КРС за день", default=0)
+	sdacha_cow_god = fields.Integer(string=u"Сдача на м/к взрослый КРС с н/г", default=0)
+
+
+	cow_fur = fields.Integer(string=u"Поголовье фуражных коров", default=0)
+	cow_lakt = fields.Integer(string=u"Лактируюших коров", default=0)
+	cow_zapusk = fields.Integer(string=u"Запущенных коров", default=0)
+	netel = fields.Integer(string=u"Нетелей", default=0)
+	tel = fields.Integer(string=u"Телок", default=0)
+	bik = fields.Integer(string=u"Бычков", default=0)
+
+	cow_stel = fields.Integer(string=u"Стельных коров в стаде", default=0)
+	cow_nestel = fields.Integer(string=u"Не стельных коров в стаде", default=0)
+	tel_15_itog = fields.Integer(string=u"Телки старше 15 месяцев (в т.ч. нетели)", default=0)
+	tel_15_stel = fields.Integer(string=u"Стельные Телки старше 15 месяцев", default=0)
+	tel_15_osem = fields.Integer(string=u"Осемененные Телки старше 15 месяцев", default=0)
+	tel_15_neosem = fields.Integer(string=u"Не осемененные Телки старше 15 месяцев", default=0)
+
+
+	abort_day = fields.Integer(string=u"Абортов за день", default=0)
+	abort_god = fields.Integer(string=u"Абортов с н/г", default=0)
+
+	abort_cow_day = fields.Integer(string=u"Абортов от коров за день", default=0)
+	abort_cow_god = fields.Integer(string=u"Абортов от коров с н/г", default=0)
+
+	abort_netel_day = fields.Integer(string=u"Абортов от нетелей за день", default=0)
+	abort_netel_god = fields.Integer(string=u"Абортов от нетелей с н/г", default=0)
+
+
+

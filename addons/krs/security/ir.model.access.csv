@@ -17,3 +17,5 @@ access_krs_abort_manager,krs.abort,model_krs_abort,group_krs_manager,1,1,1,1
 access_krs_abort_users,krs.abort,model_krs_abort,group_krs_users,1,0,0,0
 access_krs_struktura_manager,krs.struktura,model_krs_struktura,group_krs_manager,1,1,1,1
 access_krs_struktura_users,krs.struktura,model_krs_struktura,group_krs_users,1,0,0,0
+access_krs_otchet_day_manager,krs.otchet_day,model_krs_otchet_day,group_krs_manager,1,1,1,1
+access_krs_otchet_day_users,krs.otchet_day,model_krs_otchet_day,group_krs_users,1,0,0,0

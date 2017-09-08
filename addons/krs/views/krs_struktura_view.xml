@@ -120,6 +120,9 @@
                         </group>
                     </group>
 
+                    <group string="Общее поголовье">
+                        <field name="itog_pogolove"/>
+                    </group>
 
                 
 		            

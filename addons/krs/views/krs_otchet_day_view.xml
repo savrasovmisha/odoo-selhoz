@@ -7,6 +7,15 @@
         <field name="arch" type="xml">
             <form string="Форма Ежедневная сводка по животноводству">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="action_zapolnit"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                                
+                               >
+                            </button>
+                        </div>
                     <group>
                         
                         <field name="date"/>
@@ -269,6 +278,7 @@
                         <field name="tel_15_osem"/>
                         <field name="tel_15_neosem"/>
 
+                        <field name="itog_pogolove"/>
 
                         
                                           

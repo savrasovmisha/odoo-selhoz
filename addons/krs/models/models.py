@@ -67,6 +67,16 @@ class krs_srashod(models.Model):
 	
 	kod = fields.Integer(string=u"Код",required=True)
 
+	vid_rashoda = fields.Selection([
+		(u'Падеж', u"Падеж"),
+		(u'Продажа', u"Продажа"),
+		(u'Сдача на м/к', u"Сдача на м/к"),
+		(u'Прочее', u"Прочее"),
+		], default='', string=u'Вид расхода')
+
+	
+
+
 
 
 
@@ -404,6 +414,7 @@ class krs_struktura(models.Model):
 		self._raschet_tel()
 		self._raschet_tel_itog()
 		self._raschet_bik_itog()
+		self.itog_pogolove = self.cow_itog_fur + self.tel_itog_tel_netel + self.bik_itog
 
 
 	name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
@@ -485,7 +496,7 @@ class krs_struktura(models.Model):
 	cow_suhostoy1 = fields.Integer(string=u"Коровы ранний сухостой", group_operator="avg")
 	cow_suhostoy2 = fields.Integer(string=u"Коровы поздний сухостой", group_operator="avg")
 
-
+	itog_pogolove = fields.Integer(string=u"Общее поголовье", default=0)
 
 
 class krs_otchet_day(models.Model):
@@ -503,13 +514,374 @@ class krs_otchet_day(models.Model):
 
 	@api.one
 	def action_zapolnit(self):
-		pass
+
+		nashe_ids = self.env['krs.hoz'].search([('nashe', '=', True),], limit=1)
+		if len(nashe_ids)>0:
+			nashe_id = nashe_ids[0].id
+
+		tek_date = datetime.strptime(self.date,'%Y-%m-%d')
+		nach_god = datetime.strptime(str(tek_date.year)+'-01-01', "%Y-%m-%d").date()
+		#print "dddddddddd===",nach_god
+
+		#---------ОТЕЛЫ ЗА ДЕНЬ ----------------
+		
+		#Отелы за день всего
+		otel_day_ids = self.env['krs.otel'].search([('date', '=', self.date), ('abort', '=' ,False)])
+		self.otel_day = sum(line.kol_itog for line in otel_day_ids)
+		self.otel_day_jiv = sum(line.kol_itog_jiv for line in otel_day_ids)
+		self.otel_day_mert = sum(line.kol_itog_mert for line in otel_day_ids)
+
+		#Отелы за день по КОРОВАМ
+		otel_day_ids = self.env['krs.otel'].search([('date', '=', self.date), 
+													('abort', '=' ,False), 
+													('nomer_lakt', '>' ,1)])		
+
+		self.cow_otel_day = sum(line.kol_itog for line in otel_day_ids)
+		self.cow_otel_day_jiv = sum(line.kol_itog_jiv for line in otel_day_ids)
+		self.cow_otel_day_mert = sum(line.kol_itog_mert for line in otel_day_ids)
+
+		#Отелы за день по Импортным НЕТЕЛЯМ
+		otel_day_ids = self.env['krs.otel'].search([('date', '=', self.date), 
+													('abort', '=' ,False),
+													('nomer_lakt', '=' ,1), 
+													('krs_hoz_id', '!=' ,nashe_id)])
+		self.netel_imp_otel_day = sum(line.kol_itog for line in otel_day_ids)
+		self.netel_imp_otel_day_jiv = sum(line.kol_itog_jiv for line in otel_day_ids)
+		self.netel_imp_otel_day_mert = sum(line.kol_itog_mert for line in otel_day_ids)
+
+		#Отелы за день по своим НЕТЕЛЯМ
+		otel_day_ids = self.env['krs.otel'].search([('date', '=', self.date), 
+													('abort', '=' ,False),
+													('nomer_lakt', '=' ,1), 
+													('krs_hoz_id', '=' ,nashe_id)])
+		self.netel_otel_day = sum(line.kol_itog for line in otel_day_ids)
+		self.netel_otel_day_jiv = sum(line.kol_itog_jiv for line in otel_day_ids)
+		self.netel_otel_day_mert = sum(line.kol_itog_mert for line in otel_day_ids)
+		#-----------------------------------------------------------------------
+
+
+
+		#-----------------------------------------------------------------------
+		#--------- ОТЕЛЫ С Н/Г-------------------
+
+		#Отелы с н/г всего
+		otel_ids = self.env['krs.otel'].search([
+													('date', '>=', nach_god), 
+													('date', '<=', self.date), 
+													('abort', '=' ,False)])
+		self.otel_god = sum(line.kol_itog for line in otel_ids)
+		self.otel_god_jiv = sum(line.kol_itog_jiv for line in otel_ids)
+		self.otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
+
+		#Отелы с н/г по КОРОВАМ
+		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+													('date', '<=', self.date), 
+													('abort', '=' ,False), 
+													('nomer_lakt', '>' ,1)])		
+
+		self.cow_otel_god = sum(line.kol_itog for line in otel_ids)
+		self.cow_otel_god_jiv = sum(line.kol_itog_jiv for line in otel_ids)
+		self.cow_otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
+
+		#Отелы с н/г по Импортным НЕТЕЛЯМ
+		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+													('date', '<=', self.date),
+													('abort', '=' ,False),
+													('nomer_lakt', '=' ,1), 
+													('krs_hoz_id', '!=' ,nashe_id)])
+		self.netel_imp_otel_god = sum(line.kol_itog for line in otel_ids)
+		self.netel_imp_otel_god_jiv = sum(line.kol_itog_jiv for line in otel_ids)
+		self.netel_imp_otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
+
+		#Отелы с н/г по своим НЕТЕЛЯМ
+		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+													('date', '<=', self.date),
+													('abort', '=' ,False),
+													('nomer_lakt', '=' ,1), 
+													('krs_hoz_id', '=' ,nashe_id)])
+		self.netel_otel_god = sum(line.kol_itog for line in otel_ids)
+		self.netel_otel_god_jiv = sum(line.kol_itog_jiv for line in otel_ids)
+		self.netel_otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
+
+		#-----------------------------------------------------------------------
 
 		
-	
+		#-----------------------------------------------------------------------
+		#--------- ПАЛО ТЕЛЯТ ЗА ДЕНЬ-------------------
+		krs_srashod_ids = self.env['krs.srashod'].search([('vid_rashoda', '=', u'Падеж'),])
+		padej_ids = []
+		for line in krs_srashod_ids:
+			padej_ids.append(line.id)
+
+		#print 'dddddddd===',padej_ids
+		
+		self.palo_tel_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel01_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('vozrast', '=', 0), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel12_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('vozrast', '=', 1), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel23_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('vozrast', '=', 2), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel3_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('vozrast', '>', 2), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- ПАЛО ТЕЛЯТ С Н/Г-------------------
+		
+		
+		self.palo_tel_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel01_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('vozrast', '=', 0), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel12_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('vozrast', '=', 1), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel23_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('vozrast', '=', 2), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_tel3_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('vozrast', '>', 2), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
 		
 
+		
 
+		#-----------------------------------------------------------------------
+		#--------- ПАЛО КОРОВ-------------------
+		
+		
+		self.palo_cow_day = self.env['krs.cow_vibitiya'].search_count([
+													
+													('date', '=', self.date), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+		self.palo_cow_god = self.env['krs.cow_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('krs_srashod_id', 'in', padej_ids), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- ОСЕМЕНЕНО КОРОВ-------------------
+		
+		
+		self.osem_cow_day = self.env['krs.osemeneniya'].search_count([
+													
+													('date', '=', self.date), 
+													('status', '=', u'Корова'), 
+													])
+		self.osem_cow_god = self.env['krs.osemeneniya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('status', '=', u'Корова'), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- ОСЕМЕНЕНО КОРОВ-------------------
+		
+		
+		self.osem_tel_day = self.env['krs.osemeneniya'].search_count([
+													
+													('date', '=', self.date), 
+													('status', '=', u'Телочка'), 
+													])
+		self.osem_tel_god = self.env['krs.osemeneniya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('status', '=', u'Телочка'), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- ПРОДАЖА ТЕЛЯТ-------------------
+		
+		krs_srashod_ids = self.env['krs.srashod'].search([('vid_rashoda', '=', u'Продажа'),])
+		podaja_ids = []
+		for line in krs_srashod_ids:
+			podaja_ids.append(line.id)
+
+		self.prodaja_tel_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('krs_srashod_id', 'in', podaja_ids), 
+													])
+		self.prodaja_tel_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('krs_srashod_id', 'in', podaja_ids), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- СДАЧА ТЕЛЯТ -------------------
+		krs_srashod_ids = self.env['krs.srashod'].search([('vid_rashoda', '=', u'Сдача на м/к'),])
+		sdacha_ids = []
+		for line in krs_srashod_ids:
+			sdacha_ids.append(line.id)	
+
+		self.sdacha_tel_day = self.env['krs.tel_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('krs_srashod_id', 'in', sdacha_ids), 
+													])
+		self.sdacha_tel_god = self.env['krs.tel_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('krs_srashod_id', 'in', sdacha_ids), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- СДАЧА КОРОВ -------------------
+						
+		self.sdacha_cow_day = self.env['krs.cow_vibitiya'].search_count([
+													('date', '=', self.date), 
+													('krs_srashod_id', 'in', sdacha_ids), 
+													])
+		self.sdacha_cow_god = self.env['krs.cow_vibitiya'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													('krs_srashod_id', 'in', sdacha_ids), 
+													])
+
+		#-----------------------------------------------------------------------
+		#--------- АБОРТЫ -------------------
+						
+		self.abort_day = self.env['krs.abort'].search_count([
+													('date', '=', self.date), 
+													])
+		#Добавляем аборты из отелов
+		self.abort_day += self.env['krs.otel'].search_count([
+														('date', '=', self.date), 
+														('abort', '=' ,True)
+													])
+
+		self.abort_god = self.env['krs.abort'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date), 
+													])
+		#Добавляем аборты из отелов
+		self.abort_god += self.env['krs.otel'].search_count([
+														('date', '>=', nach_god),
+														('date', '<=', self.date), 
+														('abort', '=' ,True)
+													])
+
+		#--------- АБОРТЫ ОТ КОРОВ -------------------
+
+		self.abort_cow_day = self.env['krs.abort'].search_count([
+													('date', '=', self.date),
+													('status', '=', u'Корова'),  
+													])
+		#Добавляем аборты из отелов
+		self.abort_cow_day += self.env['krs.otel'].search_count([
+														('date', '=', self.date), 
+														('nomer_lakt', '>' ,1),
+														('abort', '=' ,True)
+													])
+		self.abort_cow_god = self.env['krs.abort'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date),
+													('status', '=', u'Корова'),  
+													])
+		#Добавляем аборты из отелов
+		self.abort_cow_god += self.env['krs.otel'].search_count([
+														('date', '>=', nach_god),
+														('date', '<=', self.date),
+														('nomer_lakt', '>' ,1),
+														('abort', '=' ,True)
+													])
+
+
+
+
+
+		#--------- АБОРТЫ ОТ НЕТЕЛЕЙ -------------------
+
+		self.abort_netel_day = self.env['krs.abort'].search_count([
+													('date', '=', self.date),
+													('status', '=', u'Нетель'),  
+													])
+		#Добавляем аборты из отелов
+		self.abort_netel_day += self.env['krs.otel'].search_count([
+														('date', '=', self.date), 
+														('nomer_lakt', '=' ,1),
+														('abort', '=' ,True)
+													])
+
+		self.abort_netel_god = self.env['krs.abort'].search_count([
+													('date', '>=', nach_god),
+													('date', '<=', self.date),
+													('status', '=', u'Нетель'),  
+													])
+		#Добавляем аборты из отелов
+		self.abort_netel_god += self.env['krs.otel'].search_count([
+														('date', '>=', nach_god),
+														('date', '<=', self.date), 
+														('nomer_lakt', '=' ,1),
+														('abort', '=' ,True)
+													])
+
+		
+		#--------- СТРУКТУРА СТАДА -------------------
+
+		struktura_ids = self.env['krs.struktura'].search([
+													('date', '=', self.date),
+													], limit=1)
+		if len(struktura_ids)>0:
+			struktura = struktura_ids[0]
+
+			#print 'ttttttttttttttt', struktura.cow_itog_fur
+
+			self.cow_fur = struktura.cow_itog_fur
+			self.cow_lakt = struktura.cow_itog_lakt
+			self.cow_zapusk = struktura.cow_zapusk
+			
+			self.netel = struktura.tel_itog_netel
+			self.tel = struktura.tel_itog
+			self.bik = struktura.bik_itog
+
+			self.cow_stel = struktura.cow_itog_stel
+			self.cow_nestel = self.cow_fur - self.cow_stel
+
+			self.tel_15_itog = struktura.tel_15_itog
+			self.tel_15_stel = struktura.tel_15_stel
+			self.tel_15_osem = struktura.tel_15_osem
+			self.tel_15_neosem = struktura.tel_15_neosem
+
+			self.itog_pogolove = self.cow_fur + self.netel + self.tel + self.bik
+
+
+
+
+		
+		
 	name = fields.Char(string=u"Наименование", compute='_get_name', store=True, default=u"Ежедневная сводка по животноводсту за " + str(fields.Datetime.now))
 	date = fields.Date(string='Дата сводки', required=True, default=fields.Datetime.now)
 
@@ -623,6 +995,8 @@ class krs_otchet_day(models.Model):
 	tel_15_stel = fields.Integer(string=u"Стельные Телки старше 15 месяцев", default=0)
 	tel_15_osem = fields.Integer(string=u"Осемененные Телки старше 15 месяцев", default=0)
 	tel_15_neosem = fields.Integer(string=u"Не осемененные Телки старше 15 месяцев", default=0)
+
+	itog_pogolove = fields.Integer(string=u"Общее поголовье", default=0)
 
 
 	abort_day = fields.Integer(string=u"Абортов за день", default=0)

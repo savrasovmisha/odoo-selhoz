@@ -333,7 +333,7 @@ def krs_load_osemeneniya(date_start, date_end, kod_osemeneniya):
 		datas.append(
 					{
 						'inv_nomer':line[0],
-						'status': line[1],
+						'status': line[1].strip(),
 						'date': str(line[2]),
 						'fio': line[3],
 						'bik': line[4],
@@ -341,7 +341,7 @@ def krs_load_osemeneniya(date_start, date_end, kod_osemeneniya):
 					}
 		
 		)
-	#print zagon
+		#print 'rrrrr%srrrrr' % (line[1],)
 	
 	data = json.dumps(datas)
 	#print data

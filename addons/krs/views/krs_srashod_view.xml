@@ -11,6 +11,8 @@
                         
                         <field name="name"/>
                         <field name="kod"/>
+                        <field name="vid_rashoda"/>
+                        
                         
                         
                        

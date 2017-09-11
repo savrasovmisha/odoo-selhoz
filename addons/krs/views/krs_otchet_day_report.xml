@@ -1,0 +1,848 @@
+<openerp>
+    <data>
+
+   
+        
+
+       <template id="report_krs_otchet_day_view">
+          
+
+            
+   
+            <t t-call="report.html_container">   
+
+
+
+                <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
+                <t t-foreach="docs" t-as="doc">
+                    <t>          
+                     <div class="page" style="font-size:16px;">   
+                         <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
+
+                        
+                        <div class="text-center">
+                                Ежедневная сводка по животноводству на <br/>
+                                <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> г. <br/>
+                        </div>  
+                        
+
+                        <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
+                            <tr>
+                                <th align="center" style="padding: 2px;"> Показатель</th>
+                                    
+                               
+                                <th class="text-center" style="padding: 2px;">Ед. изм.</th>
+                                <th class="text-center" style="padding: 2px;">
+                                     <span t-field="doc.krs_otchet_day_lastgod_id.date" t-field-options="{&quot;format&quot;: &quot;yyyy&quot;}"/>
+                                </th>
+                                <th class="text-center" style="padding: 2px;">
+                                    <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;yyyy&quot;}"/>
+                                </th>
+                                
+                             </tr>
+
+                           
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Валовое производство молока за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    кг
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.valoviy_nadoy_day).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.valoviy_nadoy_day).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Разница с предыдущим днем
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    +/-
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.otk_valoviy_nadoy_day).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.otk_valoviy_nadoy_day).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Валовое производство молока с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    кг
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.valoviy_nadoy_god).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.valoviy_nadoy_god).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Реализация молока за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    кг
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.sale_milk_day).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.sale_milk_day).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    cорт
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sort"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sort"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    % жира
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sale_jir"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sale_jir"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    % белка
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sale_belok"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sale_belok"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Разница реализации с предыдущим днем
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    +/-
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.otk_sale_milk_day).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.otk_sale_milk_day).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Удой на фуражную /дойную корову за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    кг
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.1f}'.format(doc.krs_otchet_day_lastgod_id.nadoy_fur_day).replace(',', ' ')"/> /
+                                    <t t-esc="'{0:,.1f}'.format(doc.krs_otchet_day_lastgod_id.nadoy_doy_day).replace(',', ' ')"/>
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.1f}'.format(doc.nadoy_fur_day).replace(',', ' ')"/> /
+                                    <t t-esc="'{0:,.1f}'.format(doc.nadoy_doy_day).replace(',', ' ')"/>
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Разница с предыдущим днем
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    +/-
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.1f}'.format(doc.krs_otchet_day_lastgod_id.otk_nadoy_fur_day).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.1f}'.format(doc.otk_nadoy_fur_day).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Удой на фуражную корову с н/г  (на дойную корову с н/г)
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    кг
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.nadoy_fur_god).replace(',', ' ')"/> /
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.nadoy_doy_god).replace(',', ' ')"/>
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.nadoy_fur_god).replace(',', ' ')"/> /
+                                    <t t-esc="'{0:,.0f}'.format(doc.nadoy_doy_god).replace(',', ' ')"/>
+                                </td>
+                            </tr>
+
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Отел за день всего/живых/мертворожд.
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_day_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_day_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.otel_day"/> /
+                                    <t t-esc="doc.otel_day_jiv"/> /
+                                    <t t-esc="doc.otel_day_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    в т.ч. от коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_day_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_day_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.cow_otel_day"/> /
+                                    <t t-esc="doc.cow_otel_day_jiv"/> /
+                                    <t t-esc="doc.cow_otel_day_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    от нетелей завезенных
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_day_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_day_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.netel_imp_otel_day"/> /
+                                    <t t-esc="doc.netel_imp_otel_day_jiv"/> /
+                                    <t t-esc="doc.netel_imp_otel_day_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    от нетелей своих
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_day_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_day_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.netel_otel_day"/> /
+                                    <t t-esc="doc.netel_otel_day_jiv"/> /
+                                    <t t-esc="doc.netel_otel_day_mert"/> 
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Отел с н/г всего/живых/мертворожд.
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_god_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.otel_god_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.otel_god"/> /
+                                    <t t-esc="doc.otel_god_jiv"/> /
+                                    <t t-esc="doc.otel_god_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    в т.ч. от коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_god_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.cow_otel_god_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.cow_otel_god"/> /
+                                    <t t-esc="doc.cow_otel_god_jiv"/> /
+                                    <t t-esc="doc.cow_otel_god_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    от нетелей завезенных
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_god_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_imp_otel_god_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.netel_imp_otel_god"/> /
+                                    <t t-esc="doc.netel_imp_otel_god_jiv"/> /
+                                    <t t-esc="doc.netel_imp_otel_god_mert"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    от нетелей своих
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_god_jiv"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.netel_otel_god_mert"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.netel_otel_god"/> /
+                                    <t t-esc="doc.netel_otel_god_jiv"/> /
+                                    <t t-esc="doc.netel_otel_god_mert"/> 
+                                </td>
+                            </tr>
+
+
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Пало телят за день всего/0-1/1-2/2-3/3 и старше
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel01_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel12_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel23_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel3_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.palo_tel_day"/> /
+                                    <t t-esc="doc.palo_tel01_day"/> /
+                                    <t t-esc="doc.palo_tel12_day"/> /
+                                    <t t-esc="doc.palo_tel23_day"/> /
+                                    <t t-esc="doc.palo_tel3_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Пало телят с н/г всего/0-1/1-2/2-3/3 и старше
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel01_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel12_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel23_god"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_tel3_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.palo_tel_god"/> /
+                                    <t t-esc="doc.palo_tel01_god"/> /
+                                    <t t-esc="doc.palo_tel12_god"/> /
+                                    <t t-esc="doc.palo_tel23_god"/> /
+                                    <t t-esc="doc.palo_tel3_god"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Пало взрослого скота за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_cow_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.palo_cow_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Пало взрослого скота с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.palo_cow_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.palo_cow_god"/> 
+                                </td>
+                            </tr>
+
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Случено коров за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.osem_cow_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.osem_cow_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Случено коров с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.osem_cow_god).replace(',', ' ')"/>
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.osem_cow_god).replace(',', ' ')"/>
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Случено телок за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.osem_tel_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.osem_tel_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Случено телок с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.osem_tel_god).replace(',', ' ')"/>
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.osem_tel_god).replace(',', ' ')"/>
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Продажа телят за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.prodaja_tel_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.prodaja_tel_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Продажа телят с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.prodaja_tel_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.prodaja_tel_god"/> 
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Сдача на м/к молодняк КРС за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sdacha_tel_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sdacha_tel_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Сдача на м/к молодняк КРС с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sdacha_tel_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sdacha_tel_god"/> 
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Сдача на м/к взрослый КРС за день
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sdacha_cow_day"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sdacha_cow_day"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Сдача на м/к взрослый КРС с н/г
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.sdacha_cow_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.sdacha_cow_god"/> 
+                                </td>
+                            </tr>
+
+
+
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    Поголовье фуражных коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.cow_fur).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.cow_fur).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    в т.ч.  Лактирующих коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.cow_lakt).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.cow_lakt).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    Запущенных коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.cow_zapusk).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.cow_zapusk).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    Нетелей
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.netel).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.netel).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    Телок
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.tel).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.tel).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 50px">
+                                    Бычков
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.bik).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.bik).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+
+
+
+                            <tr >
+                                <td style="padding: 2px; padding-left: 100px">
+                                    Стельные коровы в стаде
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.cow_stel).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.cow_stel).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 100px">
+                                    Не стельные коровы в стаде
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.cow_nestel).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.cow_nestel).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 100px">
+                                    Телки старше 15 месяцев (в т.ч.  нетели)
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.tel_15_itog).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.tel_15_itog).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 120px">
+                                    в т.ч.  Стельных
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.tel_15_stel).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.tel_15_stel).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 120px">
+                                    Осемененных
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.tel_15_osem).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.tel_15_osem).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td style="padding: 2px; padding-left: 120px">
+                                    Не осемененных
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.tel_15_neosem).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.tel_15_neosem).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    Аборты за день/всего с начала года
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.abort_day"/> /
+                                    <t t-esc="doc.abort_god"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    в т.ч. от Коров
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_cow_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_cow_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.abort_cow_day"/> /
+                                    <t t-esc="doc.abort_cow_god"/> 
+                                </td>
+                            </tr>
+                            <tr >
+                                <td align="right" style="padding: 2px;">
+                                    в т.ч. от Нетелей
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_netel_day"/> /
+                                    <t t-esc="doc.krs_otchet_day_lastgod_id.abort_netel_god"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="doc.abort_netel_day"/> /
+                                    <t t-esc="doc.abort_netel_god"/> 
+                                </td>
+                            </tr>
+
+
+                            <tr >
+                                <td style="padding: 2px;">
+                                    Общее поголовье
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    гол
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.krs_otchet_day_lastgod_id.itog_pogolove).replace(',', ' ')"/> 
+                                </td>
+                                <td align="center" style="padding: 2px;">
+                                    <t t-esc="'{0:,.0f}'.format(doc.itog_pogolove).replace(',', ' ')"/> 
+                                </td>
+                            </tr>
+
+
+                                
+                            
+                         </table>
+
+
+
+                        
+                        <div style="font-size:14px; margin-top: 20px;">   
+                        Составил:  <span style='padding-left:20px;'> _______________: _____________</span>
+                        </div>
+
+                      
+                        
+                     </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <report
+        id="report_krs_otchet_day"
+        model="krs.otchet_day"
+        string="Ежедневная сводка по животноводству"
+        name="krs.report_krs_otchet_day_view"
+        file="krs.report_krs_otchet_day"
+        report_type="qweb-pdf" />
+
+        <record id="krs.report_krs_otchet_day" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+        </record>
+
+  
+
+        
+
+    </data>
+</openerp>

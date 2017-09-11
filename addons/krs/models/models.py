@@ -368,11 +368,11 @@ class krs_struktura(models.Model):
 		self.tel_itog_tel_netel = self.tel_itog_stel + self.tel_neosem + self.tel_osem
 		
 
-		self.tel_15_itog = 	self.tel_15_stel + self.tel_15_neosem +self.tel_15_osem
+		self.tel_15_itog =  self.tel_15_stel + self.tel_15_neosem +self.tel_15_osem
 
 	
 	@api.one
-	@api.depends(	'tel_0',
+	@api.depends(   'tel_0',
 					'tel_1',
 					'tel_2',
 					'tel_3',
@@ -390,7 +390,7 @@ class krs_struktura(models.Model):
 		self.tel_itog = self.tel_itog_03 + self.tel_itog_36 + self.tel_itog_618
 
 	@api.one
-	@api.depends(	'bik_0',
+	@api.depends(   'bik_0',
 					'bik_1',
 					'bik_2',
 					'bik_3',
@@ -409,7 +409,7 @@ class krs_struktura(models.Model):
 
 
 	@api.one
-	def _raschet(self):	
+	def _raschet(self): 
 		self._raschet_cow()
 		self._raschet_tel()
 		self._raschet_tel_itog()
@@ -521,7 +521,36 @@ class krs_otchet_day(models.Model):
 
 		tek_date = datetime.strptime(self.date,'%Y-%m-%d')
 		nach_god = datetime.strptime(str(tek_date.year)+'-01-01', "%Y-%m-%d").date()
-		#print "dddddddddd===",nach_god
+
+		
+		last_day = tek_date - timedelta(days=1)
+		last_day = last_day.date()
+
+		#print "dddddddddd===",last_day
+		try:
+			last_god = tek_date.replace(year=tek_date.year - 1).date()
+		except ValueError:
+			
+			assert tek_date.month == 2 and tek_date.day == 29 # can be removed
+			last_god = tek_date.replace(month=2, day=28, year=tek_date.year-1).date()
+
+		
+
+		#--------- Отчет прошлого дня-------------------
+		otchet_day_ids = self.env['krs.otchet_day'].search([
+													('date', '=', last_day)
+													], limit=1)
+		if len(otchet_day_ids)>0:
+			print '77777777777777777777'
+			self.krs_otchet_day_lastday_id = otchet_day_ids[0].id
+
+		#--------- Отчет прошлого года-------------------
+		otchet_day_ids = self.env['krs.otchet_day'].search([
+													('date', '=', last_god),
+													], limit=1)
+		if len(otchet_day_ids)>0:
+			self.krs_otchet_day_lastgod_id = otchet_day_ids[0].id
+			
 
 		#---------ОТЕЛЫ ЗА ДЕНЬ ----------------
 		
@@ -534,7 +563,7 @@ class krs_otchet_day(models.Model):
 		#Отелы за день по КОРОВАМ
 		otel_day_ids = self.env['krs.otel'].search([('date', '=', self.date), 
 													('abort', '=' ,False), 
-													('nomer_lakt', '>' ,1)])		
+													('nomer_lakt', '>' ,1)])        
 
 		self.cow_otel_day = sum(line.kol_itog for line in otel_day_ids)
 		self.cow_otel_day_jiv = sum(line.kol_itog_jiv for line in otel_day_ids)
@@ -574,17 +603,17 @@ class krs_otchet_day(models.Model):
 		self.otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
 
 		#Отелы с н/г по КОРОВАМ
-		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+		otel_ids = self.env['krs.otel'].search([    ('date', '>=', nach_god), 
 													('date', '<=', self.date), 
 													('abort', '=' ,False), 
-													('nomer_lakt', '>' ,1)])		
+													('nomer_lakt', '>' ,1)])        
 
 		self.cow_otel_god = sum(line.kol_itog for line in otel_ids)
 		self.cow_otel_god_jiv = sum(line.kol_itog_jiv for line in otel_ids)
 		self.cow_otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
 
 		#Отелы с н/г по Импортным НЕТЕЛЯМ
-		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+		otel_ids = self.env['krs.otel'].search([    ('date', '>=', nach_god), 
 													('date', '<=', self.date),
 													('abort', '=' ,False),
 													('nomer_lakt', '=' ,1), 
@@ -594,7 +623,7 @@ class krs_otchet_day(models.Model):
 		self.netel_imp_otel_god_mert = sum(line.kol_itog_mert for line in otel_ids)
 
 		#Отелы с н/г по своим НЕТЕЛЯМ
-		otel_ids = self.env['krs.otel'].search([	('date', '>=', nach_god), 
+		otel_ids = self.env['krs.otel'].search([    ('date', '>=', nach_god), 
 													('date', '<=', self.date),
 													('abort', '=' ,False),
 													('nomer_lakt', '=' ,1), 
@@ -745,7 +774,7 @@ class krs_otchet_day(models.Model):
 		krs_srashod_ids = self.env['krs.srashod'].search([('vid_rashoda', '=', u'Сдача на м/к'),])
 		sdacha_ids = []
 		for line in krs_srashod_ids:
-			sdacha_ids.append(line.id)	
+			sdacha_ids.append(line.id)  
 
 		self.sdacha_tel_day = self.env['krs.tel_vibitiya'].search_count([
 													('date', '=', self.date), 
@@ -876,6 +905,45 @@ class krs_otchet_day(models.Model):
 			self.tel_15_neosem = struktura.tel_15_neosem
 
 			self.itog_pogolove = self.cow_fur + self.netel + self.tel + self.bik
+
+
+
+		#--------- МОЛОКО -------------------
+
+		trace_milk_ids = self.env['milk.trace_milk'].search([
+													('date_doc', '=', self.date),
+													], limit=1)
+		if len(trace_milk_ids)>0:
+			trace_milk = trace_milk_ids[0]
+			self.valoviy_nadoy_day = trace_milk.valoviy_nadoy
+			self.otk_valoviy_nadoy_day = trace_milk.otk_valoviy_nadoy
+			
+			self.sale_milk_day = trace_milk.sale_natura
+			self.sale_jir = trace_milk.sale_jir
+			self.sale_belok = trace_milk.sale_belok
+
+			self.nadoy_fur_day = trace_milk.nadoy_fur
+			self.nadoy_doy_day = trace_milk.nadoy_doy
+			self.otk_nadoy_fur_day = trace_milk.otk_nadoy_fur
+			
+			if self.krs_otchet_day_lastday_id:
+				self.otk_sale_milk_day = self.sale_milk_day - self.krs_otchet_day_lastday_id.sale_milk_day
+
+
+		#--------- МОЛОКО С Н/Г-------------------
+
+		trace_milk_ids = self.env['milk.trace_milk'].search([
+													('date_doc', '>=', nach_god),
+													('date_doc', '<=', self.date), 
+													],)
+		
+		
+		self.valoviy_nadoy_god = sum(line.valoviy_nadoy for line in trace_milk_ids)
+		self.nadoy_fur_god = sum(line.nadoy_fur for line in trace_milk_ids)
+		
+		self.nadoy_doy_god = sum(line.nadoy_doy for line in trace_milk_ids)
+		
+
 
 
 

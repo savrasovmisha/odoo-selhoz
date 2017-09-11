@@ -42,6 +42,7 @@
         'views/krs_abort_view.xml',
         'views/krs_struktura_view.xml',
         'views/krs_otchet_day_view.xml',
+        'views/krs_otchet_day_report.xml',
 
         'wizard/krs_load_wiz_view.xml',
         'wizard/message_view.xml',

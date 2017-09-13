@@ -330,9 +330,15 @@ class korm_rashod_kormov_report(models.Model):
 
                         left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
                         
-                        left join stado_struktura_line z on (z.date::date = s.date::date and
-                                                            z.stado_zagon_id = s.stado_zagon_id)   
-                        
+                        left join (select 
+                                    date::date as date, 
+                                    stado_zagon_id,
+                                    max(kol_golov_zagon) as kol_golov_zagon
+                                   from stado_struktura_line
+                                   group by date::date, stado_zagon_id) z 
+                            on (z.date::date = s.date::date and
+                                z.stado_zagon_id = s.stado_zagon_id)   
+
 
                     )
         """ % self.pool['res.currency']._select_companies_rates())

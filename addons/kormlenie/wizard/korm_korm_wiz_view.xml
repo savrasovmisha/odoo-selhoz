@@ -17,6 +17,8 @@
                     <button name="draft_multi_korm_korm" string="Отмена проведения" type="object" class="oe_highlight"/>
                     или
                      <button name="err_multi_korm_korm" string="Исправить" type="object" class="oe_highlight"/>
+                     или
+                     <button name="all_multi_korm_korm" string="Все сразу" type="object" class="oe_highlight"/>
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
             </form>

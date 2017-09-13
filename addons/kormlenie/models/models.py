@@ -872,6 +872,7 @@ def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
 				return False
 				
 		for line in vals:
+			#print 'cccccccc    ', line
 			reg.create(line)
 
 
@@ -898,6 +899,13 @@ class korm_korm(models.Model):
 			vals['name'] = self.env['ir.sequence'].next_by_code('korm.korm') or 'New'
 			vals['state'] = 'draft'
 		result = super(korm_korm, self).create(vals)
+		return result
+
+	@api.model
+	def write(self, vals):
+
+		
+		result = super(korm_korm, self).write(vals)
 		return result
    
 	@api.multi
@@ -960,12 +968,17 @@ class korm_korm(models.Model):
 			vals = []
 			k = 0.000
 			for svod in doc.korm_korm_svod_line:
+				index = 0
+				vals_sorting = [] #для хранения значений в группе сортировке
 				korm_korm_line = doc.korm_korm_line.search([('sorting', '=', svod.sorting),
 															('korm_korm_id','=', svod.korm_korm_id.id)
 															])
+				kol_index = len(korm_korm_line)
+				
 				for line in korm_korm_line:
+					index += 1
 					k = round(line.kol_korma/svod.kol_korma, 3)
-					print k
+					
 					if k>1.000:
 						err = u'Ошибка в данных. Кол-во корма в Порядке кормления больше чем в Своде кормления. Смотрите порядок №'+str(svod.sorting)
 						raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
@@ -976,21 +989,42 @@ class korm_korm(models.Model):
 															])
 
 					for detail in korm_detail_line:
+						kol = 0.000
+						#Если это последняя строка в группе sorting, 
+						#то последнию запись считаем как разницу между фактическим кол-вом и уже занесенных данных
+						#По последней строчке корректируем погрешность результата округления
+						if index == kol_index:
+							itog_kol = 0.000
+							for lv in vals_sorting:
+								if lv['nomen_nomen_id'] == detail.nomen_nomen_id.id:
+									itog_kol += lv['kol']
+
+							kol = detail.kol_fakt - itog_kol
+						else:
+							kol = detail.kol_fakt*k
+						
+						vals_sorting.append({
+									'nomen_nomen_id': detail.nomen_nomen_id.id, 
+									'kol': kol, 
+									})
+
+
 						vals.append({
 									'name': detail.nomen_nomen_id.name, 
 									'nomen_nomen_id': detail.nomen_nomen_id.id, 
 									'stado_zagon_id': line.stado_zagon_id.id, 
 									'stado_fiz_group_id': line.korm_racion_id.stado_fiz_group_id.id, 
-									'kol': detail.kol_fakt*k, 
-
-
-
-
+									'kol': kol, 
 									})
 
 				
 			if reg_rashod_kormov_move(self, vals, 'create')==True:
 				self.state = 'confirmed'
+			else:
+				err = u'Ошибка при проведении'
+				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+						
+
 			
 
 
@@ -1009,6 +1043,7 @@ class korm_korm(models.Model):
 			struktura_id = struktura.search([('stado_zagon_id', '=', line.stado_zagon_id.id), ('date', '<=', self.date)], order="date desc",limit=1)
 			if len(struktura_id)>0:
 				line.kol_golov_zagon = struktura_id.kol_golov_zagon
+				line._raschet()
 
 
 

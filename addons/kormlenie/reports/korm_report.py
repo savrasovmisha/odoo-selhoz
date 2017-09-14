@@ -7,268 +7,268 @@ from openerp.exceptions import ValidationError
 
 
 class korm_svod_report(models.Model):
-    _name = "korm.korm_svod_report"
-    _description = "Korm Statistics"
-    _auto = False
-    _rec_name = 'nomen_nomen_id'
-    _order = 'nomen_nomen_id'
+	_name = "korm.korm_svod_report"
+	_description = "Korm Statistics"
+	_auto = False
+	_rec_name = 'nomen_nomen_id'
+	_order = 'nomen_nomen_id'
 
-    
-    date = fields.Date(string='Дата')
-    name = fields.Char(string='Номер документа')
-    sarting = fields.Char(string='Сортировка')
-    
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-    #nomen_name = fields.Char(string='Номенклатура')
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
-    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
-    stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
-    kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
-    kol_racion = fields.Float(digits=(10, 3), string=u"Кол-во по рациону")
-    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
-    kol_otk = fields.Float(digits=(10, 3), string=u"Кол-во отклонение")
-    kol_otk_racion = fields.Float(digits=(10, 3), string=u"Кол-во откл. от рациона")
-
-
-
-    price = fields.Float(digits=(10, 2), string=u"Цена" , group_operator="avg")
-    amount_norma = fields.Float(digits=(10, 2), string=u"Сумма по норме")
-    amount_racion = fields.Float(digits=(10, 2), string=u"Сумма по рациону")
-    amount_fakt = fields.Float(digits=(10, 2), string=u"Сумма по факту")
-    amount_otk = fields.Float(digits=(10, 2), string=u"Сумма отклонение")
-    amount_otk_racion = fields.Float(digits=(10, 2), string=u"Сумма откл. от рациона")
-
-    kol_golov = fields.Integer(string=u"Кол-во голов для расчета", group_operator="sum")
-    kol_golov_srednee = fields.Integer(string=u"Кол-во голов по среднему")
-    month = fields.Text(string=u"Месяц", store=True)
-    year = fields.Text(string=u"Год", store=True)
-    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
-    
-    _order = 'nomen_nomen_id desc'
-    #Н462ВВ89
-    def init(self, cr):
-
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_korm_svod_report as (
-                WITH currency_rate as (%s)
-                SELECT
-                    t.id as id,
-                    t.sorting as sorting,
-                    t.name as name,
-                    t.date as date,
-                    t.month as month,
-                    t.year as year,
-                    t.nomen_nomen_id as nomen_nomen_id,
-                    t.kol_norma as kol_norma,
-                    t.kol_racion as kol_racion,
-                    t.kol_fakt as kol_fakt,
-                    t.kol_fakt - t.kol_norma as kol_otk,
-                    t.kol_fakt - t.kol_racion as kol_otk_racion,
-                    t.kol_golov as kol_golov,
-                    t.kol_golov_srednee as kol_golov_srednee,
-                    t.price as price,
-                    t.kol_norma*t.price as amount_norma,
-                    t.kol_racion*t.price as amount_racion,
-                    t.kol_fakt*t.price as amount_fakt,
-                    (t.kol_fakt - t.kol_norma)*t.price as amount_otk,
-                    (t.kol_fakt - t.kol_racion)*t.price as amount_otk_racion,
+	
+	date = fields.Date(string='Дата')
+	name = fields.Char(string='Номер документа')
+	sarting = fields.Char(string='Сортировка')
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	#nomen_name = fields.Char(string='Номенклатура')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
+	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
+	kol_racion = fields.Float(digits=(10, 3), string=u"Кол-во по рациону")
+	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+	kol_otk = fields.Float(digits=(10, 3), string=u"Кол-во отклонение")
+	kol_otk_racion = fields.Float(digits=(10, 3), string=u"Кол-во откл. от рациона")
 
 
-                    t.stado_fiz_group_id,
-                    t.stado_vid_fiz_group_id,
-                    t.stado_podvid_fiz_group_id
+
+	price = fields.Float(digits=(10, 2), string=u"Цена" , group_operator="avg")
+	amount_norma = fields.Float(digits=(10, 2), string=u"Сумма по норме")
+	amount_racion = fields.Float(digits=(10, 2), string=u"Сумма по рациону")
+	amount_fakt = fields.Float(digits=(10, 2), string=u"Сумма по факту")
+	amount_otk = fields.Float(digits=(10, 2), string=u"Сумма отклонение")
+	amount_otk_racion = fields.Float(digits=(10, 2), string=u"Сумма откл. от рациона")
+
+	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", group_operator="sum")
+	kol_golov_srednee = fields.Integer(string=u"Кол-во голов по среднему")
+	month = fields.Text(string=u"Месяц", store=True)
+	year = fields.Text(string=u"Год", store=True)
+	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	
+	_order = 'nomen_nomen_id desc'
+	#Н462ВВ89
+	def init(self, cr):
+
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_korm_svod_report as (
+				WITH currency_rate as (%s)
+				SELECT
+					t.id as id,
+					t.sorting as sorting,
+					t.name as name,
+					t.date as date,
+					t.month as month,
+					t.year as year,
+					t.nomen_nomen_id as nomen_nomen_id,
+					t.kol_norma as kol_norma,
+					t.kol_racion as kol_racion,
+					t.kol_fakt as kol_fakt,
+					t.kol_fakt - t.kol_norma as kol_otk,
+					t.kol_fakt - t.kol_racion as kol_otk_racion,
+					t.kol_golov as kol_golov,
+					t.kol_golov_srednee as kol_golov_srednee,
+					t.price as price,
+					t.kol_norma*t.price as amount_norma,
+					t.kol_racion*t.price as amount_racion,
+					t.kol_fakt*t.price as amount_fakt,
+					(t.kol_fakt - t.kol_norma)*t.price as amount_otk,
+					(t.kol_fakt - t.kol_racion)*t.price as amount_otk_racion,
 
 
-                FROM (
-                        select 
-                                    min(s.id) as id,
-                                    s.sorting::text as sorting,
-                                    d.name as name,
-                                    s.date as date,
-                                    date_part('month',s.date) as month,
-                                    to_char(s.date, 'YYYY') as year,
-                                    s.nomen_nomen_id as nomen_nomen_id,
-                                    sum(s.kol_norma)/count(s.id) as kol_norma,
-                                    sum(rl.kol*sv.kol_golov)/count(s.id) as kol_racion,
-                                    sum(s.kol_fakt)/count(s.id) as kol_fakt,
-                                    sum(s.kol_fakt-s.kol_norma)/count(s.id) as kol_otk,
-                                    sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov)/count(s.id) as kol_otk_racion,
-                                    sum(sv.kol_golov) as kol_golov,
-                                    avg(sv.kol_golov_zagon) as kol_golov_srednee,
-                                    avg(pll.price) as price,
-                                    sum(s.kol_norma)/count(s.id)*avg(pll.price) as amount_norma,
-                                    sum(rl.kol*sv.kol_golov)*avg(pll.price)/count(s.id) as amount_racion,
-                                    sum(s.kol_fakt)/count(s.id)*avg(pll.price) as amount_fakt,
-                                    sum(s.kol_fakt-s.kol_norma)/count(s.id)*avg(pll.price) as amount_otk,
-                                    (sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov))*avg(pll.price)/count(s.id) as amount_otk_racion,
+					t.stado_fiz_group_id,
+					t.stado_vid_fiz_group_id,
+					t.stado_podvid_fiz_group_id
 
 
-                                    kl.stado_fiz_group_id,
-                                    fg.stado_vid_fiz_group_id,
-                                    fg.stado_podvid_fiz_group_id
-                                    
-                                from korm_korm_detail_line s
-                                left join korm_korm_svod_line sv on 
-                                                        ( sv.korm_korm_id = s.korm_korm_id and 
-                                                            sv.sorting = s.sorting)
-                                left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
-                                                            kl.sorting = s.sorting)
-                                left join korm_korm d on (d.id = s.korm_korm_id)
-                                left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
-                                left join korm_racion_line rl on 
-                                                            (rl.nomen_nomen_id = s.nomen_nomen_id and
-                                                             rl.korm_racion_id = sv.korm_racion_id)
-                                left join ( Select DISTINCT ON (pl.nomen_nomen_id)
-                                                pl.price,
-                                                pl.nomen_nomen_id
-                                            From nomen_price_line pl
-                                            Order by  pl.nomen_nomen_id, pl.date desc
-                                             ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
-                             
-                           
-                                Group by d.name, s.date,s.sorting,
-                                         date_part('month',s.date),
-                                         to_char(s.date, 'YYYY'),
-                                         s.nomen_nomen_id,
-                                         kl.stado_fiz_group_id,
-                                         fg.stado_vid_fiz_group_id,
-                                         fg.stado_podvid_fiz_group_id
-                                Order by d.name, s.date,
-                                         date_part('month',s.date),
-                                         to_char(s.date, 'YYYY'),
-                                         s.nomen_nomen_id,
-                                         kl.stado_fiz_group_id,
-                                         fg.stado_vid_fiz_group_id,
-                                         fg.stado_podvid_fiz_group_id
+				FROM (
+						select 
+									min(s.id) as id,
+									s.sorting::text as sorting,
+									d.name as name,
+									s.date as date,
+									date_part('month',s.date) as month,
+									to_char(s.date, 'YYYY') as year,
+									s.nomen_nomen_id as nomen_nomen_id,
+									sum(s.kol_norma)/count(s.id) as kol_norma,
+									sum(rl.kol*sv.kol_golov)/count(s.id) as kol_racion,
+									sum(s.kol_fakt)/count(s.id) as kol_fakt,
+									sum(s.kol_fakt-s.kol_norma)/count(s.id) as kol_otk,
+									sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov)/count(s.id) as kol_otk_racion,
+									sum(sv.kol_golov) as kol_golov,
+									avg(sv.kol_golov_zagon) as kol_golov_srednee,
+									avg(pll.price) as price,
+									sum(s.kol_norma)/count(s.id)*avg(pll.price) as amount_norma,
+									sum(rl.kol*sv.kol_golov)*avg(pll.price)/count(s.id) as amount_racion,
+									sum(s.kol_fakt)/count(s.id)*avg(pll.price) as amount_fakt,
+									sum(s.kol_fakt-s.kol_norma)/count(s.id)*avg(pll.price) as amount_otk,
+									(sum(s.kol_fakt)/count(s.id)-sum(rl.kol*sv.kol_golov))*avg(pll.price)/count(s.id) as amount_otk_racion,
 
-                        ) t
-                )
-        """ % self.pool['res.currency']._select_companies_rates())
 
-    # @api.model
-    # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
-    #     " Overwrite the read_group in order to sum the function field 'inventory_value' in group by "
-    #     # TDE NOTE: WHAAAAT ??? is this because inventory_value is not stored ?
-    #     # TDE FIXME: why not storing the inventory_value field ? company_id is required, stored, and should not create issues
-    #     res = super(korm_svod_report, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
-    #     print fields
-    #     if 'date' in fields:
-    #         for line in res:
-    #             if '__domain' in line:
-    #                 print '----------------------------'
-    #                 print line
-    #                 print '++++++++++++++++++++++++++++'
-    #                 print line['__domain']
+									kl.stado_fiz_group_id,
+									fg.stado_vid_fiz_group_id,
+									fg.stado_podvid_fiz_group_id
+									
+								from korm_korm_detail_line s
+								left join korm_korm_svod_line sv on 
+														( sv.korm_korm_id = s.korm_korm_id and 
+															sv.sorting = s.sorting)
+								left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
+															kl.sorting = s.sorting)
+								left join korm_korm d on (d.id = s.korm_korm_id)
+								left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
+								left join korm_racion_line rl on 
+															(rl.nomen_nomen_id = s.nomen_nomen_id and
+															 rl.korm_racion_id = sv.korm_racion_id)
+								left join ( Select DISTINCT ON (pl.nomen_nomen_id)
+												pl.price,
+												pl.nomen_nomen_id
+											From nomen_price_line pl
+											Order by  pl.nomen_nomen_id, pl.date desc
+											 ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
+							 
+						   
+								Group by d.name, s.date,s.sorting,
+										 date_part('month',s.date),
+										 to_char(s.date, 'YYYY'),
+										 s.nomen_nomen_id,
+										 kl.stado_fiz_group_id,
+										 fg.stado_vid_fiz_group_id,
+										 fg.stado_podvid_fiz_group_id
+								Order by d.name, s.date,
+										 date_part('month',s.date),
+										 to_char(s.date, 'YYYY'),
+										 s.nomen_nomen_id,
+										 kl.stado_fiz_group_id,
+										 fg.stado_vid_fiz_group_id,
+										 fg.stado_podvid_fiz_group_id
 
-    #                 korm_ostatok_line = self.env['korm.korm_ostatok_line']
-    #                 lines = korm_ostatok_line.search(line['__domain'],)
-    
-    #                 #lines = self.search(line['__domain'])
-    #                 kol = 0.0
-    #                 k = 0
-    #                 for line2 in lines:
-    #                     k += 1
-    #                     kol += line2.kol_golov_zagon
-            
-    #                 line['kol_golov'] = kol
-    #     return res
+						) t
+				)
+		""" % self.pool['res.currency']._select_companies_rates())
+
+	# @api.model
+	# def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+	#     " Overwrite the read_group in order to sum the function field 'inventory_value' in group by "
+	#     # TDE NOTE: WHAAAAT ??? is this because inventory_value is not stored ?
+	#     # TDE FIXME: why not storing the inventory_value field ? company_id is required, stored, and should not create issues
+	#     res = super(korm_svod_report, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+	#     print fields
+	#     if 'date' in fields:
+	#         for line in res:
+	#             if '__domain' in line:
+	#                 print '----------------------------'
+	#                 print line
+	#                 print '++++++++++++++++++++++++++++'
+	#                 print line['__domain']
+
+	#                 korm_ostatok_line = self.env['korm.korm_ostatok_line']
+	#                 lines = korm_ostatok_line.search(line['__domain'],)
+	
+	#                 #lines = self.search(line['__domain'])
+	#                 kol = 0.0
+	#                 k = 0
+	#                 for line2 in lines:
+	#                     k += 1
+	#                     kol += line2.kol_golov_zagon
+			
+	#                 line['kol_golov'] = kol
+	#     return res
 
 
 class korm_receptura_report(models.Model):
-    _name = "korm.korm_receptura_report"
-    _description = "Korm Receptura Statistics"
-    _auto = False
-    _rec_name = 'nomen_nomen_id'
+	_name = "korm.korm_receptura_report"
+	_description = "Korm Receptura Statistics"
+	_auto = False
+	_rec_name = 'nomen_nomen_id'
 
-    
-    date = fields.Date(string='Дата')
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-    kombikorm_name_id = fields.Many2one('nomen.nomen', string=u'Наименование комбикорма')
-    kol = fields.Float(digits=(10, 3), string=u"На голову, кг")
-    kol_tonna = fields.Float(digits=(10, 3), string=u"На тонну, кг")
-    procent = fields.Integer(string=u"%")
-    active = fields.Boolean(string=u"Используется")
-    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
-    
-    _order = 'nomen_nomen_id desc'
+	
+	date = fields.Date(string='Дата')
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	kombikorm_name_id = fields.Many2one('nomen.nomen', string=u'Наименование комбикорма')
+	kol = fields.Float(digits=(10, 3), string=u"На голову, кг")
+	kol_tonna = fields.Float(digits=(10, 3), string=u"На тонну, кг")
+	procent = fields.Integer(string=u"%")
+	active = fields.Boolean(string=u"Используется")
+	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	
+	_order = 'nomen_nomen_id desc'
 
-    def init(self, cr):
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_korm_receptura_report as (
-                WITH currency_rate as (%s)
-                select 
-                    l.id as id,
-                    d.date as date,
-                    d.active as active,
-                    l.nomen_nomen_id as nomen_nomen_id,
-                    d.nomen_nomen_id as kombikorm_name_id,
-                    
-                    l.kol as kol,
-                    l.kol_tonna as kol_tonna,
-                    l.procent as procent
-                    
-                from korm_receptura_line l
-                left join korm_receptura d on 
-                                        ( d.id = l.korm_receptura_id)
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_korm_receptura_report as (
+				WITH currency_rate as (%s)
+				select 
+					l.id as id,
+					d.date as date,
+					d.active as active,
+					l.nomen_nomen_id as nomen_nomen_id,
+					d.nomen_nomen_id as kombikorm_name_id,
+					
+					l.kol as kol,
+					l.kol_tonna as kol_tonna,
+					l.procent as procent
+					
+				from korm_receptura_line l
+				left join korm_receptura d on 
+										( d.id = l.korm_receptura_id)
 
-                )
-        """ % self.pool['res.currency']._select_companies_rates())
+				)
+		""" % self.pool['res.currency']._select_companies_rates())
 
 
 class korm_ostatok_report(models.Model):
-    _name = "korm.korm_ostatok_report"
-    _description = "Korm Ostatok Statistics"
-    _auto = False
-    _rec_name = 'stado_zagon_name'
+	_name = "korm.korm_ostatok_report"
+	_description = "Korm Ostatok Statistics"
+	_auto = False
+	_rec_name = 'stado_zagon_name'
 
-    
-    date = fields.Date(string='Дата')
-    
-    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
-    stado_zagon_name = fields.Char(string=u'Загон наименование')
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
-    kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
-    kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
-    kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
-    
-    kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
-    procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
-    sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
-    
-    _order = 'stado_zagon_name'
+	
+	date = fields.Date(string='Дата')
+	
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	stado_zagon_name = fields.Char(string=u'Загон наименование')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+	kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
+	kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
+	kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+	
+	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+	sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	
+	_order = 'stado_zagon_name'
 
-    def init(self, cr):
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_korm_ostatok_report as (
-                WITH currency_rate as (%s)
-                select 
-                    l.id as id,
-                    l.date as date,
-                    l.stado_zagon_id as stado_zagon_id,
-                    l.stado_fiz_group_id as stado_fiz_group_id,
-                    l.kol_golov_zagon as kol_golov_zagon,
-                    l.kol_korma_norma as kol_korma_norma,
-                    l.kol_korma_fakt as kol_korma_fakt,
-                    l.kol_korma_otk as kol_korma_otk,
-                    l.kol_ostatok as kol_ostatok,
-                    l.procent_ostatkov as procent_ostatkov,
-                    z.name as stado_zagon_name,
-                    s.sred_kol_milk as sred_kol_milk
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_korm_ostatok_report as (
+				WITH currency_rate as (%s)
+				select 
+					l.id as id,
+					l.date as date,
+					l.stado_zagon_id as stado_zagon_id,
+					l.stado_fiz_group_id as stado_fiz_group_id,
+					l.kol_golov_zagon as kol_golov_zagon,
+					l.kol_korma_norma as kol_korma_norma,
+					l.kol_korma_fakt as kol_korma_fakt,
+					l.kol_korma_otk as kol_korma_otk,
+					l.kol_ostatok as kol_ostatok,
+					l.procent_ostatkov as procent_ostatkov,
+					z.name as stado_zagon_name,
+					s.sred_kol_milk as sred_kol_milk
 
-                    
-                from korm_korm_ostatok_line l
-                left join stado_zagon z on 
-                                        ( z.id = l.stado_zagon_id)
-                left join stado_struktura_line s on
-                                        (date_trunc('day',s.date) = date_trunc('day',l.date) and 
-                                         s.stado_zagon_id = l.stado_zagon_id)
+					
+				from korm_korm_ostatok_line l
+				left join stado_zagon z on 
+										( z.id = l.stado_zagon_id)
+				left join stado_struktura_line s on
+										(date_trunc('day',s.date) = date_trunc('day',l.date) and 
+										 s.stado_zagon_id = l.stado_zagon_id)
 
-                )
-        """ % self.pool['res.currency']._select_companies_rates())
+				)
+		""" % self.pool['res.currency']._select_companies_rates())
 
 
 
@@ -277,300 +277,449 @@ class korm_ostatok_report(models.Model):
 
 
 class korm_rashod_kormov_report(models.Model):
-    _name = "korm.rashod_kormov_report"
-    _description = "Korm rashod kormov"
-    _auto = False
-    _rec_name = 'nomen_nomen_id'
-    _order = 'nomen_nomen_id'
+	_name = "korm.rashod_kormov_report"
+	_description = "Korm rashod kormov"
+	_auto = False
+	_rec_name = 'nomen_nomen_id'
+	_order = 'nomen_nomen_id'
 
-    
-    date = fields.Date(string='Дата')
-    
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
-    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
-    stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
-    kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
-    kol_korma_golova = fields.Float(digits=(10, 3), string=u"Ср. Кол-во корма на голову", group_operator="sum")
-    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
-    #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
-    
-    #kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
-    #procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
-    #sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
-    
+	
+	date = fields.Date(string='Дата')
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
+	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+	#kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
+	kol_korma_golova = fields.Float(digits=(10, 3), string=u"Ср. Кол-во корма на голову", group_operator="sum")
+	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
+	#kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+	
+	#kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+	#procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+	#sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	
 
-    def init(self, cr):
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_rashod_kormov_report as (
-                WITH currency_rate as (%s)
-                        select 
-                            s.id as id,
-                            
-                            s.date::date as date,
-                            
-                            s.nomen_nomen_id as nomen_nomen_id,
-                   
-                            s.kol as kol_fakt,
-                            case 
-                                when z.kol_golov_zagon>0 then s.kol/z.kol_golov_zagon
-                                else 0
-                            end as kol_korma_golova,
-                            
-                            s.stado_fiz_group_id as stado_fiz_group_id,
-                            s.stado_zagon_id as stado_zagon_id,
-                            fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id,
-                            fg.stado_podvid_fiz_group_id as stado_podvid_fiz_group_id,
-                            z.kol_golov_zagon as kol_golov_zagon
-                    
-                        from reg_rashod_kormov s
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_rashod_kormov_report as (
+				WITH currency_rate as (%s)
+						select 
+							s.id as id,
+							
+							s.date::date as date,
+							
+							s.nomen_nomen_id as nomen_nomen_id,
+				   
+							s.kol as kol_fakt,
+							case 
+								when z.kol_golov_zagon>0 then s.kol/z.kol_golov_zagon
+								else 0
+							end as kol_korma_golova,
+							
+							s.stado_fiz_group_id as stado_fiz_group_id,
+							s.stado_zagon_id as stado_zagon_id,
+							fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id,
+							fg.stado_podvid_fiz_group_id as stado_podvid_fiz_group_id,
+							z.kol_golov_zagon as kol_golov_zagon
+					
+						from reg_rashod_kormov s
 
-                        left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
-                        
-                        left join (select 
-                                    date::date as date, 
-                                    stado_zagon_id,
-                                    max(kol_golov_zagon) as kol_golov_zagon
-                                   from stado_struktura_line
-                                   group by date::date, stado_zagon_id) z 
-                            on (z.date::date = s.date::date and
-                                z.stado_zagon_id = s.stado_zagon_id)   
+						left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
+						
+						left join (select 
+									date::date as date, 
+									stado_zagon_id,
+									max(kol_golov_zagon) as kol_golov_zagon
+								   from stado_struktura_line
+								   group by date::date, stado_zagon_id) z 
+							on (z.date::date = s.date::date and
+								z.stado_zagon_id = s.stado_zagon_id)   
 
 
-                    )
-        """ % self.pool['res.currency']._select_companies_rates())
+					)
+		""" % self.pool['res.currency']._select_companies_rates())
 
 
 class korm_plan_fakt_report(models.Model):
-    _name = "korm.plan_fakt_report"
-    _description = "Korm plan fakt"
-    _auto = False
-    _rec_name = 'nomen_nomen_id'
-    _order = 'nomen_nomen_id'
+	_name = "korm.plan_fakt_report"
+	_description = "Korm plan fakt"
+	_auto = False
+	_rec_name = 'nomen_nomen_id'
+	_order = 'nomen_nomen_id'
 
-    
-    year = fields.Char(string=u"Год")
-    month = fields.Char(string=u"Месяц")
-    
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-    
-    #stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
-    #stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
-    #kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
-    #kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
-    #kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
-    kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
-    kol_plan = fields.Float(digits=(10, 3), string=u"Кол-во по плану", group_operator="sum")
-    prognoz = fields.Float(digits=(10, 3), string=u"Прогноз выполнения плана %", group_operator="avg")
-    kol_prognoz = fields.Float(digits=(10, 3), string=u"Кол-во прогноз", group_operator="sum")
-    price = fields.Float(digits=(10, 2), string=u"Цена", group_operator="avg")
-    sum_fakt = fields.Float(digits=(10, 2), string=u"Сумма факт", group_operator="sum")
-    sum_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз", group_operator="sum")
-    sum_plan = fields.Float(digits=(10, 2), string=u"Сумма план", group_operator="sum")
-    sum_otk_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз откл.", group_operator="sum")
-    #kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
-    
-    #kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
-    #procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
-    #sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
-    
+	
+	year = fields.Char(string=u"Год")
+	month = fields.Char(string=u"Месяц")
+	
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	
+	#stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+	#stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+	#kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+	#kol_golov_zagon_sum = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
+	#kol_korma_golova = fields.Float(digits=(10, 3), string=u"Кол-во корма на голову", group_operator="sum")
+	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", group_operator="sum")
+	kol_plan = fields.Float(digits=(10, 3), string=u"Кол-во по плану", group_operator="sum")
+	prognoz = fields.Float(digits=(10, 3), string=u"Прогноз выполнения плана %", group_operator="avg")
+	kol_prognoz = fields.Float(digits=(10, 3), string=u"Кол-во прогноз", group_operator="sum")
+	price = fields.Float(digits=(10, 2), string=u"Цена", group_operator="avg")
+	sum_fakt = fields.Float(digits=(10, 2), string=u"Сумма факт", group_operator="sum")
+	sum_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз", group_operator="sum")
+	sum_plan = fields.Float(digits=(10, 2), string=u"Сумма план", group_operator="sum")
+	sum_otk_prognoz = fields.Float(digits=(10, 2), string=u"Сумма прогноз откл.", group_operator="sum")
+	#kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+	
+	#kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+	#procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+	#sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	
 
-    def init(self, cr):
-        tools.sql.drop_view_if_exists(cr, self._table)
-        cr.execute("""
-            create or replace view korm_plan_fakt_report as (
-                WITH currency_rate as (%s)
-                        SELECT
-                            tt.id,
-                            tt.month,
-                            tt.year,
-                            tt.nomen_nomen_id,
-                            tt.kol_plan,
-                            tt.kol_fakt,
-                            --tt.day,
-                            --tt.count_day,
-                            tt.kol_prognoz,
-                            tt.prognoz,
-                            tt.price,
-                            tt.price*tt.kol_fakt as sum_fakt,
-                            tt.price*tt.kol_prognoz as sum_prognoz,
-                            tt.price*tt.kol_plan as sum_plan,
-                            tt.price*tt.kol_prognoz-tt.price*tt.kol_plan as sum_otk_prognoz
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_plan_fakt_report as (
+				WITH currency_rate as (%s)
+						SELECT
+							tt.id,
+							tt.month,
+							tt.year,
+							tt.nomen_nomen_id,
+							tt.kol_plan,
+							tt.kol_fakt,
+							--tt.day,
+							--tt.count_day,
+							tt.kol_prognoz,
+							tt.prognoz,
+							tt.price,
+							tt.price*tt.kol_fakt as sum_fakt,
+							tt.price*tt.kol_prognoz as sum_prognoz,
+							tt.price*tt.kol_plan as sum_plan,
+							tt.price*tt.kol_prognoz-tt.price*tt.kol_plan as sum_otk_prognoz
 
-                        FROM (
+						FROM (
 
-                                    SELECT
-                                                    min(t.id) as id,
-                                                    t.month as month,
-                                                    t.year as year,
-                                                    t.nomen_nomen_id as nomen_nomen_id,
-                                                    sum(t.kol_plan) as kol_plan,
-                                                    sum(t.kol_fakt) as kol_fakt,
-                                                    max(t.day) as day,
-                                                    max(t.count_day) as count_day,
-                                        
-                                                    case
-                                                        when max(t.day)>0 then
-                                                            sum(t.kol_fakt)/max(t.day)*max(t.count_day)
-                                                        else 0
-                                                    end as kol_prognoz,
-                                                    case
-                                                        when sum(t.kol_plan)>0 and max(t.day)>0 then
-                                                            sum(t.kol_fakt)/max(t.day)*max(t.count_day)/sum(t.kol_plan)*100 
-                                                        else 0
-                                                    end as prognoz,
-                                                    --avg(npl.price) as price,
-                                                    
-                                                    (Select 
-                                         np.price
-                                                    From nomen_price_line np
-                                        Where np.nomen_nomen_id = t.nomen_nomen_id and
-                                            date_trunc('month',np.date)::date<=make_date(t.year::integer, t.month::integer,1)
-                                        Order by np.date desc
-                                        Limit 1
-                                        ) as price
-                                                    
-                                                    
-                                                FROM    
-                                                (   select 
-                                                        pl.id as id,
-                                                        p.month as month,
-                                                        p.year as year,
-                                                        pl.nomen_nomen_id as nomen_nomen_id,
-                                                        pl.kol as kol_plan,
-                                                        0 as kol_fakt,
-                                                        0 as day,
-                                                        p.count_day as count_day
-                                                    from korm_plan_line pl
-                                                    left join korm_plan p on (p.id = pl.korm_plan_id)
+									SELECT
+													min(t.id) as id,
+													t.month as month,
+													t.year as year,
+													t.nomen_nomen_id as nomen_nomen_id,
+													sum(t.kol_plan) as kol_plan,
+													sum(t.kol_fakt) as kol_fakt,
+													max(t.day) as day,
+													max(t.count_day) as count_day,
+										
+													case
+														when max(t.day)>0 then
+															sum(t.kol_fakt)/max(t.day)*max(t.count_day)
+														else 0
+													end as kol_prognoz,
+													case
+														when sum(t.kol_plan)>0 and max(t.day)>0 then
+															sum(t.kol_fakt)/max(t.day)*max(t.count_day)/sum(t.kol_plan)*100 
+														else 0
+													end as prognoz,
+													--avg(npl.price) as price,
+													
+													(Select 
+										 np.price
+													From nomen_price_line np
+										Where np.nomen_nomen_id = t.nomen_nomen_id and
+											date_trunc('month',np.date)::date<=make_date(t.year::integer, t.month::integer,1)
+										Order by np.date desc
+										Limit 1
+										) as price
+													
+													
+												FROM    
+												(   select 
+														pl.id as id,
+														p.month as month,
+														p.year as year,
+														pl.nomen_nomen_id as nomen_nomen_id,
+														pl.kol as kol_plan,
+														0 as kol_fakt,
+														0 as day,
+														p.count_day as count_day
+													from korm_plan_line pl
+													left join korm_plan p on (p.id = pl.korm_plan_id)
 
-                                                    UNION ALL
+													UNION ALL
 
-                                                    select
-                                                        min(s.id) as id,
-                                                        to_char(s.date, 'MM') as month,
-                                                        to_char(s.date, 'YYYY') as year,
-                                                        s.nomen_nomen_id as nomen_nomen_id,
-                                                        sum(0) as kol_plan,
-                                                        sum(s.kol) as kol_fakt,
-                                                        max(EXTRACT(day FROM s.date)) as day,
-                                                        max(EXTRACT(day FROM (date_trunc('month',s.date)+interval '1 month'-interval '1 second'))) as count_day
-                                                        
+													select
+														min(s.id) as id,
+														to_char(s.date, 'MM') as month,
+														to_char(s.date, 'YYYY') as year,
+														s.nomen_nomen_id as nomen_nomen_id,
+														sum(0) as kol_plan,
+														sum(s.kol) as kol_fakt,
+														max(EXTRACT(day FROM s.date)) as day,
+														max(EXTRACT(day FROM (date_trunc('month',s.date)+interval '1 month'-interval '1 second'))) as count_day
+														
 
-                                                    from reg_rashod_kormov s
-                                                    group by to_char(s.date, 'MM'),
-                                                        to_char(s.date, 'YYYY'),
-                                                        s.nomen_nomen_id
+													from reg_rashod_kormov s
+													group by to_char(s.date, 'MM'),
+														to_char(s.date, 'YYYY'),
+														s.nomen_nomen_id
 
-                                                ) t
-                                    
-                                    
-                                                GROUP BY t.month,
-                                                    t.year,
-                                                    t.nomen_nomen_id 
+												) t
+									
+									
+												GROUP BY t.month,
+													t.year,
+													t.nomen_nomen_id 
 
-                                  ) tt
-                        
+								  ) tt
+						
 
-                    )
-        """ % self.pool['res.currency']._select_companies_rates())
+					)
+		""" % self.pool['res.currency']._select_companies_rates())
 
 
 
 
 class korm_buh_report(models.Model):
-    _name = "korm.buh_report"
-    _description = "Korm buh report"
-    #_auto = False
-    # _rec_name = 'nomen_nomen_id'
+	_name = "korm.buh_report"
+	_description = "Korm buh report"
+	#_auto = False
+	# _rec_name = 'nomen_nomen_id'
 
-    
-    date = fields.Date(string='Дата')
-    # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
-    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+	
+	date = fields.Date(string='Дата')
+	# nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
 
-    month = fields.Text(string=u"Месяц")
-    year = fields.Text(string=u"Год")
-    
-    #stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
-    
-    # _order = 'nomen_nomen_id desc'
+	month = fields.Text(string=u"Месяц")
+	year = fields.Text(string=u"Год")
+	
+	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	
+	# _order = 'nomen_nomen_id desc'
 
-    def get_list(self):
-        zapros = """ SELECT 
-                        n.name,
-                        v.date, 
-                        v.nomen_nomen_id, 
-                        
-                        v.kol_fakt 
-                         
-                    FROM korm_korm_svod_report v
-                    left join nomen_nomen n on (v.nomen_nomen_id=n.id)
-                    limit 100; """ #%(self.id,)
-        #print zapros
-        self._cr.execute(zapros,)
-        korms = self._cr.fetchall()
+	def get_list(self):
+		zapros = """ SELECT 
+						n.name,
+						v.date, 
+						v.nomen_nomen_id, 
+						
+						v.kol_fakt 
+						 
+					FROM korm_korm_svod_report v
+					left join nomen_nomen n on (v.nomen_nomen_id=n.id)
+					limit 100; """ #%(self.id,)
+		#print zapros
+		self._cr.execute(zapros,)
+		korms = self._cr.fetchall()
 
-        #print korms
-        
-        try:
-            from pandas import DataFrame, pivot_table, np, orient
-        except ImportError:
-            pass
-        datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
-        table = pivot_table(datas, values='kol_fakt', index=['date'],
-                columns=['name'], aggfunc=np.sum)
-        # import json
-        # j1 = json.loads(table)
-        # print j1
+		#print korms
+		
+		try:
+			from pandas import DataFrame, pivot_table, np, orient
+		except ImportError:
+			pass
+		datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+		table = pivot_table(datas, values='kol_fakt', index=['date'],
+				columns=['name'], aggfunc=np.sum)
+		# import json
+		# j1 = json.loads(table)
+		# print j1
 
-        print table
+		print table
 
-        nn = [0]
-        for c in table.columns:
-            #print c
-            nn.append(c)
-            
-        rr = []
-        rr.append(nn)
-        for a in table.index: #Iterate through columns
-            #print 'rrr=', a
-            r = []
-            r.append(a)
-            for b in table.columns: #Iterate through rows
-                #print table.ix[a,b]
-                r.append(table.ix[a,b])
-            rr.append(r)
-        #tt = datas.reset_index().to_json(orient='index')
-        print rr
+		nn = [0]
+		for c in table.columns:
+			#print c
+			nn.append(c)
+			
+		rr = []
+		rr.append(nn)
+		for a in table.index: #Iterate through columns
+			#print 'rrr=', a
+			r = []
+			r.append(a)
+			for b in table.columns: #Iterate through rows
+				#print table.ix[a,b]
+				r.append(table.ix[a,b])
+			rr.append(r)
+		#tt = datas.reset_index().to_json(orient='index')
+		print rr
 
-        return rr
+		return rr
 
-    @api.multi
-    def report_print(self):
-        vid1 = self.read()
-        
-        datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
-        s = self.read()
-        print s
+	#@api.multi
+	def report_print(self, cr, uid, ids, context=None):
+		import sys
+		import os
+		import base64
+		import zipfile
+		import tempfile
+		from pandas import DataFrame, pivot_table
+		import pandas as pd
+		import numpy as np
 
-        data = self.read()[0]
-        datas = {
-            'ids': self.ids,
-            'model': 'korm.buh_report',
-            'form': data,
-            'get_list': self.get_list()
-        }
+		reload(sys)
+		sys.setdefaultencoding("utf-8")
+		
+		
+		
+		
 
-        return {
-                    'type': 'ir.actions.report.xml',
-                    'report_name': 'kormlenie.report_korm_buh_report_view',
-                    'datas': datas,
-                }
+		tmp_dir = tempfile.mkdtemp()
+
+		
+
+		output_filename = tmp_dir + '/BuhReport.xlsx'
+
+
+		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
+
+
+		zapros = """select 
+						n.name,
+						r.date::date,
+						r.nomen_nomen_id,
+						r.kol as kol_fakt
+					from reg_rashod_kormov r
+					left join nomen_nomen n on (n.id=r.nomen_nomen_id)
+					
+					where r.date>'01.08.2017' and r.date<'31.08.2017'
+					
+					
+
+					""" #%(ras_date_start.date(), ras_date_end.date())
+		#print zapros
+		cr.execute(zapros,)
+		res = cr.fetchall()
+		pd.core.format.header_style = None
+
+		datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+
+
+		table = pivot_table(datas, values=['kol_fakt'], 
+						index=['date'],
+		                #rows=['date'], 
+		                columns=['name'], 
+		                aggfunc=np.sum, 
+		                #margins=True
+		                )
+
+
+                
+		#print table2
+
+		data_pivot= DataFrame(data=table) 
+		data_pivot.fillna(0, inplace=True)
+		data_pivot.reset_index(inplace=True)
+
+
+
+		data_pivot.columns = data_pivot.columns.droplevel()
+
+		data_pivot['Total'] = 0
+		data_pivot.rename(columns={"": "date"}, inplace=True)
+		for index, row in data_pivot.iterrows():
+			#row['Total']=200
+			#data_pivot.set_value(index, 'Total',200)
+			l = row['date']
+			
+			date=l#.strftime("%Y-%m-%d")
+			zapros = """select 
+								
+								to_char(s.date, 'YYYY-mm-dd'),
+								sum(s.kol_golov_zagon) as kol_golov_zagon
+								
+							from stado_struktura_line s
+							where to_char(s.date, 'YYYY-mm-dd')='%s'
+							Group by to_char(s.date, 'YYYY-mm-dd')
+							
+												
+							
+
+							""" % date
+			cr.execute(zapros,)
+			gol = cr.fetchone()
+			if gol!=None:
+				if len(gol)>0:
+					data_pivot.loc[index, "Total"] = gol[1]
+			print row['date'], row['Total']
+
+
+
+
+
+		print data_pivot
+		Total = data_pivot['Total']
+		data_pivot.drop(labels=['Total'], axis=1,inplace = True)
+		data_pivot.insert(1, 'Total', Total)
+		data_pivot.to_excel(writer,index=True, sheet_name='Sheet1', startcol = 0, startrow = 5)
+
+		workbook = writer.book
+		worksheet = writer.sheets['Sheet1']
+		worksheet.write_string(0,0,u"Дойный 0-40")
+		worksheet.write_string(0,1,u"Дойный 0-40")
+		money_fmt = workbook.add_format({'num_format': '#,##0.00'})
+		text_format = workbook.add_format({'text_wrap': True})
+		worksheet.set_column('C:I', 10, money_fmt)
+		worksheet.set_row(5,50, text_format)
+		#worksheet.protect('A', { 'delete_columns': True })
+
+		# Write the column headers with the defined format.
+		# for col_num, value in enumerate(table.columns.values):
+		#     worksheet.write(5, col_num + 1, value, text_format)
+
+
+
+
+
+
+
+
+
+		writer.save()
+
+		export_id = self.pool.get('excel.extended').create(cr, uid, 
+					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': 'BuhReport.xlsx'}, context=context)
+
+		return{
+
+			'view_mode': 'form',
+
+			'res_id': export_id,
+
+			'res_model': 'excel.extended',
+
+			'view_type': 'form',
+
+			'type': 'ir.actions.act_window',
+
+			'context': context,
+
+			'target': 'new',
+
+			}
+
+		# vid1 = self.read()
+		
+		# datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
+		# s = self.read()
+		# print s
+
+		# data = self.read()[0]
+		# datas = {
+		# 	'ids': self.ids,
+		# 	'model': 'korm.buh_report',
+		# 	'form': data,
+		# 	'get_list': self.get_list()
+		# }
+		# return {
+		# 			'type': 'ir.actions.report.xml',
+		# 			'report_name': 'kormlenie.report_korm_buh_report_view',
+		# 			'datas': datas,
+		# 		}
 
 
 
@@ -579,48 +728,48 @@ class korm_buh_report(models.Model):
 
 #                 FROM (  select 
 #                             min(s.id) as id,
-                            
+							
 #                             date_trunc('day',s.date) as date,
-                            
+							
 #                             s.nomen_nomen_id as nomen_nomen_id,
-                   
+				   
 #                             sum(s.kol_fakt)/count(s.id) as kol_fakt,
-                            
+							
 #                             kl.stado_fiz_group_id as stado_fiz_group_id,
 #                             fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id
-                    
+					
 #                         from korm_korm_detail_line s
 
 #                         left join korm_korm_line kl on (kl.korm_korm_id = s.korm_korm_id and 
 #                                                         kl.sorting = s.sorting)
-                
+				
 #                         left join stado_fiz_group fg on ( fg.id = kl.stado_fiz_group_id )
-                           
+						   
 #                         Group by date_trunc('day',s.date),
-                         
+						 
 #                              s.nomen_nomen_id,
 #                              kl.stado_fiz_group_id,
 #                              fg.stado_vid_fiz_group_id
-                        
+						
 #                         UNION ALL
-                        
+						
 #                         Select
 #                                 min(s.id) as id,
-                                        
+										
 #                                 date_trunc('day',s.date) as date,
-                                
+								
 #                                 s.nomen_nomen_id as nomen_nomen_id,
-                           
+						   
 #                                 sum(s.kol) as kol_fakt,
-                                
+								
 #                                 s.stado_fiz_group_id as stado_fiz_group_id,
 #                                 fg.stado_vid_fiz_group_id as stado_vid_fiz_group_id
 #                         From korm_rashod_kormov_line s
-                                       
+									   
 #                         left join stado_fiz_group fg on ( fg.id = s.stado_fiz_group_id )
-                               
+							   
 #                         Group by date_trunc('day',s.date),
-                             
+							 
 #                              s.nomen_nomen_id,
 #                              s.stado_fiz_group_id,
 #                              fg.stado_vid_fiz_group_id) t1
@@ -655,7 +804,7 @@ class korm_buh_report(models.Model):
 
 #                     kl.stado_fiz_group_id,
 #                     fg.stado_vid_fiz_group_id
-                    
+					
 #                 from korm_korm_detail_line s
 #                 left join korm_korm_svod_line sv on 
 #                                         ( sv.korm_korm_id = s.korm_korm_id and 
@@ -673,8 +822,8 @@ class korm_buh_report(models.Model):
 #                             From nomen_price_line pl
 #                             Order by  pl.nomen_nomen_id, pl.date desc
 #                              ) pll on (pll.nomen_nomen_id = s.nomen_nomen_id)
-             
-           
+			 
+		   
 #                 Group by d.name, s.date,
 #                          date_part('month',s.date),
 #                          to_char(s.date, 'YYYY'),

@@ -901,13 +901,7 @@ class korm_korm(models.Model):
 		result = super(korm_korm, self).create(vals)
 		return result
 
-	@api.model
-	def write(self, vals):
-
-		
-		result = super(korm_korm, self).write(vals)
-		return result
-   
+	   
 	@api.multi
 	def unlink(self):
 

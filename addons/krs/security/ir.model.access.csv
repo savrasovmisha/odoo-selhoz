@@ -13,6 +13,8 @@ access_krs_cow_vibitiya_manager,krs.cow_vibitiya,model_krs_cow_vibitiya,group_kr
 access_krs_cow_vibitiya_users,krs.cow_vibitiya,model_krs_cow_vibitiya,group_krs_users,1,0,0,0
 access_krs_tel_vibitiya_manager,krs.tel_vibitiya,model_krs_tel_vibitiya,group_krs_manager,1,1,1,1
 access_krs_tel_vibitiya_users,krs.tel_vibitiya,model_krs_tel_vibitiya,group_krs_users,1,0,0,0
+access_krs_osemeneniya_manager,krs.osemeneniya,model_krs_osemeneniya,group_krs_manager,1,1,1,1
+access_krs_osemeneniya_users,krs.osemeneniya,model_krs_osemeneniya,group_krs_users,1,0,0,0
 access_krs_abort_manager,krs.abort,model_krs_abort,group_krs_manager,1,1,1,1
 access_krs_abort_users,krs.abort,model_krs_abort,group_krs_users,1,0,0,0
 access_krs_struktura_manager,krs.struktura,model_krs_struktura,group_krs_manager,1,1,1,1

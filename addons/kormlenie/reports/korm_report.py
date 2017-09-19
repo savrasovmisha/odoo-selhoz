@@ -6,6 +6,29 @@ from datetime import datetime, timedelta, date
 from openerp.exceptions import ValidationError
 
 
+def week_magic(day):
+	if type(day)==str:
+		day = datetime.strptime(day, "%Y-%m-%d").date()
+	day_of_week = day.weekday()
+
+	to_beginning_of_week = timedelta(days=day_of_week)
+	beginning_of_week = day - to_beginning_of_week
+
+	to_end_of_week = timedelta(days=6 - day_of_week)
+	end_of_week = day + to_end_of_week
+	number_of_week = day.isocalendar()[1]
+
+	return (beginning_of_week, end_of_week, number_of_week)
+
+def last_day_of_month(date):
+	if type(date)==str:
+		date = datetime.strptime(date, "%Y-%m-%d").date()
+	if date.month == 12:
+		return date.replace(day=31)
+	return date.replace(month=date.month+1, day=1) - timedelta(days=1)
+
+
+
 class korm_svod_report(models.Model):
 	_name = "korm.korm_svod_report"
 	_description = "Korm Statistics"
@@ -487,14 +510,61 @@ class korm_buh_report(models.Model):
 	#_auto = False
 	# _rec_name = 'nomen_nomen_id'
 
-	
-	date = fields.Date(string='Дата')
-	# nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
-	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
-	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
 
-	month = fields.Text(string=u"Месяц")
-	year = fields.Text(string=u"Год")
+	@api.one
+	@api.depends('month', 'year')
+	def return_name(self):
+		if self.month and self.year:
+			self.name = self.year + '-' + self.month
+			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+			last_day = last_day_of_month(self.date_start)
+			self.date_end = last_day
+			self.count_day = last_day.day
+		#if month == '01' : month_text = u"Январь"
+		if self.month == '01' : self.month_text = u"Январь"
+		if self.month == '02' : self.month_text = u"Февряль"
+		if self.month == '03' : self.month_text = u"Март"
+		if self.month == '04' : self.month_text = u"Апрель"
+		if self.month == '05' : self.month_text = u"Май"
+		if self.month == '06' : self.month_text = u"Июнь"
+		if self.month == '07' : self.month_text = u"Июль"
+		if self.month == '08' : self.month_text = u"Август"
+		if self.month == '09' : self.month_text = u"Сентябрь"
+		if self.month == '10' : self.month_text = u"Октябрь"
+		if self.month == '11' : self.month_text = u"Ноябрь"
+		if self.month == '12' : self.month_text = u"Декабрь"
+
+
+	
+	# date = fields.Date(string='Дата')
+	# # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')
+	# stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физ. группа')
+	# stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+
+	# month = fields.Text(string=u"Месяц")
+	# year = fields.Text(string=u"Год")
+
+	month = fields.Selection([
+		('01', "Январь"),
+		('02', "Февряль"),
+		('03', "Март"),
+		('04', "Апрель"),
+		('05', "Май"),
+		('06', "Июнь"),
+		('07', "Июль"),
+		('08', "Август"),
+		('09', "Сентябрь"),
+		('10', "Октябрь"),
+		('11', "Ноябрь"),
+		('12', "Декабрь"),
+	], default='', required=True, string=u"Месяц")
+	
+	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+	month_text = fields.Char(string=u"Год", compute='return_name')
+
+	date_start = fields.Date(string='Дата начала', required=True, index=True, copy=False, compute='return_name')
+	date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
+	
 	
 	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
 	
@@ -550,16 +620,247 @@ class korm_buh_report(models.Model):
 
 		return rr
 
-	#@api.multi
-	def report_print(self, cr, uid, ids, context=None):
+	@api.multi
+	def report_print(self):#, cr, uid, ids, context=None):
+		self.ensure_one()
 		import sys
 		import os
 		import base64
 		import zipfile
 		import tempfile
 		from pandas import DataFrame, pivot_table
+		from xlsxwriter.utility import xl_rowcol_to_cell
+		import xlsxwriter
 		import pandas as pd
 		import numpy as np
+		def write_sheet(workbook, name_group, data_pivot):
+			start_row_num = 13 #Начало данных таблицы
+			start_col_num = 2 #Начало названий корма
+
+			
+
+			total_rows = data_pivot['date'].count()  #Кол-во строк данных
+			total_cols = len(data_pivot.columns)   #Кол-во колонок в данных
+
+
+			
+			worksheet = workbook.add_worksheet(name_group)
+			border_format=workbook.add_format({
+			                            'border':1
+			                             
+			                           })
+
+
+
+			worksheet.set_column(0, 0, 14) #Задаем ширину первой колонки 
+
+			format_table_int = workbook.add_format({
+														'border':1,
+														'font_size': 10,
+														'num_format': '#,##0'})
+														
+			format_table_float = workbook.add_format({
+														'border':1,
+														'font_size': 10,
+														'num_format': '#,##0.00'})
+														
+			format_table_date = workbook.add_format({
+														'border':1,
+														'font_size': 10,
+														'num_format': 'DD.MM.YYYY'})
+			
+			                                        
+			text_format_utv = workbook.add_format({	'indent': True,
+												'border':0,
+												'align':'right',
+												'font_size':10		})
+			text_format_head = workbook.add_format({'indent': True,
+												'border':0,
+												'align':'left',
+												'font_size':10		})	
+
+			text_format_head_bold = workbook.add_format({'indent': True,
+												'border':0,
+												'bold': 1,
+												'font_size':10		})																	
+
+
+
+			format_table_head = workbook.add_format({	'text_wrap': True,
+												'border':1,
+												'align':'center',
+												'valign':'vcenter',
+												'font_size':8		})
+			format_table_data = workbook.add_format({	'text_wrap': True,
+												'border':1,
+												'align':'right',
+												'valign':'vcenter',
+												'font_size':10		})									
+
+			##Формат для объединенных ячеек									
+			merge_format = workbook.add_format({
+												'bold': 1,
+												'border': 0,
+												'align': 'center',
+												'valign': 'vcenter'})	
+																				
+			
+
+
+
+			worksheet.write(0, total_cols, u'Генеральный директор ООО "Эвика-Агро"', text_format_utv)
+			worksheet.write(1, total_cols, u'___________ С.М. Кривич"', text_format_utv)
+
+
+			worksheet.merge_range('A3:%s' % (xl_rowcol_to_cell(2, total_cols)), 
+									u'Сводная ведомость расхода кормов', 
+									merge_format)
+									
+			worksheet.merge_range('A4:%s' % (xl_rowcol_to_cell(3, total_cols)), 
+									u'за %s %s г.' % (self.month_text, self.year), 
+									merge_format)
+
+
+			worksheet.write(4, 0, u'Организация', text_format_head)	
+			worksheet.write(4, 2, u'ООО "Эвика-Агро"', text_format_head_bold)	
+
+			worksheet.write(5, 0, u'Отделений, участок', text_format_head)
+			worksheet.write(5, 2, u'Животноводческий комплекс', text_format_head_bold)
+
+			worksheet.write(6, 0, u'Группа скота', text_format_head)
+			worksheet.write(6, 2, name_group, text_format_head_bold)					
+
+
+			worksheet.merge_range('A9:B9', u'Норма на одну голову, кг', format_table_head)
+			worksheet.merge_range('A10:B10', u'Факт на одну голову, кг', format_table_head)
+			worksheet.merge_range('A11:B11', u'Лимит на месяц, кг', format_table_head)
+
+			worksheet.merge_range('C12:%s' % (xl_rowcol_to_cell(11, total_cols-1)), 
+									u'Наименование использованных кормов', 
+									format_table_head)
+
+			#Вставляем рамки ячеек						
+			for col_num in range(total_cols-2):
+			    worksheet.write(8, col_num+2, None, format_table_head)
+			    worksheet.write(9, col_num+2, None, format_table_head)
+			    worksheet.write(10, col_num+2, None, format_table_head)
+			    
+			    
+
+			# Вставляем названия столбцов						
+			for col_num, value in enumerate(data_pivot.columns.values):
+			    worksheet.write(12, col_num, value, format_table_head)
+			    worksheet.set_column(0, col_num+1, 10) #Задаем ширину колонки
+			    num=col_num + 1
+
+
+			worksheet.set_row(12,50) #Задаем высоту строк с названиями корма
+
+			worksheet.merge_range('C14:%s' % (xl_rowcol_to_cell(13, total_cols-1)), 
+									u'Кол-во использованных кормов',format_table_head)
+
+
+			worksheet.merge_range('A12:A14', u'Дата', format_table_head)	
+			worksheet.merge_range('B12:B14', u'Кол-во скота (в наличии), гол.', format_table_head)				
+			worksheet.merge_range('%s:%s' % (	xl_rowcol_to_cell(8, total_cols),
+												xl_rowcol_to_cell(13, total_cols)), 
+									u'Итого за день', 
+									format_table_head)					
+
+			row=start_row_num+1
+			for index, rows in data_pivot.iterrows():
+				col=0
+				print rows
+				for i, val in enumerate(rows):
+					print val
+					if i>0:
+						worksheet.write(row, col, val, format_table_int)
+					else:
+						worksheet.write(row, col, val, format_table_date)
+							
+					#worksheet.write(row, col, None, format_table_data)
+					col+=1
+				
+				row+=1
+
+			row_num = start_row_num + 1
+
+
+
+			#Итоги за день
+			for i in list(range(total_rows)):
+				
+				worksheet.write_formula(row_num,total_cols,
+			                        '{=SUM(%s:%s)}' % (xl_rowcol_to_cell(row_num, start_col_num),
+			                                            xl_rowcol_to_cell(row_num, total_cols-1)), format_table_int)
+				row_num+=1
+
+			#Вставляем рамки ячеек						
+			for col_num in range(total_cols-1):
+			    worksheet.write(row_num, col_num+2, None, format_table_int)
+			    worksheet.write(row_num+2, col_num+2, None, format_table_int)
+			    
+			 
+			col_num = start_col_num
+			#среднее для поголовья
+			worksheet.write(row_num, 0, u'Ср. поголовье', format_table_head)
+			worksheet.write_formula(row_num, 1,
+			                        '{=AVERAGE(%s:%s)}' % (xl_rowcol_to_cell(start_row_num, 1),
+			                                            xl_rowcol_to_cell(row_num-1, 1)), format_table_int)
+			                                            
+			row_num += 1 
+			                                           
+			#Итоги по корму
+			worksheet.write(row_num, 0, u'Итого', format_table_head)
+			col_num = start_col_num - 1
+			for i in range(len(data_pivot.columns)):
+				
+				worksheet.write_formula(row_num, col_num,
+			                        '{=SUM(%s:%s)}' % (xl_rowcol_to_cell(start_row_num+1, col_num),
+			                                            xl_rowcol_to_cell(row_num-2, col_num)), format_table_int)
+				col_num+=1
+
+
+
+
+			#Факт на голову
+			col_num = start_col_num
+			for i in range(len(data_pivot.columns)-1):
+				
+				worksheet.write_formula(9, col_num,
+			                        '{=%s/%s}' % (xl_rowcol_to_cell(row_num, col_num),
+			                                            xl_rowcol_to_cell(row_num, 1)), format_table_float)
+				col_num+=1
+
+
+			row_num += 1
+			#worksheet.write(row_num, 0, u'Остаток лимита', format_table_head)
+			worksheet.merge_range('%s:%s' % (xl_rowcol_to_cell(row_num, 0),
+			                                    xl_rowcol_to_cell(row_num, 1)), 
+			                      u'Остаток лимита', 
+			                      format_table_head)
+			
+
+			#Установки печати
+			worksheet.set_landscape() #Ландшафт
+			worksheet.set_margins(0.5, 0.5, 0.5, 0.5) #Поля по умолчанию
+			#print_area( first_row , first_col , last_row , last_col )
+			worksheet.fit_to_pages(1, 1) #Разместить на одной странице
+
+
+			#writer.save()
+
+
+
+
+
+
+
+
+
+
+
+
 
 		reload(sys)
 		sys.setdefaultencoding("utf-8")
@@ -574,115 +875,205 @@ class korm_buh_report(models.Model):
 
 		output_filename = tmp_dir + '/BuhReport.xlsx'
 
-
-		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
-
-
-		zapros = """select 
-						n.name,
-						r.date::date,
-						r.nomen_nomen_id,
-						r.kol as kol_fakt
-					from reg_rashod_kormov r
-					left join nomen_nomen n on (n.id=r.nomen_nomen_id)
-					
-					where r.date>'01.08.2017' and r.date<'31.08.2017'
-					
-					
-
-					""" #%(ras_date_start.date(), ras_date_end.date())
-		#print zapros
-		cr.execute(zapros,)
-		res = cr.fetchall()
-		pd.core.format.header_style = None
-
-		datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+		workbook = xlsxwriter.Workbook(output_filename, {'default_date_format': 'DD.MM.YYYY'})
 
 
-		table = pivot_table(datas, values=['kol_fakt'], 
-						index=['date'],
-		                #rows=['date'], 
-		                columns=['name'], 
-		                aggfunc=np.sum, 
-		                #margins=True
-		                )
+		#writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
+		stado_vid_fiz_group_ids = self.env['stado.vid_fiz_group'].search([])
+		
+		for stado_vid_fiz_group in stado_vid_fiz_group_ids:
 
 
-                
-		#print table2
-
-		data_pivot= DataFrame(data=table) 
-		data_pivot.fillna(0, inplace=True)
-		data_pivot.reset_index(inplace=True)
-
-
-
-		data_pivot.columns = data_pivot.columns.droplevel()
-
-		data_pivot['Total'] = 0
-		data_pivot.rename(columns={"": "date"}, inplace=True)
-		for index, row in data_pivot.iterrows():
-			#row['Total']=200
-			#data_pivot.set_value(index, 'Total',200)
-			l = row['date']
-			
-			date=l#.strftime("%Y-%m-%d")
 			zapros = """select 
-								
-								to_char(s.date, 'YYYY-mm-dd'),
-								sum(s.kol_golov_zagon) as kol_golov_zagon
-								
-							from stado_struktura_line s
-							where to_char(s.date, 'YYYY-mm-dd')='%s'
-							Group by to_char(s.date, 'YYYY-mm-dd')
+							n.name,
+							r.date::date,
+							r.nomen_nomen_id,
+							r.kol as kol_fakt
+						from reg_rashod_kormov r
+						left join nomen_nomen n on (n.id=r.nomen_nomen_id)
+						left join stado_fiz_group fg on (fg.id = r.stado_fiz_group_id)
+						
+						where r.date::date>='%s' and r.date::date<='%s' and
+								fg.stado_vid_fiz_group_id=%s
+						
+						
+
+						""" %(self.date_start, self.date_end, stado_vid_fiz_group.id)
+			#print zapros
+			self.env.cr.execute(zapros,)
+			res = self.env.cr.fetchall()
+			if len(res)>0:
+				pd.core.format.header_style = None
+
+				datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+
+
+				table = pivot_table(datas, values=['kol_fakt'], 
+								index=['date'],
+				                #rows=['date'], 
+				                columns=['name'], 
+				                aggfunc=np.sum, 
+				                #margins=True
+				                )
+
+
+		                
+				#print table2
+
+				data_pivot= DataFrame(data=table) 
+				data_pivot.fillna(0, inplace=True)
+				data_pivot.reset_index(inplace=True)
+
+
+
+				data_pivot.columns = data_pivot.columns.droplevel()
+
+				data_pivot['Total'] = 0
+				data_pivot.rename(columns={"": "date"}, inplace=True)
+				for index, row in data_pivot.iterrows():
+					#row['Total']=200
+					#data_pivot.set_value(index, 'Total',200)
+					l = row['date']
+					
+					date=l#.strftime("%Y-%m-%d")
+					zapros = """select 
+										
+										to_char(s.date, 'YYYY-mm-dd'),
+										sum(s.kol_golov_zagon) as kol_golov_zagon
+										
+									from stado_struktura_line s
+									left join stado_fiz_group fg on (fg.id = s.stado_fiz_group_id)
+									where to_char(s.date, 'YYYY-mm-dd')='%s' and
+									fg.stado_vid_fiz_group_id=%s								
+									Group by to_char(s.date, 'YYYY-mm-dd')
+									
+														
+									
+
+									""" % (date, stado_vid_fiz_group.id)
+					self.env.cr.execute(zapros,)
+					gol = self.env.cr.fetchone()
+					if gol!=None:
+						if len(gol)>0:
+							data_pivot.loc[index, "Total"] = gol[1]
+					#print row['date'], row['Total']
+
+
+
+
+
+				#print data_pivot
+				Total = data_pivot['Total']
+				data_pivot.drop(labels=['Total'], axis=1,inplace = True)
+				data_pivot.insert(1, 'Total', Total)
+
+				write_sheet(workbook, stado_vid_fiz_group.name, data_pivot)
+
+
+				#Формирование листов по подвидам групп кормления
+				stado_podvid_fiz_group_ids = self.env['stado.podvid_fiz_group'].search([]) 
+				for stado_podvid_fiz_group in stado_podvid_fiz_group_ids:
+					
+					zapros = """select 
+							n.name,
+							r.date::date,
+							r.nomen_nomen_id,
+							r.kol as kol_fakt
+						from reg_rashod_kormov r
+						left join nomen_nomen n on (n.id=r.nomen_nomen_id)
+						left join stado_fiz_group fg on (fg.id = r.stado_fiz_group_id)
+						
+						where r.date::date>='%s' and r.date::date<='%s' and
+								fg.stado_vid_fiz_group_id=%s and
+								fg.stado_podvid_fiz_group_id=%s
+						
+						
+
+						""" %(self.date_start, self.date_end, stado_vid_fiz_group.id, stado_podvid_fiz_group.id)
+					#print zapros
+					self.env.cr.execute(zapros,)
+					res = self.env.cr.fetchall()
+					if len(res)>0:
+						pd.core.format.header_style = None
+
+						datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+
+
+						table = pivot_table(datas, values=['kol_fakt'], 
+										index=['date'],
+						                #rows=['date'], 
+						                columns=['name'], 
+						                aggfunc=np.sum, 
+						                #margins=True
+						                )
+
+
+				                
+						#print table2
+
+						data_pivot= DataFrame(data=table) 
+						data_pivot.fillna(0, inplace=True)
+						data_pivot.reset_index(inplace=True)
+
+
+
+						data_pivot.columns = data_pivot.columns.droplevel()
+
+						data_pivot['Total'] = 0
+						data_pivot.rename(columns={"": "date"}, inplace=True)
+						for index, row in data_pivot.iterrows():
+							#row['Total']=200
+							#data_pivot.set_value(index, 'Total',200)
+							l = row['date']
 							
+							date=l#.strftime("%Y-%m-%d")
+							zapros = """select 
 												
-							
+												to_char(s.date, 'YYYY-mm-dd'),
+												sum(s.kol_golov_zagon) as kol_golov_zagon
+												
+											from stado_struktura_line s
+											left join stado_fiz_group fg on (fg.id = s.stado_fiz_group_id)
+											where to_char(s.date, 'YYYY-mm-dd')='%s' and
+											fg.stado_vid_fiz_group_id=%s and
+											fg.stado_podvid_fiz_group_id=%s											
+											Group by to_char(s.date, 'YYYY-mm-dd')
+											
+																
+											
 
-							""" % date
-			cr.execute(zapros,)
-			gol = cr.fetchone()
-			if gol!=None:
-				if len(gol)>0:
-					data_pivot.loc[index, "Total"] = gol[1]
-			print row['date'], row['Total']
-
-
-
-
-
-		print data_pivot
-		Total = data_pivot['Total']
-		data_pivot.drop(labels=['Total'], axis=1,inplace = True)
-		data_pivot.insert(1, 'Total', Total)
-		data_pivot.to_excel(writer,index=True, sheet_name='Sheet1', startcol = 0, startrow = 5)
-
-		workbook = writer.book
-		worksheet = writer.sheets['Sheet1']
-		worksheet.write_string(0,0,u"Дойный 0-40")
-		worksheet.write_string(0,1,u"Дойный 0-40")
-		money_fmt = workbook.add_format({'num_format': '#,##0.00'})
-		text_format = workbook.add_format({'text_wrap': True})
-		worksheet.set_column('C:I', 10, money_fmt)
-		worksheet.set_row(5,50, text_format)
-		#worksheet.protect('A', { 'delete_columns': True })
-
-		# Write the column headers with the defined format.
-		# for col_num, value in enumerate(table.columns.values):
-		#     worksheet.write(5, col_num + 1, value, text_format)
+											""" % (date, stado_vid_fiz_group.id, stado_podvid_fiz_group.id)
+							self.env.cr.execute(zapros,)
+							gol = self.env.cr.fetchone()
+							if gol!=None:
+								if len(gol)>0:
+									data_pivot.loc[index, "Total"] = gol[1]
+							#print row['date'], row['Total']
 
 
 
 
 
+						#print data_pivot
+						Total = data_pivot['Total']
+						data_pivot.drop(labels=['Total'], axis=1,inplace = True)
+						data_pivot.insert(1, 'Total', Total)
+						name_group = (stado_podvid_fiz_group.name+ ' ' +stado_vid_fiz_group.name)[:30]
+						write_sheet(workbook, name_group , data_pivot)
+
+			
+
+		
+		workbook.close()
 
 
 
 
-		writer.save()
 
-		export_id = self.pool.get('excel.extended').create(cr, uid, 
-					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': 'BuhReport.xlsx'}, context=context)
+
+
+		export_id = self.pool.get('excel.extended').create(self.env.cr, self.env.uid, 
+					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': 'BuhReport.xlsx'}, context=self.env.context)
 
 		return{
 
@@ -696,7 +1087,7 @@ class korm_buh_report(models.Model):
 
 			'type': 'ir.actions.act_window',
 
-			'context': context,
+			'context': self.env.context,
 
 			'target': 'new',
 

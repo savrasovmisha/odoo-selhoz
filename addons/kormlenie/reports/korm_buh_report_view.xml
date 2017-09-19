@@ -9,11 +9,11 @@
                 <sheet>
                     <group>
                         
-                        <field name="date"/>
-                        <field name="stado_vid_fiz_group_id"/>
-                        <field name="month"/>
-                        <field name="year"/>
-                        
+                        <group>
+                            <field name="month"/>
+                            <field name="year"/>
+                            
+                        </group>
                        
                         
                     </group>

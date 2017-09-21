@@ -903,7 +903,7 @@ class korm_buh_report(models.Model):
 			self.env.cr.execute(zapros,)
 			res = self.env.cr.fetchall()
 			if len(res)>0:
-				pd.core.format.header_style = None
+				#pd.core.format.header_style = None
 
 				datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
 
@@ -994,7 +994,7 @@ class korm_buh_report(models.Model):
 					self.env.cr.execute(zapros,)
 					res = self.env.cr.fetchall()
 					if len(res)>0:
-						pd.core.format.header_style = None
+						#pd.core.format.header_style = None
 
 						datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
 

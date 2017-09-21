@@ -599,6 +599,9 @@ class trace_milk(models.Model):
 	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
 	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')
 	sale_zachet = fields.Integer(string=u"Зачетный вес", store=True, compute='_sale_result')
+	ostatok_today = fields.Integer(string=u"Остаток, сегодня", store=True, default=0)
+	ostatok_lastday = fields.Integer(string=u"Остаток, вчера", store=True, compute='_sale_result')
+	
 	sale_jir = fields.Float(digits=(3, 1), string=u"Жир", store=True, compute='_sale_result', group_operator="avg")
 	sale_belok = fields.Float(digits=(3, 2), string=u"Белок", store=True, compute='_sale_result', group_operator="avg")
 	
@@ -630,7 +633,17 @@ class trace_milk(models.Model):
 	otk_300 = fields.Float(digits=(3, 2), string=u"Откл-е >300", compute='_otk_nadoy_result', store=False, group_operator="avg")
 
 	description = fields.Text(string=u"Коментарии")
+	trace_milk_ostatok_line = fields.One2many('milk.trace_milk_ostatok_line', 'trace_milk_id', string=u"Строка Учет движения молока Остотки в танкерах")
 
+
+	@api.one
+	def action_update(self):
+		"""Действие при нажати на кнопку обновить. Пересчитаем"""
+		self._sale_result()
+		self._valoviy_nadoy_result()
+		self._nadoy_result()
+		self._otk_result()
+		self._otk_nadoy_result()
 	
 	@api.one
 	@api.constrains('date_doc')
@@ -692,15 +705,22 @@ class trace_milk(models.Model):
 			self.sale_peresdali_zachet = _sum_zachet
 
 
+			prev_date = d - timedelta(days=1)
+			
+			cm = self.env['milk.trace_milk'].search([('date_doc', '=', prev_date)], limit=1)
+			if len(cm)>0:
+				self.ostatok_lastday = cm.ostatok_today
+
+
 
 			
 	@api.one
-	@api.depends('vipoyka','utilizaciya','date_doc')
+	@api.depends('vipoyka','utilizaciya','date_doc', 'ostatok_today', 'ostatok_lastday')
 	def _valoviy_nadoy_result(self):
-		self.valoviy_nadoy = self.vipoyka + self.utilizaciya + self.sale_natura
+		self.valoviy_nadoy = self.vipoyka + self.utilizaciya + self.sale_natura + self.ostatok_today - self.ostatok_lastday
 
 	@api.one
-	@api.depends('cow_doy','cow_zapusk','cow_netel','date_doc', 'vipoyka', 'utilizaciya')
+	@api.depends('cow_doy','cow_zapusk','cow_netel','date_doc', 'vipoyka', 'utilizaciya', 'ostatok_today', 'ostatok_lastday')
 	def _nadoy_result(self):
 		
 		self.cow_fur = self.cow_doy + self.cow_zapusk
@@ -741,6 +761,52 @@ class trace_milk(models.Model):
 	def action_load_uniform(self):
 		self.nadoy_0_40 = 30
 
+
+
+class trace_milk_ostatok_line(models.Model):
+	_name = 'milk.trace_milk_ostatok_line'		
+	"""Учет движения молока остатки в танкерах"""
+	@api.one
+	@api.depends('tanker_id')
+	def _is_meter(self):
+		if self.tanker_id:
+			self.name = self.tanker_id.name
+			self.merilo = self.tanker_id.merilo
+		else:
+			self.merilo = ''
+
+	@api.one
+	@api.depends('tanker_id','meter_value', 'plotnost')
+	def _raschet(self):
+		if self.meter_value:
+			if self.tanker_id.merilo == u'Весы':
+				self.ves_natura = self.meter_value
+			elif self.tanker_id.merilo == u'Счетчик':
+				self.ves_natura = round(self.meter_value * (1+self.plotnost/1000))
+			else:
+				pok = self.env['milk.scale_tanker_line'].search([('value', '<=', self.meter_value),
+														('scale_tanker_id', '=', self.tanker_id.scale_tanker_id.id)], 
+														limit=1, order ='value').result
+
+				self.ves_natura = round(pok * (1+self.plotnost/1000))
+			
+	
+
+	name = fields.Text(string='Description', required=True, default='New', compute='_is_meter', store=True)
+	tanker_id = fields.Many2one('milk.tanker', string=u"Танкер", required=True)
+	merilo = fields.Char(string=u"Meter", compute='_is_meter', readonly=True, default='')
+	meter_value = fields.Integer(string=u"Показания", required=True)
+	ves_natura = fields.Integer(string=u"В натуре",  store=True, compute='_raschet')
+	plotnost = fields.Float(digits=(4, 2))
+	trace_milk_id = fields.Many2one('milk.trace_milk',
+        ondelete='cascade', string=u"Учет движения молока", required=True)
+	
+
+	
+	
+
+
+	
 
 
 class plan_sale_milk(models.Model):

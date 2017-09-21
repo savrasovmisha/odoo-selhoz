@@ -19,12 +19,25 @@
                             <group>
                                 <field name="name" string="Номер"/>
                                 <field name="date_doc"/>
+
+                                
                             </group>
+                            <div class="oe_button_box" name="button_box">
+                                    <button name="action_update"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Обновить"
+                                        
+                                       >
+                                    </button>
+                                </div>
                             <group>
                                 <separator string="Движение молока" colspan="2"/>
                                 <group>
                                     <field name="vipoyka"/>
                                     <field name="utilizaciya"/>
+                                    <field name="ostatok_lastday"/>
+                                    <field name="ostatok_today"/>
                                     <field name="sale_natura"/>
                                     <field name="sale_zachet"/>
                                     <field name="sale_jir"/>
@@ -34,6 +47,20 @@
                                 <group>
                                     <field name="sale_peresdali_natura"/>
                                     <field name="sale_peresdali_zachet"/>
+                                    <notebook>
+                                        <page string="Остатки по танкерам">
+                                            <field name="trace_milk_ostatok_line">
+                                                <tree string="Остатки по танкерам" editable="botton">
+                                                    <field name="tanker_id" string="Танкер"/>
+                                                    <field name="merilo" string="Мерило"/>
+                                                    <field name="meter_value" string="Показания"/>
+                                                    <field name="plotnost" string="Плотность"/>
+                                                    <field name="ves_natura" string="Натура"/>
+                                                    
+                                                </tree>
+                                            </field>
+                                        </page>
+                                    </notebook>
                                 </group>
                                 <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
                                     <field name="valoviy_nadoy" class="oe_subtotal_footer_separator"/>

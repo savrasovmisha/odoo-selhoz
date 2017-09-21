@@ -17,6 +17,7 @@ spisok.append(['milk.plan_sale_milk_line',''])
 spisok.append(['milk.sale_milk_report',''])
 spisok.append(['milk.sale_milk_dashboard',''])
 spisok.append(['res.partner',''])
+spisok.append(['milk.trace_milk_ostatok_line',''])
 # spisok.append(['milk.',''])
 # spisok.append(['milk.',''])
 

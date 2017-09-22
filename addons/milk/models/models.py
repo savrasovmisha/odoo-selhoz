@@ -599,7 +599,7 @@ class trace_milk(models.Model):
 	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
 	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')
 	sale_zachet = fields.Integer(string=u"Зачетный вес", store=True, compute='_sale_result')
-	ostatok_today = fields.Integer(string=u"Остаток, сегодня", store=True, default=0)
+	ostatok_today = fields.Integer(string=u"Остаток, сегодня", store=True, compute='_raschet_ostatok')
 	ostatok_lastday = fields.Integer(string=u"Остаток, вчера", store=True, compute='_sale_result')
 	
 	sale_jir = fields.Float(digits=(3, 1), string=u"Жир", store=True, compute='_sale_result', group_operator="avg")
@@ -640,10 +640,12 @@ class trace_milk(models.Model):
 	def action_update(self):
 		"""Действие при нажати на кнопку обновить. Пересчитаем"""
 		self._sale_result()
+		self._raschet_ostatok()
 		self._valoviy_nadoy_result()
 		self._nadoy_result()
 		self._otk_result()
 		self._otk_nadoy_result()
+
 	
 	@api.one
 	@api.constrains('date_doc')
@@ -705,12 +707,19 @@ class trace_milk(models.Model):
 			self.sale_peresdali_zachet = _sum_zachet
 
 
+			#Остаток с предыдущего дня
 			prev_date = d - timedelta(days=1)
 			
 			cm = self.env['milk.trace_milk'].search([('date_doc', '=', prev_date)], limit=1)
 			if len(cm)>0:
 				self.ostatok_lastday = cm.ostatok_today
 
+			#Получаем структуру стада на текущий день
+			ss = self.env['krs.struktura'].search([('date', '=', self.date_doc)], limit=1)
+			if len(ss)>0:
+				self.cow_doy = ss.cow_itog_lakt
+				self.cow_zapusk = ss.cow_zapusk
+				self.cow_fur = self.cow_doy + self.cow_zapusk
 
 
 			
@@ -761,6 +770,13 @@ class trace_milk(models.Model):
 	def action_load_uniform(self):
 		self.nadoy_0_40 = 30
 
+	@api.one
+	@api.depends('trace_milk_ostatok_line.tanker_id','trace_milk_ostatok_line.meter_value', 'trace_milk_ostatok_line.plotnost')
+	def _raschet_ostatok(self):
+		self.ostatok_today = 0
+		for line in self.trace_milk_ostatok_line:
+			self.ostatok_today += line.ves_natura
+
 
 
 class trace_milk_ostatok_line(models.Model):
@@ -786,9 +802,11 @@ class trace_milk_ostatok_line(models.Model):
 			else:
 				pok = self.env['milk.scale_tanker_line'].search([('value', '<=', self.meter_value),
 														('scale_tanker_id', '=', self.tanker_id.scale_tanker_id.id)], 
-														limit=1, order ='value').result
+														limit=1, order ='value desc').result
 
 				self.ves_natura = round(pok * (1+self.plotnost/1000))
+
+
 			
 	
 

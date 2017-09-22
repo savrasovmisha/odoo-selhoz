@@ -20,7 +20,7 @@
     'version': '0.24',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'report', 'board'],
+    'depends': ['base', 'report', 'board', 'krs'],
 
     # always loaded
     'data': [

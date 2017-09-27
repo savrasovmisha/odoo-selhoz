@@ -352,13 +352,13 @@ def krs_load_osemeneniya(date_start, date_end, kod_osemeneniya):
 
 
 
-@app.route('/api/krs_load_abort/<date_start>/<date_end>/<kod_abort>', method='GET')
-def krs_load_abort(date_start, date_end, kod_abort):
+@app.route('/api/krs_load_abort/<date_start>/<date_end>/<kod_abort>/<kod_otel>', method='GET')
+def krs_load_abort(date_start, date_end, kod_abort, kod_otel):
 	
 	"""Загрузка Аборты за выбранный период"""
 
 
-	if date_end is None or date_start is None or kod_abort is None:
+	if date_end is None or date_start is None or kod_abort is None or kod_otel is None:
 		return 'error'
 	#return 'error'
 	#print date
@@ -377,10 +377,10 @@ def krs_load_abort(date_start, date_end, kod_abort):
 				 ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000))) and 
 				 		(T1.EVENT_DATE>=?) and 
 				 		(T1.EVENT_DATE<=?) and 
-				 		(T1.EVENT_KOD=?)
+				 		((T1.EVENT_KOD=?) or ((T1.EVENT_KOD=?) and ((T0.NANIMAL>2000000000000 AND T0.NANIMAL<3000000000000)) ))
 				 """
 	
-	param=(date_start,date_end,int(kod_abort),)
+	param=(date_start,date_end,int(kod_abort),int(kod_otel))
 	result=con_selex(zapros,param,2)
 	datas = []
 	for line in result:

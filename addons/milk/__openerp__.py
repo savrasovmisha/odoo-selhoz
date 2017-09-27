@@ -42,9 +42,10 @@
         'views/plan_sale_milk.xml',
         'views/milk_dashboard.xml',
         'views/res_config.xml',
+        'report/milk_buh_report_view.xml',
+        
         'views/menu.xml',
         'views/resources.xml',
-        #'report/sale_milk_report_view.xml',
         
         #'views/templates.xml',
     ],

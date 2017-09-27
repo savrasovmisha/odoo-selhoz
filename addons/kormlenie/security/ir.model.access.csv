@@ -85,3 +85,5 @@ access_korm_plan_fakt_report_manager,korm.plan_fakt_report,model_korm_plan_fakt_
 access_korm_plan_fakt_report_users,korm.plan_fakt_report,model_korm_plan_fakt_report,group_korm_users,1,0,0,0
 access_stado_podvid_fiz_group_manager,stado.podvid_fiz_group,model_stado_podvid_fiz_group,group_korm_manager,1,1,1,1
 access_stado_podvid_fiz_group_users,stado.podvid_fiz_group,model_stado_podvid_fiz_group,group_korm_users,1,0,0,0
+access_korm_buh_report_manager,korm.buh_report,model_korm_buh_report,group_korm_manager,1,1,1,1
+access_korm_buh_report_users,korm.buh_report,model_korm_buh_report,group_korm_users,1,0,0,0

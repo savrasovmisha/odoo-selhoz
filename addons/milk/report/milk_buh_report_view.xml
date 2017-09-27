@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="milk_buh_report_form_view">
+        <field name="name">milk_buh_report.form</field>
+        <field name="model">milk.buh_report</field>
+        <field name="arch" type="xml">
+            <form string="Форма Отчетность в бухгалтерию" create="false" edit="false">
+                <sheet>
+                    <group>
+                        
+                        <group>
+                            <field name="month"/>
+                            <field name="year"/>
+                            
+                        </group>
+                       
+                        
+                    </group>
+                     <button name="report_print" string="Печать" type="object" icon="gtk-print"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+ 
+        <record model="ir.actions.act_window" id="milk_buh_report_action">
+            <field name="name">Отчетность в бухгалтерию</field>
+            <field name="res_model">milk.buh_report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Отчетность в бухгалтерию
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

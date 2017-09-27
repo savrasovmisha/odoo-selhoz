@@ -640,8 +640,9 @@ class KRSLoadWiz(models.TransientModel):
 		conf = self.env['ir.config_parameter']
 		
 		kod_abort = conf.get_param('kod_abort')
+		kod_otel = conf.get_param('kod_otel')
 
-		url_name = '/api/krs_load_abort/'+date_start+'/'+date_end+'/'+str(kod_abort)
+		url_name = '/api/krs_load_abort/'+date_start+'/'+date_end+'/'+str(kod_abort)+'/'+str(kod_otel)
 		
 		
 		res = connect_server(self, url_name)

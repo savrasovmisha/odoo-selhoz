@@ -260,7 +260,7 @@ class milk_buh_report(models.Model):
             self.count_day = last_day.day
         #if month == '01' : month_text = u"Январь"
         if self.month == '01' : self.month_text = u"Январь"
-        if self.month == '02' : self.month_text = u"Февряль"
+        if self.month == '02' : self.month_text = u"Февраль"
         if self.month == '03' : self.month_text = u"Март"
         if self.month == '04' : self.month_text = u"Апрель"
         if self.month == '05' : self.month_text = u"Май"
@@ -276,7 +276,7 @@ class milk_buh_report(models.Model):
    
     month = fields.Selection([
         ('01', "Январь"),
-        ('02', "Февряль"),
+        ('02', "Февраль"),
         ('03', "Март"),
         ('04', "Апрель"),
         ('05', "Май"),
@@ -294,7 +294,9 @@ class milk_buh_report(models.Model):
 
     date_start = fields.Date(string='Дата начала', required=True, index=True, copy=False, compute='return_name')
     date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
-    
+    utverdil_id = fields.Many2one('res.partner', string='Утвердил')
+    sostavil_id = fields.Many2one('res.partner', string='Составил')
+    proveril_id = fields.Many2one('res.partner', string='Проверил')
 
 
     @api.multi
@@ -330,8 +332,11 @@ class milk_buh_report(models.Model):
         total_cols = 13  #Кол-во колонок в данных
 
 
-        
+        #######################################################################
+        ###########       СП-21
+
         worksheet = workbook.add_worksheet('СП-21')
+
         border_format=workbook.add_format({
                                     'border':1
                                      
@@ -343,16 +348,25 @@ class milk_buh_report(models.Model):
 
         format_table_int = workbook.add_format({
                                                     'border':1,
+                                                    'align':'center',
                                                     'font_size': 10,
                                                     'num_format': '#,##0'})
                                                     
         format_table_float = workbook.add_format({
                                                     'border':1,
+                                                    'align':'center',
+                                                    'font_size': 10,
+                                                    'num_format': '#,##0.00'})
+        format_table_float_bold = workbook.add_format({
+                                                    'border':1,
+                                                    'align':'center',
+                                                    'bold': 1,
                                                     'font_size': 10,
                                                     'num_format': '#,##0.00'})
                                                     
         format_table_date = workbook.add_format({
                                                     'border':1,
+                                                    'align':'center',
                                                     'font_size': 10,
                                                     'num_format': 'DD.MM.YYYY'})
         
@@ -377,10 +391,10 @@ class milk_buh_report(models.Model):
                                             'border':1,
                                             'align':'center',
                                             'valign':'vcenter',
-                                            'font_size':8       })
+                                            'font_size':10       })
         format_table_data = workbook.add_format({   'text_wrap': True,
                                             'border':1,
-                                            'align':'right',
+                                            'align':'center',
                                             'valign':'vcenter',
                                             'font_size':10      })                                  
 
@@ -394,9 +408,10 @@ class milk_buh_report(models.Model):
         
 
 
-
-        worksheet.write(0, total_cols-1, u'Дата составления:', text_format_utv)
-        worksheet.write(0, total_cols, self.date_end, text_format_utv)
+        date_s = datetime.strptime(self.date_end, '%Y-%m-%d')
+        date_sostavleniya = date_s.strftime('%d.%m.%Y')
+        worksheet.write(0, total_cols, u'Дата составления: %sг.' % (date_sostavleniya), text_format_utv)
+        #worksheet.write(0, total_cols, self.date_end, text_format_utv)
         
 
         worksheet.merge_range('A3:%s' % (xl_rowcol_to_cell(2, total_cols)), 
@@ -415,11 +430,21 @@ class milk_buh_report(models.Model):
         worksheet.write(5, 0, u'Отделений, участок', text_format_head)
         worksheet.write(5, 2, u'Животноводческий комплекс', text_format_head_bold)
 
-        worksheet.set_row(7,20) #Задаем высоту строк с названиями 
+        worksheet.set_row(7,25) #Задаем высоту строк с названиями 
         worksheet.set_row(8,40) #Задаем высоту строк с названиями 
 
-        worksheet.set_column(0, 0, 14) #Задаем ширину первой колонки 
-        worksheet.set_column(1, 1, 20) #Задаем ширину первой колонки 
+        worksheet.set_column(0, 0, 9) #Задаем ширину  колонки  Дата
+        worksheet.set_column(1, 1, 13) #Задаем ширину  колонки Фамилия, имя, отчетсво доярки
+        worksheet.set_column(2, 3, 5) #Задаем ширину  колонки Обслуживалось коров
+        worksheet.set_column(4, 4, 9) #Задаем ширину  колонки утром
+        worksheet.set_column(5, 5, 4) #Задаем ширину  колонки в полдень
+        worksheet.set_column(6, 6, 9) #Задаем ширину  колонки вечером 
+        worksheet.set_column(7, 7, 11) #Задаем ширину  колонки всего
+        worksheet.set_column(8, 9, 5) #Задаем ширину  колонки Жир и белок
+        worksheet.set_column(10, 10, 6) #Задаем ширину  колонки Прочее
+        worksheet.set_column(11, 11, 10) #Задаем ширину  колонки Подпись
+        worksheet.set_column(12, 12, 11) #Задаем ширину  колонки Всего надой
+        worksheet.set_column(13, 13, 6) #Задаем ширину  колонки о качестве
 
         worksheet.merge_range('A8:A9', u'Дата', format_table_head)
         worksheet.merge_range('B8:B9', u'Фамилия, имя, отчетсво доярки (мастера машинной дойки)', format_table_head)
@@ -444,17 +469,192 @@ class milk_buh_report(models.Model):
         trace_milk = self.env['milk.trace_milk']
         trace_milk_ids = trace_milk.search([ ('date_doc',  '>=',    self.date_start),
                                                ('date_doc',  '<=',    self.date_end)
-                                            ])
+                                            ],order="date_doc")
+        row_start = 9
         row = 9
         for line in trace_milk_ids:
-            worksheet.write(row, 0, line.date_doc, format_table_date)
-            worksheet.write(row, 1, u'Черепанова', format_table_head) #format_table_int)
+            date_doc = datetime.strptime(line.date_doc, '%Y-%m-%d')
+            worksheet.write(row, 0, date_doc, format_table_date)
+            worksheet.write(row, 1, line.doyarka_id.name, format_table_date) #format_table_int)
             worksheet.write(row, 2, line.cow_fur, format_table_int) 
             worksheet.write(row, 3, line.cow_doy, format_table_int) 
             worksheet.write_formula(row, 4,'{=%s/2}' % (xl_rowcol_to_cell(row, 7)), format_table_float)
             worksheet.write(row, 5, '-', format_table_int) 
             worksheet.write_formula(row, 6,'{=%s/2}' % (xl_rowcol_to_cell(row, 7)), format_table_float)
             worksheet.write(row, 7, line.valoviy_nadoy, format_table_float) 
+            worksheet.write(row, 8, line.sale_jir, format_table_float) 
+            worksheet.write(row, 9, line.sale_belok, format_table_float) 
+            worksheet.write(row, 10, '', format_table_data) 
+            worksheet.write(row, 11, '', format_table_data) 
+            worksheet.write(row, 12, line.valoviy_nadoy, format_table_float) 
+            worksheet.write(row, 13, 'в/с', format_table_data) 
+
+            row += 1
+
+        worksheet.write(row, 1, '', format_table_data) 
+        worksheet.write(row, 2, 'X', format_table_data) 
+        worksheet.write(row, 3, 'X', format_table_data) 
+        worksheet.write_formula(row, 4,'{=%s/2}' % (xl_rowcol_to_cell(row, 7)), format_table_float_bold)
+        worksheet.write(row, 5, 'X', format_table_data) 
+        worksheet.write_formula(row, 6,'{=%s/2}' % (xl_rowcol_to_cell(row, 7)), format_table_float_bold)
+        worksheet.write_formula(row, 7,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 7),
+                                                        xl_rowcol_to_cell(row-1, 7)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 8,'{=AVERAGE(%s:%s}' % (xl_rowcol_to_cell(row_start, 8),
+                                                        xl_rowcol_to_cell(row-1, 8)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 9,'{=AVERAGE(%s:%s}' % (xl_rowcol_to_cell(row_start, 9),
+                                                        xl_rowcol_to_cell(row-1, 9)), 
+                                                        format_table_float_bold)
+        worksheet.write(row, 10, 'X', format_table_data) 
+        worksheet.write(row, 11, 'X', format_table_data) 
+        worksheet.write_formula(row, 12,'{=%s}' % (xl_rowcol_to_cell(row, 7)), 
+                                                        format_table_float_bold)
+        worksheet.write(row, 13, 'X', format_table_data) 
+        
+        worksheet.write(row+1, 11, 'Сумма', text_format_utv) 
+        worksheet.write(row+1, 12, '', format_table_data) 
+        worksheet.write(row+2, 11, 'Дебет', text_format_utv) 
+        worksheet.write(row+2, 12, '', format_table_data)
+        worksheet.write(row+3, 11, 'Кредит', text_format_utv) 
+        worksheet.write(row+3, 12, '', format_table_data)
+
+        worksheet.write(row+2, 7, 'Код синтетического', text_format_head) 
+        worksheet.write(row+3, 7, 'и аналитического учета:', text_format_head) 
+
+        worksheet.write(row+5, 0, 'Составил:   %s ___________________ %s' % (self.sostavil_id.function, self.sostavil_id.name), text_format_head) 
+
+        worksheet.write(row+9, 0, 'Проверил:   %s ___________________ %s' % (self.proveril_id.function, self.proveril_id.name), text_format_head) 
+
+
+        #Установки печати
+        #worksheet.set_landscape() #Ландшафт
+        worksheet.set_margins(0.3, 0.3, 0.5, 0.5) #Поля по умолчанию
+        
+        worksheet.fit_to_pages(1, 1) #Разместить на одной странице
+        
+
+        #######################################################################
+        ###########       СП-23
+
+
+
+        worksheet = workbook.add_worksheet('СП-23')
+
+        total_cols = 9  #Кол-во колонок в данных начиная с 0
+
+        worksheet.write(0, total_cols, 'Утверждаю', text_format_utv) 
+        worksheet.write(1, total_cols, self.utverdil_id.function, text_format_utv) 
+        worksheet.write(2, total_cols, u'_______________ %s' % self.utverdil_id.name, text_format_utv) 
+        worksheet.write(3, total_cols, date_sostavleniya, text_format_utv) 
+
+        worksheet.merge_range('A5:%s' % (xl_rowcol_to_cell(4, total_cols)), 
+                                u'Учет молока за %s %s г.' % (self.month_text, self.year), 
+                                merge_format)
+
+        worksheet.set_row(7,40) #Задаем высоту строк с названиями 
+        worksheet.set_column(0, 0, 9) #Задаем ширину  колонки Дата
+        worksheet.set_column(1, 1, 12) #Задаем ширину  колонки Вал надой
+        worksheet.set_column(2, 3, 9) #Задаем ширину  колонки выпойка, утилизация
+        worksheet.set_column(4, 5, 12) #Задаем ширину  колонки реали-но, зачет вес
+        worksheet.set_column(6, 7, 6) #Задаем ширину  колонки жир, белок
+        worksheet.set_column(8, 8, 14) #Задаем ширину  колонки выручка
+        worksheet.set_column(9, 9, 6) #Задаем ширину  колонки сорт
+
+        
+        #worksheet.write(row, 0, u'Дата', format_table_head) 
+        worksheet.merge_range('A7:A8', u'Дата', format_table_head)
+        worksheet.merge_range('B7:B8', u'Валовой надой', format_table_head)
+        worksheet.merge_range('C7:D7', u'Расход, кг', format_table_head)
+        worksheet.write(7, 2, u'На выпойку телятам', format_table_head) 
+        worksheet.write(7, 3, u'Утилизация молока', format_table_head) 
+        worksheet.merge_range('E7:E8', u'Реализованно молока, кг', format_table_head)
+        worksheet.merge_range('F7:F8', u'Зачетный вес, кг', format_table_head)
+        worksheet.merge_range('G7:G8', u'Жир, %', format_table_head)
+        worksheet.merge_range('H7:H8', u'Белок, %', format_table_head)
+        worksheet.merge_range('I7:I8', u'Выручка, руб', format_table_head)
+        worksheet.merge_range('J7:J8', u'Сорт', format_table_head)
+
+        row_start = 8
+        row = 8
+        for line in trace_milk_ids:
+            date_doc = datetime.strptime(line.date_doc, '%Y-%m-%d')
+            date = date_doc.strftime('%d.%m.%Y')
+            worksheet.write(row, 0, date, format_table_date)
+            worksheet.write(row, 1, line.valoviy_nadoy, format_table_float) 
+            worksheet.write(row, 2, line.vipoyka, format_table_float) 
+            worksheet.write(row, 3, line.utilizaciya, format_table_float) 
+            worksheet.write(row, 4, line.sale_natura, format_table_float) 
+            worksheet.write(row, 5, line.sale_zachet, format_table_float) 
+            worksheet.write(row, 6, line.sale_jir, format_table_float) 
+            worksheet.write(row, 7, line.sale_belok, format_table_float) 
+            worksheet.write(row, 8, '', format_table_float) 
+            worksheet.write(row, 9, u'в/с', format_table_float) 
+            
+            row += 1
+
+           
+        worksheet.write(row, 0, u'ИТОГО:', format_table_float_bold)
+        worksheet.write_formula(row, 1,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 1),
+                                                        xl_rowcol_to_cell(row-1, 1)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 2,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 2),
+                                                        xl_rowcol_to_cell(row-1, 2)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 3,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 3),
+                                                        xl_rowcol_to_cell(row-1, 3)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 4,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 4),
+                                                        xl_rowcol_to_cell(row-1, 4)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 5,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 5),
+                                                        xl_rowcol_to_cell(row-1, 5)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 6,'{=AVERAGE(%s:%s}' % (xl_rowcol_to_cell(row_start, 6),
+                                                        xl_rowcol_to_cell(row-1, 6)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 7,'{=AVERAGE(%s:%s}' % (xl_rowcol_to_cell(row_start, 7),
+                                                        xl_rowcol_to_cell(row-1, 7)), 
+                                                        format_table_float_bold)
+        worksheet.write_formula(row, 8,'{=SUM(%s:%s}' % (xl_rowcol_to_cell(row_start, 8),
+                                                        xl_rowcol_to_cell(row-1, 8)), 
+                                                        format_table_float_bold)
+
+
+
+        worksheet.write(row+4, 0, u'Подпись материально-ответственного лица: __________________', text_format_head) 
+
+        #Установки печати
+        
+        worksheet.set_margins(0.3, 0.3, 0.5, 0.5) #Поля по умолчанию
+        
+        worksheet.fit_to_pages(1, 1) #Разместить на одной странице
+        
+
+
+        #######################################################################
+        ###########      Реестр ТТН
+
+
+
+        worksheet = workbook.add_worksheet('Реестр ТТН')
+
+        total_cols = 9  #Кол-во колонок в данных начиная с 0
+
+        worksheet.merge_range('A2:%s' % (xl_rowcol_to_cell(1, total_cols)), 
+                                u'Реестр документов ТТН по молоку за %s %s г.' % (self.month_text, self.year), 
+                                merge_format)
+
+        sale_milk = self.env['milk.sale_milk']
+        sale_milk_ids = sale_milk.search([ ('date_doc',  '>=',    self.date_start),
+                                            ('date_doc',  '<=',    self.date_end)
+                                            ],order="date_doc")
+        #for line in sale_milk_ids:
+
+
+
+
+
 
         workbook.close()
 

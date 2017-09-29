@@ -19,6 +19,7 @@
                             <group>
                                 <field name="name" string="Номер"/>
                                 <field name="date_doc"/>
+                                <field name="doyarka_id" domain="[('company_type','=','person')]"/>
 
                                 
                             </group>

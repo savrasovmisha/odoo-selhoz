@@ -595,6 +595,8 @@ class trace_milk(models.Model):
 	date_doc = fields.Date(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
 
+	doyarka_id = fields.Many2one('res.partner', string='Доярка')
+	
 	vipoyka = fields.Integer(string=u"На выпойку", store=True)
 	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
 	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')

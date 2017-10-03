@@ -841,8 +841,9 @@ class reg_rashod_kormov(models.Model):
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', required=True)
-	
-	kol = fields.Float(digits=(10, 3), string=u"Кол-во")
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления')
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
 
 def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
 	"""
@@ -990,17 +991,22 @@ class korm_korm(models.Model):
 						#По последней строчке корректируем погрешность результата округления
 						if index == kol_index:
 							itog_kol = 0.000
+							itog_kol_norma = 0.000
 							for lv in vals_sorting:
 								if lv['nomen_nomen_id'] == detail.nomen_nomen_id.id:
 									itog_kol += lv['kol']
+									itog_kol_norma += lv['kol']
 
 							kol = detail.kol_fakt - itog_kol
+							kol_norma = detail.kol_norma - itog_kol_norma
 						else:
 							kol = detail.kol_fakt*k
+							kol_norma = detail.kol_norma*k
 						
 						vals_sorting.append({
 									'nomen_nomen_id': detail.nomen_nomen_id.id, 
 									'kol': kol, 
+									'kol_norma': kol_norma, 
 									})
 
 
@@ -1009,7 +1015,9 @@ class korm_korm(models.Model):
 									'nomen_nomen_id': detail.nomen_nomen_id.id, 
 									'stado_zagon_id': line.stado_zagon_id.id, 
 									'stado_fiz_group_id': line.korm_racion_id.stado_fiz_group_id.id, 
+									'korm_racion_id': line.korm_racion_id.id, 
 									'kol': kol, 
+									'kol_norma': kol_norma, 
 									})
 
 				

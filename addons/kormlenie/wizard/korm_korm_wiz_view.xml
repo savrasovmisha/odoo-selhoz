@@ -7,10 +7,20 @@
         <field name="model">multi.korm_korm_wiz</field>
         <field name="arch" type="xml">
             <form string="Confirm">
+                <group>
+                        <group string="Период">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                             <button name="reconfirm_period_korm_korm" string="Перепровести за период" type="object" class="oe_highlight"/>
+                        </group>
+                </group>
                 <h3>Нажмине Провести для проведения выделенных документов или Отмена проведения для отмены проведенных документов <br/>
                 Кнопка Исправить: Пересчитывает дынне в таблицах Порядок кормления и Свод кормления, исправлянт некорректные данные. Таблица Детальных записей не затрагивается.
 
                  </h3>
+
                 <footer>
                     <button name="confirm_multi_korm_korm" string="Провести" type="object" class="oe_highlight"/>
                     или

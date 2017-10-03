@@ -1,0 +1,25 @@
+﻿select
+	z1.date,
+	z1.stado_fiz_group_id,
+	z1.doc,
+	z1.nomen_nomen_id,
+	z1.fakt,
+	(select 
+		sum(kol_golov_zagon )
+	from stado_struktura_line
+	where z1.date=date::date and stado_fiz_group_id=z1.stado_fiz_group_id
+	group by stado_fiz_group_id
+	) as kol_golov_zagon
+from (
+	select 
+		rrk.date::date as date,
+		rrk.stado_fiz_group_id,
+		rrk.obj as doc,
+		rrk.nomen_nomen_id,
+		sum(rrk.kol) as fakt
+
+	from reg_rashod_kormov rrk
+	
+	Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, rrk.nomen_nomen_id
+	Order by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, rrk.nomen_nomen_id
+) as z1

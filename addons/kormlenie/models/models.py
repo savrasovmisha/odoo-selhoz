@@ -821,7 +821,7 @@ class korm_racion_line(models.Model):
 	day = fields.Integer(string=u"Дне на переход", help="Дней на переход на новый корм")
 	new_nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Новый корм', help="Корм на который необходимо перейти")
 	kol_new = fields.Float(digits=(10, 3), string=u"Кол-во новое", required=True)
-	stop = fields.Boolean(string=u"Стоп", default=False, help="Прекращать кормить основным кормом и кормить новым, или давать как в последний день")
+	stop = fields.Boolean(string=u"Стоп", default=False, help="Если Истина то прекращать кормить основным кормом через установленных Дней на переход и кормить новым кормом, Иначе давать как в последний день")
 	constant = fields.Boolean(string=u"Постоянный", default=False, help="Будет доваться указанное кол-во, в не зависимости от процента дачи рациона")
 
 

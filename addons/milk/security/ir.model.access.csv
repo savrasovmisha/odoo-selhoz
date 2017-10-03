@@ -39,3 +39,5 @@ access_milk_trace_milk_ostatok_line_manager,milk.trace_milk_ostatok_line,model_m
 access_milk_trace_milk_ostatok_line_users,milk.trace_milk_ostatok_line,model_milk_trace_milk_ostatok_line,group_milk_users,1,0,0,0
 access_milk_buh_report_manager,milk.buh_report,model_milk_buh_report,group_milk_manager,1,1,1,1
 access_milk_buh_report_users,milk.buh_report,model_milk_buh_report,group_milk_users,1,0,0,0
+access_milk_price_manager,milk.price,model_milk_price,group_milk_manager,1,1,1,1
+access_milk_price_users,milk.price,model_milk_price,group_milk_users,1,0,0,0

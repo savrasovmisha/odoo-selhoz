@@ -57,6 +57,9 @@
         <menuitem id="partners_menu" name="Партнеры" parent="milk_menu"
                   action="partners_list_action" groups="group_milk_manager,group_milk_users"/>
 
+        <menuitem id="milk_price_menu" name="Установка цен на молоко" parent="milk_menu"
+                  action="milk_price_list_action" groups="group_milk_manager,group_milk_users"/>
+
 
         
     </data>

@@ -19,6 +19,7 @@ spisok.append(['milk.sale_milk_dashboard',''])
 spisok.append(['res.partner',''])
 spisok.append(['milk.trace_milk_ostatok_line',''])
 spisok.append(['milk.buh_report',''])
+spisok.append(['milk.price',''])
 
 
 spisok_read = []

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    	<record model="ir.ui.view" id="milk_price_form_view">
+            <field name="name">milk_price.form</field>
+            <field name="model">milk.price</field>
+            <field name="arch" type="xml">
+                <form string="Установка цен на молоко">
+                  
+                    <sheet>
+                        <group>
+                            <group>
+                                
+                                <field name="date"/>
+                                <field name="metod"/>
+                                
+                            </group>
+
+                            <group>
+                                <field name="price"/>
+                                <field name="NDS"/>
+                                <field name="BB"/>
+                                <field name="BJ"/>
+                                <field name="KO"/>
+                                <field name="KSS"/>
+                                <field name="PB"/>
+                                <field name="PJ"/>
+                                <field name="KK"/>
+                                <field name="H"/>
+                                
+                                
+                            </group>
+
+                        </group>
+                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+
+
+
+
+
+
+
+
+
+
+        <record model="ir.ui.view" id="view_milk_price_tree">
+            <field name="name">milk_price.tree</field>
+            <field name="model">milk.price</field>
+            <field name="arch" type="xml">
+                <tree string="Установка цен на молоко" default_order='date desc'>
+                    
+                    <field name="date"/>
+                     <field name="price"/>
+                     <field name="metod"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
+
+	   <record model="ir.ui.view" id="milk_price_search_view">
+            <field name="name">milk_price.search</field>
+            <field name="model">milk.price</field>
+            <field name="arch" type="xml">
+                <search>
+                   
+                    <field name="date" string="Дата"/>
+                </search>
+            </field>
+        </record>
+        
+
+
+     
+
+
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="milk_price_list_action">
+            <field name="name">Установка цен на молоко</field>
+            <field name="res_model">milk.price</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первый документ Установка цен на молоко молока
+                </p>
+            </field>
+        </record>
+
+   
+    </data>
+</openerp>

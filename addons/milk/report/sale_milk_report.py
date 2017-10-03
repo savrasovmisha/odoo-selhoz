@@ -351,6 +351,12 @@ class milk_buh_report(models.Model):
                                                     'align':'center',
                                                     'font_size': 10,
                                                     'num_format': '#,##0'})
+        format_table_int_bold = workbook.add_format({
+                                                    'border':1,
+                                                    'align':'center',
+                                                    'bold': 1,
+                                                    'font_size': 10,
+                                                    'num_format': '#,##0'})
                                                     
         format_table_float = workbook.add_format({
                                                     'border':1,
@@ -639,18 +645,220 @@ class milk_buh_report(models.Model):
 
         worksheet = workbook.add_worksheet('Реестр ТТН')
 
-        total_cols = 9  #Кол-во колонок в данных начиная с 0
+        total_cols = 20 #Кол-во колонок в данных начиная с 0
 
         worksheet.merge_range('A2:%s' % (xl_rowcol_to_cell(1, total_cols)), 
                                 u'Реестр документов ТТН по молоку за %s %s г.' % (self.month_text, self.year), 
                                 merge_format)
 
+        worksheet.set_row(3,50) #Задаем высоту строк с названиями 
+        worksheet.set_column(0, 0, 15) #Задаем ширину  колонки Дата
+        worksheet.set_column(1, 1, 9) #Задаем ширину  колонки Дата учета
+        worksheet.set_column(2, 2, 11) #Задаем ширину  колонки № документа
+        worksheet.set_column(3, 4, 15) #Задаем ширину  колонки Водитель Транспорт
+        worksheet.set_column(5, 5, 10) #Задаем ширину  колонки Прицеп
+        worksheet.set_column(6, 6, 15) #Задаем ширину  колонки Отпустил
+        worksheet.set_column(7, 9, 6) #Задаем ширину  колонки  Жир Белок Плотность
+        worksheet.set_column(10, 11, 10) #Задаем ширину  колонки  Натура Зачетный вес
+        worksheet.set_column(12, 16, 6) #Задаем ширину  колонки Сом. клетки - Температура
+        worksheet.set_column(17, 17, 7) #Задаем ширину  колонки Закупочная цена
+        worksheet.set_column(18, 18, 14) #Задаем ширину  колонки Выручка с  без НДС
+        worksheet.set_column(19, 19, 6) #Задаем ширину  колонки НДС
+        worksheet.set_column(20, 20, 14) #Задаем ширину  колонки Выручка с НДС
+        
+        worksheet.write(3, 0, u'Дата', format_table_head) 
+        worksheet.write(3, 1, u'Дата учета', format_table_head) 
+        worksheet.write(3, 2, u'№ документа', format_table_head) 
+        worksheet.write(3, 3, u'Водитель', format_table_head) 
+        worksheet.write(3, 4, u'Транспорт', format_table_head) 
+        worksheet.write(3, 5, u'Прицеп', format_table_head) 
+        worksheet.write(3, 6, u'Отпустил', format_table_head) 
+        worksheet.write(3, 7, u'Жир, %', format_table_head) 
+        worksheet.write(3, 8, u'Белок, %', format_table_head) 
+        worksheet.write(3, 9, u'Плотность', format_table_head) 
+        worksheet.write(3, 10, u'Натура, кг', format_table_head) 
+        worksheet.write(3, 11, u'Зачетный вес, кг', format_table_head) 
+        worksheet.write(3, 12, u'Сом. клетки', format_table_head) 
+        worksheet.write(3, 13, u'СОМО, %', format_table_head) 
+        worksheet.write(3, 14, u'Содер. антиб-ов', format_table_head) 
+        worksheet.write(3, 15, u'Кислотность', format_table_head) 
+        worksheet.write(3, 16, u'Температура', format_table_head) 
+        worksheet.write(3, 17, u'Закупочная цена', format_table_head) 
+        worksheet.write(3, 18, u'Выручка без НДС', format_table_head) 
+        worksheet.write(3, 19, u'НДС, %', format_table_head) 
+        worksheet.write(3, 20, u'Выручка с НДС', format_table_head) 
+
         sale_milk = self.env['milk.sale_milk']
         sale_milk_ids = sale_milk.search([ ('date_doc',  '>=',    self.date_start),
                                             ('date_doc',  '<=',    self.date_end)
                                             ],order="date_doc")
-        #for line in sale_milk_ids:
+        start_row = 4
+        row = 4
+        for line in sale_milk_ids:
+            date_doc = line.date_doc
+            date_ucheta = line.date_ucheta
+            name = line.name
+            voditel = line.voditel_id.name
+            transport = line.transport_id.name
+            pricep = line.pricep_id.name
+            otpustil = line.otpustil_id.name
 
+            if line.split_line == True:
+                for line_line in line.sale_milk_line:
+                    jir = line_line.jir
+                    belok = line_line.belok
+                    plotnost = line_line.plotnost
+                    ves_natura = line_line.ves_natura
+                    ves_zachet = line_line.ves_zachet
+                    som_kletki = line_line.som_kletki
+                    somo = line_line.somo
+                    antibiotik = line_line.antibiotik
+                    kislotnost = line_line.kislotnost
+                    temperatura = line_line.temperatura
+
+                    worksheet.write(row, 0, date_doc, format_table_date) 
+                    worksheet.write(row, 1, date_ucheta, format_table_date) 
+                    worksheet.write(row, 2, name, format_table_head) 
+                    worksheet.write(row, 3, voditel, format_table_head) 
+                    worksheet.write(row, 4, transport, format_table_head) 
+                    worksheet.write(row, 5, pricep, format_table_head) 
+                    worksheet.write(row, 6, otpustil, format_table_head) 
+
+                    worksheet.write(row, 7, jir, format_table_float) 
+                    worksheet.write(row, 8, belok, format_table_float) 
+                    worksheet.write(row, 9, plotnost, format_table_float) 
+                    worksheet.write(row, 10, ves_natura, format_table_int) 
+                    worksheet.write(row, 11, ves_zachet, format_table_int) 
+                    worksheet.write(row, 12, som_kletki, format_table_int) 
+                    worksheet.write(row, 13, somo, format_table_float) 
+                    worksheet.write(row, 14, antibiotik, format_table_float) 
+                    worksheet.write(row, 15, kislotnost, format_table_int) 
+                    worksheet.write(row, 16, temperatura, format_table_int) 
+                    row += 1
+
+            else:
+                jir = line.avg_jir
+                belok = line.avg_belok
+                plotnost = line.avg_plotnost
+                ves_natura = line.amount_ves_natura
+                ves_zachet = line.amount_ves_zachet
+                som_kletki = line.avg_som_kletki
+                somo = line.avg_somo
+                antibiotik = line.avg_antibiotik
+                kislotnost = line.avg_kislotnost
+                temperatura = line.avg_temperatura
+
+                worksheet.write(row, 0, date_doc, format_table_date) 
+                worksheet.write(row, 1, date_ucheta, format_table_date) 
+                worksheet.write(row, 2, name, format_table_head) 
+                worksheet.write(row, 3, voditel, format_table_head) 
+                worksheet.write(row, 4, transport, format_table_head) 
+                worksheet.write(row, 5, pricep, format_table_head) 
+                worksheet.write(row, 6, otpustil, format_table_head) 
+
+                worksheet.write(row, 7, jir, format_table_float) 
+                worksheet.write(row, 8, belok, format_table_float) 
+                worksheet.write(row, 9, plotnost, format_table_float) 
+                worksheet.write(row, 10, ves_natura, format_table_int) 
+                worksheet.write(row, 11, ves_zachet, format_table_int) 
+                worksheet.write(row, 12, som_kletki, format_table_int) 
+                worksheet.write(row, 13, somo, format_table_float) 
+                worksheet.write(row, 14, antibiotik, format_table_float) 
+                worksheet.write(row, 15, kislotnost, format_table_int) 
+                worksheet.write(row, 16, temperatura, format_table_int)
+
+                row += 1
+                    
+        milk_price = self.env['milk.price']
+        milk_price_id = milk_price.search([ ('date',  '<=',    self.date_start)
+                                            ],order="date desc", limit=1)
+        
+        if len(milk_price_id)>0:
+            
+            price = milk_price_id.price
+            NDS = milk_price_id.NDS
+            BB = milk_price_id.BB
+            BJ = milk_price_id.BJ
+            KO = milk_price_id.KO
+            KSS = milk_price_id.KSS
+            PB = milk_price_id.PB
+            PJ = milk_price_id.PJ
+            KK = milk_price_id.KK
+            H = milk_price_id.H
+            worksheet.write(2, 20, u'Базовая цена: %s; НДС: %s; Базовый жир/белок: %s/%s; Коэф.объем: %s; Коэф.собс.стадо: %s; Поправка жир/белок: %s/%s; Коэф.качества: %s; Надбавка: %s' % (price, NDS, BJ, BB, KO, KSS, PJ, PB, KK, H), text_format_utv)
+            itog_row = row - 4
+
+            for n in range(itog_row):
+                r = n+4
+                #ЗЦ  = ( (БЦ  *   Ко  *   Ксс ) + (ФБ-ББ)/0,01*Пб + (Фж-Бж)/0,01*Пж ) * Кк + Н
+                
+                if milk_price_id.metod == u'Расчетная с 2017г.':
+                    worksheet.write_formula(r, 17,'{=(%s*%s*%s+(%s-%s)/0.01*%s+(%s-%s)/0.01*%s)*%s+%s}' % ( 
+                                                                price,
+                                                                KO,
+                                                                KSS,
+                                                                xl_rowcol_to_cell(r, 8), #Белок
+                                                                BB,
+                                                                PB,
+                                                                xl_rowcol_to_cell(r, 7), #Жир
+                                                                BJ,
+                                                                PJ,
+                                                                KK,
+                                                                H
+                                                                ), format_table_float)
+                    worksheet.write_formula(r, 18,'{=%s*%s}' % ( 
+                                                            xl_rowcol_to_cell(r, 10), #Натура
+                                                            xl_rowcol_to_cell(r, 17), #Цена
+                                                            ), format_table_float)
+                
+                if milk_price_id.metod == u'Цана на базисный белок/жир':
+
+                    worksheet.write(r, 17, price, format_table_float) 
+                    worksheet.write_formula(r, 18,'{=%s*%s}' % ( 
+                                                                xl_rowcol_to_cell(r, 11), #Зачетный вес
+                                                                xl_rowcol_to_cell(r, 17), #Цена
+                                                                ), format_table_float)
+                worksheet.write(r, 19, NDS, format_table_int) 
+                worksheet.write_formula(r, 20,'{=%s*(1+%s/100)}' % ( 
+                                                            xl_rowcol_to_cell(r, 18), #Стоимость без НДС
+                                                            xl_rowcol_to_cell(r, 19), #НДС
+                                                            ), format_table_float_bold)
+
+
+        #Итоги
+
+        worksheet.write(row, 9, u'ИТОГО:', text_format_utv)
+        worksheet.write_formula(row, 10,'{=SUM(%s:%s)}' % ( 
+                                                            xl_rowcol_to_cell(start_row, 10),
+                                                            xl_rowcol_to_cell(row-1, 10), 
+                                                            ), format_table_int_bold)
+        worksheet.write_formula(row, 11,'{=SUM(%s:%s)}' % ( 
+                                                            xl_rowcol_to_cell(start_row, 11),
+                                                            xl_rowcol_to_cell(row-1, 11), 
+                                                            ), format_table_int_bold)
+        worksheet.write(row, 12, 'X', format_table_float_bold)
+        worksheet.write(row, 13, 'X', format_table_float_bold)
+        worksheet.write(row, 14, 'X', format_table_float_bold)
+        worksheet.write(row, 15, 'X', format_table_float_bold)
+        worksheet.write(row, 16, 'X', format_table_float_bold)
+        worksheet.write(row, 17, 'X', format_table_float_bold)
+        worksheet.write_formula(row, 18,'{=SUM(%s:%s)}' % ( 
+                                                            xl_rowcol_to_cell(start_row, 18),
+                                                            xl_rowcol_to_cell(row-1, 18), 
+                                                            ), format_table_float_bold)
+        worksheet.write(row, 19, 'X', format_table_float_bold)
+        worksheet.write_formula(row, 20,'{=SUM(%s:%s)}' % ( 
+                                                            xl_rowcol_to_cell(start_row, 20),
+                                                            xl_rowcol_to_cell(row-1, 20), 
+                                                            ), format_table_float_bold)
+
+
+        #Установки печати
+        worksheet.set_landscape() #Ландшафт
+        worksheet.set_margins(0.3, 0.3, 0.5, 0.5) #Поля по умолчанию
+        
+        worksheet.fit_to_pages(1, 1) #Разместить на одной странице
+            
 
 
 

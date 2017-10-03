@@ -18,9 +18,9 @@ from work_date import week_magic, last_day_of_month
 #         self.value2 = float(self.value) / 100
 
 class type_transport(models.Model):
-    _name = 'milk.type_transport'
-    
-    name = fields.Char(string=u"Name", required=True)
+	_name = 'milk.type_transport'
+	
+	name = fields.Char(string=u"Name", required=True)
 
 
 class transport(models.Model):
@@ -77,7 +77,7 @@ class sale_milk(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, 
 						readonly=True,  
 						index=True, default='New')
-    
+	
 	date_doc = fields.Datetime(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
 	is_next_day = fields.Boolean(string=u"Зачесть следующим днем?", default=False)
@@ -327,7 +327,7 @@ class scale_tanker_line(models.Model):
 	value = fields.Float(digits=(5, 1), string=u"Value", required=True)
 	result = fields.Integer(string=u"Result", required=True)
 	scale_tanker_id = fields.Many2one('milk.scale_tanker',
-        ondelete='cascade', string=u"scale_tanker", required=True)
+		ondelete='cascade', string=u"scale_tanker", required=True)
 
 
 class sale_milk_line(models.Model):
@@ -351,7 +351,7 @@ class sale_milk_line(models.Model):
 
 	
 	sale_milk_id = fields.Many2one('milk.sale_milk',
-        ondelete='cascade', string=u"Sale milk", required=True)
+		ondelete='cascade', string=u"Sale milk", required=True)
 
 	@api.model
 	def create(self, vals):
@@ -433,19 +433,19 @@ class control_sale_milk(models.Model):
 	# 					index=True, copy=False, default=fields.Datetime.now)
 	
 	month = fields.Selection([
-        ('1', "Январь"),
-        ('2', "Февряль"),
-        ('3', "Март"),
-        ('4', "Апрель"),
-        ('5', "Май"),
-        ('6', "Июнь"),
-        ('7', "Июль"),
-        ('8', "Август"),
-        ('9', "Сентябрь"),
-        ('10', "Октябрь"),
-        ('11', "Ноябрь"),
-        ('12', "Декабрь"),
-    ], default=str(datetime.today().month), required=True)
+		('1', "Январь"),
+		('2', "Февряль"),
+		('3', "Март"),
+		('4', "Апрель"),
+		('5', "Май"),
+		('6', "Июнь"),
+		('7', "Июль"),
+		('8', "Август"),
+		('9', "Сентябрь"),
+		('10', "Октябрь"),
+		('11', "Ноябрь"),
+		('12', "Декабрь"),
+	], default=str(datetime.today().month), required=True)
 	
 	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
 	
@@ -508,7 +508,7 @@ class control_sale_milk_line(models.Model):
 	sale_milk_id = fields.Many2one('milk.sale_milk', string='Док-т реал-и')
 
 	control_sale_milk_id = fields.Many2one('milk.control_sale_milk',
-        ondelete='cascade', string=u"Control Sale milk", required=True)
+		ondelete='cascade', string=u"Control Sale milk", required=True)
 
 	ot_jir = fields.Float(digits=(3, 1), readonly=True,  store=True, compute='_result')
 	ot_belok = fields.Float(digits=(3, 2), readonly=True,  store=True, compute='_result')
@@ -819,7 +819,7 @@ class trace_milk_ostatok_line(models.Model):
 	ves_natura = fields.Integer(string=u"В натуре",  store=True, compute='_raschet')
 	plotnost = fields.Float(digits=(4, 2))
 	trace_milk_id = fields.Many2one('milk.trace_milk',
-        ondelete='cascade', string=u"Учет движения молока", required=True)
+		ondelete='cascade', string=u"Учет движения молока", required=True)
 	
 
 	
@@ -849,19 +849,19 @@ class plan_sale_milk(models.Model):
 	# 					index=True, copy=False, default=fields.Datetime.now)
 	
 	month = fields.Selection([
-        ('01', "Январь"),
-        ('02', "Февряль"),
-        ('03', "Март"),
-        ('04', "Апрель"),
-        ('05', "Май"),
-        ('06', "Июнь"),
-        ('07', "Июль"),
-        ('08', "Август"),
-        ('09', "Сентябрь"),
-        ('10', "Октябрь"),
-        ('11', "Ноябрь"),
-        ('12', "Декабрь"),
-    ], default=str(datetime.today().month).rjust(2, '0'), required=True)
+		('01', "Январь"),
+		('02', "Февряль"),
+		('03', "Март"),
+		('04', "Апрель"),
+		('05', "Май"),
+		('06', "Июнь"),
+		('07', "Июль"),
+		('08', "Август"),
+		('09', "Сентябрь"),
+		('10', "Октябрь"),
+		('11', "Ноябрь"),
+		('12', "Декабрь"),
+	], default=str(datetime.today().month).rjust(2, '0'), required=True)
 	
 	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
 
@@ -959,7 +959,7 @@ class plan_sale_milk_line(models.Model):
 	# 					index=True, copy=False, default=fields.Datetime.now)
 	
 	plan_sale_milk_id = fields.Many2one('milk.plan_sale_milk',
-        ondelete='cascade', string=u"План производства/реализации молока", required=True)
+		ondelete='cascade', string=u"План производства/реализации молока", required=True)
 
 	year = fields.Char(string=u"Год", required=True, store=True)
 
@@ -993,4 +993,38 @@ class plan_sale_milk_line(models.Model):
 		
 	amount = fields.Float(digits=(10, 2), string=u"Выручка (без НДС), тыс.руб.", store=True, compute='_raschet')
 	amount_nds = fields.Float(digits=(10, 2), string=u"Выручка (с учетом НДС), тыс.руб.", store=True, compute='_raschet')
+
+
+
+
+class milk_price(models.Model):
+	_name = 'milk.price'
+	_description = u'Установка цен на молоко'
+	_order = 'date desc'
+
+	@api.one
+	@api.depends('date')
+	def return_name(self):
+		self.name = self.date
+
+
+
+	name = fields.Char(string=u"Номер", store=True, copy=False, index=True, default=fields.Datetime.now)
+	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+	metod = fields.Selection([
+		(u'Цана на базисный белок/жир', "Цана на базисный белок/жир"),
+		(u'Расчетная с 2017г.', "Расчетная с 2017г."),
+
+	], default=u'Расчетная с 2017г.', required=True, string=u'Метод расчета')
+
+	price = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
+	NDS = fields.Float(digits=(10, 2), string=u"НДС, %", required=True)
+	BB = fields.Float(digits=(10, 2), string=u"Базовый белок, %", required=True)
+	BJ = fields.Float(digits=(10, 2), string=u"Базовый жир, %", required=True)
+	KO = fields.Float(digits=(10, 2), string=u"Коэффициент объема", default=0)
+	KSS = fields.Float(digits=(10, 2), string=u"Коэффициент Собственное стадо", default=0)
+	PB = fields.Float(digits=(10, 3), string=u"Поправка на белок", default=0)
+	PJ = fields.Float(digits=(10, 3), string=u"Поправка на жир", default=0)
+	KK = fields.Float(digits=(10, 2), string=u"Коэффициент качеста", default=0)
+	H = fields.Float(digits=(10, 2), string=u"Надбавка за термо-е и сыроприг. молоко", default=0)
 

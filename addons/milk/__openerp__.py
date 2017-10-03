@@ -42,6 +42,7 @@
         'views/plan_sale_milk.xml',
         'views/milk_dashboard.xml',
         'views/res_config.xml',
+        'views/milk_price.xml',
         'report/milk_buh_report_view.xml',
         
         'views/menu.xml',

@@ -822,6 +822,7 @@ class korm_racion_line(models.Model):
 	new_nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Новый корм', help="Корм на который необходимо перейти")
 	kol_new = fields.Float(digits=(10, 3), string=u"Кол-во новое", required=True)
 	stop = fields.Boolean(string=u"Стоп", default=False, help="Прекращать кормить основным кормом и кормить новым, или давать как в последний день")
+	constant = fields.Boolean(string=u"Постоянный", default=False, help="Будет доваться указанное кол-во, в не зависимости от процента дачи рациона")
 
 
 
@@ -1077,7 +1078,16 @@ class korm_korm(models.Model):
 					line.procent_dachi = line.stado_zagon_id.vecher
 			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			if line.kol_golov>0 and line.korm_racion_id!=False:
-				line.kol_korma = line.korm_racion_id.kol * line.kol_golov
+				#line.kol_korma = line.korm_racion_id.kol * line.kol_golov
+				#В зависимости изменяется ли объем корма от процента рациона считаем объем корма
+				kol_variable = kol_constant = 0
+				for racion_line in line.korm_racion_id.korm_racion_line:
+					if racion_line.constant == True: #Если корм в рационе указан как постоянный то не учитываем процент дачи
+						kol_constant += racion_line.kol * line.kol_golov_zagon * line.procent_dachi/100
+					else:
+						kol_variable += racion_line.kol * line.kol_golov
+
+				line.kol_korma = kol_constant + kol_variable
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
 				return False    
@@ -1101,7 +1111,7 @@ class korm_korm(models.Model):
 		for g in groupby( d,key=lambda x:x[1]):
 			sorting = g[0]
 			#print g[0]
-			kol_golov=kol_golov_zagon=kol_korma=kol_golov_detail=racion_id=sum_procent_raciona=0
+			kol_golov=kol_golov_zagon=kol_korma=kol_golov_detail=racion_id=sum_procent_raciona=sum_procent_dachi=0
 			t = 0
 			for i in g[1]:
 				t +=1
@@ -1109,7 +1119,8 @@ class korm_korm(models.Model):
 				kol_golov += i[3]
 				kol_korma += i[4]
 				kol_golov_zagon += i[6]
-				sum_procent_raciona += i[7] * i[4] 
+				sum_procent_raciona += i[7] * i[4]
+				sum_procent_dachi += i[5] * i[4] 
 				
 
 				if racion_id !=0 and racion_id != i[2]:
@@ -1119,6 +1130,8 @@ class korm_korm(models.Model):
 				racion_id = i[2]
 			procent_raciona = 0.000
 			procent_raciona = sum_procent_raciona/kol_korma
+			procent_dachi = 0.000
+			procent_dachi = sum_procent_dachi/kol_korma
 			#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", procent_raciona
 			#print "222EEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRR==", sorting
 			svod_line.create({'korm_korm_id': self.id,
@@ -1132,7 +1145,14 @@ class korm_korm(models.Model):
 			#racion_line = self.env['korm.racion_line']
 			#search_racion_line = racion_line.search([('korm_racion_id',    '=',    i[2])])
 			for rl in racion_id.korm_racion_line:
-				
+				kol_korma_new = kol_korma = 0
+				if rl.constant == True: #Если корм в рационе указан как постоянный то не учитываем процент дачи
+					kol_korma += rl.kol * kol_golov_zagon * procent_dachi / 100
+					kol_korma_new += rl.kol_new * kol_golov_zagon * procent_dachi / 100
+
+				else:
+					kol_korma += rl.kol * kol_golov
+					kol_korma_new += rl.kol_new * kol_golov
 				#Если заполненны поля для перехода на другой корм тогда добавляем две строки старый и новый корм
 				if rl.date_start<=self.date_doc and rl.date_start and rl.new_nomen_nomen_id and rl.day>0 and rl.kol_new>0:
 					
@@ -1172,14 +1192,15 @@ class korm_korm(models.Model):
 											'name': rl.nomen_nomen_id.name,
 											'sorting':  i[1],
 											'nomen_nomen_id':   rl.nomen_nomen_id.id,
-											'kol_norma':    rl.kol * kol_golov * k_old,
+											'kol_norma':    kol_korma * k_old,
 											})
 					if k_new > 0:
+
 						detail_line.create({'korm_korm_id': self.id,
 											'name': rl.new_nomen_nomen_id.name,
 											'sorting':  i[1],
 											'nomen_nomen_id':   rl.new_nomen_nomen_id.id,
-											'kol_norma':    rl.kol_new * kol_golov * k_new,
+											'kol_norma':    kol_korma_new * k_new,
 											})
 					
 
@@ -1190,7 +1211,7 @@ class korm_korm(models.Model):
 										'name': rl.nomen_nomen_id.name,
 										'sorting':  i[1],
 										'nomen_nomen_id':   rl.nomen_nomen_id.id,
-										'kol_norma':    rl.kol * kol_golov,
+										'kol_norma':    kol_korma,
 										})
 
 
@@ -1227,7 +1248,15 @@ class korm_korm(models.Model):
 					line.procent_dachi = line.stado_zagon_id.vecher
 			line.kol_golov = line.kol_golov_zagon * line.procent_dachi/100 * line.procent_raciona/100
 			if line.kol_golov>0 and line.korm_racion_id!=False:
-				line.kol_korma = line.korm_racion_id.kol * line.kol_golov
+				kol_variable = kol_constant = 0
+				for racion_line in line.korm_racion_id.korm_racion_line:
+					if racion_line.constant == True: #Если корм в рационе указан как постоянный то не учитываем процент дачи
+						kol_constant += racion_line.kol * line.kol_golov_zagon * line.procent_dachi/100
+					else:
+						kol_variable += racion_line.kol * line.kol_golov
+
+				line.kol_korma = kol_constant + kol_variable
+				#line.kol_korma = line.korm_racion_id.kol * line.kol_golov
 			else:
 				raise exceptions.ValidationError(_(u"Для Порядка кормления №%s не введен Рацион или кол-во голов!" % (line.sorting)))
 				return False    
@@ -1319,7 +1348,16 @@ class korm_korm_line(models.Model):
 		self.kol_korma=self.kol_zamesov=self.kol_korma_zames=0
 		self.kol_golov = self.kol_golov_zagon * self.procent_dachi/100 * self.procent_raciona/100
 		if self.kol_golov>0 and self.korm_racion_id!=False:
-			self.kol_korma = self.korm_racion_id.kol * self.kol_golov
+			kol_variable = kol_constant = 0
+			for line in self.korm_racion_id.korm_racion_line:
+				if line.constant == True:
+					kol_constant += line.kol * self.kol_golov_zagon * self.procent_dachi/100
+				else:
+					kol_variable += line.kol * self.kol_golov
+
+
+
+			self.kol_korma = kol_constant + kol_variable
 			# max_value = self.korm_korm_id.transport_id.max_value
 			# if self.kol_korma>max_value and max_value>0:
 			#   self.kol_zamesov = math.ceil(self.kol_korma / max_value)

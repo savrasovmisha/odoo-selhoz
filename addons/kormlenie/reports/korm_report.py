@@ -1195,28 +1195,28 @@ class korm_buh_report(models.Model):
 			datas[u'На голову по заданию, кг'] = datas[u'Норма по заданию, кг'] / datas[u'Кол-во голов']
 			datas[u'На голову по факту, кг'] = datas[u'Факт, кг'] / datas[u'Кол-во голов']
 			
-			datas[u'% отк от рациона'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
-			datas[u'% отк от задания'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по заданию, кг']) / datas[u'На голову по заданию, кг']
-			datas[u'% отк задания от рациона'] = (datas[u'На голову по заданию, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
+			datas[u'% откл факт от рациона'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
+			datas[u'% откл факт от задания'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по заданию, кг']) / datas[u'На голову по заданию, кг']
+			datas[u'% откл задания от рациона'] = (datas[u'На голову по заданию, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
 			
-			datas[u'Отк факта от задания, кг'] = (datas[u'Факт, кг'] - datas[u'Норма по заданию, кг'])
+			datas[u'Откл факта от задания, кг'] = (datas[u'Факт, кг'] - datas[u'Норма по заданию, кг'])
 			datas.head()
 			datas = datas[[ u'Дата', 
 							u'Физ. группа', 
-							u'Вид документа', 
-							u'Дата рациона', 
 							u'Наименование корма', 
 							u'Кол-во голов', 
 							u'На голову по рациону, кг',
 							u'На голову по заданию, кг',
 							u'На голову по факту, кг',
-							u'% отк от рациона',
-							u'% отк от задания',
-							u'% отк задания от рациона',
+							u'% откл факт от рациона',
+							u'% откл факт от задания',
+							u'% откл задания от рациона',
 							u'Норма по рациону, кг', 
 							u'Норма по заданию, кг',
 							u'Факт, кг',
-							u'Отк факта от задания, кг'
+							u'Откл факта от задания, кг',
+							u'Дата рациона', 
+							u'Вид документа' 
 
 							]]
 			datas.to_excel(writer, sheet_name='База', index=False)
@@ -1242,18 +1242,18 @@ class korm_buh_report(models.Model):
 		worksheet.set_row(0,50)
 
 		worksheet.set_column('A:A', 10)
-		worksheet.set_column('B:B', 20)
-		worksheet.set_column('C:C', 10)
-		worksheet.set_column('D:D', 10)
-		worksheet.set_column('E:E', 20)
-		worksheet.set_column('F:F', 15, int_fmt)
-		worksheet.set_column('G:I', 10, float2_fmt)
-		worksheet.set_column('J:L', 10, percent_fmt)
-		worksheet.set_column('M:P', 15, int_fmt)
+		worksheet.set_column('B:B', 30)
+		worksheet.set_column('C:C', 26)
+		worksheet.set_column('D:D', 5, int_fmt)
+		worksheet.set_column('E:G', 7, float2_fmt)
+		worksheet.set_column('H:J', 7, percent_fmt)
+		worksheet.set_column('K:N', 7, int_fmt)
+		worksheet.set_column('O:O', 10)
+		worksheet.set_column('P:P', 20)
 
 		number_rows = len(datas.index)
 		# Define our range for the color formatting
-		color_range = "J2:L{}".format(number_rows+1)
+		color_range = "H2:J{}".format(number_rows+1)
 
 				# Add a format. Light red fill with dark red text.
 		format1 = workbook.add_format({'bg_color': '#FFC7CE',
@@ -1276,7 +1276,7 @@ class korm_buh_report(models.Model):
 												   'format': format1})
 
 
-		color_range = "P2:P{}".format(number_rows+1)
+		color_range = "N2:N{}".format(number_rows+1)
 		# Highlight the top 5 values in Green
 		worksheet.conditional_format(color_range, {'type': 'cell',
 												   'criteria': '>',
@@ -1289,6 +1289,14 @@ class korm_buh_report(models.Model):
 												   'value': '-10',
 												   'format': format1})
 
+		worksheet.set_zoom(90)
+		worksheet.freeze_panes(1, 0)
+		#Установки печати
+		worksheet.set_landscape() #Ландшафт
+		worksheet.set_margins(0.5, 0.5, 0.5, 0.5) #Поля по умолчанию
+		worksheet.repeat_rows(0)
+		#print_area( first_row , first_col , last_row , last_col )
+		worksheet.fit_to_pages(1, 100) #Разместить на одной странице
 		writer.save()
 		#workbook.close()
 

@@ -5,6 +5,16 @@ from openerp import models, fields, api
 from datetime import datetime, timedelta, date
 from openerp.exceptions import ValidationError
 
+import sys
+import os
+import base64
+import zipfile
+import tempfile
+from pandas import DataFrame, pivot_table
+from xlsxwriter.utility import xl_rowcol_to_cell
+import xlsxwriter
+import pandas as pd
+import numpy as np
 
 def week_magic(day):
 	if type(day)==str:
@@ -623,16 +633,7 @@ class korm_buh_report(models.Model):
 	@api.multi
 	def report_print(self):#, cr, uid, ids, context=None):
 		self.ensure_one()
-		import sys
-		import os
-		import base64
-		import zipfile
-		import tempfile
-		from pandas import DataFrame, pivot_table
-		from xlsxwriter.utility import xl_rowcol_to_cell
-		import xlsxwriter
-		import pandas as pd
-		import numpy as np
+		
 		def write_sheet(workbook, name_group, data_pivot):
 			start_row_num = 13 #Начало данных таблицы
 			start_col_num = 2 #Начало названий корма
@@ -646,9 +647,9 @@ class korm_buh_report(models.Model):
 			
 			worksheet = workbook.add_worksheet(name_group)
 			border_format=workbook.add_format({
-			                            'border':1
-			                             
-			                           })
+										'border':1
+										 
+									   })
 
 
 
@@ -669,40 +670,40 @@ class korm_buh_report(models.Model):
 														'font_size': 10,
 														'num_format': 'DD.MM.YYYY'})
 			
-			                                        
-			text_format_utv = workbook.add_format({	'indent': True,
+													
+			text_format_utv = workbook.add_format({ 'indent': True,
 												'border':0,
 												'align':'right',
-												'font_size':10		})
+												'font_size':10      })
 			text_format_head = workbook.add_format({'indent': True,
 												'border':0,
 												'align':'left',
-												'font_size':10		})	
+												'font_size':10      })  
 
 			text_format_head_bold = workbook.add_format({'indent': True,
 												'border':0,
 												'bold': 1,
-												'font_size':10		})																	
+												'font_size':10      })                                                                  
 
 
 
-			format_table_head = workbook.add_format({	'text_wrap': True,
+			format_table_head = workbook.add_format({   'text_wrap': True,
 												'border':1,
 												'align':'center',
 												'valign':'vcenter',
-												'font_size':8		})
-			format_table_data = workbook.add_format({	'text_wrap': True,
+												'font_size':8       })
+			format_table_data = workbook.add_format({   'text_wrap': True,
 												'border':1,
 												'align':'right',
 												'valign':'vcenter',
-												'font_size':10		})									
+												'font_size':10      })                                  
 
-			##Формат для объединенных ячеек									
+			##Формат для объединенных ячеек                                 
 			merge_format = workbook.add_format({
 												'bold': 1,
 												'border': 0,
 												'align': 'center',
-												'valign': 'vcenter'})	
+												'valign': 'vcenter'})   
 																				
 			
 
@@ -721,14 +722,14 @@ class korm_buh_report(models.Model):
 									merge_format)
 
 
-			worksheet.write(4, 0, u'Организация', text_format_head)	
-			worksheet.write(4, 2, u'ООО "Эвика-Агро"', text_format_head_bold)	
+			worksheet.write(4, 0, u'Организация', text_format_head) 
+			worksheet.write(4, 2, u'ООО "Эвика-Агро"', text_format_head_bold)   
 
 			worksheet.write(5, 0, u'Отделений, участок', text_format_head)
 			worksheet.write(5, 2, u'Животноводческий комплекс', text_format_head_bold)
 
 			worksheet.write(6, 0, u'Группа скота', text_format_head)
-			worksheet.write(6, 2, name_group, text_format_head_bold)					
+			worksheet.write(6, 2, name_group, text_format_head_bold)                    
 
 
 			worksheet.merge_range('A9:B9', u'Норма на одну голову, кг', format_table_head)
@@ -739,19 +740,19 @@ class korm_buh_report(models.Model):
 									u'Наименование использованных кормов', 
 									format_table_head)
 
-			#Вставляем рамки ячеек						
+			#Вставляем рамки ячеек                      
 			for col_num in range(total_cols-2):
-			    worksheet.write(8, col_num+2, None, format_table_head)
-			    worksheet.write(9, col_num+2, None, format_table_head)
-			    worksheet.write(10, col_num+2, None, format_table_head)
-			    
-			    
+				worksheet.write(8, col_num+2, None, format_table_head)
+				worksheet.write(9, col_num+2, None, format_table_head)
+				worksheet.write(10, col_num+2, None, format_table_head)
+				
+				
 
-			# Вставляем названия столбцов						
+			# Вставляем названия столбцов                       
 			for col_num, value in enumerate(data_pivot.columns.values):
-			    worksheet.write(12, col_num, value, format_table_head)
-			    worksheet.set_column(0, col_num+1, 10) #Задаем ширину колонки
-			    num=col_num + 1
+				worksheet.write(12, col_num, value, format_table_head)
+				worksheet.set_column(0, col_num+1, 10) #Задаем ширину колонки
+				num=col_num + 1
 
 
 			worksheet.set_row(12,50) #Задаем высоту строк с названиями корма
@@ -760,12 +761,12 @@ class korm_buh_report(models.Model):
 									u'Кол-во использованных кормов',format_table_head)
 
 
-			worksheet.merge_range('A12:A14', u'Дата', format_table_head)	
-			worksheet.merge_range('B12:B14', u'Кол-во скота (в наличии), гол.', format_table_head)				
-			worksheet.merge_range('%s:%s' % (	xl_rowcol_to_cell(8, total_cols),
+			worksheet.merge_range('A12:A14', u'Дата', format_table_head)    
+			worksheet.merge_range('B12:B14', u'Кол-во скота (в наличии), гол.', format_table_head)              
+			worksheet.merge_range('%s:%s' % (   xl_rowcol_to_cell(8, total_cols),
 												xl_rowcol_to_cell(13, total_cols)), 
 									u'Итого за день', 
-									format_table_head)					
+									format_table_head)                  
 
 			row=start_row_num+1
 			for index, rows in data_pivot.iterrows():
@@ -791,33 +792,33 @@ class korm_buh_report(models.Model):
 			for i in list(range(total_rows)):
 				
 				worksheet.write_formula(row_num,total_cols,
-			                        '{=SUM(%s:%s)}' % (xl_rowcol_to_cell(row_num, start_col_num),
-			                                            xl_rowcol_to_cell(row_num, total_cols-1)), format_table_int)
+									'{=SUM(%s:%s)}' % (xl_rowcol_to_cell(row_num, start_col_num),
+														xl_rowcol_to_cell(row_num, total_cols-1)), format_table_int)
 				row_num+=1
 
-			#Вставляем рамки ячеек						
+			#Вставляем рамки ячеек                      
 			for col_num in range(total_cols-1):
-			    worksheet.write(row_num, col_num+2, None, format_table_int)
-			    worksheet.write(row_num+2, col_num+2, None, format_table_int)
-			    
+				worksheet.write(row_num, col_num+2, None, format_table_int)
+				worksheet.write(row_num+2, col_num+2, None, format_table_int)
+				
 			 
 			col_num = start_col_num
 			#среднее для поголовья
 			worksheet.write(row_num, 0, u'Ср. поголовье', format_table_head)
 			worksheet.write_formula(row_num, 1,
-			                        '{=AVERAGE(%s:%s)}' % (xl_rowcol_to_cell(start_row_num, 1),
-			                                            xl_rowcol_to_cell(row_num-1, 1)), format_table_int)
-			                                            
+									'{=AVERAGE(%s:%s)}' % (xl_rowcol_to_cell(start_row_num, 1),
+														xl_rowcol_to_cell(row_num-1, 1)), format_table_int)
+														
 			row_num += 1 
-			                                           
+													   
 			#Итоги по корму
 			worksheet.write(row_num, 0, u'Итого', format_table_head)
 			col_num = start_col_num - 1
 			for i in range(len(data_pivot.columns)):
 				
 				worksheet.write_formula(row_num, col_num,
-			                        '{=SUM(%s:%s)}' % (xl_rowcol_to_cell(start_row_num+1, col_num),
-			                                            xl_rowcol_to_cell(row_num-2, col_num)), format_table_int)
+									'{=SUM(%s:%s)}' % (xl_rowcol_to_cell(start_row_num+1, col_num),
+														xl_rowcol_to_cell(row_num-2, col_num)), format_table_int)
 				col_num+=1
 
 
@@ -828,17 +829,17 @@ class korm_buh_report(models.Model):
 			for i in range(len(data_pivot.columns)-1):
 				
 				worksheet.write_formula(9, col_num,
-			                        '{=%s/%s}' % (xl_rowcol_to_cell(row_num, col_num),
-			                                            xl_rowcol_to_cell(row_num, 1)), format_table_float)
+									'{=%s/%s}' % (xl_rowcol_to_cell(row_num, col_num),
+														xl_rowcol_to_cell(row_num, 1)), format_table_float)
 				col_num+=1
 
 
 			row_num += 1
 			#worksheet.write(row_num, 0, u'Остаток лимита', format_table_head)
 			worksheet.merge_range('%s:%s' % (xl_rowcol_to_cell(row_num, 0),
-			                                    xl_rowcol_to_cell(row_num, 1)), 
-			                      u'Остаток лимита', 
-			                      format_table_head)
+												xl_rowcol_to_cell(row_num, 1)), 
+								  u'Остаток лимита', 
+								  format_table_head)
 			
 
 			#Установки печати
@@ -910,14 +911,14 @@ class korm_buh_report(models.Model):
 
 				table = pivot_table(datas, values=['kol_fakt'], 
 								index=['date'],
-				                #rows=['date'], 
-				                columns=['name'], 
-				                aggfunc=np.sum, 
-				                #margins=True
-				                )
+								#rows=['date'], 
+								columns=['name'], 
+								aggfunc=np.sum, 
+								#margins=True
+								)
 
 
-		                
+						
 				#print table2
 
 				data_pivot= DataFrame(data=table) 
@@ -944,7 +945,7 @@ class korm_buh_report(models.Model):
 									from stado_struktura_line s
 									left join stado_fiz_group fg on (fg.id = s.stado_fiz_group_id)
 									where to_char(s.date, 'YYYY-mm-dd')='%s' and
-									fg.stado_vid_fiz_group_id=%s								
+									fg.stado_vid_fiz_group_id=%s                                
 									Group by to_char(s.date, 'YYYY-mm-dd')
 									
 														
@@ -1001,14 +1002,14 @@ class korm_buh_report(models.Model):
 
 						table = pivot_table(datas, values=['kol_fakt'], 
 										index=['date'],
-						                #rows=['date'], 
-						                columns=['name'], 
-						                aggfunc=np.sum, 
-						                #margins=True
-						                )
+										#rows=['date'], 
+										columns=['name'], 
+										aggfunc=np.sum, 
+										#margins=True
+										)
 
 
-				                
+								
 						#print table2
 
 						data_pivot= DataFrame(data=table) 
@@ -1036,7 +1037,7 @@ class korm_buh_report(models.Model):
 											left join stado_fiz_group fg on (fg.id = s.stado_fiz_group_id)
 											where to_char(s.date, 'YYYY-mm-dd')='%s' and
 											fg.stado_vid_fiz_group_id=%s and
-											fg.stado_podvid_fiz_group_id=%s											
+											fg.stado_podvid_fiz_group_id=%s                                         
 											Group by to_char(s.date, 'YYYY-mm-dd')
 											
 																
@@ -1093,6 +1094,231 @@ class korm_buh_report(models.Model):
 
 			}
 
+
+
+	@api.multi
+	def report_print_analitic(self):#, cr, uid, ids, context=None):
+		self.ensure_one()
+
+		reload(sys)
+		sys.setdefaultencoding("utf-8")
+		
+		tmp_dir = tempfile.mkdtemp()
+
+		output_filename = tmp_dir + '/KormAnaliticReport.xlsx'
+
+		#workbook = xlsxwriter.Workbook(output_filename, {'default_date_format': 'DD.MM.YYYY'})
+		#worksheet = workbook.add_worksheet(u'База')
+		zapros = """select
+						z2.date,
+						sfg.name as stado_fiz_group,
+						case 
+							when z2.doc='korm.korm' then 'Кормовое задание' 
+							else 'Расход кормов и добавок' 
+						end as vid_doc,
+						kr.date as racion_date,
+						nn.name as nomen_nomen,
+						z2.kol_golov_zagon,
+						z2.kol_racion_golova,
+						z2.kol_norma,
+						z2.kol_fakt
+						
+
+					from 
+					(
+						select
+						z1.date,
+						z1.stado_fiz_group_id,
+						z1.doc,
+						z1.korm_racion_id,
+						z1.nomen_nomen_id,
+						z1.kol_fakt,
+						z1.kol_norma,
+						(select 
+							sum(kol_golov_zagon )
+						from stado_struktura_line
+						where z1.date=date::date and stado_fiz_group_id=z1.stado_fiz_group_id
+						group by stado_fiz_group_id
+						) as kol_golov_zagon,
+						(select
+							kol
+						from korm_racion_line
+						where nomen_nomen_id=z1.nomen_nomen_id and 
+							korm_racion_id=z1.korm_racion_id
+						) as kol_racion_golova
+						
+						from (
+						select 
+							rrk.date::date as date,
+							rrk.stado_fiz_group_id,
+							rrk.obj as doc,
+							rrk.korm_racion_id as korm_racion_id,
+							rrk.nomen_nomen_id,
+							sum(rrk.kol) as kol_fakt,
+							sum(rrk.kol_norma) as kol_norma
+						
+
+						from reg_rashod_kormov rrk
+						
+						Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, 
+								 rrk.korm_racion_id, rrk.nomen_nomen_id
+						
+						) as z1
+					) as z2
+					left join stado_fiz_group as sfg on (sfg.id=z2.stado_fiz_group_id)
+					left join korm_racion as kr on (kr.id=z2.korm_racion_id)
+					left join nomen_nomen as nn on (nn.id=z2.nomen_nomen_id)
+					where z2.date>='%s' and z2.date<='%s'
+					Order by z2.date, sfg.name, nn.name
+
+			""" %(self.date_start, self.date_end)
+		#print zapros
+		self.env.cr.execute(zapros,)
+		res = self.env.cr.fetchall()
+		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter', date_format='dd.mm.yyyy')
+
+		workbook  = writer.book
+		
+		
+		if len(res)>0:
+			datas = DataFrame(data=res,columns=[u'Дата', 
+												u'Физ. группа', 
+												u'Вид документа', 
+												u'Дата рациона', 
+												u'Наименование корма', 
+												u'Кол-во голов', 
+												u'На голову по рациону, кг', 
+												u'Норма по заданию, кг',
+												u'Факт, кг'] )
+
+			datas[u'Норма по рациону, кг'] = datas[u'На голову по рациону, кг'] * datas[u'Кол-во голов']
+			datas[u'На голову по заданию, кг'] = datas[u'Норма по заданию, кг'] / datas[u'Кол-во голов']
+			datas[u'На голову по факту, кг'] = datas[u'Факт, кг'] / datas[u'Кол-во голов']
+			
+			datas[u'% отк от рациона'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
+			datas[u'% отк от задания'] = (datas[u'На голову по факту, кг'] - datas[u'На голову по заданию, кг']) / datas[u'На голову по заданию, кг']
+			datas[u'% отк задания от рациона'] = (datas[u'На голову по заданию, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
+			
+			datas[u'Отк факта от задания, кг'] = (datas[u'Факт, кг'] - datas[u'Норма по заданию, кг'])
+			datas.head()
+			datas = datas[[ u'Дата', 
+							u'Физ. группа', 
+							u'Вид документа', 
+							u'Дата рациона', 
+							u'Наименование корма', 
+							u'Кол-во голов', 
+							u'На голову по рациону, кг',
+							u'На голову по заданию, кг',
+							u'На голову по факту, кг',
+							u'% отк от рациона',
+							u'% отк от задания',
+							u'% отк задания от рациона',
+							u'Норма по рациону, кг', 
+							u'Норма по заданию, кг',
+							u'Факт, кг',
+							u'Отк факта от задания, кг'
+
+							]]
+			datas.to_excel(writer, sheet_name='База', index=False)
+		
+
+		worksheet = writer.sheets['База']
+		
+		text_fmt = workbook.add_format({   'text_wrap': True,
+											'border':1,
+											'align':'center',
+											'valign':'vcenter',
+											'font_size':8       })
+		percent_fmt = workbook.add_format({'num_format': '0.0%' })
+		float2_fmt = workbook.add_format({'num_format': '# ##0.00' })
+		int_fmt = workbook.add_format({'num_format': '# ##0'})
+
+		# Вставляем названия столбцов                       
+		for col_num, value in enumerate(datas.columns.values):
+			worksheet.write(0, col_num, value, text_fmt)
+			
+
+
+		worksheet.set_row(0,50)
+
+		worksheet.set_column('A:A', 10)
+		worksheet.set_column('B:B', 20)
+		worksheet.set_column('C:C', 10)
+		worksheet.set_column('D:D', 10)
+		worksheet.set_column('E:E', 20)
+		worksheet.set_column('F:F', 15, int_fmt)
+		worksheet.set_column('G:I', 10, float2_fmt)
+		worksheet.set_column('J:L', 10, percent_fmt)
+		worksheet.set_column('M:P', 15, int_fmt)
+
+		number_rows = len(datas.index)
+		# Define our range for the color formatting
+		color_range = "J2:L{}".format(number_rows+1)
+
+				# Add a format. Light red fill with dark red text.
+		format1 = workbook.add_format({'bg_color': '#FFC7CE',
+									   'font_color': '#9C0006'})
+
+		# Add a format. Green fill with dark green text.
+		format2 = workbook.add_format({'bg_color': '#C6EFCE',
+									   'font_color': '#006100'})
+
+		# Highlight the top 5 values in Green
+		worksheet.conditional_format(color_range, {'type': 'cell',
+												   'criteria': '>',
+												   'value': '0.12',
+												   'format': format2})
+
+		# Highlight the bottom 5 values in Red
+		worksheet.conditional_format(color_range, {'type': 'cell',
+													'criteria': '<',
+												   'value': '-0.12',
+												   'format': format1})
+
+
+		color_range = "P2:P{}".format(number_rows+1)
+		# Highlight the top 5 values in Green
+		worksheet.conditional_format(color_range, {'type': 'cell',
+												   'criteria': '>',
+												   'value': '10',
+												   'format': format2})
+
+		# Highlight the bottom 5 values in Red
+		worksheet.conditional_format(color_range, {'type': 'cell',
+													'criteria': '<',
+												   'value': '-10',
+												   'format': format1})
+
+		writer.save()
+		#workbook.close()
+
+
+
+
+
+
+
+		export_id = self.pool.get('excel.extended').create(self.env.cr, self.env.uid, 
+					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': 'KormAnaliticReport.xlsx'}, context=self.env.context)
+
+		return{
+
+			'view_mode': 'form',
+
+			'res_id': export_id,
+
+			'res_model': 'excel.extended',
+
+			'view_type': 'form',
+
+			'type': 'ir.actions.act_window',
+
+			'context': self.env.context,
+
+			'target': 'new',
+
+			}
+		
 		# vid1 = self.read()
 		
 		# datas = {"date":self.date, "stado_vid_fiz_group_id": "sdsd"}
@@ -1101,16 +1327,16 @@ class korm_buh_report(models.Model):
 
 		# data = self.read()[0]
 		# datas = {
-		# 	'ids': self.ids,
-		# 	'model': 'korm.buh_report',
-		# 	'form': data,
-		# 	'get_list': self.get_list()
+		#   'ids': self.ids,
+		#   'model': 'korm.buh_report',
+		#   'form': data,
+		#   'get_list': self.get_list()
 		# }
 		# return {
-		# 			'type': 'ir.actions.report.xml',
-		# 			'report_name': 'kormlenie.report_korm_buh_report_view',
-		# 			'datas': datas,
-		# 		}
+		#           'type': 'ir.actions.report.xml',
+		#           'report_name': 'kormlenie.report_korm_buh_report_view',
+		#           'datas': datas,
+		#       }
 
 
 

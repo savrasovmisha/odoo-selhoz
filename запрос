@@ -1,25 +1,53 @@
 ﻿select
+    z2.date,
+    z2.stado_fiz_group_id,
+    z2.doc,
+    z2.korm_racion_id,
+    z2.nomen_nomen_id,
+    z2.kol_fakt,
+    z2.kol_norma,
+    z2.kol_golov_zagon,
+    z2.kol_racion_golova
+
+
+
+from 
+(
+    select
 	z1.date,
 	z1.stado_fiz_group_id,
 	z1.doc,
+	z1.korm_racion_id,
 	z1.nomen_nomen_id,
-	z1.fakt,
+	z1.kol_fakt,
+	z1.kol_norma,
 	(select 
 		sum(kol_golov_zagon )
 	from stado_struktura_line
 	where z1.date=date::date and stado_fiz_group_id=z1.stado_fiz_group_id
 	group by stado_fiz_group_id
-	) as kol_golov_zagon
-from (
+	) as kol_golov_zagon,
+	(select
+		kol
+	from korm_racion_line
+	where nomen_nomen_id=z1.nomen_nomen_id and 
+		korm_racion_id=z1.korm_racion_id
+	) as kol_racion_golova
+	
+    from (
 	select 
 		rrk.date::date as date,
 		rrk.stado_fiz_group_id,
 		rrk.obj as doc,
+		rrk.korm_racion_id as korm_racion_id,
 		rrk.nomen_nomen_id,
-		sum(rrk.kol) as fakt
+		sum(rrk.kol) as kol_fakt,
+		sum(rrk.kol_norma) as kol_norma
+	
 
 	from reg_rashod_kormov rrk
 	
-	Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, rrk.nomen_nomen_id
+	Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, rrk.korm_racion_id, rrk.nomen_nomen_id
 	Order by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, rrk.nomen_nomen_id
-) as z1
+    ) as z1
+) as z2

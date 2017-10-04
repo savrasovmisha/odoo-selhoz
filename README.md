@@ -5,7 +5,22 @@ Odoo для сельскохозяйственного предприятия
 ##########################################################
 ##############  Необходимые пакеты #################################
 
-pandas xlsxwriter
+pandas =>16 
+xlsxwriter
+
+
+#####  instal pandas 19 Если в репозитарии старый пакет
+загрузить и установить http://ftp.br.debian.org/debian/pool/main/p/python-numpy/python-numpy_1.12.1-3_amd64.deb
+sudo dpkg -i путь_до python-numpy_1.12.1-3_amd64.deb
+
+Add the following line to /etc/apt/sources.list:
+deb http://neurodebian.ovgu.de/debian/ xenial main contrib non-free
+Install GPG key of the repository:
+# sudo apt-key adv --recv-keys --keyserver pgp.mit.edu 2649A5A9
+Update the package index:
+# sudo apt-get update
+Install python-pandas deb package:
+# sudo apt-get install python-pandas
 
 ##########################################################
 

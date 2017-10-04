@@ -17,7 +17,8 @@
                        
                         
                     </group>
-                     <button name="report_print" string="Печать" type="object" icon="gtk-print"/>
+                     <button name="report_print" string="Сводные ведомости" type="object" icon="gtk-print"/>
+                     <button name="report_print_analitic" string="Аналитический отчет" type="object" icon="gtk-print"/>
                 </sheet>
             </form>
         </field>

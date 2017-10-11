@@ -209,7 +209,7 @@
  
 
         <record id="sklad.report_sklad_spisanie" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="sklad.paperformat_normal10" />
+            <field name="paperformat_id" ref="selhoz_base.paperformat_normal10" />
         </record>
 
         

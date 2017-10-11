@@ -79,16 +79,16 @@
 
         <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="stado_vid_fiz_group_menu" name="Вид физ. группы" parent="korm_menu" action="stado_vid_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="stado_vid_fiz_group_menu" name="Вид физ. группы" parent="korm_menu" action="selhoz_base.stado_vid_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="stado_podvid_fiz_group_menu" name="Подвид физ. группы" parent="korm_menu" action="stado_podvid_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="stado_podvid_fiz_group_menu" name="Подвид физ. группы" parent="korm_menu" action="selhoz_base.stado_podvid_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="stado_fiz_group_menu" name="Физиологическая группа" parent="korm_menu" action="stado_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="stado_fiz_group_menu" name="Физиологическая группа" parent="korm_menu" action="selhoz_base.stado_fiz_group_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="stado_zagon_menu" name="Загоны" parent="korm_menu" action="stado_zagon_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="stado_zagon_menu" name="Загоны" parent="korm_menu" action="selhoz_base.stado_zagon_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="transport_menu" name="Транспорт" parent="korm_menu"
-                  action="milk.transport_list_action" groups="group_korm_manager,group_korm_users"/>
+                  action="selhoz_base.transport_list_action" groups="group_korm_manager,group_korm_users"/>
 
 
 

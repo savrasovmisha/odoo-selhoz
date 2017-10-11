@@ -20,19 +20,17 @@
     'version': '0.24',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'report', 'board', 'krs'],
+    'depends': ['base', 'report', 'board', 'selhoz_base', 'krs'],
 
     # always loaded
     'data': [
         'security/milk_security.xml',
         'security/ir.model.access.csv',
-        'views/partner.xml',
-        'views/pricep.xml',
-        'views/type_transport.xml',
-        'views/transport.xml',
+        
+        
         'views/tanker.xml',
         'views/sale_milk.xml',
-        #'report/sale_milk_report_view.xml',
+        
         'views/report.xml',
         'views/seq_sale_milk.xml',
         'views/shkala_tanker5.xml',
@@ -41,10 +39,10 @@
         'views/trace_milk.xml',
         'views/plan_sale_milk.xml',
         'views/milk_dashboard.xml',
-        'views/res_config.xml',
+        #'views/res_config.xml',
         'views/milk_price.xml',
         'report/milk_buh_report_view.xml',
-        
+
         'views/menu.xml',
         'views/resources.xml',
         

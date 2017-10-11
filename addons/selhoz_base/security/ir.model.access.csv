@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_milk_config_settings_manager1,milk.config.settings,model_milk_config_settings,group_base_selhoz_manager,1,1,1,1
+access_milk_config_settings_users1,milk.config.settings,model_milk_config_settings,group_base_selhoz_users,1,0,0,0

@@ -17,9 +17,13 @@
                     <sheet>
                         
                             <group>
-                                <field name="name" string="Номер"/>
-                                <field name="date_doc"/>
-                                <field name="doyarka_id" domain="[('company_type','=','person')]"/>
+                                <group>
+                                    <field name="name" string="Номер"/>
+                                </group>
+                                <group>
+                                    <field name="date_doc"/>
+                                    <field name="doyarka_id" domain="[('company_type','=','person')]"/>
+                                </group>
 
                                 
                             </group>
@@ -41,13 +45,22 @@
                                     <field name="ostatok_today"/>
                                     <field name="sale_natura"/>
                                     <field name="sale_zachet"/>
+                                    <separator string="Качественные показатели" colspan="2"/>
                                     <field name="sale_jir"/>
                                     <field name="sale_belok"/>
+                                    <separator string="Состав поголовья" colspan="2"/>
+                                    <field name="cow_doy"/>
+                                    <field name="cow_zapusk"/>
+                                    <field name="cow_fur"/>
                                     
                                 </group>
+
                                 <group>
-                                    <field name="sale_peresdali_natura"/>
-                                    <field name="sale_peresdali_zachet"/>
+                                    <group>
+                                        <field name="sale_peresdali_natura"/>
+                                        <field name="sale_peresdali_zachet"/>
+                                    </group>
+                                    <newline/> 
                                     <notebook>
                                         <page string="Остатки по танкерам">
                                             <field name="trace_milk_ostatok_line">
@@ -61,43 +74,60 @@
                                                 </tree>
                                             </field>
                                         </page>
+                                        
+                                    </notebook>
+                                    <newline/> 
+                                    <notebook>
+                                        
+                                        <page string="На выпойку">
+                                            <field name="trace_milk_vipoyka_line">
+                                                <tree string="На выпойку" editable="botton">
+                                                    <field name="stado_zagon_id"/>
+                                                    <field name="stado_fiz_group_id"/>
+                                                    <field name="kol"/>
+                                                    
+                                                </tree>
+                                            </field>
+                                        </page>
                                     </notebook>
                                 </group>
-                                <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
-                                    <field name="valoviy_nadoy" class="oe_subtotal_footer_separator"/>
-                                    <field name="otk_valoviy_nadoy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>
-                                </group>
+                                
                             </group>
                             
 
-                            <div class="oe_button_box" name="button_box">
+                         <!--    <div class="oe_button_box" name="button_box">
                                 <button name="action_load_uniform"
                                     type="object"
                                     class="oe_stat_button oe_edit_only"
                                     icon="fa-refresh" string="Загрузить"
                                    >
                                 </button>
-                            </div>
+                            </div> -->
 
 
                             <group col="10">
                                 <group colspan="5">
-                                    <separator string="Состав поголовья" colspan="2"/>
-                                    <field name="cow_doy"/>
-                                    <field name="cow_zapusk"/>
-                                    <field name="cow_fur"/>
-                                    <field name="cow_netel"/>
-                                    <field name="cow_total"/>
+                                    
+                                    <!-- <field name="cow_netel"/> -->
+                                   <!--  <field name="cow_total"/> -->
+                                    <!-- <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
+                                        <field name="valoviy_nadoy" class="oe_subtotal_footer_separator"/>
+                                        <field name="otk_valoviy_nadoy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>
+                                    </group> -->
                                     <group class="oe_subtotal_footer" colspan="2" name="valoviy_nadoy">
+                                        <field name="valoviy_nadoy" class="oe_subtotal_footer_separator"/>
+                                        <field name="otk_valoviy_nadoy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>
+                                       
                                         <field name="nadoy_doy" class="oe_subtotal_footer_separator"/>
                                         <field name="otk_nadoy_doy" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/>    
+                                       
                                         <field name="nadoy_fur" class="oe_subtotal_footer_separator"/>
                                         <field name="otk_nadoy_fur" class="oe_inline" fonts="bold:exam_reg_no=='1001'" colors="blue:admit_no=='1';"/> 
                                     </group>
                                     
                                 </group>
                               
-                                <group colspan="5">
+                                <!-- <group colspan="5">
                                     <separator string="Надой по группам дней лактации" colspan="2"/>
                                      
                                     <label for="nadoy_0_40" />
@@ -120,7 +150,7 @@
                                         <field name="nadoy_300" calss="oe_inline" />( <field name="otk_300" nolabel="1" class="oe_inline"/>)
                                     </div>
                                     
-                                </group>
+                                </group> -->
                             </group>
                             <notebook colspan="4">
                                 <page string="Комментарии">

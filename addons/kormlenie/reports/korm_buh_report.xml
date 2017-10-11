@@ -57,7 +57,7 @@
 
 
         <record id="kormlenie.report_korm_buh_report" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="kormlenie.paperformat_lowmargin" />
+            <field name="paperformat_id" ref="selhoz_base.paperformat_lowmargin" />
         </record>
 
         

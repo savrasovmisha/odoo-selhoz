@@ -43,13 +43,13 @@
                   action="scale_tanker_list_action" groups="group_milk_manager,group_milk_users"/>
 
         <menuitem id="type_transport_menu" name="Тип транспорта" parent="milk_menu"
-                  action="type_transport_list_action" groups="group_milk_manager,group_milk_users"/>
+                  action="selhoz_base.type_transport_list_action" groups="group_milk_manager,group_milk_users"/>
 
         <menuitem id="transport_menu" name="Транспорт" parent="milk_menu"
-                  action="transport_list_action" groups="group_milk_manager,group_milk_users"/>
+                  action="selhoz_base.transport_list_action" groups="group_milk_manager,group_milk_users"/>
 
         <menuitem id="pricep_menu" name="Прицепы" parent="milk_menu"
-                  action="pricep_list_action" groups="group_milk_manager,group_milk_users"/>
+                  action="selhoz_base.pricep_list_action" groups="group_milk_manager,group_milk_users"/>
 
 
         

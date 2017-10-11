@@ -20,6 +20,7 @@ spisok.append(['res.partner',''])
 spisok.append(['milk.trace_milk_ostatok_line',''])
 spisok.append(['milk.buh_report',''])
 spisok.append(['milk.price',''])
+spisok.append(['milk.trace_milk_vipoyka_line',''])
 
 
 spisok_read = []

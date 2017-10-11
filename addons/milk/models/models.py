@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 from work_date import week_magic, last_day_of_month
 
+
+
 # class milk(models.Model):
 #     _name = 'milk.milk'
 
@@ -17,40 +19,40 @@ from work_date import week_magic, last_day_of_month
 #     def _value_pc(self):
 #         self.value2 = float(self.value) / 100
 
-class type_transport(models.Model):
-	_name = 'milk.type_transport'
+# class type_transport(models.Model):
+# 	_name = 'milk.type_transport'
 	
-	name = fields.Char(string=u"Name", required=True)
+# 	name = fields.Char(string=u"Name", required=True)
 
 
-class transport(models.Model):
-	_name = 'milk.transport'
+# class transport(models.Model):
+# 	_name = 'milk.transport'
 
-	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
-	mark = fields.Char(string=u"Mark", required=True)
-	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
-	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
-	max_value = fields.Integer(string=u"Грузоподъемность, кг") 
-	# @api.one
-	# @api.onchange('mark', 'gos_nomer')
-	@api.depends('mark', 'gos_nomer')
-	def _update_name(self):
-		if self.mark and self.gos_nomer:
-			self.name = self.mark + ' ' + self.gos_nomer
+# 	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
+# 	mark = fields.Char(string=u"Mark", required=True)
+# 	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
+# 	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
+# 	max_value = fields.Integer(string=u"Грузоподъемность, кг") 
+# 	# @api.one
+# 	# @api.onchange('mark', 'gos_nomer')
+# 	@api.depends('mark', 'gos_nomer')
+# 	def _update_name(self):
+# 		if self.mark and self.gos_nomer:
+# 			self.name = self.mark + ' ' + self.gos_nomer
 
 
-class pricep(models.Model):
-	_name = 'milk.pricep'
+# class pricep(models.Model):
+# 	_name = 'milk.pricep'
 
-	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
-	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
-	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
+# 	name = fields.Char(string=u"Name", default='New', required=True, copy=False, readonly=True, compute='_update_name', store=True)
+# 	type_transport_id = fields.Many2one('milk.type_transport', string=u"type_transport", default=None)
+# 	gos_nomer = fields.Char(string=u"Gos nomer", required=True)
 
-	# @api.onchange('gos_nomer')
-	@api.depends('gos_nomer')
-	def _update_name(self):
-		if self.gos_nomer:
-			self.name = self.gos_nomer
+# 	# @api.onchange('gos_nomer')
+# 	@api.depends('gos_nomer')
+# 	def _update_name(self):
+# 		if self.gos_nomer:
+# 			self.name = self.gos_nomer
 
 
 
@@ -597,7 +599,7 @@ class trace_milk(models.Model):
 
 	doyarka_id = fields.Many2one('res.partner', string='Доярка')
 	
-	vipoyka = fields.Integer(string=u"На выпойку", store=True)
+	vipoyka = fields.Integer(string=u"На выпойку", store=True, compute='_raschet_vipoyka')
 	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
 	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')
 	sale_zachet = fields.Integer(string=u"Зачетный вес", store=True, compute='_sale_result')
@@ -636,6 +638,7 @@ class trace_milk(models.Model):
 
 	description = fields.Text(string=u"Коментарии")
 	trace_milk_ostatok_line = fields.One2many('milk.trace_milk_ostatok_line', 'trace_milk_id', string=u"Строка Учет движения молока Остотки в танкерах")
+	trace_milk_vipoyka_line = fields.One2many('milk.trace_milk_vipoyka_line', 'trace_milk_id', string=u"Строка Учет движения молока На выпойку")
 
 
 	@api.one
@@ -778,6 +781,16 @@ class trace_milk(models.Model):
 		self.ostatok_today = 0
 		for line in self.trace_milk_ostatok_line:
 			self.ostatok_today += line.ves_natura
+		#self.action_update()
+
+	@api.one
+	@api.depends('trace_milk_vipoyka_line.kol')
+	def _raschet_vipoyka(self):
+		self.vipoyka = 0
+		for line in self.trace_milk_vipoyka_line:
+			self.vipoyka += line.kol
+		#self.action_update()
+		#self.env['purchase.order'].method_b()
 
 
 
@@ -823,7 +836,27 @@ class trace_milk_ostatok_line(models.Model):
 	
 
 	
+class trace_milk_vipoyka_line(models.Model):
+	_name = 'milk.trace_milk_vipoyka_line'		
+	"""Учет движения молока на выпойку по загонам"""
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		if self.stado_zagon_id:
+			self.name = self.stado_zagon_id.name
+			self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+			
+		
 	
+	#, related='stado_zagon_id.stado_fiz_group_id'
+	name = fields.Char(string='Наименование', default='New', compute='return_name', store=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id', readonly=True,  store=True)
+	
+	kol = fields.Integer(string=u"Кол-во, кг",  store=True, default=0)
+	
+	trace_milk_id = fields.Many2one('milk.trace_milk',
+		ondelete='cascade', string=u"Учет движения молока", required=True)	
 
 
 	

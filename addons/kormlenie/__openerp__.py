@@ -20,23 +20,22 @@
     'version': '0.2',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'sklad', 'milk','report'],
+    'depends': ['base', 'selhoz_base', 'sklad', 'milk','report'],
     # "external_dependencies": {
     #         'python': ['pandas']
     #    },
 
     # always loaded
     'data': [
-        'security/korm_security.xml',
-        'security/ir.model.access.csv',
+        
         #'views/resources.xml',
         
         'views/korm_pit_standart.xml',
         'views/korm_analiz_pit.xml',
-        'views/stado_vid_fiz_group.xml',
-        'views/stado_podvid_fiz_group.xml',
-        'views/stado_fiz_group.xml',
-        'views/stado_zagon.xml',
+        # 'views/stado_vid_fiz_group.xml',
+        # 'views/stado_podvid_fiz_group.xml',
+        # 'views/stado_fiz_group.xml',
+        # 'views/stado_zagon.xml',
         'views/korm_receptura.xml',
         'views/korm_racion.xml',
         'views/korm_racion_report.xml',
@@ -66,6 +65,9 @@
         'reports/korm_buh_report.xml',
         'reports/korm_buh_report_view.xml',
         'views/menu.xml',
+
+        'security/korm_security.xml',
+        'security/ir.model.access.csv',
         
         #'report/sale_milk_report_view.xml',
         

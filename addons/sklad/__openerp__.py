@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','report', 'milk'],
+    'depends': ['base','report', 'selhoz_base','milk'],
 
     # always loaded
     'data': [

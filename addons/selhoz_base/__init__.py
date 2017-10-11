@@ -2,6 +2,5 @@
 
 #from . import controllers
 import models
-import report
-#import partner
-#import res_config
+#import reports
+#import wizard

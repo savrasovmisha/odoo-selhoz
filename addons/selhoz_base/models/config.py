@@ -19,6 +19,8 @@ class milk_config_settings(models.TransientModel):
 	kod_osemeneniya = fields.Integer(string=u'Код события Осеменения в Селекс', default=7)
 	kod_abort = fields.Integer(string=u'Код события Аборта в Селекс', default=11)
 
+	milk_nomen_default = fields.Many2one('nomen.nomen', string='Номенклатура молока')
+
 	# #@api.one
 	# def get_default_dsn_selex(self, cr, uid, ids, context=None):
 	# 	#mc = self.search([('create_date', '>', '01.07.2016')],limit=1)
@@ -56,7 +58,8 @@ class milk_config_settings(models.TransientModel):
 			'password_uniform': conf.get_param('password_uniform'),
 			'kod_otel': int(conf.get_param('kod_otel')),
 			'kod_osemeneniya': int(conf.get_param('kod_osemeneniya')),
-			'kod_abort': int(conf.get_param('kod_abort'))
+			'kod_abort': int(conf.get_param('kod_abort')),
+			'milk_nomen_default': int(conf.get_param('milk_nomen_default'))
 			
 		}
 	@api.one
@@ -72,3 +75,4 @@ class milk_config_settings(models.TransientModel):
 		conf.set_param('kod_otel', int(self.kod_otel))
 		conf.set_param('kod_osemeneniya', int(self.kod_osemeneniya))
 		conf.set_param('kod_abort', int(self.kod_abort))
+		conf.set_param('milk_nomen_default', self.milk_nomen_default.id)

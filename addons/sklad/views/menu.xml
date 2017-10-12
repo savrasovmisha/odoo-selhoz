@@ -31,23 +31,23 @@
 
         <menuitem id="sklad_menu" name="Справочники" sequence="2" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nomen_ed_izm_categ_menu" name="Категории ед.изм" parent="sklad_menu" action="nomen_ed_izm_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nomen_ed_izm_categ_menu" name="Категории ед.изм" parent="sklad_menu" action="selhoz_base.nomen_ed_izm_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nomen_ed_izm_menu" name="Единицы измерения" parent="sklad_menu" action="nomen_ed_izm_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nomen_ed_izm_menu" name="Единицы измерения" parent="sklad_menu" action="selhoz_base.nomen_ed_izm_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nalog_nds_menu" name="Ставки НДС" parent="sklad_menu" action="nalog_nds_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nalog_nds_menu" name="Ставки НДС" parent="sklad_menu" action="selhoz_base.nalog_nds_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nomen_categ_menu" name="Категории номенклатуры" parent="sklad_menu" action="nomen_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nomen_categ_menu" name="Категории номенклатуры" parent="sklad_menu" action="selhoz_base.nomen_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nomen_group_menu" name="Группы номенклатуры" parent="sklad_menu" action="nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nomen_group_menu" name="Группы номенклатуры" parent="sklad_menu" action="selhoz_base.nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="nomen_nomen_menu" name="Номенклатура" parent="sklad_menu" action="nomen_nomen_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="nomen_nomen_menu" name="Номенклатура" parent="sklad_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_sklad_manager,group_sklad_users"/>
     
-        <menuitem id="sklad_sklad_menu" name="Склады" parent="sklad_menu" action="sklad_sklad_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_sklad_menu" name="Склады" parent="sklad_menu" action="selhoz_base.sklad_sklad_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="buh_nomen_group_menu" name="Номенклатурные группы (бух)" parent="sklad_menu" action="buh_nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="buh_nomen_group_menu" name="Номенклатурные группы (бух)" parent="sklad_menu" action="selhoz_base.buh_nomen_group_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="buh_stati_zatrat_menu" name="Статьи затрат" parent="sklad_menu" action="buh_stati_zatrat_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="buh_stati_zatrat_menu" name="Статьи затрат" parent="sklad_menu" action="selhoz_base.buh_stati_zatrat_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
         <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
         

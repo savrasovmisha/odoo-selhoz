@@ -8,26 +8,32 @@
             <field name="arch" type="xml">
                 <form string="Форма Учет движения молока">
                     <header>
-                        <!-- <button name="create_ttn" string="Создать ТТН" type="object" />  -->
-                        <!-- Add button in your xml form -->
-        
-        
-
+                        <button name="action_draft" type="object"
+                                string="Отменить проведение"
+                                states="confirmed"/>
+                        <button name="action_confirm" type="object"
+                                string="Провести" states="draft,create"
+                                class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft"  style="margin-left: 100px;"/>
+                        
+                        <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         
                             <group>
                                 <group>
-                                    <field name="name" string="Номер"/>
+                                    <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 </group>
                                 <group>
-                                    <field name="date_doc"/>
-                                    <field name="doyarka_id" domain="[('company_type','=','person')]"/>
+                                    <field name="date_doc" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                    <field name="doyarka_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 </group>
 
                                 
                             </group>
-                            <div class="oe_button_box" name="button_box">
+                            <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state',  'in', ['confirmed',])]}">
                                     <button name="action_update"
                                         type="object"
                                         class="oe_stat_button oe_edit_only"
@@ -37,33 +43,36 @@
                                     </button>
                                 </div>
                             <group>
-                                <separator string="Движение молока" colspan="2"/>
-                                <group>
-                                    <field name="vipoyka"/>
-                                    <field name="utilizaciya"/>
+                               
+                                <group string="Движение молока, кг">
+                                    <field name="vipoyka" />
+                                    <field name="utilizaciya" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                     <field name="ostatok_lastday"/>
                                     <field name="ostatok_today"/>
                                     <field name="sale_natura"/>
                                     <field name="sale_zachet"/>
-                                    <separator string="Качественные показатели" colspan="2"/>
+
+                                    <separator string="Качественные показатели, %" colspan="2"/>
                                     <field name="sale_jir"/>
                                     <field name="sale_belok"/>
-                                    <separator string="Состав поголовья" colspan="2"/>
-                                    <field name="cow_doy"/>
-                                    <field name="cow_zapusk"/>
+
+                                    <separator string="Состав поголовья, гол." colspan="2"/>
+                                    <field name="cow_doy" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                    <field name="cow_zapusk" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                     <field name="cow_fur"/>
                                     
                                 </group>
 
+                                
                                 <group>
-                                    <group>
+                                    <group string="Перездали, кг">
                                         <field name="sale_peresdali_natura"/>
                                         <field name="sale_peresdali_zachet"/>
                                     </group>
                                     <newline/> 
                                     <notebook>
                                         <page string="Остатки по танкерам">
-                                            <field name="trace_milk_ostatok_line">
+                                            <field name="trace_milk_ostatok_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                                 <tree string="Остатки по танкерам" editable="botton">
                                                     <field name="tanker_id" string="Танкер"/>
                                                     <field name="merilo" string="Мерило"/>
@@ -80,7 +89,7 @@
                                     <notebook>
                                         
                                         <page string="На выпойку">
-                                            <field name="trace_milk_vipoyka_line">
+                                            <field name="trace_milk_vipoyka_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                                 <tree string="На выпойку" editable="botton">
                                                     <field name="stado_zagon_id"/>
                                                     <field name="stado_fiz_group_id"/>
@@ -173,7 +182,7 @@
             <field name="name">trace_milk.tree</field>
             <field name="model">milk.trace_milk</field>
             <field name="arch" type="xml">
-                <tree string="Учет движения молока" default_order='date_doc desc' decoration-danger="otk_nadoy_doy&lt;0">
+                <tree string="Учет движения молока" default_order='date_doc desc' decoration-danger="otk_nadoy_doy&lt;0" colors="green:state=='draft';red:state == 'done'">
                     <!-- <field name="name" string="№"/> -->
                     <field name="date_doc" string="Дата"/>
                     <field name="valoviy_nadoy"/>
@@ -188,8 +197,9 @@
                     <field name="cow_doy"/>
                     <field name="cow_zapusk"/>
                     <field name="cow_fur"/>
-                    <field name="cow_netel"/>
-                    <field name="cow_total"/>
+                    <field name="state"/>
+                   <!--  <field name="cow_netel"/>
+                    <field name="cow_total"/> -->
                     
                     
                    

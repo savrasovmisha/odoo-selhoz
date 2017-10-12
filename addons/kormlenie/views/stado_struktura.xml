@@ -8,7 +8,7 @@
             <form string="Форма Структура стада">
                
                 <sheet>
-                    <group>
+            <!--         <group>
                         <group>
                             <field name="name"/>
                             
@@ -48,7 +48,7 @@
                             <field name="kol_golov_zagon"/>
                         </group>
                                        
-                    </group>
+                    </group> -->
                      <div class="oe_button_box" name="button_box">
                             <button name="action_zagruzit"
                                 type="object"

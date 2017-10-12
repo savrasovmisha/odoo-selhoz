@@ -23,6 +23,14 @@
                             
                             
                         </group>
+                        <separator string="Параметры по молоку" />
+                        <group>
+                            
+                            <field name="milk_nomen_default" />
+                       
+                            
+                            
+                        </group>
 
                         <separator string="Подключение к Селекс" />
                         <group>

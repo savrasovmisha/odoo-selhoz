@@ -590,12 +590,15 @@ class trace_milk(models.Model):
 	@api.depends('date_doc')
 	def return_name(self):
 		self.name = self.date_doc
+		self.date = self.date_doc
 
 		
 	name = fields.Char(string='Description', required=True, default='New', store=True, compute='return_name')
 	
 	date_doc = fields.Date(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
+	date = fields.Date(string='Дата документа', required=True,  
+						index=True, copy=False)
 
 	doyarka_id = fields.Many2one('res.partner', string='Доярка')
 	
@@ -609,8 +612,8 @@ class trace_milk(models.Model):
 	sale_jir = fields.Float(digits=(3, 1), string=u"Жир", store=True, compute='_sale_result', group_operator="avg")
 	sale_belok = fields.Float(digits=(3, 2), string=u"Белок", store=True, compute='_sale_result', group_operator="avg")
 	
-	valoviy_nadoy = fields.Integer(string=u"Валовый надой", store=True, compute='_valoviy_nadoy_result')
-	otk_valoviy_nadoy = fields.Float(digits=(3, 3), string=u"Откл-е Валовый надой от предыд. дня", compute='_otk_result', store=False)
+	valoviy_nadoy = fields.Integer(string=u"Валовый надой, кг", store=True, compute='_valoviy_nadoy_result')
+	otk_valoviy_nadoy = fields.Float(digits=(3, 3), string=u"Откл-е Валовый надой от предыд. дня, кг", compute='_otk_result', store=False)
 
 	sale_peresdali_natura = fields.Integer(string=u"Пересдали натура", store=True, compute='_sale_result')
 	sale_peresdali_zachet = fields.Integer(string=u"Пересдали зачет", store=True, compute='_sale_result')
@@ -621,10 +624,10 @@ class trace_milk(models.Model):
 	cow_netel = fields.Integer(string=u"Нетели", store=True, group_operator="avg")
 	cow_total = fields.Integer(string=u"Общее поголовье", store=True, group_operator="avg")
 
-	nadoy_doy = fields.Float(digits=(3, 1), string=u"Надой на дойную", store=True, compute='_nadoy_result', group_operator="avg")
-	nadoy_fur = fields.Float(digits=(3, 1), string=u"Надой на фуражную", store=True, compute='_nadoy_result', group_operator="avg")
-	otk_nadoy_doy = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня", compute='_otk_result', store=False)
-	otk_nadoy_fur = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня", compute='_otk_result', store=False)
+	nadoy_doy = fields.Float(digits=(3, 1), string=u"Надой на дойную, кг", store=True, compute='_nadoy_result', group_operator="avg")
+	nadoy_fur = fields.Float(digits=(3, 1), string=u"Надой на фуражную, кг", store=True, compute='_nadoy_result', group_operator="avg")
+	otk_nadoy_doy = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня, кг", compute='_otk_result', store=False)
+	otk_nadoy_fur = fields.Float(digits=(3, 1), string=u"Откл-е от предыд. дня, кг", compute='_otk_result', store=False)
 
 	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
 	nadoy_40_150 = fields.Float(digits=(3, 2), string=u"Надой 40-150", store=True, group_operator="avg")
@@ -639,7 +642,13 @@ class trace_milk(models.Model):
 	description = fields.Text(string=u"Коментарии")
 	trace_milk_ostatok_line = fields.One2many('milk.trace_milk_ostatok_line', 'trace_milk_id', string=u"Строка Учет движения молока Остотки в танкерах")
 	trace_milk_vipoyka_line = fields.One2many('milk.trace_milk_vipoyka_line', 'trace_milk_id', string=u"Строка Учет движения молока На выпойку")
-
+	state = fields.Selection([
+		('create', "Создан"),
+		('draft', "Черновик"),
+		('confirmed', "Проведен"),
+		('done', "Отменен"),
+		
+	], default='create')
 
 	@api.one
 	def action_update(self):
@@ -650,6 +659,7 @@ class trace_milk(models.Model):
 		self._nadoy_result()
 		self._otk_result()
 		self._otk_nadoy_result()
+		self._raschet_vipoyka()
 
 	
 	@api.one
@@ -792,6 +802,68 @@ class trace_milk(models.Model):
 		#self.action_update()
 		#self.env['purchase.order'].method_b()
 
+
+	@api.multi
+	def unlink(self):
+		for pp in self:
+			if pp.state != 'done':
+				raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+		return super(trace_milk, self).unlink()
+
+
+	@api.multi
+	def action_draft(self):
+		for doc in self:
+							
+			if self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True:
+				self.state = 'draft'
+			else:
+				raise exceptions.ValidationError(_(u"Ошибка. Не может быть отменено проведение!"))
+
+
+	@api.multi
+	def action_confirm(self):
+		conf = self.env['ir.config_parameter']
+		nomen_nomen_id = conf.get_param('milk_nomen_default')
+		if nomen_nomen_id:
+			nomen_name = self.env['nomen.nomen'].search([('id', '=', nomen_nomen_id)], 
+															limit=1).name
+
+			for doc in self:
+				doc.date = doc.date_doc
+				doc.action_update()
+				vals = []
+				for line in doc.trace_milk_vipoyka_line:
+					vals.append({
+								'name': nomen_name, 
+								'nomen_nomen_id': nomen_nomen_id, 
+								'stado_zagon_id': line.stado_zagon_id.id, 
+								'stado_fiz_group_id': line.stado_zagon_id.stado_fiz_group_id.id, 
+								'kol': line.kol, 
+								})
+
+					
+				if len(vals)>0:	
+					if self.env['reg.rashod_kormov'].move(doc, vals, 'create')==True:
+						doc.state = 'confirmed'
+					else:
+						raise exceptions.ValidationError(_(u"Ошибка. Не проведен. Невозможно создать движение расхода кормов и добавок!"))
+				else:
+					doc.state = 'confirmed'
+
+		else:
+			raise exceptions.ValidationError(_(u"Ошибка. Не назначена номенклатура молока!"))
+			self.state = 'draft'
+
+
+
+
+
+
+	@api.multi
+	def action_done(self):
+		self.state = 'done'
 
 
 class trace_milk_ostatok_line(models.Model):

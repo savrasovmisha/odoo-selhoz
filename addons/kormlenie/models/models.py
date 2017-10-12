@@ -845,47 +845,89 @@ class reg_rashod_kormov(models.Model):
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
 	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
 
-def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
-	"""
-		Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
-		vid_dvijeniya='create' Создать записи
-		vid_dvijeniya='unlink' Удалить записи
-	"""
+	def move(self, obj, vals, vid_dvijeniya):
+		"""
+			Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
+			vid_dvijeniya='create' Создать записи
+			vid_dvijeniya='unlink' Удалить записи
+		"""
 
-	message = ''
-		
+		message = ''
+			
 
-	reg = obj.env['reg.rashod_kormov']
-	if vid_dvijeniya == 'create':
-		if len(vals) == 0:
-			message = u"Нет данных для проведения документа. Не заполненна табличная часть"
-			raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-			return False
-		for line in vals:
-			line['id'] = False
-			line['obj'] = obj.__class__.__name__
-			line['obj_id'] = obj.id
-			line['date'] = obj.date
-
-			if line['kol']<0:
-				
-				message = u"Кол-во должно быть больше нуля"
+		reg = obj.env['reg.rashod_kormov']
+		if vid_dvijeniya == 'create':
+			if len(vals) == 0:
+				message = u"Нет данных для проведения документа. Не заполненна табличная часть"
 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
 				return False
+			for line in vals:
+				line['id'] = False
+				line['obj'] = obj.__class__.__name__
+				line['obj_id'] = obj.id
+				line['date'] = obj.date
+
+				if line['kol']<0:
+					
+					message = u"Кол-во должно быть больше нуля"
+					raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+					return False
+					
+			for line in vals:
+				#print 'cccccccc    ', line
+				reg.create(line)
+
+
+		elif vid_dvijeniya == 'unlink':
+			ids_del = reg.search([  ('obj_id', '=', obj.id),
+									('obj', '=', obj.__class__.__name__),
+									])
+			ids_del.unlink()
+		
+
+		return True
+
+# def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
+# 	"""
+# 		Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
+# 		vid_dvijeniya='create' Создать записи
+# 		vid_dvijeniya='unlink' Удалить записи
+# 	"""
+
+# 	message = ''
+		
+
+# 	reg = obj.env['reg.rashod_kormov']
+# 	if vid_dvijeniya == 'create':
+# 		if len(vals) == 0:
+# 			message = u"Нет данных для проведения документа. Не заполненна табличная часть"
+# 			raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+# 			return False
+# 		for line in vals:
+# 			line['id'] = False
+# 			line['obj'] = obj.__class__.__name__
+# 			line['obj_id'] = obj.id
+# 			line['date'] = obj.date
+
+# 			if line['kol']<0:
 				
-		for line in vals:
-			#print 'cccccccc    ', line
-			reg.create(line)
+# 				message = u"Кол-во должно быть больше нуля"
+# 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+# 				return False
+				
+# 		for line in vals:
+# 			#print 'cccccccc    ', line
+# 			reg.create(line)
 
 
-	elif vid_dvijeniya == 'unlink':
-		ids_del = reg.search([  ('obj_id', '=', obj.id),
-								('obj', '=', obj.__class__.__name__),
-								])
-		ids_del.unlink()
+# 	elif vid_dvijeniya == 'unlink':
+# 		ids_del = reg.search([  ('obj_id', '=', obj.id),
+# 								('obj', '=', obj.__class__.__name__),
+# 								])
+# 		ids_del.unlink()
 	
 
-	return True
+# 	return True
 
 
 
@@ -949,7 +991,7 @@ class korm_korm(models.Model):
 	def action_draft(self):
 		for doc in self:
 			
-			if reg_rashod_kormov_move(self, [], 'unlink')==True:
+			if self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True:
 				self.state = 'draft'
 			
 
@@ -1021,7 +1063,8 @@ class korm_korm(models.Model):
 									})
 
 				
-			if reg_rashod_kormov_move(self, vals, 'create')==True:
+			#if reg_rashod_kormov_move(self, vals, 'create')==True:
+			if self.env['reg.rashod_kormov'].move(self, vals, 'create')==True:
 				self.state = 'confirmed'
 			else:
 				err = u'Ошибка при проведении'
@@ -2300,7 +2343,7 @@ class korm_rashod_kormov(models.Model):
 	def action_draft(self):
 		for doc in self:
 			
-			if reg_rashod_kormov_move(self, [], 'unlink')==True:
+			if self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True:
 				self.state = 'draft'
 			
 
@@ -2323,7 +2366,7 @@ class korm_rashod_kormov(models.Model):
 							})
 
 				
-			if reg_rashod_kormov_move(self, vals, 'create')==True:
+			if self.env['reg.rashod_kormov'].move(self, vals, 'create')==True:
 				self.state = 'confirmed'
 			
 

@@ -39,6 +39,19 @@
         'views/pricep.xml',
         'views/type_transport.xml',
         'views/transport.xml',
+
+        'views/buh_nomen_group.xml',
+        'views/buh_stati_zatrat.xml',
+        'views/ed_izm_categ.xml',
+        'views/ed_izm.xml',
+        'views/nalog_nds.xml',
+        'views/nomen_group.xml',
+        'views/nomen_categ.xml',
+        'views/nomen_nomen.xml',
+        'views/sklad_sklad.xml',
+
+
+        
         'security/base_security.xml',
         'security/ir.model.access.csv',
         

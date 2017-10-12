@@ -27,9 +27,9 @@
 
        
 
-        <menuitem id="krs_menu_load" name="Обработки" sequence="2" parent="base.main_krs_menu" groups="group_krs_manager,group_krs_users"/>
+        <menuitem id="krs_menu_load" name="Обработки" sequence="2" parent="base.main_krs_menu" groups="group_krs_manager"/>
 
-        <menuitem id="krs_load_menu" name="Загрузить" sequence="1" parent="krs_menu_load" action="action_krs_load_wiz" groups="group_krs_manager,group_krs_users"/>
+        <menuitem id="krs_load_menu" name="Загрузить" sequence="1" parent="krs_menu_load" action="action_krs_load_wiz" groups="group_krs_manager"/>
 
 
         

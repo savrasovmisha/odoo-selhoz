@@ -8,13 +8,13 @@
              before using action= attribute -->
         
 
-        <menuitem id="korm_menu_doc" name="Документы" sequence="1" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_menu_doc" name="Документы" sequence="1" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users,group_korm_furajir"/>
 
         <menuitem id="korm_korm_menu" name="Кормление" sequence="1" parent="korm_menu_doc" action="korm_korm_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_korm_ostatok_menu" name="Остатки кормления" sequence="2" parent="korm_menu_doc" action="korm_korm_ostatok_list_action" groups="group_korm_manager,group_korm_users"/>
 
-        <menuitem id="korm_rashod_kormov_menu" name="Расход кормов и добавок" sequence="3" parent="korm_menu_doc" action="korm_rashod_kormov_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_rashod_kormov_menu" name="Расход кормов и добавок" sequence="3" parent="korm_menu_doc" action="korm_rashod_kormov_list_action" groups="group_korm_manager,group_korm_users,group_korm_furajir"/>
 
         <menuitem id="stado_struktura_menu" name="Структура стада" sequence="4" parent="korm_menu_doc" action="stado_struktura_list_action" groups="group_korm_manager,group_korm_users"/>
 
@@ -74,7 +74,7 @@
         <menuitem id="korm_menu" name="Справочники" sequence="4" parent="base.main_korm_menu" groups="group_korm_manager,group_korm_users"/>
         
 
-        <menuitem id="korm_nomen_nomen_list_menu" name="Номенклатура" parent="korm_menu" action="sklad.nomen_nomen_list_action" groups="group_korm_manager,group_korm_users"/>
+        <menuitem id="korm_nomen_nomen_list_menu" name="Номенклатура" parent="korm_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_korm_manager,group_korm_users"/>
 
 
         <menuitem id="korm_pit_standart_menu" name="Питательность по стандарту" parent="korm_menu" action="korm_pit_standart_list_action" groups="group_korm_manager,group_korm_users"/>

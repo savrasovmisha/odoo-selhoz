@@ -81,10 +81,11 @@
             <field name="name">korm_rashod_kormov.tree</field>
             <field name="model">korm.rashod_kormov</field>
             <field name="arch" type="xml">
-                <tree string="Расход кормов и добавок">
+                <tree string="Расход кормов и добавок" colors="green:state=='draft';red:state == 'done'">
                     
                     <field name="date"/>
                     <field name="name"/>
+                    <field name="state"/>
                   
                     
                     

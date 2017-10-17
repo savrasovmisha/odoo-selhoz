@@ -60,6 +60,9 @@
         <menuitem id="milk_price_menu" name="Установка цен на молоко" parent="milk_menu"
                   action="milk_price_list_action" groups="group_milk_manager,group_milk_users"/>
 
+        <menuitem id="milk_nadoy_group_menu" name="Надой молока по группам" parent="milk_menu"
+                  action="milk_nadoy_group_list_action" groups="group_milk_manager,group_milk_users"/>
+
 
         
     </data>

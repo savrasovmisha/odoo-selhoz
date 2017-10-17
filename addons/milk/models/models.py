@@ -1133,3 +1133,88 @@ class milk_price(models.Model):
 	KK = fields.Float(digits=(10, 2), string=u"Коэффициент качеста", default=0)
 	H = fields.Float(digits=(10, 2), string=u"Надбавка за термо-е и сыроприг. молоко", default=0)
 
+
+
+
+class milk_nadoy_group(models.Model):
+	_name = 'milk.nadoy_group'
+	_description = u'Надой молока по группам'
+	_order = 'date desc'
+
+	@api.one
+	@api.depends('date')
+	def return_name(self):
+		self.name = self.date
+
+
+
+	name = fields.Char(string=u"Номер", store=True, copy=False, index=True, default=fields.Datetime.now)
+	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+	
+	#dd = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
+
+	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
+	nadoy_40_150 = fields.Float(digits=(3, 2), string=u"Надой 40-150", store=True, group_operator="avg")
+	nadoy_150_300 = fields.Float(digits=(3, 2), string=u"Надой 150-300", store=True, group_operator="avg")
+	nadoy_300 = fields.Float(digits=(3, 2), string=u"Надой >300", store=True, group_operator="avg")
+
+	nadoy_l1 = fields.Float(digits=(3, 2), string=u"Надой 1-я л.", store=True, group_operator="avg")
+	nadoy_l2 = fields.Float(digits=(3, 2), string=u"Надой 2-я л.", store=True, group_operator="avg")
+	nadoy_l3 = fields.Float(digits=(3, 2), string=u"Надой 3-я л. и более", store=True, group_operator="avg")
+	
+
+	nadoy_l1_0_40 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 0-40", store=True, group_operator="avg")
+	nadoy_l1_40_150 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 40-150", store=True, group_operator="avg")
+	nadoy_l1_150_300 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 150-300", store=True, group_operator="avg")
+	nadoy_l1_300 = fields.Float(digits=(3, 2), string=u"1-я л. Надой >300", store=True, group_operator="avg")
+
+	nadoy_l2_0_40 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 0-40", store=True, group_operator="avg")
+	nadoy_l2_40_150 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 40-150", store=True, group_operator="avg")
+	nadoy_l2_150_300 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 150-300", store=True, group_operator="avg")
+	nadoy_l2_300 = fields.Float(digits=(3, 2), string=u"2-я л. Надой >300", store=True, group_operator="avg")
+
+	nadoy_l3_0_40 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 0-40", store=True, group_operator="avg")
+	nadoy_l3_40_150 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 40-150", store=True, group_operator="avg")
+	nadoy_l3_150_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 150-300", store=True, group_operator="avg")
+	nadoy_l3_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой >300", store=True, group_operator="avg")
+
+	procent_0_15 = fields.Float(digits=(3, 2), string=u"% голов с надоями 0-15л", store=True, group_operator="avg")
+	procent_15_20 = fields.Float(digits=(3, 2), string=u"% голов с надоями 15-20л", store=True, group_operator="avg")
+	procent_20_25 = fields.Float(digits=(3, 2), string=u"% голов с надоями 20-25л", store=True, group_operator="avg")
+	procent_25_30 = fields.Float(digits=(3, 2), string=u"% голов с надоями 25-30л", store=True, group_operator="avg")
+	procent_30_35 = fields.Float(digits=(3, 2), string=u"% голов с надоями 30-35л", store=True, group_operator="avg")
+	procent_35_40 = fields.Float(digits=(3, 2), string=u"% голов с надоями 35-40л", store=True, group_operator="avg")
+	procent_40_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями 40-45л", store=True, group_operator="avg")
+	procent_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями >45л", store=True, group_operator="avg")
+
+	procent_graph = fields.Binary(string = u"График")
+
+	milk_nadoy_group_line = fields.One2many('milk.nadoy_group_line', 'milk_nadoy_group_id', string=u"Строка надоя по группам")
+
+
+
+
+class milk_nadoy_group_line(models.Model):
+	_name = 'milk.nadoy_group_line'		
+	"""Строка надоя по группам. Надой в разрезе загонов"""
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		if self.stado_zagon_id:
+			self.name = self.stado_zagon_id.name
+			self.stado_fiz_group_id = self.stado_zagon_id.stado_fiz_group_id
+			
+		
+	
+	#, related='stado_zagon_id.stado_fiz_group_id'
+	name = fields.Char(string='Наименование', default='New', compute='return_name', store=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id', readonly=True,  store=True)
+	
+	kol = fields.Float(digits=(3, 2), string=u"Ср. кол-во, л.", store=True, group_operator="avg", default=0)
+	sko = fields.Float(digits=(3, 2), string=u"СКО, л", store=True, group_operator="avg", default=0, help=u"Среднеквадратическое отклонение")
+	
+	
+	
+	milk_nadoy_group_id = fields.Many2one('milk.nadoy_group',
+		ondelete='cascade', string=u"Надой молока по группам", required=True)	

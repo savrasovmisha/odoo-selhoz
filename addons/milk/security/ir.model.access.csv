@@ -43,3 +43,7 @@ access_milk_price_manager,milk.price,model_milk_price,group_milk_manager,1,1,1,1
 access_milk_price_users,milk.price,model_milk_price,group_milk_users,1,0,0,0
 access_milk_trace_milk_vipoyka_line_manager,milk.trace_milk_vipoyka_line,model_milk_trace_milk_vipoyka_line,group_milk_manager,1,1,1,1
 access_milk_trace_milk_vipoyka_line_users,milk.trace_milk_vipoyka_line,model_milk_trace_milk_vipoyka_line,group_milk_users,1,0,0,0
+access_milk_nadoy_group_manager,milk.nadoy_group,model_milk_nadoy_group,group_milk_manager,1,1,1,1
+access_milk_nadoy_group_users,milk.nadoy_group,model_milk_nadoy_group,group_milk_users,1,0,0,0
+access_milk_nadoy_group_line_manager,milk.nadoy_group_line,model_milk_nadoy_group_line,group_milk_manager,1,1,1,1
+access_milk_nadoy_group_line_users,milk.nadoy_group_line,model_milk_nadoy_group_line,group_milk_users,1,0,0,0

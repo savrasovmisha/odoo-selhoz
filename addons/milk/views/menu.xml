@@ -32,6 +32,9 @@
 
         <menuitem id="milk_menu_buh_report" name="Отчетность в бухгалтерию" action="milk_buh_report_action" parent="milk_menu_doc" sequence="5"/>
 
+        <menuitem id="milk_nadoy_group_menu" name="Надой молока по группам" parent="milk_menu_doc"
+                  action="milk_nadoy_group_list_action" groups="group_milk_manager,group_milk_users"/>
+
 
         <menuitem id="milk_menu" name="Справочники" sequence="2" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
 
@@ -60,8 +63,7 @@
         <menuitem id="milk_price_menu" name="Установка цен на молоко" parent="milk_menu"
                   action="milk_price_list_action" groups="group_milk_manager,group_milk_users"/>
 
-        <menuitem id="milk_nadoy_group_menu" name="Надой молока по группам" parent="milk_menu"
-                  action="milk_nadoy_group_list_action" groups="group_milk_manager,group_milk_users"/>
+
 
 
         

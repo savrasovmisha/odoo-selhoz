@@ -1134,6 +1134,41 @@ class milk_price(models.Model):
 	H = fields.Float(digits=(10, 2), string=u"Надбавка за термо-е и сыроприг. молоко", default=0)
 
 
+def connect_server(self, url_name):
+
+	"""Функция отправляет запрос на Сервер API и возвращает результат или ошибку
+		url_name - имя функции сервера api. напр. /api/load_milk/
+	"""
+	import requests as r
+	import json
+
+	err=u''
+	data=''
+	conf = self.env['ir.config_parameter']
+	ip = conf.get_param('ip_server_api')
+
+	url = 'http://'+ip+url_name
+
+	try:
+		response=r.get(url)
+		if response.text=='error':
+			err = u'Сервер вернул ошибку, возможно не верно указаны данные. \n'
+		if response.status_code == 200:
+			data = json.loads(response.text)
+			if len(data) == 0:
+				err = u"Нет данных для загрузки. \n"
+
+
+	except:
+		err=u'НЕ удалось соединиться с сервером. \n'
+
+	if err=='' and len(data) == 0:
+		err=u'Сервер не вернул данные. Ошибка сервера API \n'
+
+	return {
+			'err' : err,
+			'data' : data
+			}
 
 
 class milk_nadoy_group(models.Model):
@@ -1146,11 +1181,84 @@ class milk_nadoy_group(models.Model):
 	def return_name(self):
 		self.name = self.date
 
+	@api.one
+	@api.depends('milk_nadoy_group_line.kol_golov')
+	def return_kol_golov(self):
+		self.kol_golov = 0
+		kol = 0
+		for line in self.milk_nadoy_group_line:
+			self.kol_golov += line.kol_golov
+			kol += line.kol_golov * line.kol
+
+		self.nadoy_golova = kol / self.kol_golov
+
+	@api.one
+	def action_load(self):
+		
+		err=''
+			
+		dt = datetime.strptime(self.date,'%Y-%m-%d')
+		
+		date = dt.date().strftime('%d.%m.%Y')
+		url_name = '/api/milk_nadoy_group/'+date
+		
+		
+		res = connect_server(self, url_name)
+		
+		if len(res['err'])==0:
+			stado_zagon = self.env['stado.zagon']
+			data = res['data'][0]
+			print res
+
+			for line in data['zagons']:
+				#print line['kol']
+			
+				zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
+				if len(zagon_id)>0:
+					#print line['kol_golov'], line['kol'],line['sko']
+					self.milk_nadoy_group_line.create({
+								'milk_nadoy_group_id':   self.id,
+								'name':   zagon_id.name,
+								'stado_zagon_id':   zagon_id.id,
+								#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
+								'kol_golov':  line['kol_golov'],
+								'kol':  line['kol'],
+								'sko':  line['sko']
+
+								
+								})
+			data = res['data'][1]
+			procent = data['procent']		
+			self.procent_0_15 = procent['procent_0_15']		
+			self.procent_15_20 = procent['procent_15_20']		
+			self.procent_20_25 = procent['procent_20_25']		
+			self.procent_25_30 = procent['procent_25_30']		
+			self.procent_30_35 = procent['procent_30_35']		
+			self.procent_35_40 = procent['procent_35_40']		
+			self.procent_40_45 = procent['procent_40_45']		
+			self.procent_45 = procent['procent_45']		
+					
+					# for z in self.stado_struktura_line:
+					# 	if z.stado_zagon_id.uniform_id == line['GROEPNR']:
+					# 		z.sred_kol_milk = line['sred_kol_milk']
+
+						
+					
+		if len(res['err'])>0:
+			
+			self.description += u'Не возможно загрузить данные по причине: \n' + res['err']
+			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
+		else:
+			self.description += u'Синхронизация прошла успешна. \n' 
+
+
 
 
 	name = fields.Char(string=u"Номер", store=True, copy=False, index=True, default=fields.Datetime.now)
 	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
 	
+	kol_golov = fields.Integer(string=u"Считано голов", compute='return_kol_golov', store=True, group_operator="avg", default=0)
+	nadoy_golova = fields.Float(digits=(3, 2), string=u"Надой на голову, л", compute='return_kol_golov', store=True, group_operator="avg")
 	#dd = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
 
 	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
@@ -1187,12 +1295,13 @@ class milk_nadoy_group(models.Model):
 	procent_40_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями 40-45л", store=True, group_operator="avg")
 	procent_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями >45л", store=True, group_operator="avg")
 
+	err = fields.Char(string=u"Результат загрузки", readonly=True)
+	description = fields.Text(string=u"Коментарии", default=u'')
 	procent_graph = fields.Binary(string = u"График")
 
 	milk_nadoy_group_line = fields.One2many('milk.nadoy_group_line', 'milk_nadoy_group_id', string=u"Строка надоя по группам")
 
-
-
+	
 
 class milk_nadoy_group_line(models.Model):
 	_name = 'milk.nadoy_group_line'		
@@ -1211,6 +1320,7 @@ class milk_nadoy_group_line(models.Model):
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id', readonly=True,  store=True)
 	
+	kol_golov = fields.Integer(string=u"Считано голов", store=True, group_operator="avg", default=0)
 	kol = fields.Float(digits=(3, 2), string=u"Ср. кол-во, л.", store=True, group_operator="avg", default=0)
 	sko = fields.Float(digits=(3, 2), string=u"СКО, л", store=True, group_operator="avg", default=0, help=u"Среднеквадратическое отклонение")
 	

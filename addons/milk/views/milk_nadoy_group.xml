@@ -13,6 +13,8 @@
                             <group>
                                 
                                 <field name="date" string="Дата"/>
+                                <field name="kol_golov"/>
+                                <field name="nadoy_golova"/>
                                 
                             </group>
 
@@ -26,17 +28,24 @@
                                 </button>
                             </div>
                                
-                                <field name="procent_graph" widget="image"/>   
+                               <!--  <field name="procent_graph" widget="image"/>    -->
                             </group>
 
                         </group>
                         <group>
-                            <group>
+                            <group string="Надой по дням лактации">
                                 <field name="nadoy_0_40"/>
                                 <field name="nadoy_40_150"/>
                                 <field name="nadoy_150_300"/>
                                 <field name="nadoy_300"/>
+                                
+                                <separator string="Надой по лактациям" colspan="2"/>
+                                <field name="nadoy_l1"/>
+                                <field name="nadoy_l2"/>
+                                <field name="nadoy_l3"/>
 
+
+                                <separator string="% голов по надоям" colspan="2"/>
                                 <field name="procent_0_15"/>
                                 <field name="procent_15_20"/>
                                 <field name="procent_20_25"/>
@@ -47,21 +56,22 @@
                                 <field name="procent_45"/>
                                 
                             </group>
-                            <group>
-                                <field name="nadoy_l1"/>
-                                <field name="nadoy_l2"/>
-                                <field name="nadoy_l3"/>
+                            <group string="В разрезе лактаций и дней лактаций">
+                      
+                                <separator string="1-я лактация" colspan="2"/>
                              
                                 <field name="nadoy_l1_0_40"/>
                                 <field name="nadoy_l1_40_150"/>
                                 <field name="nadoy_l1_150_300"/>
                                 <field name="nadoy_l1_300"/>
 
+                                <separator string="2-я лактация" colspan="2"/>
                                 <field name="nadoy_l2_0_40"/>
                                 <field name="nadoy_l2_40_150"/>
                                 <field name="nadoy_l2_150_300"/>
                                 <field name="nadoy_l2_300"/>
 
+                                <separator string="3-я и более лактация" colspan="2"/>
                                 <field name="nadoy_l3_0_40"/>
                                 <field name="nadoy_l3_40_150"/>
                                 <field name="nadoy_l3_150_300"/>
@@ -77,6 +87,7 @@
                                         <tree string="milk_nadoy_group_line" editable="botton">
                                             <field name="stado_zagon_id"/>
                                             <field name="stado_fiz_group_id"/>
+                                            <field name="kol_golov"/>
                                             <field name="kol"/>
                                             <field name="sko"/>
                                                                                   
@@ -85,7 +96,11 @@
                                     </field>
                                 </page>
                             </notebook>
-                            
+                            <notebook colspan="4">
+                                <page string="Комментарии">
+                                    <field name="description" nolabel="1"/>
+                                </page>
+                            </notebook>
                     </sheet>
                 </form>
             </field>

@@ -1189,8 +1189,8 @@ class milk_nadoy_group(models.Model):
 		for line in self.milk_nadoy_group_line:
 			self.kol_golov += line.kol_golov
 			kol += line.kol_golov * line.kol
-
-		self.nadoy_golova = kol / self.kol_golov
+		if self.kol_golov>0:
+			self.nadoy_golova = kol / self.kol_golov
 
 	@api.one
 	def action_load(self):
@@ -1207,36 +1207,43 @@ class milk_nadoy_group(models.Model):
 		
 		if len(res['err'])==0:
 			stado_zagon = self.env['stado.zagon']
-			data = res['data'][0]
-			print res
+			data = res['data']
 
-			for line in data['zagons']:
-				#print line['kol']
-			
-				zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
-				if len(zagon_id)>0:
-					#print line['kol_golov'], line['kol'],line['sko']
-					self.milk_nadoy_group_line.create({
-								'milk_nadoy_group_id':   self.id,
-								'name':   zagon_id.name,
-								'stado_zagon_id':   zagon_id.id,
-								#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
-								'kol_golov':  line['kol_golov'],
-								'kol':  line['kol'],
-								'sko':  line['sko']
+			if self.kol_golov>data['kol_golov']:
+				self.massage = u'Обновление данных не требуется'
 
-								
-								})
-			data = res['data'][1]
-			procent = data['procent']		
-			self.procent_0_15 = procent['procent_0_15']		
-			self.procent_15_20 = procent['procent_15_20']		
-			self.procent_20_25 = procent['procent_20_25']		
-			self.procent_25_30 = procent['procent_25_30']		
-			self.procent_30_35 = procent['procent_30_35']		
-			self.procent_35_40 = procent['procent_35_40']		
-			self.procent_40_45 = procent['procent_40_45']		
-			self.procent_45 = procent['procent_45']		
+			else:
+				
+
+				self.milk_nadoy_group_line.unlink()
+
+				for line in data['zagons']:
+					#print line['kol']
+				
+					zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
+					if len(zagon_id)>0:
+						#print line['kol_golov'], line['kol'],line['sko']
+						self.milk_nadoy_group_line.create({
+									'milk_nadoy_group_id':   self.id,
+									'name':   zagon_id.name,
+									'stado_zagon_id':   zagon_id.id,
+									#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
+									'kol_golov':  line['kol_golov'],
+									'kol':  line['kol'],
+									'sko':  line['sko']
+
+									
+									})
+				#data = res['data'][1]
+				procent = data['procent']		
+				self.procent_0_15 = procent['procent_0_15']		
+				self.procent_15_20 = procent['procent_15_20']		
+				self.procent_20_25 = procent['procent_20_25']		
+				self.procent_25_30 = procent['procent_25_30']		
+				self.procent_30_35 = procent['procent_30_35']		
+				self.procent_35_40 = procent['procent_35_40']		
+				self.procent_40_45 = procent['procent_40_45']		
+				self.procent_45 = procent['procent_45']		
 					
 					# for z in self.stado_struktura_line:
 					# 	if z.stado_zagon_id.uniform_id == line['GROEPNR']:
@@ -1247,9 +1254,11 @@ class milk_nadoy_group(models.Model):
 		if len(res['err'])>0:
 			
 			self.description += u'Не возможно загрузить данные по причине: \n' + res['err']
+			self.massage = u'Ошибка загрузки'
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
 			self.description += u'Синхронизация прошла успешна. \n' 
+			self.massage = u'Данные загружены'
 
 
 
@@ -1295,7 +1304,8 @@ class milk_nadoy_group(models.Model):
 	procent_40_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями 40-45л", store=True, group_operator="avg")
 	procent_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями >45л", store=True, group_operator="avg")
 
-	err = fields.Char(string=u"Результат загрузки", readonly=True)
+	massage = fields.Char(string=u"Результат загрузки", readonly=True)
+	dostovernost = fields.Boolean(string=u"Достоверность", readonly=True)
 	description = fields.Text(string=u"Коментарии", default=u'')
 	procent_graph = fields.Binary(string = u"График")
 

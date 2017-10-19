@@ -69,7 +69,7 @@ def milk_nadoy_group(date):
 						}
 			
 			)
-	res.append({'zagons': zagon})
+	#res.append({'zagons': zagon})
 
 
 	####   % голов по надоям  ################
@@ -131,6 +131,7 @@ def milk_nadoy_group(date):
 	n3540 = 0.0
 	n4045 = 0.0
 	n45 = 0.0
+	kol_golov = 0
 
 	if len(result)>0:
 		line = result[0]
@@ -146,7 +147,12 @@ def milk_nadoy_group(date):
 			n4045 = line[6]/kol_golov*100
 			n45 = line[7]/kol_golov*100
 
-	res.append({'procent':
+	res= {
+				'kol_golov' : kol_golov,
+
+				'zagons': zagon,
+
+				'procent':
 						{
 						'procent_0_15': n015,
 						'procent_15_20': n1520,
@@ -157,7 +163,7 @@ def milk_nadoy_group(date):
 						'procent_40_45': n4045,
 						'procent_45': n45
 						}
-				})
+				}
 
 
 	#print zagon

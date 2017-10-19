@@ -13,6 +13,8 @@
                             <group>
                                 
                                 <field name="date" string="Дата"/>
+                                <field name="massage"/>
+                                
                                 <field name="kol_golov"/>
                                 <field name="nadoy_golova"/>
                                 
@@ -20,13 +22,13 @@
 
                             <group>
                                 <div class="oe_button_box" name="button_box">
-                                <button name="action_load"
-                                    type="object"
-                                    class="oe_stat_button oe_edit_only"
-                                    icon="fa-refresh" string="Загрузить"
-                                   >
-                                </button>
-                            </div>
+                                    <button name="action_load"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Загрузить"
+                                       >
+                                    </button>
+                                </div>
                                
                                <!--  <field name="procent_graph" widget="image"/>    -->
                             </group>

@@ -14,7 +14,8 @@
                                 
                                 <field name="date" string="Дата"/>
                                 <field name="massage"/>
-                                
+                                <field name="dostovernost"/>
+
                                 <field name="kol_golov"/>
                                 <field name="nadoy_golova"/>
                                 
@@ -92,6 +93,15 @@
                                             <field name="kol_golov"/>
                                             <field name="kol"/>
                                             <field name="sko"/>
+                                            
+                                            <field name="procent_0_15"/>
+                                            <field name="procent_15_20"/>
+                                            <field name="procent_20_25"/>
+                                            <field name="procent_25_30"/>
+                                            <field name="procent_30_35"/>
+                                            <field name="procent_35_40"/>
+                                            <field name="procent_40_45"/>
+                                            <field name="procent_45"/>
                                                                                   
                                            
                                         </tree>

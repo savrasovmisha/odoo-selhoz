@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division #при делении будет возвращаться float
 from openerp import models, fields, api
 from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
@@ -1204,7 +1205,7 @@ class milk_nadoy_group(models.Model):
 		
 		
 		res = connect_server(self, url_name)
-		
+		self.massage = ''
 		if len(res['err'])==0:
 			stado_zagon = self.env['stado.zagon']
 			data = res['data']
@@ -1214,7 +1215,6 @@ class milk_nadoy_group(models.Model):
 
 			else:
 				
-
 				self.milk_nadoy_group_line.unlink()
 
 				for line in data['zagons']:
@@ -1230,7 +1230,15 @@ class milk_nadoy_group(models.Model):
 									#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
 									'kol_golov':  line['kol_golov'],
 									'kol':  line['kol'],
-									'sko':  line['sko']
+									'sko':  line['sko'],
+									'procent_0_15': line['procent_0_15'],		
+									'procent_15_20': line['procent_15_20'],		
+									'procent_20_25': line['procent_20_25'],		
+									'procent_25_30': line['procent_25_30'],		
+									'procent_30_35': line['procent_30_35'],		
+									'procent_35_40': line['procent_35_40'],		
+									'procent_40_45': line['procent_40_45'],	
+									'procent_45': line['procent_45']	
 
 									
 									})
@@ -1243,7 +1251,30 @@ class milk_nadoy_group(models.Model):
 				self.procent_30_35 = procent['procent_30_35']		
 				self.procent_35_40 = procent['procent_35_40']		
 				self.procent_40_45 = procent['procent_40_45']		
-				self.procent_45 = procent['procent_45']		
+				self.procent_45 = procent['procent_45']	
+
+
+				procent = data['nadoy']		
+				self.nadoy_l1 = procent['nadoy_l1']		
+				self.nadoy_l2 = procent['nadoy_l2']		
+				self.nadoy_l3 = procent['nadoy_l3']		
+				self.nadoy_0_40 = procent['nadoy_0_40']		
+				self.nadoy_40_150 = procent['nadoy_40_150']		
+				self.nadoy_150_300 = procent['nadoy_150_300']		
+				self.nadoy_300 = procent['nadoy_300']		
+				self.nadoy_l1_0_40 = procent['nadoy_l1_0_40']		
+				self.nadoy_l1_40_150 = procent['nadoy_l1_40_150']		
+				self.nadoy_l1_150_300 = procent['nadoy_l1_150_300']		
+				self.nadoy_l1_300 = procent['nadoy_l1_300']		
+				self.nadoy_l2_0_40 = procent['nadoy_l2_0_40']		
+				self.nadoy_l2_40_150 = procent['nadoy_l2_40_150']		
+				self.nadoy_l2_150_300 = procent['nadoy_l2_150_300']		
+				self.nadoy_l2_300 = procent['nadoy_l2_300']		
+				self.nadoy_l3_0_40 = procent['nadoy_l3_0_40']		
+				self.nadoy_l3_40_150 = procent['nadoy_l3_40_150']		
+				self.nadoy_l3_150_300 = procent['nadoy_l3_150_300']		
+				self.nadoy_l3_300 = procent['nadoy_l3_300']		
+					
 					
 					# for z in self.stado_struktura_line:
 					# 	if z.stado_zagon_id.uniform_id == line['GROEPNR']:
@@ -1258,8 +1289,17 @@ class milk_nadoy_group(models.Model):
 			# return exceptions.UserError(_(u"При загрузки произошли ошибки: %s" % (err,)))
 		else:
 			self.description += u'Синхронизация прошла успешна. \n' 
-			self.massage = u'Данные загружены'
+			if not self.massage == u'Обновление данных не требуется':
+				self.massage = u'Данные загружены'
 
+			tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date)], limit=1)
+			if len(tm)>0:
+				cow_doy = tm.cow_doy
+				otk = (cow_doy - self.kol_golov)/cow_doy
+				if otk>0 and otk<0.10:
+					self.dostovernost = True
+				else:
+					self.dostovernost = False
 
 
 
@@ -1295,18 +1335,18 @@ class milk_nadoy_group(models.Model):
 	nadoy_l3_150_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 150-300", store=True, group_operator="avg")
 	nadoy_l3_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой >300", store=True, group_operator="avg")
 
-	procent_0_15 = fields.Float(digits=(3, 2), string=u"% голов с надоями 0-15л", store=True, group_operator="avg")
-	procent_15_20 = fields.Float(digits=(3, 2), string=u"% голов с надоями 15-20л", store=True, group_operator="avg")
-	procent_20_25 = fields.Float(digits=(3, 2), string=u"% голов с надоями 20-25л", store=True, group_operator="avg")
-	procent_25_30 = fields.Float(digits=(3, 2), string=u"% голов с надоями 25-30л", store=True, group_operator="avg")
-	procent_30_35 = fields.Float(digits=(3, 2), string=u"% голов с надоями 30-35л", store=True, group_operator="avg")
-	procent_35_40 = fields.Float(digits=(3, 2), string=u"% голов с надоями 35-40л", store=True, group_operator="avg")
-	procent_40_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями 40-45л", store=True, group_operator="avg")
-	procent_45 = fields.Float(digits=(3, 2), string=u"% голов с надоями >45л", store=True, group_operator="avg")
+	procent_0_15 = fields.Float(digits=(3, 1), string=u"% голов с надоями 0-15л", store=True, group_operator="avg")
+	procent_15_20 = fields.Float(digits=(3, 1), string=u"% голов с надоями 15-20л", store=True, group_operator="avg")
+	procent_20_25 = fields.Float(digits=(3, 1), string=u"% голов с надоями 20-25л", store=True, group_operator="avg")
+	procent_25_30 = fields.Float(digits=(3, 1), string=u"% голов с надоями 25-30л", store=True, group_operator="avg")
+	procent_30_35 = fields.Float(digits=(3, 1), string=u"% голов с надоями 30-35л", store=True, group_operator="avg")
+	procent_35_40 = fields.Float(digits=(3, 1), string=u"% голов с надоями 35-40л", store=True, group_operator="avg")
+	procent_40_45 = fields.Float(digits=(3, 1), string=u"% голов с надоями 40-45л", store=True, group_operator="avg")
+	procent_45 = fields.Float(digits=(3, 1), string=u"% голов с надоями >45л", store=True, group_operator="avg")
 
 	massage = fields.Char(string=u"Результат загрузки", readonly=True)
 	dostovernost = fields.Boolean(string=u"Достоверность", readonly=True)
-	description = fields.Text(string=u"Коментарии", default=u'')
+	description = fields.Text(string=u"Коментарии", default=u' ')
 	procent_graph = fields.Binary(string = u"График")
 
 	milk_nadoy_group_line = fields.One2many('milk.nadoy_group_line', 'milk_nadoy_group_id', string=u"Строка надоя по группам")
@@ -1331,9 +1371,17 @@ class milk_nadoy_group_line(models.Model):
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id', readonly=True,  store=True)
 	
 	kol_golov = fields.Integer(string=u"Считано голов", store=True, group_operator="avg", default=0)
-	kol = fields.Float(digits=(3, 2), string=u"Ср. кол-во, л.", store=True, group_operator="avg", default=0)
+	kol = fields.Float(digits=(3, 2), string=u"Ср. надой на голову, л.", store=True, group_operator="avg", default=0)
 	sko = fields.Float(digits=(3, 2), string=u"СКО, л", store=True, group_operator="avg", default=0, help=u"Среднеквадратическое отклонение")
-	
+	procent_0_15 = fields.Float(digits=(3, 1), string=u"% гол. 0-15л", store=True, group_operator="avg")
+	procent_15_20 = fields.Float(digits=(3, 1), string=u"% гол. 15-20л", store=True, group_operator="avg")
+	procent_20_25 = fields.Float(digits=(3, 1), string=u"% гол. 20-25л", store=True, group_operator="avg")
+	procent_25_30 = fields.Float(digits=(3, 1), string=u"% гол. 25-30л", store=True, group_operator="avg")
+	procent_30_35 = fields.Float(digits=(3, 1), string=u"% гол. 30-35л", store=True, group_operator="avg")
+	procent_35_40 = fields.Float(digits=(3, 1), string=u"% гол. 35-40л", store=True, group_operator="avg")
+	procent_40_45 = fields.Float(digits=(3, 1), string=u"% гол. 40-45л", store=True, group_operator="avg")
+	procent_45 = fields.Float(digits=(3, 1), string=u"% гол. >45л", store=True, group_operator="avg")
+
 	
 	
 	milk_nadoy_group_id = fields.Many2one('milk.nadoy_group',

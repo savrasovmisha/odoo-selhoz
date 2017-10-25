@@ -78,3 +78,5 @@ class stado_zagon(models.Model):
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
 	#active = fields.Boolean(string=u"Активный", default=True)
 	activ = fields.Boolean(string=u"Используется", default=True, oldname='active')
+	date_start = fields.Date(string=u"Дата начала", default=fields.Datetime.now)
+	date_end = fields.Date(string=u"Дата окончания")

@@ -9,19 +9,24 @@
                 <form string="Надой молока по группам">
                   
                     <sheet>
-                        <group>
+                        <group >
                             <group>
                                 
                                 <field name="date" string="Дата"/>
+                                <field name="kol_golov"/>
+                                <field name="nadoy_golova"/>
+                            </group>
+                            <group>
                                 <field name="massage"/>
                                 <field name="dostovernost"/>
 
-                                <field name="kol_golov"/>
-                                <field name="nadoy_golova"/>
                                 
                             </group>
 
-                            <group>
+                            
+
+                        </group>
+                        <group>
                                 <div class="oe_button_box" name="button_box">
                                     <button name="action_load"
                                         type="object"
@@ -33,8 +38,6 @@
                                
                                <!--  <field name="procent_graph" widget="image"/>    -->
                             </group>
-
-                        </group>
                         <group>
                             <group string="Надой по дням лактации">
                                 <field name="nadoy_0_40"/>
@@ -93,7 +96,7 @@
                                             <field name="kol_golov"/>
                                             <field name="kol"/>
                                             <field name="sko"/>
-                                            
+
                                             <field name="procent_0_15"/>
                                             <field name="procent_15_20"/>
                                             <field name="procent_20_25"/>

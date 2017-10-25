@@ -1220,7 +1220,14 @@ class milk_nadoy_group(models.Model):
 				for line in data['zagons']:
 					#print line['kol']
 				
-					zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
+					zagon_id = stado_zagon.search([
+													('uniform_id',   '=',    line['GROEPNR']),
+													('date_start', '<=', self.date),'|',
+													('date_end', '>=', self.date),
+													('date_end', '=', False)
+
+													], 
+													limit=1)
 					if len(zagon_id)>0:
 						#print line['kol_golov'], line['kol'],line['sko']
 						self.milk_nadoy_group_line.create({
@@ -1242,6 +1249,9 @@ class milk_nadoy_group(models.Model):
 
 									
 									})
+					else:
+						self.description += u'Не найден загон с номером: %s \n' %  (line['GROEPNR'])
+
 				#data = res['data'][1]
 				procent = data['procent']		
 				self.procent_0_15 = procent['procent_0_15']		

@@ -16,15 +16,21 @@
                         </button>
                     </div>
                     <group>
-                        
-                        <field name="name"/>
-                        <field name="nomer"/>
-                        <field name="stado_fiz_group_id"/>
-                        <field name="uniform_id"/>
-                        <field name="utro"/>
-                        <field name="vecher"/>
-                       
-                        
+                        <group>
+                            
+                            <field name="name"/>
+                            <field name="nomer"/>
+                            <field name="stado_fiz_group_id"/>
+                            <field name="uniform_id"/>
+                            <field name="utro"/>
+                            <field name="vecher"/>
+                        </group>
+                        <group string="Период действия">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                           
+                            
+                        </group>
                     </group>
                     
                 </sheet>

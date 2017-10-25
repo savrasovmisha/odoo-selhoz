@@ -8,37 +8,76 @@
             <form string="Форма Питательность по стандарту">
                 <sheet>
                     <group>
-                        
                         <field name="nomen_nomen_id"/>
+                    </group>
+                    
+                    <group>
+                        <group string="Содержание вещ., г/кг СВ">
+                            <field name="sz"/>
+                            <field name="ov"/>
+                            <field name="sp"/>
+                            <field name="sj"/>
+                            <field name="sk"/>
+                            <field name="bev"/>
+                            <field name="krahmal"/>
+                            <field name="sahar"/>
+                            <field name="uglevodi"/>
 
-                        <separator string="Показатели" colspan="2"/>
-                        <field name="ov"/>
-                        <field name="sv"/>
-                        <field name="oe"/>
-                        <field name="sp"/>
-                        <field name="pp"/>
-                        <field name="sk"/>
-                        <field name="sj"/>
-                        <field name="ca"/>
-                        <field name="p"/>
-                        <field name="sahar"/>
-                        <field name="krahmal"/>
-                        <field name="bev"/>
-                        <field name="magniy"/>
-                        <field name="natriy"/>
-                        <field name="kaliy"/>
-                        <field name="hlor"/>
-                        <field name="sera"/>
-                        <field name="udp"/>
-                        <field name="me"/>
-                        <field name="xp"/>
-                        <field name="nrp"/>
-                        <field name="rnb"/>
-                        <field name="nrp_p"/>
+                            <separator string="Минеральные вещ. г/кг СВ"/>
+                            <newline/>
+                            <field name="kalciy"/>
+                            <field name="fosfor"/>
+                            <field name="magniy"/>
+                            <field name="natriy"/>
+                            <field name="kaliy"/>
+                            <field name="hlor"/>
+                            <field name="sera"/>
 
-                        
+                            <separator string="г/кг СВ"/>
+                            <newline/>
+                            <field name="uk_sv"/>
+                            <field name="sk_sv"/>
+
+
+                        </group>
+                        <group string="Физиология в %">
+                            <field name="pov"/>
+                            <field name="pp"/>
+                            <field name="psj"/>
+                            <field name="psk"/>
+                            <field name="pbev"/>
+                            <field name="ssk"/>
+                            <field name="nsp"/>
+                            <field name="uk"/>
+
+                            <separator string="Баланс катионов-анионов"/>
+                            <newline/>
+                            <field name="dcab"/>
+                            
+                            <separator string="Обработан пользователем"/>
+                            <newline/>
+                            <field name="nxp"/>
+                            <field name="rnb"/>
+                            <field name="oe"/>
+                            <field name="chel"/>
+
+                            <separator string="___________"/>
+                            <newline/>
+                            <field name="pok_struk"/>
+
+
+
+                        </group>
+                                            
+                                              
                         
                     </group>
+
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1" widget='html'/>
+                        </page>
+                    </notebook> 
 		            
                 </sheet>
             </form>

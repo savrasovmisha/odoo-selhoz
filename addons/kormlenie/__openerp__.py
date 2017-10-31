@@ -64,11 +64,11 @@
         'wizard/korm_korm_wiz_view.xml',
         'reports/korm_buh_report.xml',
         'reports/korm_buh_report_view.xml',
-        'views/menu.xml',
 
         'security/korm_security.xml',
         'security/ir.model.access.csv',
         
+        'views/menu.xml',
         #'report/sale_milk_report_view.xml',
         
         #'views/templates.xml',

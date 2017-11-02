@@ -645,7 +645,7 @@ class korm_buh_report(models.Model):
 
 
 			
-			worksheet = workbook.add_worksheet(name_group)
+			worksheet = workbook.add_worksheet(name_group[:30]) #Обрезка имени до 30 символов
 			border_format=workbook.add_format({
 										'border':1
 										 

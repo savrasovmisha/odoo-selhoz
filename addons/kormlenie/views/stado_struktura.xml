@@ -8,9 +8,10 @@
             <form string="Форма Структура стада">
                
                 <sheet>
-            <!--         <group>
+                     <group>
                         <group>
                             <field name="name"/>
+                            <field name="kol_golov_zagon"/>
                             
                         </group>
                         <group>
@@ -18,7 +19,7 @@
 
                         </group>
                      </group>
-
+<!--
                      <group>
                         <group>
                             <field name="kol_fur"/>
@@ -41,14 +42,14 @@
 
                         </group>
                      </group>
-                     <group>
+                     -->
+                     <!-- <group>
                         <h2> Итого: </h2>
                         <group>
                             <field name="kol_golov"/>
-                            <field name="kol_golov_zagon"/>
                         </group>
                                        
-                    </group> -->
+                    </group>  -->
                      <div class="oe_button_box" name="button_box">
                             <button name="action_zagruzit"
                                 type="object"
@@ -56,12 +57,12 @@
                                 icon="fa-refresh" string="Загрузить"
                                >
                             </button>
-                            <button name="action_zagruzit_milk"
+                           <!--  <button name="action_zagruzit_milk"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"
                                 icon="fa-refresh" string="Загрузить Молоко"
                                >
-                            </button>
+                            </button> -->
                             <button name="action_zagruzit_iz_korm"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"

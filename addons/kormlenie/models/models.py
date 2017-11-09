@@ -153,7 +153,7 @@ class korm_pit_standart(models.Model):
 	
 	description = fields.Text(string=u"Коментарии")
 
-	
+
 
 	xp = fields.Float(digits=(10, 2), string=u"Сыр. протеин (XP, СЖ), г/кг СВ", store=True, compute='_raschet')
 	ca = fields.Float(digits=(10, 2), string=u"Сыр. протеин (XP, СЖ), г/кг СВ", store=True, compute='_raschet')
@@ -2185,13 +2185,23 @@ class stado_struktura(models.Model):
 				stado_struktura_line = self.env['stado.struktura_line']
 				del_line = stado_struktura_line.search([('stado_struktura_id',  '=',    self.id)])
 				del_line.unlink()
-				
+				dt = datetime.strptime(self.date,'%Y-%m-%d %H:%M:%S')
+		
+				date = dt.date()
+
 				stado_zagon = self.env['stado.zagon']
 				struktura = json.loads(response.text)
 				zagon_ids = []
 				for line in struktura:
 					#print line['name']
-					zagon_id = stado_zagon.search([('uniform_id',   '=',    line['GROEPNR'])], limit=1)
+					zagon_id = stado_zagon.search([
+													('uniform_id',   '=',    line['GROEPNR']),
+													('date_start', '<=', date),'|',
+													('date_end', '>=', date),
+													('date_end', '=', False)
+
+													], 
+													limit=1)
 					if len(zagon_id)>0:
 
 						stado_struktura_line.create({
@@ -2207,7 +2217,14 @@ class stado_struktura(models.Model):
 
 						err += u"Загон не найден:"+line['name'] + '   '
 				#Дополняем список загонов которые не получены из Uniform
-				not_zagon_ids = stado_zagon.search([('id',  'not in',   zagon_ids), ('activ','=', True)], )
+				not_zagon_ids = stado_zagon.search([('id',  'not in',   zagon_ids), 
+													('activ','=', True), 
+													('date_start', '<=', date),'|',
+													('date_end', '>=', date),
+													('date_end', '=', False)
+
+
+													])
 				for line in not_zagon_ids:
 					stado_struktura_line.create({
 									'stado_struktura_id':   self.id,

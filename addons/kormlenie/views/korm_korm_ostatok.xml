@@ -39,6 +39,7 @@
                                     <field name="stado_fiz_group_id"/>
                                     
                                     <field name="kol_golov_zagon"/>
+                                    <field name="procent_raciona"/>
                                     <field name="kol_korma_norma"/>
                                     <field name="kol_korma_fakt"/>
                                     <field name="kol_korma_otk"/>

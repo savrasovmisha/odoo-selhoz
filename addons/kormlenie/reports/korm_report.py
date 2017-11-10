@@ -263,6 +263,7 @@ class korm_ostatok_report(models.Model):
 	stado_zagon_name = fields.Char(string=u'Загон наименование')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+	procent_raciona = fields.Integer(string=u"% дачи рациона", group_operator="avg")
 	kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
 	kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
 	kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
@@ -284,6 +285,7 @@ class korm_ostatok_report(models.Model):
 					l.stado_zagon_id as stado_zagon_id,
 					l.stado_fiz_group_id as stado_fiz_group_id,
 					l.kol_golov_zagon as kol_golov_zagon,
+					l.procent_raciona as procent_raciona,
 					l.kol_korma_norma as kol_korma_norma,
 					l.kol_korma_fakt as kol_korma_fakt,
 					l.kol_korma_otk as kol_korma_otk,

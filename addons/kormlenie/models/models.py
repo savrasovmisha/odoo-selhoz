@@ -1687,6 +1687,7 @@ class korm_korm_ostatok(models.Model):
 							korm_korm_id.id,
 							korm_line.kol_korma,
 							korm_line.kol_golov,
+							korm_line.procent_raciona,
 							])
 
 		#Заполняем по загонам
@@ -1695,7 +1696,7 @@ class korm_korm_ostatok(models.Model):
 			print "zzz",g[0]
 			stado_zagon_id = g[0]
 			kol_golov=kol_korma=racion_id=sum_kol_golov_zagon=kol_golov_zagon=0
-			kol_korma_fakt=kol_korma_norma=0
+			kol_korma_fakt=kol_korma_norma=sr_procent_raciona=sum_procent_raciona=0
 			stado_zagon_ids = []
 			k=0
 			for i in g[1]:
@@ -1709,6 +1710,7 @@ class korm_korm_ostatok(models.Model):
 				kol_golov_zagon = i[4]
 				kol_golov = i[8]
 				kol_korma_norma += i[7]
+				sum_procent_raciona += i[9]
 
 				korm_korm_detail_line = self.env['korm.korm_detail_line']
 				korm_korm_detail_line_ids = korm_korm_detail_line.search([('korm_korm_id', '=', korm_korm_id), 
@@ -1726,7 +1728,9 @@ class korm_korm_ostatok(models.Model):
 					kol_korma_fakt += sum_kol_korma_fakt * kol_golov / korm_korm_svod_line_id.kol_golov
 					#kol_korma_norma += korm_korm_svod_line_id.kol_korma * kol_golov_zagon / korm_korm_svod_line_id.kol_golov_zagon
 
-			if k>0: sr_kol_golov_zagon = sum_kol_golov_zagon/k
+			if k>0: 
+				sr_kol_golov_zagon = sum_kol_golov_zagon/k
+				sr_procent_raciona = sum_procent_raciona/k
 			#print stado_zagon_ids
 
 			#Находим предыдущий документ и смотрим какой там был остаток
@@ -1741,6 +1745,7 @@ class korm_korm_ostatok(models.Model):
 								'stado_zagon_id':   stado_zagon_id,
 								'stado_fiz_group_id':    stado_fiz_group_id.id,
 								'kol_golov_zagon':    sr_kol_golov_zagon,
+								'procent_raciona':    sr_procent_raciona,
 								'kol_korma_fakt':    kol_korma_fakt,
 								'kol_korma_norma':    kol_korma_norma,
 								'kol_korma_otk':    kol_korma_fakt-kol_korma_norma,
@@ -1821,6 +1826,7 @@ class korm_korm_ostatok_line(models.Model):
 	stado_zagon_id = fields.Many2one('stado.zagon', readonly=True, string=u'Загон', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, compute='return_name')
 	kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", store=True, readonly=True)
+	procent_raciona = fields.Integer(string=u"% дачи рациона", store=True, readonly=True)
 	kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", store=True, readonly=True)
 	kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", store=True, readonly=True)
 	kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", store=True, readonly=True)

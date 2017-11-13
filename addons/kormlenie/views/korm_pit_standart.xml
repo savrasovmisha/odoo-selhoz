@@ -9,6 +9,7 @@
                 <sheet>
                     <group>
                         <field name="nomen_nomen_id"/>
+                        <field name="sv"/>
                     </group>
                     
                     <group>
@@ -22,23 +23,6 @@
                             <field name="krahmal"/>
                             <field name="sahar"/>
                             <field name="uglevodi"/>
-
-                            <separator string="Минеральные вещ. г/кг СВ"/>
-                            <newline/>
-                            <field name="kalciy"/>
-                            <field name="fosfor"/>
-                            <field name="magniy"/>
-                            <field name="natriy"/>
-                            <field name="kaliy"/>
-                            <field name="hlor"/>
-                            <field name="sera"/>
-
-                            <separator string="г/кг СВ"/>
-                            <newline/>
-                            <field name="uk_sv"/>
-                            <field name="sk_sv"/>
-
-
                         </group>
                         <group string="Физиология в %">
                             <field name="pov"/>
@@ -49,30 +33,96 @@
                             <field name="ssk"/>
                             <field name="nsp"/>
                             <field name="uk"/>
+                        </group>
+                    </group>
 
-                            <separator string="Баланс катионов-анионов"/>
-                            <newline/>
-                            <field name="dcab"/>
+                    <group>
+                        <group string="Минеральные вещ. г/кг СВ">
                             
-                            <separator string="Обработан пользователем"/>
-                            <newline/>
+                            <field name="kalciy"/>
+                            <field name="fosfor"/>
+                            <field name="magniy"/>
+                            <field name="natriy"/>
+                            <field name="kaliy"/>
+                            <field name="hlor"/>
+                            <field name="sera"/>
+                        </group>
+
+                        <group string="Обработан пользователем">
                             <field name="nxp"/>
                             <field name="rnb"/>
                             <field name="oe"/>
                             <field name="chel"/>
-
                             <separator string="___________"/>
                             <newline/>
                             <field name="pok_struk"/>
-
-
-
                         </group>
-                                            
-                                              
-                        
+                    </group>
+                       
+                    <group>
+                        <group string="г/кг СВ">
+                            <field name="uk_sv"/>
+                            <field name="sk_sv"/>
+                        </group>
+
+                        <group string="Баланс катионов-анионов">
+                            <field name="dcab"/>
+                        </group>
                     </group>
 
+
+
+
+                    <group>
+                        <group string="Микроэлементы, мг/кг СВ">
+                            <field name="jelezo"/>
+                            <field name="marganec"/>
+                            <field name="med"/>
+                            <field name="kobalt"/>
+                            <field name="selen"/>
+                            <field name="cink"/>
+                            <field name="iod"/>
+                            <field name="molibden"/>
+                        </group>
+
+                        <group string="Витамины МЕ/кг СВ">
+                            <field name="vit_a"/>
+                            <field name="vit_d"/>
+                            <field name="vit_e"/>
+                            <field name="beta_karotin"/>
+                            <separator string="мг/кг СВ"/>
+                            <newline/>
+                            <field name="b1"/>
+                            <field name="niacin"/>
+                        </group>
+                    </group>
+
+
+
+                    <group>
+                        <group string="Углеводы г/кг СВ">
+                            <field name="ndk"/>
+                            <field name="kdk"/>
+                            <field name="ru"/>
+                            <field name="p"/>
+                        </group>
+
+                        <group string="Протеины, %">
+                            <field name="rp"/>
+                            <field name="nrsp"/>
+                            <field name="rsp"/>
+                        </group>
+                    </group>
+
+
+                    <group>
+                        <group string="Аминокислоты. г/кг СВ">
+                            <field name="lizin"/>
+                            <field name="metionin"/>
+                            <field name="triptofan"/>
+                        </group>
+                    </group>
+                    
                     <notebook colspan="4">
                         <page string="Комментарии">
                             <field name="description" nolabel="1" widget='html'/>

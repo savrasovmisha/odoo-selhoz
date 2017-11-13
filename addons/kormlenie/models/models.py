@@ -69,6 +69,7 @@ class korm_pit_standart(models.Model):
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Наименование корма', required=True)
+	
 	sv = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), г/кг НВ")
 	#Содержание вещ., г/кг СВ
 	sz = fields.Float(digits=(10, 2), string=u"Сырая зола (XA, СЗ), г/кг СВ")
@@ -113,6 +114,7 @@ class korm_pit_standart(models.Model):
 	oe = fields.Float(digits=(10, 2), string=u"Обменная энергия (MJ,ОЭ), Мдж/кг СВ")
 	chel = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж/кг СВ")
 	
+	#----------------
 	pok_struk = fields.Float(digits=(10, 2), string=u"Показатель структуры, кг СВ")
 
 	#Микроэлементы, мг/кг СВ
@@ -703,15 +705,15 @@ class korm_racion(models.Model):
 
 
  
-	@api.depends('stado_fiz_group_id')
-	def _norm(self):
-		for st in self:
-			if st.stado_fiz_group_id:
-				standart = self.env['korm.norm'].search([('stado_fiz_group_id', '=', st.stado_fiz_group_id.id)],limit=1)
-				if len(standart)>0:
-					for par in parametrs:
-						self[par+'_min'] = standart[par+'_min']
-						self[par+'_max'] = standart[par+'_max']
+	# @api.depends('stado_fiz_group_id')
+	# def _norm(self):
+	# 	for st in self:
+	# 		if st.stado_fiz_group_id:
+	# 			standart = self.env['korm.norm'].search([('stado_fiz_group_id', '=', st.stado_fiz_group_id.id)],limit=1)
+	# 			if len(standart)>0:
+	# 				for par in parametrs:
+	# 					self[par+'_min'] = standart[par+'_min']
+	# 					self[par+'_max'] = standart[par+'_max']
 
 
 
@@ -721,30 +723,30 @@ class korm_racion(models.Model):
 
 		self.amount=self.ov=self.sv = 0
 
-		for line in self.korm_racion_line:
-			self.amount += line.kol
-			for par in parametrs:
-				self[par] += line.kol * line.korm_analiz_pit_id[par]
+		# for line in self.korm_racion_line:
+		# 	self.amount += line.kol
+		# 	for par in parametrs:
+		# 		self[par] += line.kol * line.korm_analiz_pit_id[par]
 			
-		if self.amount>0:
-			for par in parametrs:
-				self[par] = self[par]/self.amount
+		# if self.amount>0:
+		# 	for par in parametrs:
+		# 		self[par] = self[par]/self.amount
 
 				
-		if self.sv and self.nrp_p:
-			self.nrp = self.sp * self.nrp_p/100.00
+		# if self.sv and self.nrp_p:
+		# 	self.nrp = self.sp * self.nrp_p/100.00
 		
-		if self.sv>0 and self.nrp:
-			self.udp = self.nrp/self.sv
+		# if self.sv>0 and self.nrp:
+		# 	self.udp = self.nrp/self.sv
 
-		if self.sv>0 and self.oe:
-			self.me = self.oe/self.sv
+		# if self.sv>0 and self.oe:
+		# 	self.me = self.oe/self.sv
 
-		if self.sv>0 and self.sp:
-			self.xp = self.sp/self.sv
+		# if self.sv>0 and self.sp:
+		# 	self.xp = self.sp/self.sv
 
-		if self.xp!=0 and self.me and self.udp:
-			self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
+		# if self.xp!=0 and self.me and self.udp:
+		# 	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 		self.kol = self.amount = 0.00
 		for line in self.korm_racion_line:
@@ -769,78 +771,166 @@ class korm_racion(models.Model):
 	massa = fields.Integer(string=u"Живая масса, кг", store=True)
 	active = fields.Boolean(string=u"Используется", default=True)
 
-	ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
-	sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
-	oe = fields.Float(digits=(10, 2), string=u"ОЭ", store=True, compute='_raschet')
-	sp = fields.Float(digits=(10, 2), string=u"СП", store=True, compute='_raschet')
-	pp = fields.Float(digits=(10, 2), string=u"ПП", store=True, compute='_raschet')
-	sk = fields.Float(digits=(10, 2), string=u"СК", store=True, compute='_raschet')
-	sj = fields.Float(digits=(10, 2), string=u"СЖ", store=True, compute='_raschet')
-	ca = fields.Float(digits=(10, 2), string=u"Ca", store=True, compute='_raschet')
-	p = fields.Float(digits=(10, 2), string=u"P", store=True, compute='_raschet')
-	sahar = fields.Float(digits=(10, 2), string=u"Сахар", store=True, compute='_raschet')
-	krahmal = fields.Float(digits=(10, 2), string=u"Крахмал", store=True, compute='_raschet')
-	bev = fields.Float(digits=(10, 2), string=u"БЭВ", store=True, compute='_raschet')
-	magniy = fields.Float(digits=(10, 2), string=u"Магний", store=True, compute='_raschet')
-	natriy = fields.Float(digits=(10, 2), string=u"Натрий", store=True, compute='_raschet')
-	kaliy = fields.Float(digits=(10, 2), string=u"Калий", store=True, compute='_raschet')
-	hlor = fields.Float(digits=(10, 2), string=u"Хлор", store=True, compute='_raschet')
-	sera = fields.Float(digits=(10, 2), string=u"Сера", store=True, compute='_raschet')
-	udp = fields.Float(digits=(10, 2), string=u"UDP", store=True, compute='_raschet')
-	me = fields.Float(digits=(10, 2), string=u"ME", store=True, compute='_raschet')
-	xp = fields.Float(digits=(10, 2), string=u"XP", store=True, compute='_raschet')
-	nrp = fields.Float(digits=(10, 2), string=u"НРП", store=True, compute='_raschet')
-	rnb = fields.Float(digits=(10, 2), string=u"RNB", store=True, compute='_raschet')
-	nrp_p = fields.Float(digits=(10, 2), string=u"%НРП", store=True, compute='_raschet')
-	
-	#Параметры питательности по норме:
-	ov_min = fields.Float(digits=(10, 2), string=u"ОВ", compute='_norm')
-	sv_min = fields.Float(digits=(10, 2), string=u"СВ", compute='_norm')
-	oe_min = fields.Float(digits=(10, 2), string=u"ОЭ", compute='_norm')
-	sp_min = fields.Float(digits=(10, 2), string=u"СП", compute='_norm')
-	pp_min = fields.Float(digits=(10, 2), string=u"ПП", compute='_norm')
-	sk_min = fields.Float(digits=(10, 2), string=u"СК", compute='_norm')
-	sj_min = fields.Float(digits=(10, 2), string=u"СЖ", compute='_norm')
-	ca_min = fields.Float(digits=(10, 2), string=u"Ca", compute='_norm')
-	p_min = fields.Float(digits=(10, 2), string=u"P", compute='_norm')
-	sahar_min = fields.Float(digits=(10, 2), string=u"Сахар", compute='_norm')
-	krahmal_min = fields.Float(digits=(10, 2), string=u"Крахмал", compute='_norm')
-	bev_min = fields.Float(digits=(10, 2), string=u"БЭВ", compute='_norm')
-	magniy_min = fields.Float(digits=(10, 2), string=u"Магний", compute='_norm')
-	natriy_min = fields.Float(digits=(10, 2), string=u"Натрий", compute='_norm')
-	kaliy_min = fields.Float(digits=(10, 2), string=u"Калий", compute='_norm')
-	hlor_min = fields.Float(digits=(10, 2), string=u"Хлор", compute='_norm')
-	sera_min = fields.Float(digits=(10, 2), string=u"Сера", compute='_norm')
-	udp_min = fields.Float(digits=(10, 2), string=u"UDP", compute='_norm')
-	me_min = fields.Float(digits=(10, 2), string=u"ME", compute='_norm')
-	xp_min = fields.Float(digits=(10, 2), string=u"XP", compute='_norm')
-	nrp_min = fields.Float(digits=(10, 2), string=u"НРП", compute='_norm')
-	rnb_min = fields.Float(digits=(10, 2), string=u"RNB", compute='_norm')
-	nrp_p_min = fields.Float(digits=(10, 2), string=u"%НРП", compute='_norm')
 
-	ov_max = fields.Float(digits=(10, 2), string=u"ОВ", compute='_norm')
-	sv_max = fields.Float(digits=(10, 2), string=u"СВ", compute='_norm')
-	oe_max = fields.Float(digits=(10, 2), string=u"ОЭ", compute='_norm')
-	sp_max = fields.Float(digits=(10, 2), string=u"СП", compute='_norm')
-	pp_max = fields.Float(digits=(10, 2), string=u"ПП", compute='_norm')
-	sk_max = fields.Float(digits=(10, 2), string=u"СК", compute='_norm')
-	sj_max = fields.Float(digits=(10, 2), string=u"СЖ", compute='_norm')
-	ca_max = fields.Float(digits=(10, 2), string=u"Ca", compute='_norm')
-	p_max = fields.Float(digits=(10, 2), string=u"P", compute='_norm')
-	sahar_max = fields.Float(digits=(10, 2), string=u"Сахар", compute='_norm')
-	krahmal_max = fields.Float(digits=(10, 2), string=u"Крахмал", compute='_norm')
-	bev_max = fields.Float(digits=(10, 2), string=u"БЭВ", compute='_norm')
-	magniy_max = fields.Float(digits=(10, 2), string=u"Магний", compute='_norm')
-	natriy_max = fields.Float(digits=(10, 2), string=u"Натрий", compute='_norm')
-	kaliy_max = fields.Float(digits=(10, 2), string=u"Калий", compute='_norm')
-	hlor_max = fields.Float(digits=(10, 2), string=u"Хлор", compute='_norm')
-	sera_max = fields.Float(digits=(10, 2), string=u"Сера", compute='_norm')
-	udp_max = fields.Float(digits=(10, 2), string=u"UDP", compute='_norm')
-	me_max = fields.Float(digits=(10, 2), string=u"ME", compute='_norm')
-	xp_max = fields.Float(digits=(10, 2), string=u"XP", compute='_norm')
-	nrp_max = fields.Float(digits=(10, 2), string=u"НРП", compute='_norm')
-	rnb_max = fields.Float(digits=(10, 2), string=u"RNB", compute='_norm')
-	nrp_p_max = fields.Float(digits=(10, 2), string=u"%НРП", compute='_norm')
+	sv = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), г/кг НВ")
+	#Содержание вещ., г/кг СВ
+	sz = fields.Float(digits=(10, 2), string=u"Сырая зола (XA, СЗ), г/кг СВ")
+	ov = fields.Float(digits=(10, 2), string=u"Орг. масса (OM, ОВ), г/кг СВ")
+	sp = fields.Float(digits=(10, 2), string=u"Сыр. протеин (XP, СП), г/кг СВ")
+	sj = fields.Float(digits=(10, 2), string=u"Сыр. жир (XL, СЖ), г/кг СВ")
+	sk = fields.Float(digits=(10, 2), string=u"Сыр. клетчатка (XF, СК), г/кг СВ")
+	bev = fields.Float(digits=(10, 2), string=u"БЭВ, г/кг СВ", help=u'Безазотистые экстракционные вещества')
+	krahmal = fields.Float(digits=(10, 2), string=u"Крахмал, г/кг СВ")
+	sahar = fields.Float(digits=(10, 2), string=u"Сахар, г/кг СВ")
+	uglevodi = fields.Float(digits=(10, 2), string=u"Углеводы, г/кг СВ")
+
+	#Физиология в %
+	pov = fields.Float(digits=(10, 2), string=u"Перев-сть орг. массы (VOM, ПОВ), %")
+	pp = fields.Float(digits=(10, 2), string=u"Перев-сть протеина (ПП), %")
+	psj = fields.Float(digits=(10, 2), string=u"Перев-сть сыр. жир (VXL, ПСЖ), %")
+	psk = fields.Float(digits=(10, 2), string=u"Перев-сть сыр. клетчатки (VXF, ПСК), %")
+	pbev = fields.Float(digits=(10, 2), string=u"Перев-сть БЭВ, %")
+	ssk = fields.Float(digits=(10, 2), string=u"Структ.сыр.клетч.%СК, %")
+	nsp = fields.Float(digits=(10, 2), string=u"Непереваренный СП, %")
+	uk = fields.Float(digits=(10, 2), string=u"Устойч-сть крахмала, %")
+	
+	#Минеральные вещ. г/кг СВ
+	kalciy = fields.Float(digits=(10, 2), string=u"Кальций, г/кг СВ")
+	fosfor = fields.Float(digits=(10, 2), string=u"Фосфор, г/кг СВ")
+	magniy = fields.Float(digits=(10, 2), string=u"Магний, г/кг СВ")
+	natriy = fields.Float(digits=(10, 2), string=u"Натрий, г/кг СВ")
+	kaliy = fields.Float(digits=(10, 2), string=u"Калий, г/кг СВ")
+	hlor = fields.Float(digits=(10, 2), string=u"Хлор, г/кг СВ")
+	sera = fields.Float(digits=(10, 2), string=u"Сера, г/кг СВ")
+	
+	#Баланс катионов-анионов
+	dcab = fields.Float(digits=(10, 2), string=u"DCAB, mval/кг СВ", help=u'Баланс катионов-анионов (DCAB, Dietary Cation Anion Balance) – это разница катионов и анионов в кормовом сырье или рационе. DCAB (mEq/кг) = 43,5 x Na (г) + 25,6 x K (г) — 28,2 x Cl (г) — 62,4 x S (г)')
+
+	#г/кг СВ
+	uk_sv = fields.Float(digits=(10, 2), string=u"Устойч. крахмал, г/кг СВ")
+	sk_sv = fields.Float(digits=(10, 2), string=u"Сахар + крахмал, г/кг СВ")
+
+	#Обработан пользователем
+	nxp = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г/кг СВ")
+	rnb = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г/кг СВ", store=True, compute='_raschet')
+	oe = fields.Float(digits=(10, 2), string=u"Обменная энергия (MJ,ОЭ), Мдж/кг СВ")
+	chel = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж/кг СВ")
+	
+	#----------------
+	pok_struk = fields.Float(digits=(10, 2), string=u"Показатель структуры, кг СВ")
+
+	#Микроэлементы, мг/кг СВ
+	jelezo = fields.Float(digits=(10, 2), string=u"Железо, мг/кг СВ")
+	marganec = fields.Float(digits=(10, 2), string=u"Марганец, мг/кг СВ")
+	med = fields.Float(digits=(10, 2), string=u"Медь, мг/кг СВ")
+	kobalt = fields.Float(digits=(10, 2), string=u"Кобальт, мг/кг СВ")
+	selen = fields.Float(digits=(10, 2), string=u"Селен, мг/кг СВ")
+	cink = fields.Float(digits=(10, 2), string=u"Цинк, мг/кг СВ")
+	iod = fields.Float(digits=(10, 2), string=u"Йод, мг/кг СВ")
+	molibden = fields.Float(digits=(10, 2), string=u"Молибден, мг/кг СВ")
+
+	#Витамины
+	#         МЕ/кг СВ
+	vit_a = fields.Float(digits=(10, 2), string=u"Вит. A, МЕ/кг СВ")
+	vit_d = fields.Float(digits=(10, 2), string=u"Вит. D, МЕ/кг СВ")
+	vit_e = fields.Float(digits=(10, 2), string=u"Вит. E, МЕ/кг СВ")
+	beta_karotin = fields.Float(digits=(10, 2), string=u"Бета-каротин, МЕ/кг СВ")
+	#         мг/кг СВ
+	b1 = fields.Float(digits=(10, 2), string=u"B1, мг/кг СВ")
+	niacin = fields.Float(digits=(10, 2), string=u"Ниацин, мг/кг СВ")
+
+	#Аминокислоты. г/кг СВ
+	lizin = fields.Float(digits=(10, 2), string=u"Лизин, г/кг СВ")
+	metionin = fields.Float(digits=(10, 2), string=u"Метионин, г/кг СВ")
+	triptofan = fields.Float(digits=(10, 2), string=u"Триптофан, г/кг СВ")
+
+	#Углеводы г/кг СВ
+	ndk = fields.Float(digits=(10, 2), string=u"Нейтр.детерг.клетч. (NDF,НДК), г/кг СВ")
+	kdk = fields.Float(digits=(10, 2), string=u"Кисл.детерг.клетч. (ADF,КДК), г/кг СВ")
+	ru = fields.Float(digits=(10, 2), string=u"Расщепл. углеводы, г/кг СВ")
+	p = fields.Float(digits=(10, 2), string=u"Пектины, г/кг СВ")
+
+	#Протеины, %
+	rp = fields.Float(digits=(10, 2), string=u"Расщепл. протеин, %")
+	nrsp = fields.Float(digits=(10, 2), string=u"Нерасщепл. СП, %")
+	rsp = fields.Float(digits=(10, 2), string=u"Расщепл. СП, %")
+
+
+	description = fields.Text(string=u"Коментарии")
+
+	
+	# ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
+	# sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
+	# oe = fields.Float(digits=(10, 2), string=u"ОЭ", store=True, compute='_raschet')
+	# sp = fields.Float(digits=(10, 2), string=u"СП", store=True, compute='_raschet')
+	# pp = fields.Float(digits=(10, 2), string=u"ПП", store=True, compute='_raschet')
+	# sk = fields.Float(digits=(10, 2), string=u"СК", store=True, compute='_raschet')
+	# sj = fields.Float(digits=(10, 2), string=u"СЖ", store=True, compute='_raschet')
+	# ca = fields.Float(digits=(10, 2), string=u"Ca", store=True, compute='_raschet')
+	# p = fields.Float(digits=(10, 2), string=u"P", store=True, compute='_raschet')
+	# sahar = fields.Float(digits=(10, 2), string=u"Сахар", store=True, compute='_raschet')
+	# krahmal = fields.Float(digits=(10, 2), string=u"Крахмал", store=True, compute='_raschet')
+	# bev = fields.Float(digits=(10, 2), string=u"БЭВ", store=True, compute='_raschet')
+	# magniy = fields.Float(digits=(10, 2), string=u"Магний", store=True, compute='_raschet')
+	# natriy = fields.Float(digits=(10, 2), string=u"Натрий", store=True, compute='_raschet')
+	# kaliy = fields.Float(digits=(10, 2), string=u"Калий", store=True, compute='_raschet')
+	# hlor = fields.Float(digits=(10, 2), string=u"Хлор", store=True, compute='_raschet')
+	# sera = fields.Float(digits=(10, 2), string=u"Сера", store=True, compute='_raschet')
+	# udp = fields.Float(digits=(10, 2), string=u"UDP", store=True, compute='_raschet')
+	# me = fields.Float(digits=(10, 2), string=u"ME", store=True, compute='_raschet')
+	# xp = fields.Float(digits=(10, 2), string=u"XP", store=True, compute='_raschet')
+	# nrp = fields.Float(digits=(10, 2), string=u"НРП", store=True, compute='_raschet')
+	# rnb = fields.Float(digits=(10, 2), string=u"RNB", store=True, compute='_raschet')
+	# nrp_p = fields.Float(digits=(10, 2), string=u"%НРП", store=True, compute='_raschet')
+	
+	# #Параметры питательности по норме:
+	# ov_min = fields.Float(digits=(10, 2), string=u"ОВ", compute='_norm')
+	# sv_min = fields.Float(digits=(10, 2), string=u"СВ", compute='_norm')
+	# oe_min = fields.Float(digits=(10, 2), string=u"ОЭ", compute='_norm')
+	# sp_min = fields.Float(digits=(10, 2), string=u"СП", compute='_norm')
+	# pp_min = fields.Float(digits=(10, 2), string=u"ПП", compute='_norm')
+	# sk_min = fields.Float(digits=(10, 2), string=u"СК", compute='_norm')
+	# sj_min = fields.Float(digits=(10, 2), string=u"СЖ", compute='_norm')
+	# ca_min = fields.Float(digits=(10, 2), string=u"Ca", compute='_norm')
+	# p_min = fields.Float(digits=(10, 2), string=u"P", compute='_norm')
+	# sahar_min = fields.Float(digits=(10, 2), string=u"Сахар", compute='_norm')
+	# krahmal_min = fields.Float(digits=(10, 2), string=u"Крахмал", compute='_norm')
+	# bev_min = fields.Float(digits=(10, 2), string=u"БЭВ", compute='_norm')
+	# magniy_min = fields.Float(digits=(10, 2), string=u"Магний", compute='_norm')
+	# natriy_min = fields.Float(digits=(10, 2), string=u"Натрий", compute='_norm')
+	# kaliy_min = fields.Float(digits=(10, 2), string=u"Калий", compute='_norm')
+	# hlor_min = fields.Float(digits=(10, 2), string=u"Хлор", compute='_norm')
+	# sera_min = fields.Float(digits=(10, 2), string=u"Сера", compute='_norm')
+	# udp_min = fields.Float(digits=(10, 2), string=u"UDP", compute='_norm')
+	# me_min = fields.Float(digits=(10, 2), string=u"ME", compute='_norm')
+	# xp_min = fields.Float(digits=(10, 2), string=u"XP", compute='_norm')
+	# nrp_min = fields.Float(digits=(10, 2), string=u"НРП", compute='_norm')
+	# rnb_min = fields.Float(digits=(10, 2), string=u"RNB", compute='_norm')
+	# nrp_p_min = fields.Float(digits=(10, 2), string=u"%НРП", compute='_norm')
+
+	# ov_max = fields.Float(digits=(10, 2), string=u"ОВ", compute='_norm')
+	# sv_max = fields.Float(digits=(10, 2), string=u"СВ", compute='_norm')
+	# oe_max = fields.Float(digits=(10, 2), string=u"ОЭ", compute='_norm')
+	# sp_max = fields.Float(digits=(10, 2), string=u"СП", compute='_norm')
+	# pp_max = fields.Float(digits=(10, 2), string=u"ПП", compute='_norm')
+	# sk_max = fields.Float(digits=(10, 2), string=u"СК", compute='_norm')
+	# sj_max = fields.Float(digits=(10, 2), string=u"СЖ", compute='_norm')
+	# ca_max = fields.Float(digits=(10, 2), string=u"Ca", compute='_norm')
+	# p_max = fields.Float(digits=(10, 2), string=u"P", compute='_norm')
+	# sahar_max = fields.Float(digits=(10, 2), string=u"Сахар", compute='_norm')
+	# krahmal_max = fields.Float(digits=(10, 2), string=u"Крахмал", compute='_norm')
+	# bev_max = fields.Float(digits=(10, 2), string=u"БЭВ", compute='_norm')
+	# magniy_max = fields.Float(digits=(10, 2), string=u"Магний", compute='_norm')
+	# natriy_max = fields.Float(digits=(10, 2), string=u"Натрий", compute='_norm')
+	# kaliy_max = fields.Float(digits=(10, 2), string=u"Калий", compute='_norm')
+	# hlor_max = fields.Float(digits=(10, 2), string=u"Хлор", compute='_norm')
+	# sera_max = fields.Float(digits=(10, 2), string=u"Сера", compute='_norm')
+	# udp_max = fields.Float(digits=(10, 2), string=u"UDP", compute='_norm')
+	# me_max = fields.Float(digits=(10, 2), string=u"ME", compute='_norm')
+	# xp_max = fields.Float(digits=(10, 2), string=u"XP", compute='_norm')
+	# nrp_max = fields.Float(digits=(10, 2), string=u"НРП", compute='_norm')
+	# rnb_max = fields.Float(digits=(10, 2), string=u"RNB", compute='_norm')
+	# nrp_p_max = fields.Float(digits=(10, 2), string=u"%НРП", compute='_norm')
 
 
 

@@ -82,7 +82,7 @@ access_korm_plan_fakt_report_users,korm.plan_fakt_report,model_korm_plan_fakt_re
 access_stado_podvid_fiz_group_manager,stado.podvid_fiz_group,selhoz_base.model_stado_podvid_fiz_group,group_korm_manager,1,1,1,1
 access_stado_podvid_fiz_group_users,stado.podvid_fiz_group,selhoz_base.model_stado_podvid_fiz_group,group_korm_users,1,0,0,0
 access_korm_buh_report_manager,korm.buh_report,model_korm_buh_report,group_korm_manager,1,1,1,1
-access_korm_buh_report_users,korm.buh_report,model_korm_buh_report,group_korm_users,1,0,0,0
+access_korm_buh_report_users,korm.buh_report,model_korm_buh_report,group_korm_users,1,1,0,0
 access_reg_rashod_kormov_milk_manager,reg.rashod_kormov,model_reg_rashod_kormov,milk.group_milk_manager,1,1,1,1
 access_reg_rashod_kormov_milk_users,reg.rashod_kormov,model_reg_rashod_kormov,milk.group_milk_users,1,0,0,0
 access_stado_fiz_group_milk_manager,stado.fiz_group,selhoz_base.model_stado_fiz_group,milk.group_milk_manager,1,1,1,1

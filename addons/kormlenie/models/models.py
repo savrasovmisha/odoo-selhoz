@@ -756,20 +756,44 @@ class korm_racion(models.Model):
 		if self.kol>0:
 			self.price = self.amount/self.kol
 
+	@api.one
+	def action_raschet(self):
+		pass
+
 				
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
 	date = fields.Date(string='Дата', required=True,copy=False, default=fields.Datetime.now)
+	
 	korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string=u"Строка Рацион кормления", copy=True)
-	kol = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
-	amount = fields.Float(digits=(10, 2), string=u"Всего стоимость", store=True, compute='_raschet')
-	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы", store=True, compute='_raschet')
+	korm_racion_pit_line = fields.One2many('korm.racion_pit_line', 'korm_racion_id', string=u"Строка питательности кормов Рацион кормления", copy=True)
+	
+	kol = fields.Float(digits=(10, 3), string=u"Всего Кол-во, кг", store=True, compute='_raschet')
+	amount = fields.Float(digits=(10, 2), string=u"Всего стоимость, руб", store=True, compute='_raschet')
+	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы, руб", store=True, compute='_raschet')
 	milk = fields.Float(digits=(10, 1), string=u"Молоко, кг", store=True)
 	jir = fields.Float(digits=(10, 2), string=u"Жир, %", store=True)
 	belok = fields.Float(digits=(10, 2), string=u"Белок, %", store=True)
 	massa = fields.Integer(string=u"Живая масса, кг", store=True)
 	active = fields.Boolean(string=u"Используется", default=True)
+
+	#Рацион ВСЕГО
+	sv_racion = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), кг")
+	chel_racion = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж")
+	nxp_racion = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г")
+	rnb_racion = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г")
+	
+	sk_racion = fields.Float(digits=(10, 2), string=u"Сыр. клетчатка (XF, СК), г")
+	ssk_racion = fields.Float(digits=(10, 2), string=u"Структ.сыр.клетч., г")
+
+	kalciy_racion = fields.Float(digits=(10, 2), string=u"Кальций, г")
+	fosfor_racion = fields.Float(digits=(10, 2), string=u"Фосфор, г")
+	magniy_racion = fields.Float(digits=(10, 2), string=u"Магний, г")
+	natriy_racion = fields.Float(digits=(10, 2), string=u"Натрий, г")
+	kaliy_racion = fields.Float(digits=(10, 2), string=u"Калий, г")
+	hlor_racion = fields.Float(digits=(10, 2), string=u"Хлор, г")
+
 
 
 	sv = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), г/кг НВ")
@@ -812,7 +836,7 @@ class korm_racion(models.Model):
 
 	#Обработан пользователем
 	nxp = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г/кг СВ")
-	rnb = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г/кг СВ", store=True, compute='_raschet')
+	rnb = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г/кг СВ")
 	oe = fields.Float(digits=(10, 2), string=u"Обменная энергия (MJ,ОЭ), Мдж/кг СВ")
 	chel = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж/кг СВ")
 	
@@ -858,7 +882,7 @@ class korm_racion(models.Model):
 
 	description = fields.Text(string=u"Коментарии")
 
-	
+
 	# ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
 	# sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
 	# oe = fields.Float(digits=(10, 2), string=u"ОЭ", store=True, compute='_raschet')
@@ -984,6 +1008,37 @@ class korm_racion_line(models.Model):
 	stop = fields.Boolean(string=u"Стоп", default=False, help="Если Истина то прекращать кормить основным кормом через установленных Дней на переход и кормить новым кормом, Иначе давать как в последний день")
 	constant = fields.Boolean(string=u"Постоянный", default=False, help="Будет доваться указанное кол-во, в не зависимости от процента дачи рациона")
 
+
+class korm_racion_pit_line(models.Model):
+	_name = 'korm.racion_pit_line'
+	_description = u'Строка питательности кормов Рацион кормления'
+	#_order = 'sequence'
+
+
+	
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
+	korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string=u'Анализ корма', store=True, compute='_nomen')
+	korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string=u"Рацион кормления", required=True)
+	korm_racion_line_id = fields.Many2one('korm.racion_line', string=u"Строка Рацион кормления")
+	
+
+	#Корм ВСЕГО
+	nv_korm = fields.Float(digits=(10, 3), string=u"Натур. вещ.", required=True)
+	sv_korm = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), кг")
+	chel_korm = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж")
+	nxp_korm = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г")
+	rnb_korm = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г")
+	
+	sk_korm = fields.Float(digits=(10, 2), string=u"Сыр. клетчатка (XF, СК), г")
+	ssk_korm = fields.Float(digits=(10, 2), string=u"Структ.сыр.клетч., г")
+
+	kalciy_korm = fields.Float(digits=(10, 2), string=u"Кальций, г")
+	fosfor_korm = fields.Float(digits=(10, 2), string=u"Фосфор, г")
+	magniy_korm = fields.Float(digits=(10, 2), string=u"Магний, г")
+	natriy_korm = fields.Float(digits=(10, 2), string=u"Натрий, г")
+	kaliy_korm = fields.Float(digits=(10, 2), string=u"Калий, г")
+	hlor_korm = fields.Float(digits=(10, 2), string=u"Хлор, г")
 
 
 

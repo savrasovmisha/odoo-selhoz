@@ -76,15 +76,66 @@
                                     
                                 </page>
 
+                                <page string="Питательность">
+                                    <field name="korm_racion_pit_line">
+                                        <tree string="korm_racion_pit_line">
+                                            
+                                            <field name="name"/>
+                                            <field name="nv_korm"/>
+                                            <field name="sv_korm"/>
+                                            <field name="chel_korm"/>
+                                            <field name="nxp_korm"/>
+                                            <field name="rnb_korm"/>
+                                            <field name="sk_korm"/>
+                                            <field name="ssk_korm"/>
+                                            <field name="kalciy_korm"/>
+                                            <field name="fosfor_korm"/>
+                                            <field name="magniy_korm"/>
+                                            <field name="natriy_korm"/>
+                                            <field name="kaliy_korm"/>
+                                            <field name="hlor_korm"/>
+                                                                                
+                                        </tree>
+                                    </field>
+                                    
+                                    
+                                </page>
+
                             </notebook>
 
                    
+
+
+
+                    <group string="Рацион содержит">
+                        <group >
+                            
+                            <field name="sv_racion"/>
+                            <field name="chel_racion"/>
+                            <field name="nxp_racion"/>
+                            <field name="rnb_racion"/>
+                            <field name="sk_racion"/>
+                            <field name="ssk_racion"/>
+                            
+                        </group>
+                        <group>
+                            <field name="kalciy_racion"/>
+                            <field name="fosfor_racion"/>
+                            <field name="magniy_racion"/>
+                            <field name="natriy_racion"/>
+                            <field name="kaliy_racion"/>
+                            <field name="hlor_racion"/>
+                            
+                        </group>
+                    </group>
+
 
 
                     <group string="_______________________________________">
                             <field name="sv"/>
                             
                     </group>
+
                     <group>
                         <group string="Содержание вещ., г/кг СВ">
                             <field name="sz"/>

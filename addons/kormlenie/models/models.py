@@ -779,6 +779,82 @@ class korm_norm(models.Model):
 
 
 
+param_pit = [
+				'sv',
+				'sz',
+				'ov',
+				'sp',
+				'sj',
+				'sk',
+				'bev',
+				'krahmal',
+				'sahar',
+				'uglevodi',
+				'kalciy',
+				'fosfor',
+				'magniy',
+				'natriy',
+				'kaliy',
+				'hlor',
+				'sera',
+				'dcab',
+				'uk_sv',
+				'sk_sv',
+				'nxp',
+				'rnb',
+				'oe',
+				'chel',
+				'pok_struk',
+				'jelezo',
+				'marganec',
+				'med',
+				'kobalt',
+				'selen',
+				'cink',
+				'iod',
+				'molibden',
+				'vit_a',
+				'vit_d',
+				'vit_e',
+				'beta_karotin',
+				'b1',
+				'niacin',
+				'lizin',
+				'metionin',
+				'triptofan',
+				'ndk',
+				'kdk',
+				'ru',
+				'p',
+			]
+param_pit_fiz = [
+				'pov',
+				'pp',
+				'psj',
+				'psk',
+				'pbev',
+				'ssk',
+				'nsp',
+				'uk',
+				'rp',
+				'nrsp',
+				'rsp',
+			]
+
+param_pit_racion = [
+				'chel',
+				'nxp',
+				'rnb',
+				'sk',
+				'ssk',
+				'kalciy',
+				'fosfor',
+				'magniy',
+				'natriy',
+				'kaliy',
+				'hlor',
+			]
+
 class korm_racion(models.Model):
 	_name = 'korm.racion'
 	_description = u'Рацион кормления'
@@ -843,9 +919,30 @@ class korm_racion(models.Model):
 		if self.kol>0:
 			self.price = self.amount/self.kol
 
+
+
 	@api.one
 	def action_raschet(self):
-		pass
+
+		self.sv_racion = 0
+		
+		for par in param_pit:
+				self[par] = 0
+		for par in param_pit_racion:
+				self[par+'_racion'] = 0
+
+		for line in self.korm_racion_line:
+			self.sv_racion += line.kol*line.korm_analiz_pit_id.sv/1000
+		
+		for line in self.korm_racion_line:
+			kol_sv = line.kol * line.korm_analiz_pit_id.sv/1000
+			
+			for par in param_pit_racion:
+				self[par+'_racion'] += line.korm_analiz_pit_id[par] * kol_sv
+			
+			for par in param_pit:
+				self[par] += line.korm_analiz_pit_id[par] * kol_sv/self.sv_racion
+
 
 				
 

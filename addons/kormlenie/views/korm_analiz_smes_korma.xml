@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="korm_korm_ostatok_form_view">
-        <field name="name">korm_korm_ostatok.form</field>
-        <field name="model">korm.korm_ostatok</field>
+	<record model="ir.ui.view" id="korm_analiz_smes_korma_form_view">
+        <field name="name">korm_analiz_smes_korma.form</field>
+        <field name="model">korm.analiz_smes_korma</field>
         <field name="arch" type="xml">
-            <form string="Форма Остатки Кормления">
+            <form string="Форма Анализ смешенного корма">
                
                 <sheet>
                     <group>
@@ -19,7 +19,7 @@
                             
                         </group>
                      </group>
-                     <div class="oe_button_box" name="button_box">
+                     <div class="oe_button_box" name="button_box" attrs="{'invisible': [('svodno', '=', False)]}">
                             <button name="action_raschet"
                                 type="object"
                                 class="oe_stat_button oe_edit_only"
@@ -31,22 +31,15 @@
             
                        
                     <notebook>
-                        <page string="Остатки по загонам">
-                            <field name="korm_korm_ostatok_line" attrs="{'readonly': [('svodno', '=', True)]}">
-                                <tree string="korm_korm_ostatok_line" editable="botton" edit="true" create="false" delete="false">
+                        <page string="По загонам">
+                            <field name="korm_analiz_smes_korma_line" attrs="{'readonly': [('svodno', '=', True)]}">
+                                <tree string="korm_analiz_smes_korma_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sequence" widget="handle"/>
                                     <field name="stado_zagon_id"/>
                                     <field name="stado_fiz_group_id"/>
                                     
-                                    <field name="kol_golov_zagon"/>
-                                    <field name="procent_raciona"/>
-                                    <field name="kol_korma_norma"/>
-                                    <field name="kol_korma_fakt"/>
-                                    <field name="kol_korma_otk"/>
-                                    <field name="kol_ostatok"/>
-                                    <field name="procent_ostatkov"/>
-                                    <field name="procent_ostatkov_prev"/>
-                                    <field name="sv_golova"/>
+                                    <field name="sv"/>
+                                    <field name="struktura"/>
                                     
                                     
                                     
@@ -57,17 +50,17 @@
                             
                         </page>
 
-                        <page string="Свод остатков">
+                        <page string="Сводно">
                             <!-- context="{'zagon_tolko_nomer': True}" -->
-                            <field name="korm_korm_ostatok_svod_line"  attrs="{'readonly': [('svodno', '=', False)]}">
-                                <tree string="korm_korm_ostatok_svod_line" editable="botton" edit="true" create="true" delete="true">
+                            <field name="korm_analiz_smes_korma_svod_line"  attrs="{'invisible': [('svodno', '=', False)]}">
+                                <tree string="korm_analiz_smes_korma_svod_line" editable="botton" edit="true" create="true" delete="true">
                                     <field name="sequence" widget="handle"/>
                                     <field name="stado_zagon_id" widget="many2many_tags"
     options="{'no_create_edit': True}" mode="tree" domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
-                                    <field name="kol_golov_zagon"/>
+                                    <field name="sv"/>
                                     
-                                    <field name="kol_ostatok"/>
+                                    <field name="struktura"/>
                                     
                                     
                                                                         
@@ -97,11 +90,11 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_korm_korm_ostatok_tree">
-            <field name="name">korm_korm_ostatok.tree</field>
-            <field name="model">korm.korm_ostatok</field>
+        <record model="ir.ui.view" id="view_korm_analiz_smes_korma_tree">
+            <field name="name">korm_analiz_smes_korma.tree</field>
+            <field name="model">korm.analiz_smes_korma</field>
             <field name="arch" type="xml">
-                <tree string="Остатки Кормления">
+                <tree string="Анализ смешенного корма">
                     
                     <field name="date"/>
                     <field name="name"/>
@@ -113,9 +106,9 @@
             </field>
         </record>	
 	
-	<record model="ir.ui.view" id="korm_korm_ostatok_search_view">
-            <field name="name">korm_korm_ostatok.search</field>
-            <field name="model">korm.korm_ostatok</field>
+	<record model="ir.ui.view" id="korm_analiz_smes_korma_search_view">
+            <field name="name">korm_analiz_smes_korma.search</field>
+            <field name="model">korm.analiz_smes_korma</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="date"/>
@@ -128,13 +121,13 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
-        <record model="ir.actions.act_window" id="korm_korm_ostatok_list_action">
-            <field name="name">Остатки Кормления</field>
-            <field name="res_model">korm.korm_ostatok</field>
+        <record model="ir.actions.act_window" id="korm_analiz_smes_korma_list_action">
+            <field name="name">Анализ смешенного корма</field>
+            <field name="res_model">korm.analiz_smes_korma</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Остатки Кормления
+                <p class="oe_view_nocontent_create">Создайте первую запись Анализ смешенного корма
                 </p>
             </field>
 

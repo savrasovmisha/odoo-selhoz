@@ -170,75 +170,75 @@ class korm_pit_standart(models.Model):
 						]
 
 # class stado_vid_fiz_group(models.Model):
-# 	_name = 'stado.vid_fiz_group'
-# 	_description = u'Вид физиологической группы'
-# 	_order = 'name'
+#   _name = 'stado.vid_fiz_group'
+#   _description = u'Вид физиологической группы'
+#   _order = 'name'
 
-# 	name = fields.Char(string=u"Наименование", required=True)
-# 	_sql_constraints = [
-# 							('name_unique', 'unique(name)', u'Такой вид физиологической группы уже существует!')
-# 						]
+#   name = fields.Char(string=u"Наименование", required=True)
+#   _sql_constraints = [
+#                           ('name_unique', 'unique(name)', u'Такой вид физиологической группы уже существует!')
+#                       ]
 
 # class stado_podvid_fiz_group(models.Model):
-# 	_name = 'stado.podvid_fiz_group'
-# 	_description = u'Подвид физиологической группы'
-# 	_order = 'name'
+#   _name = 'stado.podvid_fiz_group'
+#   _description = u'Подвид физиологической группы'
+#   _order = 'name'
 
-# 	name = fields.Char(string=u"Наименование", required=True)
-# 	_sql_constraints = [
-# 							('name_unique', 'unique(name)', u'Такой подвид физиологической группы уже существует!')
-# 						]
+#   name = fields.Char(string=u"Наименование", required=True)
+#   _sql_constraints = [
+#                           ('name_unique', 'unique(name)', u'Такой подвид физиологической группы уже существует!')
+#                       ]
 
 
 # class stado_fiz_group(models.Model):
-# 	_name = 'stado.fiz_group'
-# 	_description = u'Физиологическая группа'
-# 	_order = 'name'
+#   _name = 'stado.fiz_group'
+#   _description = u'Физиологическая группа'
+#   _order = 'name'
 
-# 	name = fields.Char(string=u"Наименование", required=True)
-# 	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string='Вид физ. группы')
-# 	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string='Подвид физ. группы')
-# 	_sql_constraints = [
-# 							('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
-# 						]
+#   name = fields.Char(string=u"Наименование", required=True)
+#   stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string='Вид физ. группы')
+#   stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string='Подвид физ. группы')
+#   _sql_constraints = [
+#                           ('name_unique', 'unique(name)', u'Такая физиологическая группа уже существует!')
+#                       ]
 	
 
 
 # class stado_zagon(models.Model):
-# 	_name = 'stado.zagon'
-# 	_description = u'Загоны'
-# 	_order = 'nomer'
+#   _name = 'stado.zagon'
+#   _description = u'Загоны'
+#   _order = 'nomer'
 
-# 	@api.multi
-# 	def name_get(self):
-# 		zagon_tolko_nomer = self.env.context.get('zagon_tolko_nomer', False)
+#   @api.multi
+#   def name_get(self):
+#       zagon_tolko_nomer = self.env.context.get('zagon_tolko_nomer', False)
 		
-# 		if zagon_tolko_nomer:
-# 			res = []
-# 			for doc in self:
-# 				res.append((doc.id, doc.nomer))
+#       if zagon_tolko_nomer:
+#           res = []
+#           for doc in self:
+#               res.append((doc.id, doc.nomer))
 			
-# 		else:
-# 			res = super(stado_zagon, self).name_get()
+#       else:
+#           res = super(stado_zagon, self).name_get()
 
 
-# 		return res
-# 	@api.one
-# 	def toggle_activ(self):
-# 		if self.activ == True:
-# 			self.activ = False
-# 		else:
-# 			self.activ =True
+#       return res
+#   @api.one
+#   def toggle_activ(self):
+#       if self.activ == True:
+#           self.activ = False
+#       else:
+#           self.activ =True
 		
 
-# 	name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
-# 	nomer = fields.Integer(string=u"Номер", required=True)
-# 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
-# 	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
-# 	utro = fields.Integer(string=u"Утро,%", default=100)
-# 	vecher = fields.Integer(string=u"Вечер,%", default=0)
-# 	#active = fields.Boolean(string=u"Активный", default=True)
-# 	activ = fields.Boolean(string=u"Используется", default=True, oldname='active')
+#   name = fields.Char(string=u"Наименование", readonly=False, index=True, store=True)
+#   nomer = fields.Integer(string=u"Номер", required=True)
+#   stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
+#   uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
+#   utro = fields.Integer(string=u"Утро,%", default=100)
+#   vecher = fields.Integer(string=u"Вечер,%", default=0)
+#   #active = fields.Boolean(string=u"Активный", default=True)
+#   activ = fields.Boolean(string=u"Используется", default=True, oldname='active')
 
 class korm_analiz_pit(models.Model):
 	_name = 'korm.analiz_pit'
@@ -267,51 +267,51 @@ class korm_analiz_pit(models.Model):
 	# @api.depends('sv', 'oe', 'sv', 'nrp_p')
 	# def _raschet(self):
 		
-	# 	if self.sv and self.nrp_p:
-	# 		self.nrp = self.sp * self.nrp_p/100.00
+	#   if self.sv and self.nrp_p:
+	#       self.nrp = self.sp * self.nrp_p/100.00
 		
-	# 	if self.sv>0 and self.nrp:
-	# 		self.udp = self.nrp/self.sv
+	#   if self.sv>0 and self.nrp:
+	#       self.udp = self.nrp/self.sv
 
-	# 	if self.sv>0 and self.oe:
-	# 		self.me = self.oe/self.sv
+	#   if self.sv>0 and self.oe:
+	#       self.me = self.oe/self.sv
 
-	# 	if self.sv>0 and self.sp:
-	# 		self.xp = self.sp/self.sv
+	#   if self.sv>0 and self.sp:
+	#       self.xp = self.sp/self.sv
 
-	# 	if self.xp!=0 and self.me and self.udp:
-	# 		self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
+	#   if self.xp!=0 and self.me and self.udp:
+	#       self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 	# #@api.one
 	# @api.depends('nomen_nomen_id')
 	# def _standart(self):
-	# 	for st in self:
-	# 		if st.nomen_nomen_id:
-	# 			standart = self.env['korm.pit_standart'].search([('nomen_nomen_id', '=', st.nomen_nomen_id.id)],limit=1)
-	# 			if len(standart)>0:
-	# 				st.ov_s=standart.ov
-	# 				st.sv_s=standart.sv
-	# 				st.oe_s=standart.oe
-	# 				st.sp_s=standart.sp
-	# 				st.pp_s=standart.pp
-	# 				st.sk_s=standart.sk
-	# 				st.sj_s=standart.sj
-	# 				st.ca_s=standart.ca
-	# 				st.p_s=standart.p
-	# 				st.sahar_s=standart.sahar
-	# 				st.krahmal_s=standart.krahmal
-	# 				st.bev_s=standart.bev
-	# 				st.magniy_s=standart.magniy
-	# 				st.natriy_s=standart.natriy
-	# 				st.kaliy_s=standart.kaliy
-	# 				st.hlor_s=standart.hlor
-	# 				st.sera_s=standart.sera
-	# 				st.udp_s=standart.udp
-	# 				st.me_s=standart.me
-	# 				st.xp_s=standart.xp
-	# 				st.nrp_s=standart.nrp
-	# 				st.rnb_s=standart.rnb
-	# 				st.nrp_p_s=standart.nrp_p
+	#   for st in self:
+	#       if st.nomen_nomen_id:
+	#           standart = self.env['korm.pit_standart'].search([('nomen_nomen_id', '=', st.nomen_nomen_id.id)],limit=1)
+	#           if len(standart)>0:
+	#               st.ov_s=standart.ov
+	#               st.sv_s=standart.sv
+	#               st.oe_s=standart.oe
+	#               st.sp_s=standart.sp
+	#               st.pp_s=standart.pp
+	#               st.sk_s=standart.sk
+	#               st.sj_s=standart.sj
+	#               st.ca_s=standart.ca
+	#               st.p_s=standart.p
+	#               st.sahar_s=standart.sahar
+	#               st.krahmal_s=standart.krahmal
+	#               st.bev_s=standart.bev
+	#               st.magniy_s=standart.magniy
+	#               st.natriy_s=standart.natriy
+	#               st.kaliy_s=standart.kaliy
+	#               st.hlor_s=standart.hlor
+	#               st.sera_s=standart.sera
+	#               st.udp_s=standart.udp
+	#               st.me_s=standart.me
+	#               st.xp_s=standart.xp
+	#               st.nrp_s=standart.nrp
+	#               st.rnb_s=standart.rnb
+	#               st.nrp_p_s=standart.nrp_p
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
@@ -826,6 +826,17 @@ param_pit = [
 				'kdk',
 				'ru',
 				'p',
+				'pov',
+				'pp',
+				'psj',
+				'psk',
+				'pbev',
+				'ssk',
+				'nsp',
+				'uk',
+				'rp',
+				'nrsp',
+				'rsp',
 			]
 param_pit_fiz = [
 				'pov',
@@ -870,13 +881,13 @@ class korm_racion(models.Model):
  
 	# @api.depends('stado_fiz_group_id')
 	# def _norm(self):
-	# 	for st in self:
-	# 		if st.stado_fiz_group_id:
-	# 			standart = self.env['korm.norm'].search([('stado_fiz_group_id', '=', st.stado_fiz_group_id.id)],limit=1)
-	# 			if len(standart)>0:
-	# 				for par in parametrs:
-	# 					self[par+'_min'] = standart[par+'_min']
-	# 					self[par+'_max'] = standart[par+'_max']
+	#   for st in self:
+	#       if st.stado_fiz_group_id:
+	#           standart = self.env['korm.norm'].search([('stado_fiz_group_id', '=', st.stado_fiz_group_id.id)],limit=1)
+	#           if len(standart)>0:
+	#               for par in parametrs:
+	#                   self[par+'_min'] = standart[par+'_min']
+	#                   self[par+'_max'] = standart[par+'_max']
 
 
 
@@ -887,29 +898,29 @@ class korm_racion(models.Model):
 		self.amount=self.ov=self.sv = 0
 
 		# for line in self.korm_racion_line:
-		# 	self.amount += line.kol
-		# 	for par in parametrs:
-		# 		self[par] += line.kol * line.korm_analiz_pit_id[par]
+		#   self.amount += line.kol
+		#   for par in parametrs:
+		#       self[par] += line.kol * line.korm_analiz_pit_id[par]
 			
 		# if self.amount>0:
-		# 	for par in parametrs:
-		# 		self[par] = self[par]/self.amount
+		#   for par in parametrs:
+		#       self[par] = self[par]/self.amount
 
 				
 		# if self.sv and self.nrp_p:
-		# 	self.nrp = self.sp * self.nrp_p/100.00
+		#   self.nrp = self.sp * self.nrp_p/100.00
 		
 		# if self.sv>0 and self.nrp:
-		# 	self.udp = self.nrp/self.sv
+		#   self.udp = self.nrp/self.sv
 
 		# if self.sv>0 and self.oe:
-		# 	self.me = self.oe/self.sv
+		#   self.me = self.oe/self.sv
 
 		# if self.sv>0 and self.sp:
-		# 	self.xp = self.sp/self.sv
+		#   self.xp = self.sp/self.sv
 
 		# if self.xp!=0 and self.me and self.udp:
-		# 	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
+		#   self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 		self.kol = self.amount = 0.00
 		for line in self.korm_racion_line:
@@ -930,21 +941,32 @@ class korm_racion(models.Model):
 				self[par] = 0
 		for par in param_pit_racion:
 				self[par+'_racion'] = 0
+		self.korm_racion_pit_line.unlink()
 
 		for line in self.korm_racion_line:
 			self.sv_racion += line.kol*line.korm_analiz_pit_id.sv/1000
 		
 		for line in self.korm_racion_line:
 			kol_sv = line.kol * line.korm_analiz_pit_id.sv/1000
-			
+			vals = {
+					'korm_racion_id': self.id,
+					'name': line.nomen_nomen_id.name,
+					'nomen_nomen_id': line.nomen_nomen_id.id,
+					'korm_analiz_pit_id': line.korm_analiz_pit_id.id,
+					'korm_racion_line_id': line.id,
+					'nv_korm': line.kol,
+					'sv_korm': kol_sv,
+					}
 			for par in param_pit_racion:
 				self[par+'_racion'] += line.korm_analiz_pit_id[par] * kol_sv
+				vals[par+'_korm'] = line.korm_analiz_pit_id[par] * kol_sv
 			
 			for par in param_pit:
 				self[par] += line.korm_analiz_pit_id[par] * kol_sv/self.sv_racion
 
+			self.korm_racion_pit_line.create(vals)
 
-				
+			
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
@@ -1200,7 +1222,7 @@ class korm_racion_pit_line(models.Model):
 
 
 	
-	name = fields.Char(string=u"Наименование", compute='return_name')
+	name = fields.Char(string=u"Наименование")
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
 	korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string=u'Анализ корма', store=True, compute='_nomen')
 	korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string=u"Рацион кормления", required=True)
@@ -1224,7 +1246,23 @@ class korm_racion_pit_line(models.Model):
 	kaliy_korm = fields.Float(digits=(10, 2), string=u"K, г", help=u"Калий, г")
 	hlor_korm = fields.Float(digits=(10, 2), string=u"Cl, г", help=u"Хлор, г")
 
+	name_param = [
+					'nv_korm',
+					'sv_korm',
+					'chel_korm',
+					'nxp_korm',
+					'rnb_korm',
+					'sk_korm',
+					'ssk_korm',
+					'kalciy_korm',
+					'fosfor_korm',
+					'magniy_korm',
+					'natriy_korm',
+					'kaliy_korm',
+					'hlor_korm',
+				
 
+					]
 
 class reg_rashod_kormov(models.Model):
 	_name = 'reg.rashod_kormov'
@@ -1287,46 +1325,46 @@ class reg_rashod_kormov(models.Model):
 		return True
 
 # def reg_rashod_kormov_move(obj,vals, vid_dvijeniya):
-# 	"""
-# 		Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
-# 		vid_dvijeniya='create' Создать записи
-# 		vid_dvijeniya='unlink' Удалить записи
-# 	"""
+#   """
+#       Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
+#       vid_dvijeniya='create' Создать записи
+#       vid_dvijeniya='unlink' Удалить записи
+#   """
 
-# 	message = ''
+#   message = ''
 		
 
-# 	reg = obj.env['reg.rashod_kormov']
-# 	if vid_dvijeniya == 'create':
-# 		if len(vals) == 0:
-# 			message = u"Нет данных для проведения документа. Не заполненна табличная часть"
-# 			raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-# 			return False
-# 		for line in vals:
-# 			line['id'] = False
-# 			line['obj'] = obj.__class__.__name__
-# 			line['obj_id'] = obj.id
-# 			line['date'] = obj.date
+#   reg = obj.env['reg.rashod_kormov']
+#   if vid_dvijeniya == 'create':
+#       if len(vals) == 0:
+#           message = u"Нет данных для проведения документа. Не заполненна табличная часть"
+#           raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+#           return False
+#       for line in vals:
+#           line['id'] = False
+#           line['obj'] = obj.__class__.__name__
+#           line['obj_id'] = obj.id
+#           line['date'] = obj.date
 
-# 			if line['kol']<0:
+#           if line['kol']<0:
 				
-# 				message = u"Кол-во должно быть больше нуля"
-# 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-# 				return False
+#               message = u"Кол-во должно быть больше нуля"
+#               raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+#               return False
 				
-# 		for line in vals:
-# 			#print 'cccccccc    ', line
-# 			reg.create(line)
+#       for line in vals:
+#           #print 'cccccccc    ', line
+#           reg.create(line)
 
 
-# 	elif vid_dvijeniya == 'unlink':
-# 		ids_del = reg.search([  ('obj_id', '=', obj.id),
-# 								('obj', '=', obj.__class__.__name__),
-# 								])
-# 		ids_del.unlink()
+#   elif vid_dvijeniya == 'unlink':
+#       ids_del = reg.search([  ('obj_id', '=', obj.id),
+#                               ('obj', '=', obj.__class__.__name__),
+#                               ])
+#       ids_del.unlink()
 	
 
-# 	return True
+#   return True
 
 
 
@@ -1634,9 +1672,9 @@ class korm_korm(models.Model):
 						k_new = kol_day / rl.day
 						k_old = 1 - k_new
 
-					# print 'ttttttttttttttttttttttt=',kol_day					
-					# print 'ttttttttttttttttttttttt=',k_new					
-					# print 'ttttttttttttttttttttttt=',k_old					
+					# print 'ttttttttttttttttttttttt=',kol_day                  
+					# print 'ttttttttttttttttttttttt=',k_new                    
+					# print 'ttttttttttttttttttttttt=',k_old                    
 					if k_old > 0 and rl.kol > 0:
 						detail_line.create({'korm_korm_id': self.id,
 											'name': rl.nomen_nomen_id.name,
@@ -2104,6 +2142,18 @@ class korm_korm_ostatok(models.Model):
 							#print 'line.kol_ostatok=',line.kol_ostatok
 							#print 'line.kol_korma_fakt=',line.kol_korma_fakt
 							#print 'line.procent_ostatkov=',line.procent_ostatkov
+		
+		#Расчет потребления СВ на голову
+		korm_analiz_smes_korma_line = self.env['korm.analiz_smes_korma_line']
+		for line in self.korm_korm_ostatok_line:
+			korm_analiz_smes_korma_line_id = korm_analiz_smes_korma_line.search([('date', '<=', self.date), 
+																				('stado_zagon_id', '=', line.stado_zagon_id.id) ], 
+																				order="date desc",limit=1)
+			if line.kol_golov_zagon>0:
+				line.sv_golova = (line.kol_korma_fakt - line.kol_ostatok)/line.kol_golov_zagon * korm_analiz_smes_korma_line_id.sv / 100
+
+
+
 			#Заполняем сводные данные
 								  
 			# for g in groupby( d,key=lambda x:x[1]):
@@ -2163,6 +2213,7 @@ class korm_korm_ostatok_line(models.Model):
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", copy=False, readonly=True)
 	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", copy=False, readonly=True)
 	procent_ostatkov_prev = fields.Float(digits=(10, 1), string=u"% ост. пред. день", copy=False, readonly=True)
+	sv_golova = fields.Float(digits=(10, 1), string=u"СВ, кг/гол", help=u"Потредление Сухого в-ва кг на голову", copy=False, readonly=True)
    
 	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
 	
@@ -2938,3 +2989,104 @@ class korm_plan_line(models.Model):
 	buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
 	sorting = fields.Char(string=u"С.", help="Сортировка")
 	
+
+
+
+
+
+
+
+class korm_analiz_smes_korma(models.Model):
+	_name = 'korm.analiz_smes_korma'
+	_description = u'Анализ смешенного корма'
+	_order = 'date desc'
+
+	@api.model
+	def create(self, vals):
+		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+			vals['name'] = self.env['ir.sequence'].next_by_code('korm.analiz_smes_korma') or 'New'
+
+		result = super(korm_analiz_smes_korma, self).create(vals)
+		return result
+
+	@api.one
+	def action_raschet(self):
+		line = self.env['korm.analiz_smes_korma_line']
+		del_line = line.search([('korm_analiz_smes_korma_id', '=',    self.id)])
+		del_line.unlink()
+
+
+		for svod_line in self.korm_analiz_smes_korma_svod_line:
+			
+			for stado_zagon_id in svod_line.stado_zagon_id:
+				#print "ddddddddddd===", stado_zagon_id.id
+				
+				line.create({ 'korm_analiz_smes_korma_id':   self.id,
+							  'stado_zagon_id':   stado_zagon_id.id,
+							  'sv':    svod_line.sv,
+							  'struktura':    svod_line.struktura,
+							  })
+		
+
+		
+
+	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
+	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	korm_analiz_smes_korma_line = fields.One2many('korm.analiz_smes_korma_line', 'korm_analiz_smes_korma_id', string=u"Строка Анализ смешенного корма",copy=True)
+	korm_analiz_smes_korma_svod_line = fields.One2many('korm.analiz_smes_korma_svod_line', 'korm_analiz_smes_korma_id', string=u"Строка Свода Анализ смешенного корма",copy=True)
+	svodno = fields.Boolean(string=u"Остатки вводятся по группе загонов", default=True)
+	description = fields.Text(string=u"Коментарии")
+
+class korm_analiz_smes_korma_line(models.Model):
+	_name = 'korm.analiz_smes_korma_line'
+	_description = u'Строка Анализ смешенного корма'
+	_order = 'sequence'
+	
+
+	@api.one
+	def return_name(self):
+		self.name = self.stado_zagon_id.nomer
+
+	#@api.multi
+	@api.depends('korm_analiz_smes_korma_id.date')
+	def return_date(self):
+		for rec in self:
+			rec.date = rec.korm_analiz_smes_korma_id.date
+		
+
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_analiz_smes_korma_id = fields.Many2one('korm.analiz_smes_korma', ondelete='cascade', string=u"Анализ смешенного корма", required=True)
+	
+	date = fields.Date(string='Дата', store=True, compute='return_date')
+	stado_zagon_id = fields.Many2one('stado.zagon', readonly=False, string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, related='stado_zagon_id.stado_fiz_group_id')
+	sv = fields.Float(digits=(10, 1), string=u"СВ, %", copy=True)
+	struktura = fields.Float(digits=(10, 1), string=u"Структура, %", copy=True)
+
+   
+	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
+	
+
+class korm_analiz_smes_korma_svod_line(models.Model):
+	_name = 'korm.analiz_smes_korma_svod_line'
+	_description = u'Строка Свода Анализ смешенного корма'
+	_order = 'sequence'
+
+	@api.one
+	@api.depends('stado_zagon_id')
+	def return_name(self):
+		self.name = self.stado_zagon_id
+		if self.stado_zagon_id:
+			for line in self.stado_zagon_id:
+				self.stado_fiz_group_id = line.stado_fiz_group_id
+
+	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_analiz_smes_korma_id = fields.Many2one('korm.analiz_smes_korma', ondelete='cascade', string=u"Анализ смешенного корма", required=True)
+	
+	stado_zagon_id = fields.Many2many('stado.zagon', string=u'Загоны', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, related='stado_zagon_id.stado_fiz_group_id')
+	sv = fields.Float(digits=(10, 1), string=u"СВ, %", copy=True)
+	struktura = fields.Float(digits=(10, 1), string=u"Структура, %", copy=True)
+

@@ -60,6 +60,7 @@
         'views/seq_korm_rashod_kormov.xml',
         'views/korm_plan.xml',
         'views/seq_korm_plan.xml',
+        'views/korm_analiz_smes_korma.xml',
         #'views/korm_korm_view.xml',
         'wizard/korm_korm_wiz_view.xml',
         'reports/korm_buh_report.xml',

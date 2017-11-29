@@ -49,7 +49,7 @@
                                     <field name="korm_racion_line">
                                         <tree string="korm_racion_line" editable="botton">
                                             <field name="sequence" widget="handle"/>
-                                            <field name="constant"/>
+                                            <field name="constant" string="П"/>
                                             <field name="nomen_nomen_id"/>
                                             <field name="korm_analiz_pit_id"/>
                                             <field name="ed_izm_id"/>
@@ -76,7 +76,7 @@
                                     
                                 </page>
 
-                                <page string="Питательность">
+                                <page string="Питательность кормов">
                                     <field name="korm_racion_pit_line">
                                         <tree string="korm_racion_pit_line">
                                             

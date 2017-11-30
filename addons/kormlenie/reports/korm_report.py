@@ -271,6 +271,7 @@ class korm_ostatok_report(models.Model):
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
 	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
 	sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	sv_golova = fields.Float(digits=(10, 1), string=u"СВ, кг/гол", group_operator="avg")
 	
 	_order = 'stado_zagon_name'
 
@@ -292,7 +293,8 @@ class korm_ostatok_report(models.Model):
 					l.kol_ostatok as kol_ostatok,
 					l.procent_ostatkov as procent_ostatkov,
 					z.name as stado_zagon_name,
-					s.sred_kol_milk as sred_kol_milk
+					s.sred_kol_milk as sred_kol_milk,
+					l.sv_golova as sv_golova
 
 					
 				from korm_korm_ostatok_line l

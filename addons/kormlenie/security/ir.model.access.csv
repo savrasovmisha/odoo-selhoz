@@ -19,6 +19,8 @@ access_korm_racion_manager,korm.racion,model_korm_racion,group_korm_manager,1,1,
 access_korm_racion_users,korm.racion,model_korm_racion,group_korm_users,1,0,0,0
 access_korm_racion_line_manager,korm.racion_line,model_korm_racion_line,group_korm_manager,1,1,1,1
 access_korm_racion_line_users,korm.racion_line,model_korm_racion_line,group_korm_users,1,0,0,0
+access_korm_racion_pit_line_manager,korm.racion_pit_line,model_korm_racion_pit_line,group_korm_manager,1,1,1,1
+access_korm_racion_pit_line_users,korm.racion_pit_line,model_korm_racion_pit_line,group_korm_users,1,0,0,0
 access_korm_korm_manager,korm.korm,model_korm_korm,group_korm_manager,1,1,1,1
 access_korm_korm_users,korm.korm,model_korm_korm,group_korm_users,1,0,0,0
 access_korm_korm_line_manager,korm.korm_line,model_korm_korm_line,group_korm_manager,1,1,1,1

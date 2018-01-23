@@ -486,67 +486,69 @@ class korm_receptura(models.Model):
 
 		return result
 
-	@api.depends('nomen_nomen_id')
-	def _standart(self):
-		for st in self:
-			if st.nomen_nomen_id:
-				standart = self.env['korm.pit_standart'].search([('nomen_nomen_id', '=', st.nomen_nomen_id.id)],limit=1)
-				if len(standart)>0:
-					st.ov_s=standart.ov
-					st.sv_s=standart.sv
-					st.oe_s=standart.oe
-					st.sp_s=standart.sp
-					st.pp_s=standart.pp
-					st.sk_s=standart.sk
-					st.sj_s=standart.sj
-					st.ca_s=standart.ca
-					st.p_s=standart.p
-					st.sahar_s=standart.sahar
-					st.krahmal_s=standart.krahmal
-					st.bev_s=standart.bev
-					st.magniy_s=standart.magniy
-					st.natriy_s=standart.natriy
-					st.kaliy_s=standart.kaliy
-					st.hlor_s=standart.hlor
-					st.sera_s=standart.sera
-					st.udp_s=standart.udp
-					st.me_s=standart.me
-					st.xp_s=standart.xp
-					st.nrp_s=standart.nrp
-					st.rnb_s=standart.rnb
-					st.nrp_p_s=standart.nrp_p
+	# @api.depends('nomen_nomen_id')
+	# def _standart(self):
+	# 	for st in self:
+	# 		if st.nomen_nomen_id:
+	# 			standart = self.env['korm.pit_standart'].search([('nomen_nomen_id', '=', st.nomen_nomen_id.id)],limit=1)
+	# 			if len(standart)>0:
+	# 				st.ov_s=standart.ov
+	# 				st.sv_s=standart.sv
+	# 				st.oe_s=standart.oe
+	# 				st.sp_s=standart.sp
+	# 				st.pp_s=standart.pp
+	# 				st.sk_s=standart.sk
+	# 				st.sj_s=standart.sj
+	# 				st.ca_s=standart.ca
+	# 				st.p_s=standart.p
+	# 				st.sahar_s=standart.sahar
+	# 				st.krahmal_s=standart.krahmal
+	# 				st.bev_s=standart.bev
+	# 				st.magniy_s=standart.magniy
+	# 				st.natriy_s=standart.natriy
+	# 				st.kaliy_s=standart.kaliy
+	# 				st.hlor_s=standart.hlor
+	# 				st.sera_s=standart.sera
+	# 				st.udp_s=standart.udp
+	# 				st.me_s=standart.me
+	# 				st.xp_s=standart.xp
+	# 				st.nrp_s=standart.nrp
+	# 				st.rnb_s=standart.rnb
+	# 				st.nrp_p_s=standart.nrp_p
 
 	@api.one
 	@api.depends('korm_receptura_line.kol')
 	def _raschet(self):
 
-		self.amount=self.ov=self.sv = 0
+		self.amount=self.price_amount=self.ov=self.sv = 0
 
 		for line in self.korm_receptura_line:
+			line._nomen() #Перещмтываем строку таблицы
 			self.amount += line.kol
-			for par in parametrs:
-				self[par] += line.kol * line.korm_analiz_pit_id[par]
+			self.price_amount += line.amount
+			# for par in parametrs:
+			# 	self[par] += line.kol * line.korm_analiz_pit_id[par]
 			
 		if self.amount>0:
-			
-			for par in parametrs:
-				self[par] = self[par]/self.amount
+			self.price = self.price_amount/self.amount
+		# 	for par in parametrs:
+		# 		self[par] = self[par]/self.amount
 
 				
-		if self.sv and self.nrp_p:
-			self.nrp = self.sp * self.nrp_p/100.00
+		# if self.sv and self.nrp_p:
+		# 	self.nrp = self.sp * self.nrp_p/100.00
 		
-		if self.sv>0 and self.nrp:
-			self.udp = self.nrp/self.sv
+		# if self.sv>0 and self.nrp:
+		# 	self.udp = self.nrp/self.sv
 
-		if self.sv>0 and self.oe:
-			self.me = self.oe/self.sv
+		# if self.sv>0 and self.oe:
+		# 	self.me = self.oe/self.sv
 
-		if self.sv>0 and self.sp:
-			self.xp = self.sp/self.sv
+		# if self.sv>0 and self.sp:
+		# 	self.xp = self.sp/self.sv
 
-		if self.xp!=0 and self.me and self.udp:
-			self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
+		# if self.xp!=0 and self.me and self.udp:
+		# 	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 
 	@api.one
@@ -561,6 +563,10 @@ class korm_receptura(models.Model):
 				line.procent = line.kol_tonna / 1000 * 100
 				#print "ffffffffsssssssss========", r.kol_tonna
 
+		self._raschet()
+
+
+
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Наименование', required=True)
@@ -568,55 +574,115 @@ class korm_receptura(models.Model):
 	#korm_analiz_pit_id = fields.One2many('korm.analiz_pit', 'korm_receptura_id', string=u"Анализ кормов")
 	korm_receptura_line = fields.One2many('korm.receptura_line', 'korm_receptura_id', string=u"Строка Рецептура комбикормов")
 	amount = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
-	active = fields.Boolean(string=u"Используется", default=True)
 	
-	ov = fields.Float(digits=(10, 2), string=u"ОВ", store=True, compute='_raschet')
-	sv = fields.Float(digits=(10, 2), string=u"СВ", store=True, compute='_raschet')
-	oe = fields.Float(digits=(10, 2), string=u"ОЭ", store=True, compute='_raschet')
-	sp = fields.Float(digits=(10, 2), string=u"СП", store=True, compute='_raschet')
-	pp = fields.Float(digits=(10, 2), string=u"ПП", store=True, compute='_raschet')
-	sk = fields.Float(digits=(10, 2), string=u"СК", store=True, compute='_raschet')
-	sj = fields.Float(digits=(10, 2), string=u"СЖ", store=True, compute='_raschet')
-	ca = fields.Float(digits=(10, 2), string=u"Ca", store=True, compute='_raschet')
-	p = fields.Float(digits=(10, 2), string=u"P", store=True, compute='_raschet')
-	sahar = fields.Float(digits=(10, 2), string=u"Сахар", store=True, compute='_raschet')
-	krahmal = fields.Float(digits=(10, 2), string=u"Крахмал", store=True, compute='_raschet')
-	bev = fields.Float(digits=(10, 2), string=u"БЭВ", store=True, compute='_raschet')
-	magniy = fields.Float(digits=(10, 2), string=u"Магний", store=True, compute='_raschet')
-	natriy = fields.Float(digits=(10, 2), string=u"Натрий", store=True, compute='_raschet')
-	kaliy = fields.Float(digits=(10, 2), string=u"Калий", store=True, compute='_raschet')
-	hlor = fields.Float(digits=(10, 2), string=u"Хлор", store=True, compute='_raschet')
-	sera = fields.Float(digits=(10, 2), string=u"Сера", store=True, compute='_raschet')
-	udp = fields.Float(digits=(10, 2), string=u"UDP", store=True, compute='_raschet')
-	me = fields.Float(digits=(10, 2), string=u"ME", store=True, compute='_raschet')
-	xp = fields.Float(digits=(10, 2), string=u"XP", store=True, compute='_raschet')
-	nrp = fields.Float(digits=(10, 2), string=u"НРП", store=True, compute='_raschet')
-	rnb = fields.Float(digits=(10, 2), string=u"RNB", store=True, compute='_raschet')
-	nrp_p = fields.Float(digits=(10, 2), string=u"%НРП", store=True, compute='_raschet')
-	#Параметры питательности по стандарту:
-	ov_s = fields.Float(digits=(10, 2), string=u"ОВ", compute='_standart')
-	sv_s = fields.Float(digits=(10, 2), string=u"СВ", compute='_standart')
-	oe_s = fields.Float(digits=(10, 2), string=u"ОЭ", compute='_standart')
-	sp_s = fields.Float(digits=(10, 2), string=u"СП", compute='_standart')
-	pp_s = fields.Float(digits=(10, 2), string=u"ПП", compute='_standart')
-	sk_s = fields.Float(digits=(10, 2), string=u"СК", compute='_standart')
-	sj_s = fields.Float(digits=(10, 2), string=u"СЖ", compute='_standart')
-	ca_s = fields.Float(digits=(10, 2), string=u"Ca", compute='_standart')
-	p_s = fields.Float(digits=(10, 2), string=u"P", compute='_standart')
-	sahar_s = fields.Float(digits=(10, 2), string=u"Сахар", compute='_standart')
-	krahmal_s = fields.Float(digits=(10, 2), string=u"Крахмал", compute='_standart')
-	bev_s = fields.Float(digits=(10, 2), string=u"БЭВ", compute='_standart')
-	magniy_s = fields.Float(digits=(10, 2), string=u"Магний", compute='_standart')
-	natriy_s = fields.Float(digits=(10, 2), string=u"Натрий", compute='_standart')
-	kaliy_s = fields.Float(digits=(10, 2), string=u"Калий", compute='_standart')
-	hlor_s = fields.Float(digits=(10, 2), string=u"Хлор", compute='_standart')
-	sera_s = fields.Float(digits=(10, 2), string=u"Сера", compute='_standart')
-	udp_s = fields.Float(digits=(10, 2), string=u"UDP", compute='_standart')
-	me_s = fields.Float(digits=(10, 2), string=u"ME", compute='_standart')
-	xp_s = fields.Float(digits=(10, 2), string=u"XP", compute='_standart')
-	nrp_s = fields.Float(digits=(10, 2), string=u"НРП", compute='_standart')
-	rnb_s = fields.Float(digits=(10, 2), string=u"RNB", compute='_standart')
-	nrp_p_s = fields.Float(digits=(10, 2), string=u"%НРП", compute='_standart')
+	price_amount = fields.Float(digits=(10, 2), string=u"Всего стоимость, руб", store=True, compute='_raschet')
+	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы, руб", store=True, compute='_raschet')
+	
+	active = fields.Boolean(string=u"Используется", default=True)
+
+	description = fields.Text(string=u"Коментарии")
+
+	
+	#Рацион ВСЕГО
+	sv_racion = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), кг")
+	chel_racion = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж")
+	nxp_racion = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г")
+	rnb_racion = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г")
+	
+	sk_racion = fields.Float(digits=(10, 2), string=u"Сыр. клетчатка (XF, СК), г")
+	ssk_racion = fields.Float(digits=(10, 2), string=u"Структ.сыр.клетч., г")
+
+	kalciy_racion = fields.Float(digits=(10, 2), string=u"Кальций, г")
+	fosfor_racion = fields.Float(digits=(10, 2), string=u"Фосфор, г")
+	magniy_racion = fields.Float(digits=(10, 2), string=u"Магний, г")
+	natriy_racion = fields.Float(digits=(10, 2), string=u"Натрий, г")
+	kaliy_racion = fields.Float(digits=(10, 2), string=u"Калий, г")
+	hlor_racion = fields.Float(digits=(10, 2), string=u"Хлор, г")
+
+
+
+	sv = fields.Float(digits=(10, 2), string=u"Сухое вещество (T, СВ), г/кг НВ")
+	#Содержание вещ., г/кг СВ
+	sz = fields.Float(digits=(10, 2), string=u"Сырая зола (XA, СЗ), г/кг СВ")
+	ov = fields.Float(digits=(10, 2), string=u"Орг. масса (OM, ОВ), г/кг СВ")
+	sp = fields.Float(digits=(10, 2), string=u"Сыр. протеин (XP, СП), г/кг СВ")
+	sj = fields.Float(digits=(10, 2), string=u"Сыр. жир (XL, СЖ), г/кг СВ")
+	sk = fields.Float(digits=(10, 2), string=u"Сыр. клетчатка (XF, СК), г/кг СВ")
+	bev = fields.Float(digits=(10, 2), string=u"БЭВ, г/кг СВ", help=u'Безазотистые экстракционные вещества')
+	krahmal = fields.Float(digits=(10, 2), string=u"Крахмал, г/кг СВ")
+	sahar = fields.Float(digits=(10, 2), string=u"Сахар, г/кг СВ")
+	uglevodi = fields.Float(digits=(10, 2), string=u"Углеводы, г/кг СВ")
+
+	#Физиология в %
+	pov = fields.Float(digits=(10, 2), string=u"Перев-сть орг. массы (VOM, ПОВ), %")
+	pp = fields.Float(digits=(10, 2), string=u"Перев-сть протеина (ПП), %")
+	psj = fields.Float(digits=(10, 2), string=u"Перев-сть сыр. жир (VXL, ПСЖ), %")
+	psk = fields.Float(digits=(10, 2), string=u"Перев-сть сыр. клетчатки (VXF, ПСК), %")
+	pbev = fields.Float(digits=(10, 2), string=u"Перев-сть БЭВ, %")
+	ssk = fields.Float(digits=(10, 2), string=u"Структ.сыр.клетч.%СК, %")
+	nsp = fields.Float(digits=(10, 2), string=u"Непереваренный СП, %")
+	uk = fields.Float(digits=(10, 2), string=u"Устойч-сть крахмала, %")
+	
+	#Минеральные вещ. г/кг СВ
+	kalciy = fields.Float(digits=(10, 2), string=u"Кальций, г/кг СВ")
+	fosfor = fields.Float(digits=(10, 2), string=u"Фосфор, г/кг СВ")
+	magniy = fields.Float(digits=(10, 2), string=u"Магний, г/кг СВ")
+	natriy = fields.Float(digits=(10, 2), string=u"Натрий, г/кг СВ")
+	kaliy = fields.Float(digits=(10, 2), string=u"Калий, г/кг СВ")
+	hlor = fields.Float(digits=(10, 2), string=u"Хлор, г/кг СВ")
+	sera = fields.Float(digits=(10, 2), string=u"Сера, г/кг СВ")
+	
+	#Баланс катионов-анионов
+	dcab = fields.Float(digits=(10, 2), string=u"DCAB, mval/кг СВ", help=u'Баланс катионов-анионов (DCAB, Dietary Cation Anion Balance) – это разница катионов и анионов в кормовом сырье или рационе. DCAB (mEq/кг) = 43,5 x Na (г) + 25,6 x K (г) — 28,2 x Cl (г) — 62,4 x S (г)')
+
+	#г/кг СВ
+	uk_sv = fields.Float(digits=(10, 2), string=u"Устойч. крахмал, г/кг СВ")
+	sk_sv = fields.Float(digits=(10, 2), string=u"Сахар + крахмал, г/кг СВ")
+
+	#Обработан пользователем
+	nxp = fields.Float(digits=(10, 2), string=u"Использован.с.протеин (NXP, ИСП), г/кг СВ")
+	rnb = fields.Float(digits=(10, 2), string=u"Баланс азота в рубце (RNB, БАЗ), г/кг СВ")
+	oe = fields.Float(digits=(10, 2), string=u"Обменная энергия (MJ,ОЭ), Мдж/кг СВ")
+	chel = fields.Float(digits=(10, 2), string=u"Чистая энергия лактации (NEL,ЧЭЛ), Мдж/кг СВ")
+	
+	#----------------
+	pok_struk = fields.Float(digits=(10, 2), string=u"Показатель структуры, кг СВ")
+
+	#Микроэлементы, мг/кг СВ
+	jelezo = fields.Float(digits=(10, 2), string=u"Железо, мг/кг СВ")
+	marganec = fields.Float(digits=(10, 2), string=u"Марганец, мг/кг СВ")
+	med = fields.Float(digits=(10, 2), string=u"Медь, мг/кг СВ")
+	kobalt = fields.Float(digits=(10, 2), string=u"Кобальт, мг/кг СВ")
+	selen = fields.Float(digits=(10, 2), string=u"Селен, мг/кг СВ")
+	cink = fields.Float(digits=(10, 2), string=u"Цинк, мг/кг СВ")
+	iod = fields.Float(digits=(10, 2), string=u"Йод, мг/кг СВ")
+	molibden = fields.Float(digits=(10, 2), string=u"Молибден, мг/кг СВ")
+
+	#Витамины
+	#         МЕ/кг СВ
+	vit_a = fields.Float(digits=(10, 2), string=u"Вит. A, МЕ/кг СВ")
+	vit_d = fields.Float(digits=(10, 2), string=u"Вит. D, МЕ/кг СВ")
+	vit_e = fields.Float(digits=(10, 2), string=u"Вит. E, МЕ/кг СВ")
+	beta_karotin = fields.Float(digits=(10, 2), string=u"Бета-каротин, МЕ/кг СВ")
+	#         мг/кг СВ
+	b1 = fields.Float(digits=(10, 2), string=u"B1, мг/кг СВ")
+	niacin = fields.Float(digits=(10, 2), string=u"Ниацин, мг/кг СВ")
+
+	#Аминокислоты. г/кг СВ
+	lizin = fields.Float(digits=(10, 2), string=u"Лизин, г/кг СВ")
+	metionin = fields.Float(digits=(10, 2), string=u"Метионин, г/кг СВ")
+	triptofan = fields.Float(digits=(10, 2), string=u"Триптофан, г/кг СВ")
+
+	#Углеводы г/кг СВ
+	ndk = fields.Float(digits=(10, 2), string=u"Нейтр.детерг.клетч. (NDF,НДК), г/кг СВ")
+	kdk = fields.Float(digits=(10, 2), string=u"Кисл.детерг.клетч. (ADF,КДК), г/кг СВ")
+	ru = fields.Float(digits=(10, 2), string=u"Расщепл. углеводы, г/кг СВ")
+	p = fields.Float(digits=(10, 2), string=u"Пектины, г/кг СВ")
+
+	#Протеины, %
+	rp = fields.Float(digits=(10, 2), string=u"Расщепл. протеин, %")
+	nrsp = fields.Float(digits=(10, 2), string=u"Нерасщепл. СП, %")
+	rsp = fields.Float(digits=(10, 2), string=u"Расщепл. СП, %")
 
 
 class korm_receptura_line(models.Model):
@@ -642,19 +708,17 @@ class korm_receptura_line(models.Model):
 			analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
 			self.korm_analiz_pit_id = analiz_id
 
-	#@api.onchange('kol')
-	# @api.one
-	# def _raschet_tonna(self):
-	#   self.kol_tonna = 100 * self.kol
-		# amount = self.korm_receptura_id.amount
-		# # for line in self:
-		# #     amount += line.kol
-		# print "werwrwerwerwer========", amount
-		# # for line in self:
-		# if amount>0:
-		#   k = round(1000 / amount, 3)
-		#   self.kol_tonna = k * self.kol
-		#   self.procent = self.kol_tonna / 1000 * 100
+			obj_price = self.env['nomen.price_line']
+			price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_receptura_id.date)], order="date desc",limit=1).price
+			self.price = price
+
+			self.amount = self.price * self.kol
+	
+
+	@api.one
+	@api.depends('kol')
+	def _amount(self):
+		self.amount = self.price * self.kol  
 
 
 
@@ -667,6 +731,9 @@ class korm_receptura_line(models.Model):
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 	kol_tonna = fields.Float(digits=(10, 3), string=u"Кол-во на тонну", store=True, readonly=True)
 	procent = fields.Float(digits=(10, 1), string=u"%", store=True, readonly=True)
+	price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
+	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
+	
 
 
 
@@ -962,7 +1029,8 @@ class korm_racion(models.Model):
 				vals[par+'_korm'] = line.korm_analiz_pit_id[par] * kol_sv
 			
 			for par in param_pit:
-				self[par] += line.korm_analiz_pit_id[par] * kol_sv/self.sv_racion
+				if self.sv_racion>0:
+					self[par] += line.korm_analiz_pit_id[par] * kol_sv/self.sv_racion
 
 			self.korm_racion_pit_line.create(vals)
 
@@ -1208,7 +1276,7 @@ class korm_racion_line(models.Model):
 	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
 	#sorting = fields.Integer(string=u"Порядок", required=True, default=100)
 	date_start = fields.Date(string='Дата начала перехода', copy=False)
-	day = fields.Integer(string=u"Дне на переход", help="Дней на переход на новый корм")
+	day = fields.Integer(string=u"Дней на переход", help="Дней на переход на новый корм")
 	new_nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Новый корм', help="Корм на который необходимо перейти")
 	kol_new = fields.Float(digits=(10, 3), string=u"Кол-во новое", required=True)
 	stop = fields.Boolean(string=u"Стоп", default=False, help="Если Истина то прекращать кормить основным кормом через установленных Дней на переход и кормить новым кормом, Иначе давать как в последний день")

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_korm_analiz_sv_report_pivot" model="ir.ui.view">
+         <field name="name">korm_analiz_sv_report.pivot</field>
+         <field name="model">korm.korm_analiz_sv_report</field>
+         <field name="arch" type="xml">
+             <pivot string="Анализ потребления СВ" disable_linking="True">
+                 <!-- <field name="partner_id" type="col"/> -->
+                 <field name="stado_fiz_group_id" type="row"/>
+                 <field name="pok" type="row"/>
+                 <field name="date" interval="day" type="col"/>
+                 <!-- <field name="kol_ostatok" type="measure"/> -->
+                 <field name="kol" type="measure"/>
+                 <!-- <field name="kol_otk" type="measure"/> -->
+                 <!-- <field name="kol_racion" type="measure"/> -->
+                 <!-- <field name="otk_zachet" type="measure"/> -->
+                 
+             </pivot>
+         </field>
+    </record>
+
+  
+   
+
+    <record id="view_korm_analiz_sv_report_search" model="ir.ui.view">
+        <field name="name">korm_analiz_sv_report.search</field>
+        <field name="model">korm.korm_analiz_sv_report</field>
+        <field name="arch" type="xml">
+            <search string="Анализ потребления СВ">
+            
+                 <field name="stado_fiz_group_id"/>
+                
+                
+            </search>
+        </field>
+    </record>
+
+
+    <record id="filter_korm_analiz_sv_report" model="ir.filters">
+            <field name="name">За полседние 7 дней</field>
+            <field name="model_id">korm.korm_analiz_sv_report</field>
+            <field name="domain">[('date','&gt;=',(context_today()+relativedelta(days=-7)).strftime('%Y-%m-%d'))]</field>
+            <field name="is_default">1</field>
+            <field name="user_id"></field>
+            
+    </record>
+
+
+    <record id="view_korm_analiz_sv_report_graph" model="ir.ui.view">
+             <field name="name">korm_analiz_sv_report.graph</field>
+             <field name="model">korm.korm_analiz_sv_report</field>
+             <field name="arch" type="xml">
+                 <graph string="Анализ потребления СВ">
+                     <field name="date" type="row" interval="day"/>
+                     <field name="pok" type="col"/>
+                     <field name="kol" type="measure"/>
+                     
+                 </graph>
+             </field>
+        </record>
+
+
+    <record id="korm_analiz_sv_report_action" model="ir.actions.act_window">
+        <field name="name">Анализ потребления СВ</field>
+        <field name="res_model">korm.korm_analiz_sv_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="search_view_id" ref="view_korm_analiz_sv_report_search"/>
+        <!-- <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+
+    
+    <!-- <menuitem name="Sales" action="action_order_report_all" id="menu_report_product_all" parent="base.menu_sale_report" sequence="10"/> -->
+
+</data>
+</openerp>

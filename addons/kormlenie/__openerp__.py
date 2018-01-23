@@ -49,6 +49,7 @@
         'reports/korm_svod_report_view.xml',
         'reports/korm_receptura_report_view.xml',
         'reports/korm_ostatok_report_view.xml',
+        'reports/korm_analiz_sv_report_view.xml',
         'reports/korm_rashod_kormov_report_view.xml',
         'reports/korm_plan_fakt_report_view.xml',
         'views/korm_potrebnost.xml',

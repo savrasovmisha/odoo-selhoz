@@ -257,6 +257,8 @@ class korm_ostatok_report(models.Model):
 	_rec_name = 'stado_zagon_name'
 
 	
+	
+
 	date = fields.Date(string='Дата')
 	
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
@@ -270,8 +272,9 @@ class korm_ostatok_report(models.Model):
 	
 	kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
 	procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
-	sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	sred_kol_milk = fields.Float(digits=(10, 1), string=u"Ср. надой, кг/гол", group_operator="avg")
 	sv_golova = fields.Float(digits=(10, 1), string=u"СВ, кг/гол", group_operator="avg")
+	konversiay_korma = fields.Float(digits=(10, 1), string=u"Конверсия корма", group_operator="avg")
 	
 	_order = 'stado_zagon_name'
 
@@ -293,8 +296,12 @@ class korm_ostatok_report(models.Model):
 					l.kol_ostatok as kol_ostatok,
 					l.procent_ostatkov as procent_ostatkov,
 					z.name as stado_zagon_name,
-					s.sred_kol_milk as sred_kol_milk,
-					l.sv_golova as sv_golova
+					ml.kol as sred_kol_milk,
+					l.sv_golova as sv_golova,
+					case
+						when ml.kol>0 then l.sv_golova/ml.kol
+						else 0
+					end as konversiay_korma
 
 					
 				from korm_korm_ostatok_line l
@@ -303,6 +310,11 @@ class korm_ostatok_report(models.Model):
 				left join stado_struktura_line s on
 										(date_trunc('day',s.date) = date_trunc('day',l.date) and 
 										 s.stado_zagon_id = l.stado_zagon_id)
+
+				left join milk_nadoy_group m on (m.date = l.date)
+				left join milk_nadoy_group_line ml on 
+								(l.stado_zagon_id = ml.stado_zagon_id and
+								m.id = ml.milk_nadoy_group_id)
 
 				)
 		""" % self.pool['res.currency']._select_companies_rates())
@@ -1465,3 +1477,90 @@ class korm_buh_report(models.Model):
 #                          s.nomen_nomen_id,
 #                          kl.stado_fiz_group_id,
 #                          fg.stado_vid_fiz_group_id
+
+
+
+
+class korm_analiz_sv_report(models.Model):
+	_name = "korm.korm_analiz_sv_report"
+	_description = "Анализ потребления СВ"
+	_auto = False
+	_rec_name = 'stado_fiz_group_id'
+
+	
+	date = fields.Date(string='Дата')
+	
+	
+	#stado_fiz_group_name = fields.Char(string=u'Физиологическая группа (наим.)')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+	pok = fields.Char(string=u'Показатель')
+	#kol_golov_zagon = fields.Integer(string=u"Ср. кол-во голов в загоне", group_operator="avg")
+	#procent_raciona = fields.Integer(string=u"% дачи рациона", group_operator="avg")
+	#kol_korma_norma = fields.Float(digits=(10, 3), string=u"Дача корма по норме", group_operator="sum")
+	#kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
+	#kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+	
+	#kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+	#procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+	#sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	kol = fields.Float(digits=(10, 1), string=u"Кол-во кг/гол.", group_operator="avg")
+	
+	_order = 'stado_fiz_group_id'
+
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_korm_analiz_sv_report as (
+				WITH currency_rate as (%s)
+				SELECT
+					row_number() OVER () AS id,
+					z.date,
+					z.stado_fiz_group_id,
+					z.pok,
+					z.kol
+
+
+				FROM 	
+				(
+					(
+						select 
+							--l.id as id,
+							l.date as date,
+							l.stado_fiz_group_id as stado_fiz_group_id,
+							
+							case 
+								when l.sv_golova is Not Null then 'СВ'
+							else 'СВ' 
+							end as pok,
+							l.sv_golova as kol
+							
+
+							
+						from korm_korm_ostatok_line l
+					)
+
+					UNION
+
+					(
+						select 
+							--max(l.id) as id,
+							d.date as date,
+							l.stado_fiz_group_id as stado_fiz_group_id,
+							
+							case 
+								when avg(l.kol) is Not Null then 'Молоко'
+							else 'Молоко' 
+							end as pok,
+							sum(l.kol*l.kol_golov)/sum(l.kol_golov) as kol
+							
+
+							
+						from milk_nadoy_group_line l
+						left join milk_nadoy_group d on (d.id=l.milk_nadoy_group_id)
+						group by d.date, l.stado_fiz_group_id
+					)
+				) z
+					
+
+			)
+		""" % self.pool['res.currency']._select_companies_rates())

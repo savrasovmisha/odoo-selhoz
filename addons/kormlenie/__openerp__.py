@@ -37,6 +37,7 @@
         # 'views/stado_fiz_group.xml',
         # 'views/stado_zagon.xml',
         'views/korm_receptura.xml',
+        'views/korm_receptura_report.xml',
         'views/korm_racion.xml',
         'views/korm_racion_report.xml',
         'views/korm_norm.xml',

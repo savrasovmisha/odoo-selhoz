@@ -47,7 +47,7 @@
                             <notebook>
                                 <page string="Состав">
                                     <field name="korm_racion_line">
-                                        <tree string="korm_racion_line" editable="botton">
+                                        <tree string="korm_racion_line" editable="botton" colors="red:((amount == 0) or (kol == 0) or (price == 0))">
                                             <field name="sequence" widget="handle"/>
                                             <field name="constant" string="П"/>
                                             <field name="nomen_nomen_id"/>

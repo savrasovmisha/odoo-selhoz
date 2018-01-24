@@ -1011,6 +1011,7 @@ class korm_racion(models.Model):
 		self.korm_racion_pit_line.unlink()
 
 		for line in self.korm_racion_line:
+			line._nomen() #Пересчитаем каждый комр
 			self.sv_racion += line.kol*line.korm_analiz_pit_id.sv/1000
 		
 		for line in self.korm_racion_line:
@@ -1033,7 +1034,7 @@ class korm_racion(models.Model):
 					self[par] += line.korm_analiz_pit_id[par] * kol_sv/self.sv_racion
 
 			self.korm_racion_pit_line.create(vals)
-
+		self._raschet() #Пересчет общей стоимости
 			
 
 	name = fields.Char(string=u"Наименование", compute='return_name')

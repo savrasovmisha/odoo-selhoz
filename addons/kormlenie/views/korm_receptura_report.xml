@@ -4,7 +4,7 @@
    
         
 
-       <template id="report_korm_racion_view">
+       <template id="report_korm_receptura_view">
           
 
             
@@ -21,17 +21,12 @@
 
                         
                      <h3 style="margin-top: 18px;">
-                                Рацион кормления <br/>
-                                Физиологическая группа: <t t-esc="doc.stado_fiz_group_id.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
+                                Рецептура комбикорма <br/>
+                                Наименование: <t t-esc="doc.nomen_nomen_id.name"/> от <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
                         </h3>  
                         
                         <div style="margin-top: 30px;">
-                                Продуктивность:<br/>
-                                Молоко, л: <t t-esc="doc.milk"/><br/>
-                                Масса, кг: <t t-esc="doc.massa"/><br/>
-                                Жир, %: <t t-esc="doc.jir"/><br/>
-                                Белок, %: <t t-esc="doc.belok"/><br/>
-
+                             
                             
                                 <table class="table table-bordered table-condensed" style="page-break-inside: avoid; width: 100%;">
                                     <tr>
@@ -45,7 +40,7 @@
                                         <th>Дата анализа корма</th>
                                      </tr>
 
-                                    <t t-foreach="doc.korm_racion_line" t-as="line">
+                                    <t t-foreach="doc.korm_receptura_line" t-as="line">
                                      <tr >
                                         <td >
                                             <t t-esc="line.nomen_nomen_id.name"/> 
@@ -82,9 +77,9 @@
                                             
                                         
                                         <td></td>
-                                        <td align="right"><t t-esc="'{0:,.3f}'.format(doc.kol)"/></td>
+                                        <td align="right"><t t-esc="'{0:,.3f}'.format(doc.amount)"/></td>
                                         <td align="right"><t t-esc="'{0:,.2f}'.format(doc.price)"/></td>
-                                        <td align="right"><t t-esc="'{0:,.2f}'.format(doc.amount)"/> </td>
+                                        <td align="right"><t t-esc="'{0:,.2f}'.format(doc.price_amount)"/> </td>
                                         <td></td>
                                         
                                            
@@ -109,16 +104,16 @@
         </template>
 
         <report
-        id="report_korm_racion"
-        model="korm.racion"
-        string="Рацион кормления"
-        name="kormlenie.report_korm_racion_view"
-        file="kormlenie.report_korm_racion"
+        id="report_korm_receptura"
+        model="korm.receptura"
+        string="Рецептура комбикорма"
+        name="kormlenie.report_korm_receptura_view"
+        file="kormlenie.report_korm_receptura"
         report_type="qweb-pdf" />
 
 
 
-        <record id="kormlenie.report_korm_racion" model="ir.actions.report.xml">
+        <record id="kormlenie.report_korm_receptura" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="selhoz_base.paperformat_lowmargin" />
         </record>
 

@@ -9,7 +9,7 @@
                 <!-- REMEMBER, docs is the selected records either in form view or checked in list view (usually). So the line below says use the following template for each record that has been selected. -->
                 <t t-foreach="docs" t-as="doc">
                     <t>          
-                     <div class="page" style="font-size:20px;">   
+                     <div class="page" style="font-size:16px;">   
                          <!-- <link rel='stylesheet' href='/kormlenie/static/src/css/korm.css'/> -->
 
                         
@@ -17,8 +17,8 @@
                                 Остатки кормления № <t t-esc="doc.name"/> с <span t-field="doc.date" t-field-options="{&quot;format&quot;: &quot;dd.MM.yyyy&quot;}"/> <br/>
                         </h2>  
 
-                            <div style="margin-top: 50px;">
-                            <table class="table table-bordered  table-condensed" style="page-break-inside: avoid; width: 100%;">
+                            <div style="margin-top: 50px; font-size:14px">
+                            <table class="table table-bordered  table-condensed" style="page-break-inside: auto; width: 100%;">
                                 <tr>
                                     <th> № загона </th>
                                         
@@ -28,9 +28,9 @@
 
                         <t t-foreach="doc.korm_korm_ostatok_svod_line" t-as="svod">
                                  <tr  style="border: 1px solid black;">
-                                    <td >
+                                    <td style="font-size:16px;">
                                         <t t-foreach="svod.stado_zagon_id" t-as="stado_zagon_id">
-                                            <t t-esc="stado_zagon_id.name"/>, 
+                                            <t t-esc="stado_zagon_id.name"/>, <br/>
                                         </t> 
                                     </td>
                                     <td >

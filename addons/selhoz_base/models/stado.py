@@ -80,3 +80,6 @@ class stado_zagon(models.Model):
 	activ = fields.Boolean(string=u"Используется", default=True, oldname='active')
 	date_start = fields.Date(string=u"Дата начала", default=fields.Datetime.now)
 	date_end = fields.Date(string=u"Дата окончания")
+	doynie = fields.Boolean(string=u"Дойные", default=False)
+	mastit = fields.Boolean(string=u"Маститные", default=False)
+	suhostoy = fields.Boolean(string=u"Сухостой", default=False)

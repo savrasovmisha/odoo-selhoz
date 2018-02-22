@@ -603,6 +603,7 @@ class trace_milk(models.Model):
 
 	doyarka_id = fields.Many2one('res.partner', string='Доярка')
 	
+	parabone = fields.Integer(string=u"Получено с parabone", store=True, help=u'Молоко полученное с PARABONE, необходимо для распределения молока на загоны с маститными коровами')
 	vipoyka = fields.Integer(string=u"На выпойку", store=True, compute='_raschet_vipoyka')
 	utilizaciya = fields.Integer(string=u"Утилизированно", store=True)
 	sale_natura = fields.Integer(string=u"Реализованно", store=True, compute='_sale_result')

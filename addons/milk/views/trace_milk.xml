@@ -45,6 +45,7 @@
                             <group>
                                
                                 <group string="Движение молока, кг">
+                                    <field name="parabone" />
                                     <field name="vipoyka" />
                                     <field name="utilizaciya" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                     <field name="ostatok_lastday"/>

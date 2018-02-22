@@ -24,6 +24,9 @@
                             <field name="uniform_id"/>
                             <field name="utro"/>
                             <field name="vecher"/>
+                            <field name="doynie"/>
+                            <field name="mastit"/>
+                            <field name="suhostoy"/>
                         </group>
                         <group string="Период действия">
                             <field name="date_start"/>

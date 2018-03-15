@@ -190,6 +190,7 @@
                     <field name="nadoy_doy"/>
                     <field name="otk_nadoy_doy" string="Откл" help="Отклонение от предыдущего дня"/>
                     <field name="vipoyka"/>
+                    <field name="parabone"/>
                     <field name="utilizaciya" string="Утил- но"/>
                     <field name="sale_natura" string="Реал- но"/>
                     <field name="sale_zachet"/>

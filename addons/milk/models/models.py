@@ -1186,11 +1186,12 @@ class milk_nadoy_group(models.Model):
 	@api.one
 	@api.depends('milk_nadoy_group_line.kol_golov')
 	def return_kol_golov(self):
-		self.kol_golov = 0
+		self.kol_golov = self.nadoy_itog = 0
 		kol = 0
 		for line in self.milk_nadoy_group_line:
 			self.kol_golov += line.kol_golov
 			kol += line.kol_golov * line.kol
+			self.nadoy_itog += line.kol_golov * line.kol
 		if self.kol_golov>0:
 			self.nadoy_golova = kol / self.kol_golov
 
@@ -1319,6 +1320,8 @@ class milk_nadoy_group(models.Model):
 	
 	kol_golov = fields.Integer(string=u"Считано голов", compute='return_kol_golov', store=True, group_operator="avg", default=0)
 	nadoy_golova = fields.Float(digits=(3, 2), string=u"Надой на голову, л", compute='return_kol_golov', store=True, group_operator="avg")
+	nadoy_itog = fields.Integer(string=u"Надой всего, л", compute='return_kol_golov', store=True, group_operator="sum", default=0)
+	
 	#dd = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
 
 	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")

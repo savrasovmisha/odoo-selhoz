@@ -1,5 +1,5 @@
 sudo su - odoo -s /bin/bash
-openerp-server --addons-path=/home/smv/odoo/addons
+openerp-server --addons-path=/home/smv/odoo-selhoz/addons
 --auto-reload
 
 Формулы

@@ -15,6 +15,7 @@
                                 <field name="date" string="Дата"/>
                                 <field name="kol_golov"/>
                                 <field name="nadoy_golova"/>
+                                <field name="nadoy_itog"/>
                             </group>
                             <group>
                                 <field name="massage"/>

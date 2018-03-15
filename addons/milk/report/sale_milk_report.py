@@ -5,6 +5,7 @@ from openerp import models, fields, api
 from datetime import datetime, timedelta, date
 from openerp.exceptions import ValidationError
 from ..models.work_date import week_magic, last_day_of_month
+import json
 
 class sale_milk_report(models.Model):
     _name = "milk.sale_milk_report"
@@ -43,7 +44,6 @@ class sale_milk_report(models.Model):
             )
         """ % self.pool['res.currency']._select_companies_rates())
 
-import json
 class sale_milk_dashboard(models.Model):
     _name = "milk.sale_milk_dashboard"
     _description = "Sales Milk Dashboard"
@@ -892,3 +892,60 @@ class milk_buh_report(models.Model):
             'target': 'new',
 
             }
+
+
+
+# SELECT *
+
+# FROM 
+# (
+# select 
+#     tm.date_doc,
+#     tm.valoviy_nadoy-tm.parabone as nadoy_karusel,
+#     mng.kol_golov,
+#     mng.nadoy_itog,
+#     mngl.stado_zagon_id,
+#     mngl.kol_golov,
+#     mngl.kol,
+#     ssl.kol_golov_zagon,
+#     round(mngl.kol/mng.nadoy_itog*tm.valoviy_nadoy, 2) as nadoy_na_gol
+    
+
+# from 
+#     milk_trace_milk tm
+#     left join milk_nadoy_group mng on (tm.date_doc = mng.date)
+#     join milk_nadoy_group_line mngl on (mngl.milk_nadoy_group_id = mng.id)
+    
+#     left join stado_struktura_line ssl on (ssl.date::date = tm.date_doc  
+#                                         and ssl.stado_zagon_id = mngl.stado_zagon_id)
+#     --milk_nadoy_group_line mngl
+# --left join milk_nadoy_group mng on (mng.id = mngl.milk_nadoy_group_id)
+# --left join milk_trace_milk tm on (tm.date_doc = mng.date)
+# )
+# UNION ALL
+# (
+# select 
+#     tm.date_doc,
+#     tm.parabone,
+#     mng.kol_golov,
+#     mng.nadoy_itog,
+#     mngl.stado_zagon_id,
+#     mngl.kol_golov,
+#     mngl.kol,
+#     ssl.kol_golov_zagon,
+#     round(mngl.kol/mng.nadoy_itog*tm.valoviy_nadoy, 2) as nadoy_na_gol
+    
+
+# from 
+#     milk_trace_milk tm
+#     left join milk_nadoy_group mng on (tm.date_doc = mng.date)
+#     join milk_nadoy_group_line mngl on (mngl.milk_nadoy_group_id = mng.id)
+    
+#     left join stado_struktura_line ssl on (ssl.date::date = tm.date_doc  
+#                                         and ssl.stado_zagon_id = mngl.stado_zagon_id)
+
+
+# )
+
+# where tm.date_doc>'01.03.2018'
+# order by tm.date_doc

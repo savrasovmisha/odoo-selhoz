@@ -949,3 +949,31 @@ class milk_buh_report(models.Model):
 
 # where tm.date_doc>'01.03.2018'
 # order by tm.date_doc
+
+
+
+# select 
+#     tm.date_doc,
+#     --tm.valoviy_nadoy-tm.parabone as nadoy_karusel,
+#     --mng.kol_golov,
+#     --mng.nadoy_itog,
+#     --mngl.stado_zagon_id,
+#     --mngl.kol_golov,
+#     --mngl.kol,
+#     sum(ssl.kol_golov_zagon),
+#     avg(round(mngl.kol/mng.nadoy_itog*tm.valoviy_nadoy, 2)) as nadoy_na_gol,
+#     sum(round(mngl.kol/mng.nadoy_itog*tm.valoviy_nadoy*ssl.kol_golov_zagon, 0)) as nadoy_zagon
+    
+
+# from 
+#     milk_trace_milk tm
+#     left join milk_nadoy_group mng on (tm.date_doc = mng.date)
+#     join milk_nadoy_group_line mngl on (mngl.milk_nadoy_group_id = mng.id)
+    
+#     left join stado_struktura_line ssl on (ssl.date::date = tm.date_doc  
+#                                         and ssl.stado_zagon_id = mngl.stado_zagon_id)
+#     left join stado_zagon sz on (sz.id = ssl.stado_zagon_id)
+
+# where sz.doynie = True and sz.mastit = False or sz.mastit is null
+# group by tm.date_doc
+# order by tm.date_doc desc

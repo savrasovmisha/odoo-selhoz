@@ -195,3 +195,12 @@ objects provide these functions:
 •  from_string(value) : This converts a string into a date or datetime object.
 •  to_string(value) : This converts a date or datetime object into a string in
 the format expected by the server.
+
+
+####################################################################3
+###       PgAdmin 4  #############################33
+ЗАпуск
+перейти в папку установки cd pgadmin4/
+source bin/activate
+python lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
+################################################################

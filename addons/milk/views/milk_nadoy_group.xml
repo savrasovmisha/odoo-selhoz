@@ -13,13 +13,19 @@
                             <group>
                                 
                                 <field name="date" string="Дата"/>
+                                <field name="massage"/>
+                                <field name="dostovernost"/>
                                 <field name="kol_golov"/>
                                 <field name="nadoy_golova"/>
                                 <field name="nadoy_itog"/>
                             </group>
-                            <group>
-                                <field name="massage"/>
-                                <field name="dostovernost"/>
+                            <group string='Фактические показатели'>
+                                <field name="kol_golov_parabone"/>
+                                <field name="nadoy_parabone"/>
+                                <field name="kol_golov_karusel"/>
+                                <field name="nadoy_karusel"/>
+                                <field name="valoviy_nadoy"/>
+                                
 
                                 
                             </group>
@@ -33,6 +39,14 @@
                                         type="object"
                                         class="oe_stat_button oe_edit_only"
                                         icon="fa-refresh" string="Загрузить"
+                                       >
+                                    </button>
+                                </div>
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_raschet"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Расчитать"
                                        >
                                     </button>
                                 </div>
@@ -89,7 +103,7 @@
                          
                          
                             <notebook>
-                                <page string="Надой по загонам">
+                                <page string="Надой по загонам (Считано)">
                                     <field name="milk_nadoy_group_line">
                                         <tree string="milk_nadoy_group_line" editable="botton">
                                             <field name="stado_zagon_id"/>
@@ -106,6 +120,26 @@
                                             <field name="procent_35_40"/>
                                             <field name="procent_40_45"/>
                                             <field name="procent_45"/>
+                                                                                  
+                                           
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="Надой по загонам (Факт)">
+                                    <field name="milk_nadoy_group_fakt_line">
+                                        <tree string="milk_nadoy_group_fakt_line" editable="botton">
+                                            <field name="name"/>
+                                            <field name="stado_zagon_id"/>
+                                            <field name="stado_fiz_group_id"/>
+                                            <field name="kol_golov"/>
+                                            <field name="kol_golov_zagon"/>
+                                            <field name="procent_neschitannih_golov"/>
+                                            <field name="nadoy_golova"/>
+                                            <field name="nadoy_golova_fakt"/>
+                                            <field name="nadoy_zagon"/>
+                                            <field name="nadoy_zagon_fakt"/>
+                                            <field name="procent_nadoy"/>
+
                                                                                   
                                            
                                         </tree>

@@ -1304,7 +1304,7 @@ class milk_nadoy_group(models.Model):
 			if not self.massage == u'Обновление данных не требуется':
 				self.massage = u'Данные загружены'
 
-			tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date)], limit=1)
+			tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date),], limit=1)
 			if len(tm)>0:
 				cow_doy = tm.cow_doy
 				otk = (cow_doy - self.kol_golov)/cow_doy
@@ -1312,6 +1312,110 @@ class milk_nadoy_group(models.Model):
 					self.dostovernost = True
 				else:
 					self.dostovernost = False
+
+	
+	@api.one
+	def action_raschet(self):
+		
+		"""Распределяет считанное молоко по молокосчетчикам на фактический надой"""
+		
+		line = self.env['milk.nadoy_group_fakt_line']
+		del_line = line.search([('milk_nadoy_group_id',	'=',	self.id)])
+		del_line.unlink()
+		zapros = """SELECT
+						sz.id,
+						sz.name,
+						case
+							when sz.doynie = True and (sz.mastit = False or sz.mastit is Null) then 'Карусель'
+							when sz.doynie = True and sz.mastit = True then 'Парабона'
+						end as zal_doeniya,
+						ssl.kol_golov_zagon
+					FROM stado_zagon sz
+					left join stado_struktura_line ssl on (ssl.stado_zagon_id = sz.id)
+					WHERE sz.date_start<='%(date)s' and 
+							(sz.date_end>='%(date)s' or sz.date_end is Null) and
+							ssl.date::date = '%(date)s' and
+							sz.doynie = True 
+
+				""" % {'date': self.date}
+		#print zapros
+		self._cr.execute(zapros,)
+		zagons = self._cr.fetchall()
+		
+		self.kol_golov_karusel = self.kol_golov_parabone = 0
+
+		for zagon in zagons:
+			zal_doeniya = zagon[2]
+			kol_golov_zagon = zagon[3]
+			self.milk_nadoy_group_fakt_line.create({
+									'milk_nadoy_group_id':   self.id,
+									
+									'stado_zagon_id':   zagon[0],
+									'name':   zal_doeniya,
+									'kol_golov_zagon':   kol_golov_zagon,
+									
+									})
+
+			if zal_doeniya == u'Карусель':
+				self.kol_golov_karusel += kol_golov_zagon
+			else:
+				self.kol_golov_parabone += kol_golov_zagon
+
+		#Подставляем значения считанного молока, если нет загруженного молока то загружаем из предыдущего дня
+		for line in self.milk_nadoy_group_fakt_line:
+			zapros = """select
+								mnl.kol_golov,
+								mnl.kol
+						from milk_nadoy_group_line mnl, milk_nadoy_group mn 
+						where mn.id=mnl.milk_nadoy_group_id and 
+							  mnl.stado_zagon_id=%(id)s and
+							  mn.date<='%(date)s'
+						Order by mn.date desc
+						LIMIT 1 
+
+				""" % {'date': self.date, 'id': line.stado_zagon_id.id}
+			
+			self._cr.execute(zapros,)
+			schitanno = self._cr.fetchone()
+			if len(schitanno)>0:
+				line.kol_golov = schitanno[0]
+				line.nadoy_golova = schitanno[1]
+
+		
+		self.nadoy_parabone=self.nadoy_karusel=self.valoviy_nadoy=0
+		
+		tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date),], limit=1)
+		if len(tm)>0:
+			self.valoviy_nadoy = tm.valoviy_nadoy
+			self.nadoy_parabone = tm.parabone
+			self.nadoy_karusel = self.valoviy_nadoy - self.nadoy_parabone
+			
+
+			nadoy_karusel_zagon_itog = 0
+
+			for line in self.milk_nadoy_group_fakt_line:
+				if line.name == u'Карусель':
+					if line.kol_golov>0 and line.kol_golov_zagon>0:
+							line.procent_neschitannih_golov = 100 - line.kol_golov*100/line.kol_golov_zagon
+
+					line.nadoy_zagon = line.kol_golov_zagon * line.nadoy_golova
+
+					nadoy_karusel_zagon_itog += line.nadoy_zagon
+				
+
+
+			if nadoy_karusel_zagon_itog>0:
+				
+				for line in self.milk_nadoy_group_fakt_line:
+					
+					if line.name == u'Карусель' and line.kol_golov_zagon>0:
+						line.nadoy_zagon_fakt = line.nadoy_zagon/nadoy_karusel_zagon_itog * self.nadoy_karusel
+						line.nadoy_golova_fakt = line.nadoy_zagon_fakt/line.kol_golov_zagon
+					else:
+						line.nadoy_zagon_fakt = line.kol_golov_zagon / self.kol_golov_parabone * self.nadoy_parabone
+						line.nadoy_golova_fakt = line.nadoy_zagon_fakt/line.kol_golov_zagon
+
+					line.procent_nadoy = line.nadoy_zagon_fakt/self.valoviy_nadoy*100
 
 
 
@@ -1322,6 +1426,13 @@ class milk_nadoy_group(models.Model):
 	nadoy_golova = fields.Float(digits=(3, 2), string=u"Надой на голову, л", compute='return_kol_golov', store=True, group_operator="avg")
 	nadoy_itog = fields.Integer(string=u"Надой всего, л", compute='return_kol_golov', store=True, group_operator="sum", default=0)
 	
+	kol_golov_parabone = fields.Integer(string=u"Голов парабона", store=True, group_operator="avg", default=0)
+	kol_golov_karusel = fields.Integer(string=u"Голов карусель", store=True, group_operator="avg", default=0)
+	valoviy_nadoy = fields.Integer(string=u"Валовый надой, кг", store=True, group_operator="sum", default=0)
+	nadoy_parabone = fields.Integer(string=u"Надой парабона, кг", store=True, group_operator="sum", default=0)
+	nadoy_karusel = fields.Integer(string=u"Надой карусель, кг", store=True, group_operator="sum", default=0)
+
+
 	#dd = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
 
 	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
@@ -1364,6 +1475,7 @@ class milk_nadoy_group(models.Model):
 	procent_graph = fields.Binary(string = u"График")
 
 	milk_nadoy_group_line = fields.One2many('milk.nadoy_group_line', 'milk_nadoy_group_id', string=u"Строка надоя по группам")
+	milk_nadoy_group_fakt_line = fields.One2many('milk.nadoy_group_fakt_line', 'milk_nadoy_group_id', string=u"Строка Фактический надоя по группам")
 
 	
 
@@ -1400,3 +1512,53 @@ class milk_nadoy_group_line(models.Model):
 	
 	milk_nadoy_group_id = fields.Many2one('milk.nadoy_group',
 		ondelete='cascade', string=u"Надой молока по группам", required=True)	
+
+
+
+class milk_nadoy_group_fakt_line(models.Model):
+	_name = 'milk.nadoy_group_fakt_line'		
+	"""Строка Фактического надоя по группам. Надой в разрезе загонов"""
+	
+	@api.multi
+	@api.depends('milk_nadoy_group_id.date')
+	def return_date(self):
+		if self.milk_nadoy_group_id.date:
+			for line in self:
+				line.date = self.milk_nadoy_group_id.date
+
+	@api.multi
+	#@api.depends('')
+	def return_name(self):
+		for line in self:
+			if line.stado_zagon_id:
+				if self.stado_zagon_id.doynie == True and (line.stado_zagon_id.mastit == False or line.stado_zagon_id.mastit is None):
+					line.name = "Карусель"
+				elif line.stado_zagon_id.doynie == True and line.stado_zagon_id.mastit == True:
+					line.name = "Парабона"
+
+				if line.kol_golov>0 and line.kol_golov_zagon>0:
+					line.procent_neschitannih_golov = 100 - line.kol_golov*100/line.kol_golov_zagon
+
+				line.nadoy_zagon = line.kol_golov_zagon * line.nadoy_golova
+
+
+	
+	#, related='stado_zagon_id.stado_fiz_group_id'
+	name = fields.Char(string='Зал доения', default='New', compute='return_name', store=True)
+	date = fields.Date(string='Дата', store=True, compute='return_date')
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id', readonly=True,  store=True)
+	
+	kol_golov = fields.Integer(string=u"Считано голов", store=True, group_operator="avg", default=0)
+	kol_golov_zagon = fields.Integer(string=u"Голов в загоне", store=True, group_operator="avg", default=0)
+	procent_neschitannih_golov = fields.Float(digits=(3, 1), string=u"% несчитанных голов", compute='return_name', store=True, group_operator="avg", default=0)
+	nadoy_golova = fields.Float(digits=(3, 2), string=u"Считано Ср. над/гол, л.", store=True, group_operator="avg", default=0)
+	nadoy_golova_fakt = fields.Float(digits=(3, 2), string=u"Ср. над/гол, кг.", store=True, group_operator="avg", default=0)
+	nadoy_zagon = fields.Integer( string=u"Считано Надой по загону, л.", compute='return_name', store=True, group_operator="sum", default=0)
+	nadoy_zagon_fakt = fields.Integer( string=u"Надой по загону, кг.", store=True, group_operator="sum", default=0)
+	procent_nadoy = fields.Float(digits=(3, 1), string=u"% надоя в группе", store=True, group_operator="avg", default=0)
+	
+	
+	
+	milk_nadoy_group_id = fields.Many2one('milk.nadoy_group',
+		ondelete='cascade', string=u"Надой молока по группам", required=True)

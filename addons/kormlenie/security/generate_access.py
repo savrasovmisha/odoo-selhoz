@@ -46,6 +46,7 @@ spisok.append(['korm.buh_report',''])
 
 spisok.append(['stado.fiz_group',''])
 spisok.append(['stado.zagon',''])
+spisok.append(['korm.analiz_potrebleniya_kormov_report',''])
 
 
 print "id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink"

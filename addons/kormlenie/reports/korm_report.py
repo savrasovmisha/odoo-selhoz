@@ -1564,3 +1564,112 @@ class korm_analiz_sv_report(models.Model):
 
 			)
 		""" % self.pool['res.currency']._select_companies_rates())
+
+
+
+class korm_analiz_potrebleniya_kormov_report(models.Model):
+	_name = "korm.analiz_potrebleniya_kormov_report"
+	_description = "Анализ потребления кормов"
+	_auto = False
+	_rec_name = 'stado_fiz_group_id'
+
+	
+	date = fields.Date(string='Дата')
+	
+	group_pok = fields.Char(string=u'Группа показателя')
+	pok = fields.Char(string=u'Показателя')
+	
+	#stado_fiz_group_name = fields.Char(string=u'Физиологическая группа (наим.)')
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид Физиологической группы')
+	
+	kol_golov_zagon = fields.Integer(string=u"Поголовье", group_operator="sum")
+	#procent_raciona = fields.Integer(string=u"% дачи рациона", group_operator="avg")
+	kol_na_golovu = fields.Float(digits=(10, 3), string=u"Кол-во на голову", group_operator="avg")
+	kol_na_zagon = fields.Float(digits=(10, 3), string=u"Кол-во на загон", group_operator="sum")
+	#kol_korma_fakt = fields.Float(digits=(10, 3), string=u"Дача корма по факту", group_operator="sum")
+	#kol_korma_otk = fields.Float(digits=(10, 3), string=u"Откл.", group_operator="sum")
+	
+	#kol_ostatok = fields.Float(digits=(10, 3), string=u"Кол-во остаток корма", group_operator="sum")
+	#procent_ostatkov = fields.Float(digits=(10, 1), string=u"% остатков", group_operator="avg")
+	#sred_kol_milk = fields.Float(digits=(10, 1), string=u"Средний надой", group_operator="avg")
+	#kol = fields.Float(digits=(10, 1), string=u"Кол-во кг/гол.", group_operator="avg")
+	
+	_order = 'stado_fiz_group_id'
+
+	def init(self, cr):
+		tools.sql.drop_view_if_exists(cr, self._table)
+		cr.execute("""
+			create or replace view korm_analiz_potrebleniya_kormov_report as (
+				WITH currency_rate as (%s)
+				SELECT
+					row_number() OVER () AS id,
+					z.date,
+					z.group_pok,
+					z.pok,
+					z.stado_zagon_id,
+					z.stado_fiz_group_id,
+					z.stado_vid_fiz_group_id,
+					z.kol_golov_zagon,
+					z.kol_na_golovu,
+					z.kol_na_zagon
+
+				FROM
+
+					(
+						(
+						SELECT
+							mn.date,
+							case
+								when mn.stado_zagon_id>0 then 'Молоко'
+							end as group_pok,
+							case
+								when mn.stado_zagon_id>0 then 'Валовый надой'
+							end as pok,
+
+							
+							mn.stado_zagon_id,
+							mn.stado_fiz_group_id,
+							fg.stado_vid_fiz_group_id,
+							mn.kol_golov_zagon,
+							mn.nadoy_golova_fakt as kol_na_golovu,
+							mn.nadoy_zagon_fakt as kol_na_zagon
+						FROM milk_nadoy_group_fakt_line mn
+						left join stado_fiz_group fg on (fg.id = mn.stado_fiz_group_id)
+						)
+					UNION
+						(
+						SELECT
+							k.date::date,
+							case
+								when k.id>0 then 'Корма'
+							end as group_pok,
+							n.name as pok,
+							k.stado_zagon_id,
+							k.stado_fiz_group_id,
+							fg.stado_vid_fiz_group_id,
+							z2.kol_golov_zagon as kol_golov_zagon,
+							case
+								when z2.kol_golov_zagon>0 then k.kol/z2.kol_golov_zagon
+								else 0
+							end as kol_na_golovu,
+							k.kol as kol_na_zagon
+
+						FROM reg_rashod_kormov as k
+						left join nomen_nomen n on (n.id = k.nomen_nomen_id)
+						left join stado_zagon z on (z.id = k.stado_zagon_id)
+						left join (select 
+															date::date as date, 
+															stado_zagon_id,
+															max(kol_golov_zagon) as kol_golov_zagon
+														   from stado_struktura_line
+														   group by date::date, stado_zagon_id) z2 
+													on (z2.date::date = k.date::date and
+														z2.stado_zagon_id = k.stado_zagon_id)
+						left join stado_fiz_group fg on (fg.id = k.stado_fiz_group_id)
+						)
+					) as z
+
+			)
+		""" % self.pool['res.currency']._select_companies_rates())

@@ -2865,7 +2865,14 @@ class korm_rashod_kormov(models.Model):
 		result = super(korm_rashod_kormov, self).create(vals)
 		return result
 
+	@api.multi
+	def unlink(self):
 
+		for pp in self:
+			if pp.state != 'done':
+				raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+		return super(korm_rashod_kormov, self).unlink()
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)

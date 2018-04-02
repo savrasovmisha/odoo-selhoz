@@ -591,6 +591,9 @@ class korm_buh_report(models.Model):
 	date_start = fields.Date(string='Дата начала', required=True, index=True, copy=False, compute='return_name')
 	date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
 	
+	po_fiz_group = fields.Boolean(string=u"Формировать по физиологическим группам (по рационам)")
+
+	list_nomer = fields.Integer(string=u"Номер листа", default=0)
 	
 	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
 	
@@ -659,9 +662,9 @@ class korm_buh_report(models.Model):
 			total_rows = data_pivot['date'].count()  #Кол-во строк данных
 			total_cols = len(data_pivot.columns)   #Кол-во колонок в данных
 
-
+			self.list_nomer += 1
 			
-			worksheet = workbook.add_worksheet(name_group[:30]) #Обрезка имени до 30 символов
+			worksheet = workbook.add_worksheet(str(self.list_nomer) + name_group[:27]) #Обрезка имени до 30 символов
 			border_format=workbook.add_format({
 										'border':1
 										 
@@ -1077,6 +1080,127 @@ class korm_buh_report(models.Model):
 						data_pivot.insert(1, 'Total', Total)
 						name_group = (stado_podvid_fiz_group.name+ ' ' +stado_vid_fiz_group.name)[:30]
 						write_sheet(workbook, name_group , data_pivot)
+
+						
+
+						#Формирование листов по видам (рационам) групп кормления
+						if self.po_fiz_group == True:
+							stado_fiz_group_ids = self.env['stado.fiz_group'].search([('stado_podvid_fiz_group_id', '=', stado_podvid_fiz_group.id)]) 
+							for stado_fiz_group in stado_fiz_group_ids:
+								zapros = """
+											select DISTINCT
+												k.id
+
+											from reg_rashod_kormov r
+											left join korm_racion k on (k.id = r.korm_racion_id)
+											left join stado_fiz_group fg on (fg.id = r.stado_fiz_group_id)
+											where 	r.date::date>='%s' and r.date::date<='%s' and
+													r.stado_fiz_group_id=%s and k.id is not Null
+											--Order by k.date
+									
+
+									""" %(self.date_start, self.date_end, stado_fiz_group.id)
+								#print zapros
+								self.env.cr.execute(zapros,)
+								rez_racions = self.env.cr.fetchall()
+								if len(rez_racions)>0:
+
+									korm_racion_ids = self.env['korm.racion'].browse([racions for racions, in rez_racions])
+									#print 'kkkkkkkkk====', korm_racion_ids 
+							
+
+									for korm_racion in korm_racion_ids:
+
+										#print 'rrrrrrrrrrrrrrrr=', racion
+										zapros = """select 
+												n.name,
+												r.date::date,
+												r.nomen_nomen_id,
+												r.kol as kol_fakt
+											from reg_rashod_kormov r
+											left join nomen_nomen n on (n.id=r.nomen_nomen_id)
+											left join stado_fiz_group fg on (fg.id = r.stado_fiz_group_id)
+											
+											where r.date::date>='%s' and r.date::date<='%s' and
+													fg.stado_vid_fiz_group_id=%s and
+													fg.stado_podvid_fiz_group_id=%s and
+													r.korm_racion_id=%s
+											
+											
+
+											""" %(self.date_start, self.date_end, stado_vid_fiz_group.id, stado_podvid_fiz_group.id, korm_racion.stado_fiz_group_id.id)
+										#print zapros
+										self.env.cr.execute(zapros,)
+										res = self.env.cr.fetchall()
+										if len(res)>0:
+											#pd.core.format.header_style = None
+
+											datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
+
+
+											table = pivot_table(datas, values=['kol_fakt'], 
+															index=['date'],
+															#rows=['date'], 
+															columns=['name'], 
+															aggfunc=np.sum, 
+															#margins=True
+															)
+
+
+													
+											#print table2
+
+											data_pivot= DataFrame(data=table) 
+											data_pivot.fillna(0, inplace=True)
+											data_pivot.reset_index(inplace=True)
+
+
+
+											data_pivot.columns = data_pivot.columns.droplevel()
+
+											data_pivot['Total'] = 0
+											data_pivot.rename(columns={"": "date"}, inplace=True)
+											for index, row in data_pivot.iterrows():
+												#row['Total']=200
+												#data_pivot.set_value(index, 'Total',200)
+												l = row['date']
+												
+												date=l#.strftime("%Y-%m-%d")
+												zapros = """select 
+																	
+																	to_char(s.date, 'YYYY-mm-dd'),
+																	sum(s.kol_golov_zagon) as kol_golov_zagon
+																	
+																from stado_struktura_line s
+																left join stado_fiz_group fg on (fg.id = s.stado_fiz_group_id)
+																where to_char(s.date, 'YYYY-mm-dd')='%s' and
+																fg.stado_vid_fiz_group_id=%s and
+																fg.stado_podvid_fiz_group_id=%s and
+																s.stado_fiz_group_id = %s                                        
+																Group by to_char(s.date, 'YYYY-mm-dd')
+																
+																					
+																
+
+																""" % (date, stado_vid_fiz_group.id, stado_podvid_fiz_group.id, stado_fiz_group.id)
+												self.env.cr.execute(zapros,)
+												gol = self.env.cr.fetchone()
+												if gol!=None:
+													if len(gol)>0:
+														data_pivot.loc[index, "Total"] = gol[1]
+												#print row['date'], row['Total']
+
+
+
+
+
+											print "POOOOOOOOOOOOOOOOOOOOOOOOOOO"
+											#print data_pivot
+											Total = data_pivot['Total']
+											data_pivot.drop(labels=['Total'], axis=1,inplace = True)
+											data_pivot.insert(1, 'Total', Total)
+											name_group = (stado_fiz_group.name+ ' ' +stado_vid_fiz_group.name)[:30]
+											write_sheet(workbook, name_group , data_pivot)
 
 			
 

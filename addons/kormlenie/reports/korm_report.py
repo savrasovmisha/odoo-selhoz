@@ -593,7 +593,7 @@ class korm_buh_report(models.Model):
 	
 	po_fiz_group = fields.Boolean(string=u"Формировать по физиологическим группам (по рационам)")
 
-	list_nomer = fields.Integer(string=u"Номер листа", default=0)
+	#list_nomer = fields.Integer(string=u"Номер листа", default=0)
 	
 	#stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
 	
@@ -627,7 +627,7 @@ class korm_buh_report(models.Model):
 		# j1 = json.loads(table)
 		# print j1
 
-		print table
+		#print table
 
 		nn = [0]
 		for c in table.columns:
@@ -645,15 +645,17 @@ class korm_buh_report(models.Model):
 				r.append(table.ix[a,b])
 			rr.append(r)
 		#tt = datas.reset_index().to_json(orient='index')
-		print rr
+		#print rr
 
 		return rr
 
 	@api.multi
 	def report_print(self):#, cr, uid, ids, context=None):
+		"""Сводные ведомости"""
+
 		self.ensure_one()
 		
-		def write_sheet(workbook, name_group, data_pivot):
+		def write_sheet(workbook, name_group, data_pivot, list_nomer='', korm_racion=None, normi_dict=None):
 			start_row_num = 13 #Начало данных таблицы
 			start_col_num = 2 #Начало названий корма
 
@@ -662,9 +664,16 @@ class korm_buh_report(models.Model):
 			total_rows = data_pivot['date'].count()  #Кол-во строк данных
 			total_cols = len(data_pivot.columns)   #Кол-во колонок в данных
 
-			self.list_nomer += 1
+			#self.list_nomer += 1
 			
-			worksheet = workbook.add_worksheet(str(self.list_nomer) + name_group[:27]) #Обрезка имени до 30 символов
+			list_name = str(list_nomer) + ' ' + name_group
+
+			
+				
+
+
+
+			worksheet = workbook.add_worksheet(list_name[:30]) #Обрезка имени до 30 символов
 			border_format=workbook.add_format({
 										'border':1
 										 
@@ -748,7 +757,12 @@ class korm_buh_report(models.Model):
 			worksheet.write(5, 2, u'Животноводческий комплекс', text_format_head_bold)
 
 			worksheet.write(6, 0, u'Группа скота', text_format_head)
-			worksheet.write(6, 2, name_group, text_format_head_bold)                    
+			if self.po_fiz_group and korm_racion !=None:
+				name_full = name_group + u' (рацион от ' + str(korm_racion.date) + ')'
+				worksheet.write(6, 2, name_full, text_format_head_bold)     
+			else:
+				worksheet.write(6, 2, name_group, text_format_head_bold)                    
+				        
 
 
 			worksheet.merge_range('A9:B9', u'Норма на одну голову, кг', format_table_head)
@@ -771,6 +785,14 @@ class korm_buh_report(models.Model):
 			for col_num, value in enumerate(data_pivot.columns.values):
 				worksheet.write(12, col_num, value, format_table_head)
 				worksheet.set_column(0, col_num+1, 10) #Задаем ширину колонки
+
+				#Вставляем нормы из рациона
+				if self.po_fiz_group and normi_dict !=None:
+					if value in normi_dict: #проверяем есть ли такой корм в словаре
+						norma = normi_dict[value]
+						worksheet.write(8, col_num, norma, format_table_float)
+
+
 				num=col_num + 1
 
 
@@ -790,9 +812,9 @@ class korm_buh_report(models.Model):
 			row=start_row_num+1
 			for index, rows in data_pivot.iterrows():
 				col=0
-				print rows
+				#print rows
 				for i, val in enumerate(rows):
-					print val
+					#print val
 					if i>0:
 						worksheet.write(row, col, val, format_table_int)
 					else:
@@ -853,12 +875,37 @@ class korm_buh_report(models.Model):
 				col_num+=1
 
 
+			#Лимит на месяц
+			if self.po_fiz_group and korm_racion !=None:
+				col_num = start_col_num
+				for i in range(len(data_pivot.columns)-1):
+					
+					worksheet.write_formula(10, col_num,
+										'{=%s*%s}' % (xl_rowcol_to_cell(8, col_num),
+															xl_rowcol_to_cell(row_num, 1)), format_table_int)
+					col_num+=1
+
+
+
+
+
 			row_num += 1
 			#worksheet.write(row_num, 0, u'Остаток лимита', format_table_head)
 			worksheet.merge_range('%s:%s' % (xl_rowcol_to_cell(row_num, 0),
 												xl_rowcol_to_cell(row_num, 1)), 
 								  u'Остаток лимита', 
 								  format_table_head)
+			
+			#Остаток лимита
+			if self.po_fiz_group and korm_racion !=None:
+				col_num = start_col_num
+				for i in range(len(data_pivot.columns)-2):
+					
+					worksheet.write_formula(row_num, col_num,
+										'{=%s-%s}' % (xl_rowcol_to_cell(10, col_num),
+															xl_rowcol_to_cell(row_num-1, col_num)), format_table_int)
+					col_num+=1
+
 			
 
 			#Установки печати
@@ -897,7 +944,8 @@ class korm_buh_report(models.Model):
 
 		workbook = xlsxwriter.Workbook(output_filename, {'default_date_format': 'DD.MM.YYYY'})
 
-
+		list_nomer = '' #Номерация листов. 1,  1.1, 2, 2.2
+		list_nomer_vid = 0
 		#writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
 		stado_vid_fiz_group_ids = self.env['stado.vid_fiz_group'].search([])
 		
@@ -986,11 +1034,17 @@ class korm_buh_report(models.Model):
 				Total = data_pivot['Total']
 				data_pivot.drop(labels=['Total'], axis=1,inplace = True)
 				data_pivot.insert(1, 'Total', Total)
+				
+				list_nomer_vid += 1
+				list_nomer = str(list_nomer_vid) + '.'
+				write_sheet(workbook, stado_vid_fiz_group.name, data_pivot, list_nomer)
 
-				write_sheet(workbook, stado_vid_fiz_group.name, data_pivot)
+
 
 
 				#Формирование листов по подвидам групп кормления
+				
+				list_nomer_podvid = 0
 				stado_podvid_fiz_group_ids = self.env['stado.podvid_fiz_group'].search([]) 
 				for stado_podvid_fiz_group in stado_podvid_fiz_group_ids:
 					
@@ -1078,12 +1132,17 @@ class korm_buh_report(models.Model):
 						Total = data_pivot['Total']
 						data_pivot.drop(labels=['Total'], axis=1,inplace = True)
 						data_pivot.insert(1, 'Total', Total)
-						name_group = (stado_podvid_fiz_group.name+ ' ' +stado_vid_fiz_group.name)[:30]
-						write_sheet(workbook, name_group , data_pivot)
+						name_group = (stado_podvid_fiz_group.name+ ' ' +stado_vid_fiz_group.name)
+						
+						list_nomer_podvid += 1
+						list_nomer = str(list_nomer_vid) + '.' + str(list_nomer_podvid)
+						write_sheet(workbook, name_group , data_pivot, list_nomer)
 
 						
 
 						#Формирование листов по видам (рационам) групп кормления
+
+						list_nomer_racion = 0
 						if self.po_fiz_group == True:
 							stado_fiz_group_ids = self.env['stado.fiz_group'].search([('stado_podvid_fiz_group_id', '=', stado_podvid_fiz_group.id)]) 
 							for stado_fiz_group in stado_fiz_group_ids:
@@ -1107,11 +1166,47 @@ class korm_buh_report(models.Model):
 
 									korm_racion_ids = self.env['korm.racion'].browse([racions for racions, in rez_racions])
 									#print 'kkkkkkkkk====', korm_racion_ids 
+									#print "POOOOOOOOOOOOOOOOOOOOOOOOOOO"
 							
 
 									for korm_racion in korm_racion_ids:
+										#print "--POOOOOOOOOOOOOOOOOOOOOOOOOOO"
 
 										#print 'rrrrrrrrrrrrrrrr=', racion
+
+										#Т.к есть записи без рациона (кормление без кормораздатчика),
+										#чтобы эти записи попали в выборку
+										#То выборку кормов нужно сделать не по рациону а по датам,
+										#когда этот рацион использовался
+
+										#Находим мин макс даты использования рациона
+										zapros = """select 
+														min(r.date::date),
+														max(r.date::date)
+
+													from reg_rashod_kormov r
+													where r.date::date>='%s' and r.date::date<='%s' and
+													r.stado_fiz_group_id=%s and
+													r.korm_racion_id=%s
+
+											
+											
+
+											""" %(self.date_start, self.date_end, stado_fiz_group.id, korm_racion.id)
+										#print zapros
+										self.env.cr.execute(zapros,)
+										res = self.env.cr.fetchone()
+
+										date_start_racion = date_end_racion = ''
+
+										if len(res)>0:
+											date_start_racion = res[0]  #min date
+											date_end_racion = res[1]	#max date
+										else:
+											continue  #Если запрос вернул пустые данные но переходим на следующий цикл	
+
+
+
 										zapros = """select 
 												n.name,
 												r.date::date,
@@ -1122,17 +1217,17 @@ class korm_buh_report(models.Model):
 											left join stado_fiz_group fg on (fg.id = r.stado_fiz_group_id)
 											
 											where r.date::date>='%s' and r.date::date<='%s' and
-													fg.stado_vid_fiz_group_id=%s and
-													fg.stado_podvid_fiz_group_id=%s and
+													r.stado_fiz_group_id=%s and
 													r.korm_racion_id=%s
 											
 											
 
-											""" %(self.date_start, self.date_end, stado_vid_fiz_group.id, stado_podvid_fiz_group.id, korm_racion.stado_fiz_group_id.id)
+											""" %(date_start_racion, date_end_racion, stado_fiz_group.id, korm_racion.id)
 										#print zapros
 										self.env.cr.execute(zapros,)
 										res = self.env.cr.fetchall()
 										if len(res)>0:
+											#print "----POOOOOOOOOOOOOOOOOOOOOOOOOOO"
 											#pd.core.format.header_style = None
 
 											datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
@@ -1191,16 +1286,21 @@ class korm_buh_report(models.Model):
 												#print row['date'], row['Total']
 
 
+											#Данные по норме кормления
+											normi_dict = {}
+											for line in korm_racion.korm_racion_line:
+												normi_dict[line.nomen_nomen_id.name] = line.kol
 
 
-
-											print "POOOOOOOOOOOOOOOOOOOOOOOOOOO"
 											#print data_pivot
 											Total = data_pivot['Total']
 											data_pivot.drop(labels=['Total'], axis=1,inplace = True)
 											data_pivot.insert(1, 'Total', Total)
-											name_group = (stado_fiz_group.name+ ' ' +stado_vid_fiz_group.name)[:30]
-											write_sheet(workbook, name_group , data_pivot)
+											name_group = (stado_fiz_group.name+ ' ' +stado_vid_fiz_group.name + '')
+											
+											list_nomer_racion += 1
+											list_nomer = str(list_nomer_vid) + '.' + str(list_nomer_podvid) + '.' + str(list_nomer_racion)
+											write_sheet(workbook, name_group , data_pivot, list_nomer, korm_racion, normi_dict)
 
 			
 
@@ -1238,6 +1338,7 @@ class korm_buh_report(models.Model):
 
 	@api.multi
 	def report_print_analitic(self):#, cr, uid, ids, context=None):
+		"""Аналитический отчет"""
 		self.ensure_one()
 
 		reload(sys)

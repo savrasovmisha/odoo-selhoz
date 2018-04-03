@@ -19,11 +19,13 @@
                     </group>
                     
                     <group>
-                     <field name="po_fiz_group"/>
-                     <button name="report_print" string="Сводные ведомости" type="object" icon="gtk-print"/>
-                    </group>
-                    <group>
-                     <button name="report_print_analitic" string="Аналитический отчет" type="object" icon="gtk-print"/>
+                        <group string="Сводные ведомости">
+                             <field name="po_fiz_group" string="По физ.группам(рационам)" help="Расширенный отчет, с выводом дополнительных листов с расходом кормов по физиологической группе и рациону кормления"/>
+                             <button name="report_print" string="Сводные ведомости" type="object" icon="gtk-print"/>
+                        </group>
+                        <group string="Аналитический отчет">
+                             <button name="report_print_analitic" string="Аналитический отчет" type="object" icon="gtk-print"/>
+                        </group>
                     </group>
                 </sheet>
             </form>

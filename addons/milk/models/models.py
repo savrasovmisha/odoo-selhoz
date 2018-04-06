@@ -1125,15 +1125,15 @@ class milk_price(models.Model):
 	], default=u'Расчетная с 2017г.', required=True, string=u'Метод расчета')
 
 	price = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
-	NDS = fields.Float(digits=(10, 2), string=u"НДС, %", required=True)
-	BB = fields.Float(digits=(10, 2), string=u"Базовый белок, %", required=True)
-	BJ = fields.Float(digits=(10, 2), string=u"Базовый жир, %", required=True)
-	KO = fields.Float(digits=(10, 2), string=u"Коэффициент объема", default=0)
-	KSS = fields.Float(digits=(10, 2), string=u"Коэффициент Собственное стадо", default=0)
-	PB = fields.Float(digits=(10, 3), string=u"Поправка на белок", default=0)
-	PJ = fields.Float(digits=(10, 3), string=u"Поправка на жир", default=0)
-	KK = fields.Float(digits=(10, 2), string=u"Коэффициент качеста", default=0)
-	H = fields.Float(digits=(10, 2), string=u"Надбавка за термо-е и сыроприг. молоко", default=0)
+	nds = fields.Float(digits=(10, 2), string=u"НДС, %", required=True, oldname='NDS')
+	bb = fields.Float(digits=(10, 2), string=u"Базовый белок, %", required=True, oldname='BB')
+	bj = fields.Float(digits=(10, 2), string=u"Базовый жир, %", required=True, oldname='BJ')
+	ko = fields.Float(digits=(10, 2), string=u"Коэффициент объема", default=0, oldname='KO')
+	kss = fields.Float(digits=(10, 2), string=u"Коэффициент Собственное стадо", default=0, oldname='KSS')
+	pb = fields.Float(digits=(10, 3), string=u"Поправка на белок", default=0, oldname='PB')
+	pj = fields.Float(digits=(10, 3), string=u"Поправка на жир", default=0, oldname='PJ')
+	kk = fields.Float(digits=(10, 2), string=u"Коэффициент качеста", default=0, oldname='KK')
+	h = fields.Float(digits=(10, 2), string=u"Надбавка за термо-е и сыроприг. молоко", default=0, oldname='H')
 
 
 def connect_server(self, url_name):

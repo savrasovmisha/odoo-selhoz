@@ -1898,3 +1898,143 @@ class korm_analiz_potrebleniya_kormov_report(models.Model):
 
 			)
 		""" % self.pool['res.currency']._select_companies_rates())
+
+
+
+
+
+
+class korm_analiz_efekt_korm_report(models.Model):
+    _name = "korm.analiz_efekt_korm_report"
+    _description = "Анализ эффективности кормления"
+    _auto = False
+    _rec_name = 'date'
+
+    
+    date = fields.Date(string='Дата')
+
+    cow_fur = fields.Integer(string=u"Фуражные", group_operator="avg")
+    cow_doy = fields.Integer(string=u"Дойные", group_operator="avg")
+
+    valoviy_nadoy = fields.Integer(string=u"Валовый надой, тонн", group_operator="sum")
+
+    sale_jir = fields.Float(digits=(3, 1), string=u"Жир, %", group_operator="avg")
+    sale_belok = fields.Float(digits=(3, 1), string=u"Белок, %", group_operator="avg")
+    
+    zatrati_korma_fur = fields.Float(digits=(10, 1), string=u"Затраты корма на фуражных, тыс.руб", group_operator="sum")
+    zatrati_korma_doy = fields.Float(digits=(10, 1), string=u"Затраты корма на дойных, тыс.руб", group_operator="sum")
+    
+    amount_sale = fields.Float(digits=(10, 1),string="Выручка, тыс.руб.", group_operator="sum")
+    sale_natura = fields.Float(digits=(10, 1),string="Натура, тонн", group_operator="sum")
+    sale_zachet = fields.Float(digits=(10, 1),string="Зачетный вес, тонн", group_operator="sum")
+    
+    zatrati_fur_golova = fields.Float(digits=(10, 1),string="Затраты на фуражную голову, руб/гол", group_operator="avg")
+    zatrati_doy_golova = fields.Float(digits=(10, 1),string="Затраты на дойную голову, руб/гол", group_operator="avg")
+    zatrati_kg_milk = fields.Float(digits=(10, 1),string="Затраты на 1 кг произведенного молока, руб/кг", group_operator="avg")
+    
+    
+    _order = 'date'
+
+    def init(self, cr):
+        tools.sql.drop_view_if_exists(cr, self._table)
+        cr.execute("""
+            create or replace view korm_analiz_efekt_korm_report as (
+                WITH currency_rate as (%s)
+                SELECT
+                    row_number() OVER () AS id,
+                    ttt.*,
+                    (((mpt.price * mpt.ko * mpt.kss + (ttt.sale_belok - mpt.bb)/0.01 * mpt.pb + (ttt.sale_jir - mpt.bj)/0.01 * mpt.pj) * mpt.kk + mpt.h) * ttt.sale_natura) as amount_sale
+                FROM
+
+                (
+                    SELECT
+                        
+                        tm.date_doc as date,
+                        tm.cow_fur,
+                        tm.cow_doy,
+                        tm.valoviy_nadoy/1000.0 as valoviy_nadoy,
+                        tm.sale_jir,
+                        tm.sale_belok,
+                        tm.sale_natura/1000.0 as sale_natura,
+                        tm.sale_zachet/1000.0 as sale_zachet,
+                        k.zatrati_korma_fur/1000.0 as zatrati_korma_fur,
+                        k.zatrati_korma_doy/1000.0 as zatrati_korma_doy,
+                        case
+                            when tm.cow_fur>0 then k.zatrati_korma_fur/tm.cow_fur
+                            else 0
+                        end as zatrati_fur_golova,
+                        case
+                            when tm.cow_doy>0 then k.zatrati_korma_doy/tm.cow_doy
+                            else 0
+                        end as zatrati_doy_golova,
+                        case
+                            when tm.valoviy_nadoy>0 then k.zatrati_korma_doy/tm.valoviy_nadoy
+                            else 0
+                        end as zatrati_kg_milk,
+                        ( Select 
+                                mp.id
+                            From milk_price mp
+                            Where mp.date::date<=tm.date_doc::date
+                            Order by mp.date desc
+                            Limit 1
+                        ) as milk_price_id
+                        
+                        
+                        
+                    FROM milk_trace_milk tm
+                    left join 
+
+                        (
+                            
+                        SELECT
+                            tt.date,
+                            sum(tt.kol_korma * tt.price) as zatrati_korma_fur,
+                            sum(tt.kol_korma_doy * tt.price) as zatrati_korma_doy
+                        FROM
+                            (
+                            SELECT
+                                t.date,
+                                t.nomen_nomen_id,
+                                t.kol_korma,
+                                t.kol_korma_doy,
+                                (
+                                    Select 
+                                        np.price
+                                    From nomen_price_line np
+                                    Where np.nomen_nomen_id = t.nomen_nomen_id and
+                                        np.date::date<=t.date::date
+                                    Order by np.date desc
+                                    Limit 1
+                                ) as price
+
+                            FROM
+                                (
+                                    select
+                                        r.date::date as date,
+                                        r.nomen_nomen_id as nomen_nomen_id,
+                                        sum(r.kol) as kol_korma,
+                                        sum(
+                                            case
+                                                when s.mastit=True or s.doynie=True then r.kol
+                                                else 0
+                                            end) as kol_korma_doy
+                                        
+                                    from reg_rashod_kormov r
+                                    left join stado_zagon s on (s.id = r.stado_zagon_id)
+                                    where (s.mastit=True or s.doynie=True or s.suhostoy=True)
+                                    group by r.date::date, r.nomen_nomen_id
+                                 )  t
+                            ) tt
+
+                        GROUP BY tt.date
+
+
+
+
+                        ) k on (k.date = tm.date_doc::date)
+                ) ttt
+                left join milk_price mpt on (mpt.id=ttt.milk_price_id)
+              
+
+            )
+        """ % self.pool['res.currency']._select_companies_rates())

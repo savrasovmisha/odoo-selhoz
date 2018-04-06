@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <record id="view_korm_analiz_efekt_korm_report_pivot" model="ir.ui.view">
+         <field name="name">korm_analiz_efekt_korm_report.pivot</field>
+         <field name="model">korm.analiz_efekt_korm_report</field>
+         <field name="arch" type="xml">
+             <pivot string="Анализ эффективности кормления" disable_linking="True">
+                 <!-- <field name="partner_id" type="col"/> -->
+                 <field name="date" type="row" interval="day"/>
+                 
+                 <field name="cow_fur" type="measure"/>
+                 <field name="cow_doy" type="measure"/>
+                 <field name="valoviy_nadoy" type="measure"/>
+                 <field name="sale_jir" type="measure"/>
+                 <field name="sale_belok" type="measure"/>
+                 <field name="sale_natura" type="measure"/>
+                 <field name="sale_zachet" type="measure"/>
+                 <field name="amount_sale" type="measure"/>
+                 <field name="zatrati_korma_fur" type="measure"/>
+                 <field name="zatrati_korma_doy" type="measure"/>
+                 
+                 <field name="zatrati_fur_golova" type="measure"/>
+                 <field name="zatrati_doy_golova" type="measure"/>
+                 <field name="zatrati_kg_milk" type="measure"/>
+                
+                 <!-- <field name="kol_racion" type="measure"/> -->
+                 <!-- <field name="otk_zachet" type="measure"/> -->
+                 
+             </pivot>
+         </field>
+    </record>
+
+  
+   
+
+    <record id="view_korm_analiz_efekt_korm_report_search" model="ir.ui.view">
+        <field name="name">korm_analiz_efekt_korm_report.search</field>
+        <field name="model">korm.analiz_efekt_korm_report</field>
+        <field name="arch" type="xml">
+            <search string="Анализ эффективности кормления">
+            
+                
+                
+            </search>
+        </field>
+    </record>
+
+
+    <record id="filter_korm_analiz_efekt_korm_report" model="ir.filters">
+            <field name="name">Текущий месяц</field>
+            <field name="model_id">korm.analiz_efekt_korm_report</field>
+            <field name="domain">[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('date','&gt;=',time.strftime('%Y-%m-01'))]</field>
+            <field name="is_default">1</field>
+            <field name="user_id"></field>
+            
+    </record>
+
+
+    <record id="korm_analiz_efekt_korm_report_action" model="ir.actions.act_window">
+        <field name="name">Анализ эффективности кормления</field>
+        <field name="res_model">korm.analiz_efekt_korm_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="search_view_id" ref="view_korm_analiz_efekt_korm_report_search"/>
+        <!-- <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+
+    
+    <!-- <menuitem name="Sales" action="action_order_report_all" id="menu_report_product_all" parent="base.menu_sale_report" sequence="10"/> -->
+
+</data>
+</openerp>

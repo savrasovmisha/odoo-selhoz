@@ -68,6 +68,7 @@
         'reports/korm_buh_report.xml',
         'reports/korm_buh_report_view.xml',
         'reports/korm_analiz_potrebleniya_kormov_report_view.xml',
+        'reports/korm_analiz_efekt_korm_report_view.xml',
 
         'security/korm_security.xml',
         'security/ir.model.access.csv',

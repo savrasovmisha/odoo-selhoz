@@ -19,15 +19,15 @@
 
                             <group>
                                 <field name="price"/>
-                                <field name="NDS"/>
-                                <field name="BB"/>
-                                <field name="BJ"/>
-                                <field name="KO"/>
-                                <field name="KSS"/>
-                                <field name="PB"/>
-                                <field name="PJ"/>
-                                <field name="KK"/>
-                                <field name="H"/>
+                                <field name="nds"/>
+                                <field name="bb"/>
+                                <field name="bj"/>
+                                <field name="ko"/>
+                                <field name="kss"/>
+                                <field name="pb"/>
+                                <field name="pj"/>
+                                <field name="kk"/>
+                                <field name="h"/>
                                 
                                 
                             </group>

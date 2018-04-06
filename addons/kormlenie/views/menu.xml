@@ -73,6 +73,9 @@
         <menuitem id="korm_analiz_potrebleniya_kormov_report_menu" name="Анализ потребления кормов" parent="korm_menu_report"
                   action="korm_analiz_potrebleniya_kormov_report_action" groups="group_korm_manager,group_korm_users"/>
 
+        <menuitem id="korm_analiz_efekt_korm_report_menu" name="Анализ эффективности кормления" parent="korm_menu_report"
+                  action="korm_analiz_efekt_korm_report_action" groups="group_korm_manager,group_korm_users"/>
+
 
 
 

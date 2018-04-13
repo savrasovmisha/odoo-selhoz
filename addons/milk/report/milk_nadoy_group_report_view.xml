@@ -35,8 +35,9 @@
          <field name="name">milk_nadoy_group_report.graph</field>
          <field name="model">milk.nadoy_group_report</field>
          <field name="arch" type="xml">
-             <graph string="Отчет по надоям по группам">
-                <!--  <field name="date_ucheta" type="row"/> -->
+             <graph string="Отчет по надоям по группам" type='line'>
+                 <field name="date" type="row" interval="day"/>
+                 <field name="stado_fiz_group_id" type="col"/>
                  <field name="nadoy_golova_fakt" type="measure"/>
                  
              </graph>

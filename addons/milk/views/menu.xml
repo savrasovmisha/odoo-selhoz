@@ -36,7 +36,20 @@
                   action="milk_nadoy_group_list_action" groups="group_milk_manager,group_milk_users"/>
 
 
-        <menuitem id="milk_menu" name="Справочники" sequence="2" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
+
+
+
+        <menuitem id="milk_menu_report" name="Отчеты" sequence="2" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
+
+        <menuitem id="milk_menu_nadoy_group_report" name="Отчет по надоям по группам" action="milk_nadoy_group_report_action" parent="milk_menu_report" sequence="1"/>
+
+
+
+
+
+
+
+        <menuitem id="milk_menu" name="Справочники" sequence="3" parent="base.main_milk_menu" groups="group_milk_manager,group_milk_users"/>
 
         <menuitem id="tanker_menu" name="Танкеры" parent="milk_menu"
                   action="tanker_list_action" groups="group_milk_manager,group_milk_users"/>
@@ -62,6 +75,7 @@
 
         <menuitem id="milk_price_menu" name="Установка цен на молоко" parent="milk_menu"
                   action="milk_price_list_action" groups="group_milk_manager,group_milk_users"/>
+
 
 
 

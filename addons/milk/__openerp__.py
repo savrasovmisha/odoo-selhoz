@@ -43,6 +43,7 @@
         'views/milk_price.xml',
         'report/milk_buh_report_view.xml',
         'views/milk_nadoy_group.xml',
+        'report/milk_nadoy_group_report_view.xml',
 
         'views/menu.xml',
         'views/resources.xml',

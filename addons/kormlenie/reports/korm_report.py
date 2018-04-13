@@ -1916,7 +1916,7 @@ class korm_analiz_efekt_korm_report(models.Model):
     cow_fur = fields.Integer(string=u"Фуражные", group_operator="avg")
     cow_doy = fields.Integer(string=u"Дойные", group_operator="avg")
 
-    valoviy_nadoy = fields.Integer(string=u"Валовый надой, тонн", group_operator="sum")
+    valoviy_nadoy = fields.Float(digits=(10, 3),string=u"Валовый надой, тонн", group_operator="sum")
 
     sale_jir = fields.Float(digits=(3, 1), string=u"Жир, %", group_operator="avg")
     sale_belok = fields.Float(digits=(3, 1), string=u"Белок, %", group_operator="avg")

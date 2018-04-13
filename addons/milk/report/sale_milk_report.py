@@ -895,6 +895,68 @@ class milk_buh_report(models.Model):
 
 
 
+
+
+
+class milk_nadoy_group_report(models.Model):
+    _name = "milk.nadoy_group_report"
+    _description = "Отчет по надоям по группам"
+    _auto = False
+    
+
+    
+    date = fields.Date(string='Дата')
+    zal_doeniya = fields.Char(string='Зал доения')
+
+    stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы')
+    stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы')
+    stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа')
+    stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+    
+    kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", group_operator="sum")
+    nadoy_zagon_fakt = fields.Integer(string=u"Надой, кг", group_operator="sum")
+    nadoy_golova_fakt = fields.Float(digits=(10, 3),string='Надой кг/гол', group_operator="avg")
+
+      
+
+    _order = 'date desc'
+
+    def init(self, cr):
+        tools.sql.drop_view_if_exists(cr, self._table)
+        cr.execute("""
+            create or replace view milk_nadoy_group_report as (
+                WITH currency_rate as (%s)
+                select
+                    row_number() OVER () AS id,
+                    mf.date,
+                    mf.name as zal_doeniya,
+                    fg.stado_vid_fiz_group_id,
+                    fg.stado_podvid_fiz_group_id,
+                    mf.stado_fiz_group_id,
+                    mf.stado_zagon_id,
+                    mf.kol_golov_zagon,
+                    mf.nadoy_zagon_fakt,
+                    mf.nadoy_golova_fakt
+                    
+                from milk_nadoy_group_fakt_line mf
+                left join stado_fiz_group fg on (fg.id = mf.stado_fiz_group_id)
+                    
+            )
+        """ % self.pool['res.currency']._select_companies_rates())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # SELECT *
 
 # FROM 

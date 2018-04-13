@@ -19,11 +19,11 @@
                  <field name="sale_zachet" type="measure"/>
                  <field name="amount_sale" type="measure"/>
                  <field name="zatrati_korma_fur" type="measure"/>
-                 <field name="zatrati_korma_doy" type="measure"/>
+                 <!-- <field name="zatrati_korma_doy" type="measure"/> -->
                  
                  <field name="zatrati_fur_golova" type="measure"/>
-                 <field name="zatrati_doy_golova" type="measure"/>
-                 <field name="zatrati_kg_milk" type="measure"/>
+                <!--  <field name="zatrati_doy_golova" type="measure"/> -->
+                 <field name="zatrati_fur_kg_milk" type="measure"/>
                 
                  <!-- <field name="kol_racion" type="measure"/> -->
                  <!-- <field name="otk_zachet" type="measure"/> -->

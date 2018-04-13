@@ -776,15 +776,15 @@ class milk_buh_report(models.Model):
         if len(milk_price_id)>0:
             
             price = milk_price_id.price
-            NDS = milk_price_id.NDS
-            BB = milk_price_id.BB
-            BJ = milk_price_id.BJ
-            KO = milk_price_id.KO
-            KSS = milk_price_id.KSS
-            PB = milk_price_id.PB
-            PJ = milk_price_id.PJ
-            KK = milk_price_id.KK
-            H = milk_price_id.H
+            NDS = milk_price_id.nds
+            BB = milk_price_id.bb
+            BJ = milk_price_id.bj
+            KO = milk_price_id.ko
+            KSS = milk_price_id.kss
+            PB = milk_price_id.pb
+            PJ = milk_price_id.pj
+            KK = milk_price_id.kk
+            H = milk_price_id.h
             worksheet.write(2, 20, u'Базовая цена: %s; НДС: %s; Базовый жир/белок: %s/%s; Коэф.объем: %s; Коэф.собс.стадо: %s; Поправка жир/белок: %s/%s; Коэф.качества: %s; Надбавка: %s' % (price, NDS, BJ, BB, KO, KSS, PJ, PB, KK, H), text_format_utv)
             itog_row = row - 4
 

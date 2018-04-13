@@ -1930,7 +1930,8 @@ class korm_analiz_efekt_korm_report(models.Model):
     
     zatrati_fur_golova = fields.Float(digits=(10, 1),string="Затраты на фуражную голову, руб/гол", group_operator="avg")
     zatrati_doy_golova = fields.Float(digits=(10, 1),string="Затраты на дойную голову, руб/гол", group_operator="avg")
-    zatrati_kg_milk = fields.Float(digits=(10, 1),string="Затраты на 1 кг произведенного молока, руб/кг", group_operator="avg")
+    zatrati_fur_kg_milk = fields.Float(digits=(10, 1),string="Затраты (фуражные) на 1 кг произведенного молока, руб/кг", group_operator="avg")
+    zatrati_doy_kg_milk = fields.Float(digits=(10, 1),string="Затраты (дойные) на 1 кг произведенного молока, руб/кг", group_operator="avg", oldname='zatrati_kg_milk')
     
     
     _order = 'date'
@@ -1970,7 +1971,11 @@ class korm_analiz_efekt_korm_report(models.Model):
                         case
                             when tm.valoviy_nadoy>0 then k.zatrati_korma_doy/tm.valoviy_nadoy
                             else 0
-                        end as zatrati_kg_milk,
+                        end as zatrati_doy_kg_milk,
+                        case
+                            when tm.valoviy_nadoy>0 then k.zatrati_korma_fur/tm.valoviy_nadoy
+                            else 0
+                        end as zatrati_fur_kg_milk,
                         ( Select 
                                 mp.id
                             From milk_price mp

@@ -26,7 +26,36 @@
             <field name="name">Текущий месяц</field>
             <field name="model_id">milk.nadoy_group_report</field>
             <field name="domain">[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('date','&gt;=',time.strftime('%Y-%m-01'))]</field>
+            
+            <field name="user_id"></field>
+            
+    </record>
+
+
+
+    <record id="filter_milk_nadoy_group_report_prev14" model="ir.filters">
+            <field name="name">За последнии 14 дней</field>
+            <field name="model_id">milk.nadoy_group_report</field>
+            <field name="domain">[('date','&gt;=',(context_today()+relativedelta(days=-14)).strftime('%Y-%m-%d')), ('date','&lt;',context_today().strftime('%Y-%m-%d'))]</field>
             <field name="is_default">1</field>
+            <field name="user_id"></field>
+            
+    </record>
+
+    <record id="filter_milk_nadoy_group_report_prev30" model="ir.filters">
+            <field name="name">За последнии 30 дней</field>
+            <field name="model_id">milk.nadoy_group_report</field>
+            <field name="domain">[('date','&gt;=',(context_today()+relativedelta(days=-30)).strftime('%Y-%m-%d')), ('date','&lt;',context_today().strftime('%Y-%m-%d'))]</field>
+     
+            <field name="user_id"></field>
+            
+    </record>
+
+    <record id="filter_milk_nadoy_group_report_prev60" model="ir.filters">
+            <field name="name">За последнии 60 дней</field>
+            <field name="model_id">milk.nadoy_group_report</field>
+            <field name="domain">[('date','&gt;=',(context_today()+relativedelta(days=-60)).strftime('%Y-%m-%d')), ('date','&lt;',context_today().strftime('%Y-%m-%d'))]</field>
+
             <field name="user_id"></field>
             
     </record>
@@ -35,14 +64,30 @@
          <field name="name">milk_nadoy_group_report.graph</field>
          <field name="model">milk.nadoy_group_report</field>
          <field name="arch" type="xml">
-             <graph string="Отчет по надоям по группам" type='line'>
+             <graph string="Отчет по надоям по группам" type="line">
                  <field name="date" type="row" interval="day"/>
                  <field name="stado_fiz_group_id" type="col"/>
+                 
+                 <field name="nadoy_golova_fakt" type="measure"/>
+                 
+             </graph>
+
+         </field>
+    </record>
+
+ <!--    <record id="view_milk_nadoy_group_report_graph_zagon" model="ir.ui.view">
+         <field name="name">milk_nadoy_group_report.graph2</field>
+         <field name="model">milk.nadoy_group_report</field>
+         <field name="arch" type="xml">
+             <graph string="Отчет по надоям по группам" type='line'>
+                 <field name="date" type="row" interval="day"/>
+                
+                 <field name="stado_zagon_id" type="col"/>
                  <field name="nadoy_golova_fakt" type="measure"/>
                  
              </graph>
          </field>
-    </record>
+    </record> -->
     
 
     <record id="view_milk_nadoy_group_report_search" model="ir.ui.view">
@@ -52,14 +97,7 @@
             <search string="Отчет по надоям по группам">
                 <!-- <field name="date_ucheta"/>
                 <filter string="This Year" name="year" invisible="1" domain="[('year','&lt;=', time.strftime('%%Y-12-31')),('date_ucheta','&gt;=',time.strftime('%%Y-01-01'))]"/> -->
-                <filter name="date"/>
-                <filter name="zal_doeniya"/>
-                <filter name="stado_vid_fiz_group_id"/>
-                <filter name="stado_podvid_fiz_group_id"/>
-                <filter name="stado_fiz_group_id"/>
-                <filter name="stado_zagon_id"/>
                 
-                <separator/>
                 <!-- <field name="partner_id"/> -->
                 
                 

@@ -1362,7 +1362,18 @@ class korm_buh_report(models.Model):
 						z2.kol_golov_zagon,
 						z2.kol_racion_golova,
 						z2.kol_norma,
-						z2.kol_fakt
+						z2.kol_fakt,
+						(
+						    Select 
+							np.price
+						    From nomen_price_line np
+						    Where np.nomen_nomen_id = z2.nomen_nomen_id and
+							np.date::date<=z2.date::date
+						    Order by np.date desc
+						    Limit 1
+						) as price,
+						vfg.name as stado_vid_fiz_group,
+						pfg.name as stado_podvid_fiz_group
 						
 
 					from 
@@ -1375,38 +1386,43 @@ class korm_buh_report(models.Model):
 						z1.nomen_nomen_id,
 						z1.kol_fakt,
 						z1.kol_norma,
-						(select 
-							sum(kol_golov_zagon )
-						from stado_struktura_line
-						where z1.date=date::date and stado_fiz_group_id=z1.stado_fiz_group_id
-						group by stado_fiz_group_id
+						(
+							select 
+								sum(kol_golov_zagon )
+							from stado_struktura_line
+							where z1.date=date::date and stado_fiz_group_id=z1.stado_fiz_group_id
+							group by stado_fiz_group_id
+
 						) as kol_golov_zagon,
-						(select
-							kol
-						from korm_racion_line
-						where nomen_nomen_id=z1.nomen_nomen_id and 
-							korm_racion_id=z1.korm_racion_id
+						(
+							select
+								kol
+							from korm_racion_line
+							where nomen_nomen_id=z1.nomen_nomen_id and 
+								korm_racion_id=z1.korm_racion_id
 						) as kol_racion_golova
 						
 						from (
-						select 
-							rrk.date::date as date,
-							rrk.stado_fiz_group_id,
-							rrk.obj as doc,
-							rrk.korm_racion_id as korm_racion_id,
-							rrk.nomen_nomen_id,
-							sum(rrk.kol) as kol_fakt,
-							sum(rrk.kol_norma) as kol_norma
-						
+							select 
+								rrk.date::date as date,
+								rrk.stado_fiz_group_id,
+								rrk.obj as doc,
+								rrk.korm_racion_id as korm_racion_id,
+								rrk.nomen_nomen_id,
+								sum(rrk.kol) as kol_fakt,
+								sum(rrk.kol_norma) as kol_norma
+							
 
-						from reg_rashod_kormov rrk
-						
-						Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, 
-								 rrk.korm_racion_id, rrk.nomen_nomen_id
+							from reg_rashod_kormov rrk
+							
+							Group by rrk.date::date, rrk.stado_fiz_group_id, rrk.obj, 
+									 rrk.korm_racion_id, rrk.nomen_nomen_id
 						
 						) as z1
 					) as z2
 					left join stado_fiz_group as sfg on (sfg.id=z2.stado_fiz_group_id)
+					left join stado_vid_fiz_group as vfg on (vfg.id=sfg.stado_vid_fiz_group_id)
+					left join stado_podvid_fiz_group as pfg on (pfg.id=sfg.stado_podvid_fiz_group_id)
 					left join korm_racion as kr on (kr.id=z2.korm_racion_id)
 					left join nomen_nomen as nn on (nn.id=z2.nomen_nomen_id)
 					where z2.date>='%s' and z2.date<='%s'
@@ -1430,7 +1446,11 @@ class korm_buh_report(models.Model):
 												u'Кол-во голов', 
 												u'На голову по рациону, кг', 
 												u'Норма по заданию, кг',
-												u'Факт, кг'] )
+												u'Факт, кг',
+												u'Цена, руб',
+												u'Вид физ. группы',
+												u'Подвид физ. группы'
+												] )
 
 			datas[u'Норма по рациону, кг'] = datas[u'На голову по рациону, кг'] * datas[u'Кол-во голов']
 			datas[u'На голову по заданию, кг'] = datas[u'Норма по заданию, кг'] / datas[u'Кол-во голов']
@@ -1441,6 +1461,7 @@ class korm_buh_report(models.Model):
 			datas[u'% откл задания от рациона'] = (datas[u'На голову по заданию, кг'] - datas[u'На голову по рациону, кг']) / datas[u'На голову по рациону, кг']
 			
 			datas[u'Откл факта от задания, кг'] = (datas[u'Факт, кг'] - datas[u'Норма по заданию, кг'])
+			datas[u'Затраты (факт), руб'] = (datas[u'Цена, руб'] * datas[u'Факт, кг'])
 			datas.head()
 			datas = datas[[ u'Дата', 
 							u'Физ. группа', 
@@ -1456,10 +1477,14 @@ class korm_buh_report(models.Model):
 							u'Норма по заданию, кг',
 							u'Факт, кг',
 							u'Откл факта от задания, кг',
+							u'Цена, руб', 
+							u'Затраты (факт), руб', 
 							u'Дата рациона', 
-							u'Вид документа' 
+							u'Вид документа',
+							u'Вид физ. группы',
+							u'Подвид физ. группы' 
+						 ]]
 
-							]]
 			datas.to_excel(writer, sheet_name='База', index=False)
 		
 
@@ -1489,8 +1514,12 @@ class korm_buh_report(models.Model):
 		worksheet.set_column('E:G', 7, float2_fmt)
 		worksheet.set_column('H:J', 7, percent_fmt)
 		worksheet.set_column('K:N', 7, int_fmt)
-		worksheet.set_column('O:O', 10)
-		worksheet.set_column('P:P', 20)
+		worksheet.set_column('O:O', 7, float2_fmt)
+		worksheet.set_column('P:P', 10, float2_fmt)
+		worksheet.set_column('Q:Q', 10)
+		worksheet.set_column('R:R', 20)
+		worksheet.set_column('S:S', 20)
+		worksheet.set_column('T:T', 20)
 
 		number_rows = len(datas.index)
 		# Define our range for the color formatting
@@ -1917,8 +1946,8 @@ class korm_analiz_efekt_korm_report(models.Model):
     cow_fur = fields.Integer(string=u"Фуражные", group_operator="avg")
     cow_doy = fields.Integer(string=u"Дойные", group_operator="avg")
 
-    #valoviy_nadoy = fields.Float(digits=dp.get_precision('kol'),string=u"Валовый надой, тонн", group_operator="sum")
-    valoviy_nadoy = fields.Float(digits=(3, 1),string=u"Валовый надой, тонн", group_operator="sum")
+    #valoviy_nadoy = fields.Float(digits=dp.get_precision('Kol'),string=u"Валовый надой, тонн", group_operator="sum")
+    valoviy_nadoy = fields.Float(digits=(10, 6),string=u"Валовый надой, тонн", group_operator="sum")
 
     sale_jir = fields.Float(digits=(3, 1), string=u"Жир, %", group_operator="avg")
     sale_belok = fields.Float(digits=(3, 1), string=u"Белок, %", group_operator="avg")
@@ -1933,6 +1962,7 @@ class korm_analiz_efekt_korm_report(models.Model):
     zatrati_fur_golova = fields.Float(digits=(10, 1),string="Затраты на фуражную голову, руб/гол", group_operator="avg")
     zatrati_doy_golova = fields.Float(digits=(10, 1),string="Затраты на дойную голову, руб/гол", group_operator="avg")
     zatrati_fur_kg_milk = fields.Float(digits=(10, 1),string="Затраты (фуражные) на 1 кг произведенного молока, руб/кг", group_operator="avg")
+    zatrati_fur90_kg_milk = fields.Float(digits=(10, 1),string="Затраты на корм в себестоимости молока, руб/кг", group_operator="avg")
     zatrati_doy_kg_milk = fields.Float(digits=(10, 1),string="Затраты (дойные) на 1 кг произведенного молока, руб/кг", group_operator="avg", oldname='zatrati_kg_milk')
     
     
@@ -1946,6 +1976,7 @@ class korm_analiz_efekt_korm_report(models.Model):
                 SELECT
                     row_number() OVER () AS id,
                     ttt.*,
+                    ttt.zatrati_fur_kg_milk*0.9 as zatrati_fur90_kg_milk,
                     (((mpt.price * mpt.ko * mpt.kss + (ttt.sale_belok - mpt.bb)/0.01 * mpt.pb + (ttt.sale_jir - mpt.bj)/0.01 * mpt.pj) * mpt.kk + mpt.h) * ttt.sale_natura) as amount_sale
                 FROM
 

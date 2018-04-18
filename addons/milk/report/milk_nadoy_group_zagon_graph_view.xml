@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+
+    <record id="view_milk_nadoy_group_zagon_graph" model="ir.ui.view">
+         <field name="name">milk_nadoy_group_zagon_graph.graph</field>
+         <field name="model">milk.nadoy_group_report</field>
+         <field name="arch" type="xml">
+             <graph string="График надоя по загонам" type="line">
+                 <field name="date" type="row" interval="day"/>
+                 <field name="stado_zagon_id" type="col"/>
+                 
+                 <field name="nadoy_golova_fakt" type="measure"/>
+                 
+             </graph>
+
+         </field>
+    </record>
+
+  
+  
+
+    <record id="milk_nadoy_group_zagon_graph_action" model="ir.actions.act_window">
+        <field name="name">График надоя по загонам</field>
+        <field name="res_model">milk.nadoy_group_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_milk_nadoy_group_zagon_graph"></field>  <!-- force empty -->
+        <field name="context">{'graph_mode': 'line'}</field>
+        <!-- <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+
+
+
+
+
+
+    <record id="view_milk_nadoy_group_fiz_group_graph" model="ir.ui.view">
+         <field name="name">milk_nadoy_group_fiz_group_graph.graph</field>
+         <field name="model">milk.nadoy_group_report</field>
+         <field name="arch" type="xml">
+             <graph string="График надоя по физиологическим группам" type="line">
+                 <field name="date" type="row" interval="day"/>
+                 <field name="stado_fiz_group_id" type="col"/>
+                 
+                 <field name="nadoy_golova_fakt" type="measure"/>
+                 
+             </graph>
+
+         </field>
+    </record>
+
+  
+  
+
+    <record id="milk_nadoy_group_fiz_group_graph_action" model="ir.actions.act_window">
+        <field name="name">График надоя по физиологическим группам</field>
+        <field name="res_model">milk.nadoy_group_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_milk_nadoy_group_fiz_group_graph"></field>  <!-- force empty -->
+        <field name="context">{'graph_mode': 'line'}</field>
+        <!-- <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+
+
+
+
+
+    <record id="view_milk_nadoy_group_podvid_fiz_group_graph" model="ir.ui.view">
+         <field name="name">milk_nadoy_group_podvid_fiz_group_graph.graph</field>
+         <field name="model">milk.nadoy_group_report</field>
+         <field name="arch" type="xml">
+             <graph string="График надоя по подвиду физиологических групп" type="line">
+                 <field name="date" type="row" interval="day"/>
+                 <field name="stado_podvid_fiz_group_id" type="col"/>
+                 
+                 <field name="nadoy_golova_fakt" type="measure"/>
+                 
+             </graph>
+
+         </field>
+    </record>
+
+  
+  
+
+    <record id="milk_nadoy_group_podvid_fiz_group_graph_action" model="ir.actions.act_window">
+        <field name="name">График надоя по подвиду физиологических групп</field>
+        <field name="res_model">milk.nadoy_group_report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_milk_nadoy_group_podvid_fiz_group_graph"></field>  <!-- force empty -->
+        <field name="context">{'graph_mode': 'line'}</field>
+        <!-- <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field> -->
+        <field name="help">This report performs analysis on your quotations and sales orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
+    </record>
+
+    
+
+</data>
+</openerp>

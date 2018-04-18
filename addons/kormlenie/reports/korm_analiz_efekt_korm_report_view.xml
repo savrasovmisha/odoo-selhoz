@@ -6,7 +6,7 @@
          <field name="name">korm_analiz_efekt_korm_report.pivot</field>
          <field name="model">korm.analiz_efekt_korm_report</field>
          <field name="arch" type="xml">
-             <pivot string="Анализ эффективности кормления" disable_linking="True">
+             <pivot string="Анализ эффективности кормления" disable_linking="True" display_quantity="True">
                  <!-- <field name="partner_id" type="col"/> -->
                  <field name="date" type="row" interval="day"/>
                  
@@ -24,6 +24,7 @@
                  <field name="zatrati_fur_golova" type="measure"/>
                 <!--  <field name="zatrati_doy_golova" type="measure"/> -->
                  <field name="zatrati_fur_kg_milk" type="measure"/>
+                 <field name="zatrati_fur90_kg_milk" type="measure"/>
                 
                  <!-- <field name="kol_racion" type="measure"/> -->
                  <!-- <field name="otk_zachet" type="measure"/> -->

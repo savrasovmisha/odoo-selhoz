@@ -22,20 +22,33 @@
                             <field name="nomer"/>
                             <field name="stado_fiz_group_id"/>
                             <field name="uniform_id"/>
+                       
+                            <separator string="Параметры кормления"/>
+                            <newline/>
                             <field name="utro"/>
                             <field name="vecher"/>
-                            <field name="doynie"/>
-                            <field name="mastit"/>
-                            <field name="suhostoy"/>
                         </group>
                         <group string="Период действия">
                             <field name="date_start"/>
                             <field name="date_end"/>
-                           
-                            
                         </group>
                     </group>
                     
+                    <group>
+                    
+                        <group string="Классификация Коров">
+                            <field name="doynie"/>
+                            <field name="mastit"/>
+                            <field name="suhostoy"/>
+                        </group>
+                        <group string="Классификация Молодника">
+                            <field name="bik"/>
+                            <field name="telki_0_12"/>
+                            <field name="telki_12"/>
+                            <field name="netel"/>
+                        </group>
+                    </group>
+
                 </sheet>
             </form>
         </field>
@@ -52,7 +65,14 @@
                     <field name="stado_fiz_group_id"/>
                     <field name="utro"/>
                     <field name="vecher"/>
+                    <field name="doynie"/>
+                    <field name="mastit"/>
+                    <field name="suhostoy"/>
                     
+                    <field name="telki_0_12"/>
+                    <field name="telki_12"/>
+                    <field name="netel"/>
+
                     <field name="activ"/>
                     
                     

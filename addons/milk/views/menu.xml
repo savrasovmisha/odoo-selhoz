@@ -43,6 +43,13 @@
 
         <menuitem id="milk_menu_nadoy_group_report" name="Отчет по надоям по группам" action="milk_nadoy_group_report_action" parent="milk_menu_report" sequence="1"/>
 
+        <menuitem id="milk_menu_nadoy_group_graph_section" name="Графики надоев" parent="milk_menu_report" sequence="2"/>
+
+            <menuitem id="milk_menu_nadoy_group_zagon_graph" name="По загонам" action="milk_nadoy_group_zagon_graph_action" parent="milk_menu_nadoy_group_graph_section" sequence="2"/>
+
+            <menuitem id="milk_menu_nadoy_group_fiz_group_graph" name="По физ. группам" action="milk_nadoy_group_fiz_group_graph_action" parent="milk_menu_nadoy_group_graph_section" sequence="2"/>
+
+            <menuitem id="milk_menu_nadoy_group_podvid_fiz_group_graph" name="По подвиду физ. групп" action="milk_nadoy_group_podvid_fiz_group_graph_action" parent="milk_menu_nadoy_group_graph_section" sequence="2"/>
 
 
 

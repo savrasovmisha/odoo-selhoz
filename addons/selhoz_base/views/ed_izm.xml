@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+
+<!--     <record forcecreate="True" id="decimal_custom_kol3" model="decimal.precision">
+            <field name="name">Kol</field>
+            <field name="digits">3</field>
+        </record> -->
+
+
 	<record model="ir.ui.view" id="nomen_ed_izm_form_view">
         <field name="name">nomen_ed_izm.form</field>
         <field name="model">nomen.ed_izm</field>

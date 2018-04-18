@@ -83,3 +83,8 @@ class stado_zagon(models.Model):
 	doynie = fields.Boolean(string=u"Дойные", default=False)
 	mastit = fields.Boolean(string=u"Маститные", default=False)
 	suhostoy = fields.Boolean(string=u"Сухостой", default=False)
+
+	telki_0_12 = fields.Boolean(string=u"Телки от 0 до 12 мес.", default=False)
+	telki_12 = fields.Boolean(string=u"Телки старше 12 мес.", default=False)
+	netel = fields.Boolean(string=u"Нетели", default=False)
+	bik = fields.Boolean(string=u"Бычки", default=False)

@@ -1419,7 +1419,7 @@ class milk_nadoy_group(models.Model):
 
 
 
-	name = fields.Char(string=u"Номер", store=True, copy=False, index=True, default=fields.Datetime.now)
+	name = fields.Char(string=u"Номер", store=False, copy=False, index=True, compute='return_name')
 	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
 	
 	kol_golov = fields.Integer(string=u"Считано голов", compute='return_kol_golov', store=True, group_operator="avg", default=0)

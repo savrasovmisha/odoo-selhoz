@@ -2384,7 +2384,7 @@ class korm_potrebnost(models.Model):
 		del_line.unlink()
 
 		zapros = """SELECT r.nomen_nomen_id,
-						sum(r.kol*z.kol_golov) as kol_korma
+						sum(r.kol*z.kol_golov*z.procent_raciona/100) as kol_korma
 
 					FROM korm_racion_line r
 					left join korm_potrebnost_zagon_line z on z.korm_racion_id=r.korm_racion_id

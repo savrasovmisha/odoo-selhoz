@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    <record model="ir.ui.view" id="korm_potrebnost_form_view">
+	<record model="ir.ui.view" id="korm_potrebnost_limit_form_view">
         <field name="name">korm_potrebnost.form</field>
         <field name="model">korm.potrebnost</field>
         <field name="arch" type="xml">
-            <form string="Форма Потребность в кормах">
+            <form string="Форма Лимиты кормления">
                
                 <sheet>
                     <group>
                         <group>
                             <field name="name"/>
-
-                            <field name="is_limit" invisible="True"/> 
-                            <field name="month" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
-                            <field name="year" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
-                            <field name="date_start" />
-                            <field name="date_end" />
-                            <!-- <field name="date_start" attrs="{'invisible': [('is_limit',  '=', True)]}"/>
-                            <field name="date_end" attrs="{'invisible': [('is_limit',  '=', True)]}"/> -->
+                            <field name="is_limit"/>
+                            <field name="month"/>
+                            <field name="year"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
                             <field name="period_day"/>
                             <field name="kol_day"/>
                             
@@ -110,39 +107,6 @@
                             
                         </page>
 
-                        <page string="Лимиты кормления">
-
-                            <field name="korm_potrebnost_limit_line">
-                                <tree string="korm_potrebnost_limit_line" editable="botton">
-                                    
-                                    <field name="stado_vid_fiz_group_id"/>
-                                    <field name="stado_podvid_fiz_group_id"/>
-                                    <field name="stado_fiz_group_id"/>
-                                    <field name="stado_zagon_id"/>
-                                    <field name="korm_racion_id"/>
-                                    <field name="kol_golov"/>
-                                    
-                                    <field name="nomen_group_id"/>
-                                    <field name="nomen_nomen_id"/>
-                                    <field name="ed_izm_id"/>
-                                    <field name="kol_golova"/>
-                                    <field name="kol_day"/>
-                                    <field name="kol_za_period"/>
-                                                                                                            
-                                                                        
-                                </tree>
-                            </field>
-                            
-                                <group>
-                                    <field name="kol_korma_limit"/>
-                                    <field name="kol_golov_limit"/>
-                                </group>
-                                               
-                           
-                            
-                            
-                        </page>
-
                   
                     </notebook>
                     <group>
@@ -163,17 +127,20 @@
                         
                         
                    
-                    
+		            
                 </sheet>
             </form>
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_korm_potrebnost_tree">
+        <record model="ir.ui.view" id="view_korm_potrebnost_limit_tree">
             <field name="name">korm_potrebnost.tree</field>
             <field name="model">korm.potrebnost</field>
+            <field name="view_id" ref="korm_potrebnost_limit_form_view"></field>
+
             <field name="arch" type="xml">
-                <tree string="Потребность в кормах">
+
+                <tree string="Лимиты кормления">
                     
                     <field name="date"/>
                     <field name="name"/>
@@ -184,18 +151,16 @@
                    
                 </tree>
             </field>
-        </record>   
-
-        <record id="filter_korm_potrebnost" model="ir.filters">
-            <field name="name">Потребность в кормах</field>
+        </record>	
+	<!-- <record id="filter_korm_potrebnost_limit" model="ir.filters">
+            <field name="name">Лимиты кормления</field>
             <field name="model_id">korm.potrebnost</field>
-            <field name="domain">[('is_limit','=',False)]</field>
-            <!-- <field name="is_default">0</field> -->
+            <field name="domain">[('is_limit','=',True)]</field>
+            <field name="is_default">1</field>
             <field name="user_id"></field>
             
-        </record>
-    
-    <record model="ir.ui.view" id="korm_potrebnost_search_view">
+        </record> -->
+	<record model="ir.ui.view" id="korm_potrebnost_limit_search_view">
             <field name="name">korm_potrebnost.search</field>
             <field name="model">korm.potrebnost</field>
             <field name="arch" type="xml">
@@ -211,15 +176,17 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
-        <record model="ir.actions.act_window" id="korm_potrebnost_action">
-            <field name="name">Потребность в кормах</field>
+        <record model="ir.actions.act_window" id="korm_potrebnost_limit_action">
+            <field name="name">Лимиты кормления</field>
             <field name="res_model">korm.potrebnost</field>
-            <field name="domain">[('is_limit','=',False)]</field>
-            <field name="context">{'default_is_limit': False}</field>
+            <field name="view_id" ref="view_korm_potrebnost_limit_tree"></field>
+
+            <field name="domain">[('is_limit','=',True)]</field>
+            <field name="context">{'default_is_limit': True}</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Потребность в кормах
+                <p class="oe_view_nocontent_create">Создайте первую запись Лимиты кормления
                 </p>
             </field>
         </record>
@@ -227,3 +194,4 @@
         
     </data>
 </openerp>
+

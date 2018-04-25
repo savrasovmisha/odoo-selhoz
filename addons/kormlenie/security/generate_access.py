@@ -20,6 +20,7 @@ spisok.append(['korm.potrebnost',''])
 spisok.append(['korm.potrebnost_zagon_line',''])
 spisok.append(['korm.potrebnost_korm_line',''])
 spisok.append(['korm.potrebnost_kombikorm_line',''])
+spisok.append(['korm.potrebnost_limit_line',''])
 spisok.append(['korm.korm_svod_report',''])
 spisok.append(['korm.korm_receptura_report',''])
 spisok.append(['nomen.ed_izm_categ','sklad'])
@@ -48,6 +49,7 @@ spisok.append(['stado.fiz_group',''])
 spisok.append(['stado.zagon',''])
 spisok.append(['korm.analiz_potrebleniya_kormov_report',''])
 spisok.append(['korm.analiz_efekt_korm_report',''])
+
 
 
 print "id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink"

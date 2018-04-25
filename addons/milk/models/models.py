@@ -1403,7 +1403,7 @@ class milk_nadoy_group(models.Model):
 					nadoy_karusel_zagon_itog += line.nadoy_zagon
 				
 
-
+			karusel_nadoy_zagon_fakt_itog = parabone_nadoy_zagon_fakt_itog = 0
 			if nadoy_karusel_zagon_itog>0:
 				
 				for line in self.milk_nadoy_group_fakt_line:
@@ -1411,11 +1411,48 @@ class milk_nadoy_group(models.Model):
 					if line.name == u'Карусель' and line.kol_golov_zagon>0:
 						line.nadoy_zagon_fakt = line.nadoy_zagon/nadoy_karusel_zagon_itog * self.nadoy_karusel
 						line.nadoy_golova_fakt = line.nadoy_zagon_fakt/line.kol_golov_zagon
+						karusel_nadoy_zagon_fakt_itog += line.nadoy_zagon_fakt
 					else:
 						line.nadoy_zagon_fakt = line.kol_golov_zagon / self.kol_golov_parabone * self.nadoy_parabone
 						line.nadoy_golova_fakt = line.nadoy_zagon_fakt/line.kol_golov_zagon
+						parabone_nadoy_zagon_fakt_itog += line.nadoy_zagon_fakt
 
 					line.procent_nadoy = line.nadoy_zagon_fakt/self.valoviy_nadoy*100
+
+			#Если есть отклонение, то распределяем погрешность на загоны
+			#Ограничить кол-во циклов n=10
+			otk_karusel = self.nadoy_karusel - karusel_nadoy_zagon_fakt_itog
+			if otk_karusel != 0:
+				n = 0
+				while otk_karusel!=0 and n<10:
+					n += 1
+					k = 1 if otk_karusel>0 else -1
+					
+					for line in self.milk_nadoy_group_fakt_line:
+					
+						if line.name == u'Карусель' and line.nadoy_zagon_fakt>0:
+							line.nadoy_zagon_fakt += k
+							otk_karusel -= k
+						if otk_karusel == 0:
+							break
+
+			otk_parabone = self.nadoy_parabone - parabone_nadoy_zagon_fakt_itog
+			if otk_parabone != 0:
+				n = 0
+				while otk_parabone!=0 and n<10:
+					n += 1
+					
+					k = 1 if otk_parabone>0 else -1
+					
+					for line in self.milk_nadoy_group_fakt_line:
+					
+						if line.name == u'Парабона' and line.nadoy_zagon_fakt>0:
+							line.nadoy_zagon_fakt += k
+							otk_parabone -= k
+						if otk_parabone == 0:
+							break
+
+
 
 
 

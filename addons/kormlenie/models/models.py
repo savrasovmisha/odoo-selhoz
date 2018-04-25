@@ -2333,7 +2333,38 @@ class korm_potrebnost(models.Model):
 			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
 			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
 			self.period_day = (d2-d1).days + 1
-			
+	
+
+	@api.one
+	@api.depends('month', 'year')
+	def return_name(self):
+		if self.month and self.year and self.is_limit:
+			#self.name = self.year + '-' + self.month
+			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+			last_day = last_day_of_month(self.date_start)
+			self.date_end = last_day
+			self.count_day = last_day.day
+		if self.is_limit == False:
+			self.date_start = datetime.today()
+			self.date_end = datetime.today()
+
+		#if month == '01' : month_text = u"Январь"
+		if self.month == '01' : self.month_text = u"Январь"
+		if self.month == '02' : self.month_text = u"Февряль"
+		if self.month == '03' : self.month_text = u"Март"
+		if self.month == '04' : self.month_text = u"Апрель"
+		if self.month == '05' : self.month_text = u"Май"
+		if self.month == '06' : self.month_text = u"Июнь"
+		if self.month == '07' : self.month_text = u"Июль"
+		if self.month == '08' : self.month_text = u"Август"
+		if self.month == '09' : self.month_text = u"Сентябрь"
+		if self.month == '10' : self.month_text = u"Октябрь"
+		if self.month == '11' : self.month_text = u"Ноябрь"
+		if self.month == '12' : self.month_text = u"Декабрь"
+
+
+
+
 
 	@api.one
 	def action_zapolnit_zagoni(self):
@@ -2381,6 +2412,10 @@ class korm_potrebnost(models.Model):
 
 		kombikorm_line = self.env['korm.potrebnost_kombikorm_line']
 		del_line = kombikorm_line.search([('korm_potrebnost_id',    '=',    self.id)])
+		del_line.unlink()
+
+		limit_line = self.env['korm.potrebnost_limit_line']
+		del_line = limit_line.search([('korm_potrebnost_id',    '=',    self.id)])
 		del_line.unlink()
 
 		zapros = """SELECT r.nomen_nomen_id,
@@ -2442,13 +2477,70 @@ class korm_potrebnost(models.Model):
 								})
 
 
+		
+		#Заполняем таблицу лимитов
+		zapros = """SELECT 
+						z.stado_zagon_id,
+						z.korm_racion_id,
+						z.kol_golov,
+						r.nomen_nomen_id,
+						r.kol*z.procent_raciona/100 as kol_golova
+
+					FROM korm_racion_line r
+					left join korm_potrebnost_zagon_line z on z.korm_racion_id=r.korm_racion_id
+					WHERE r.korm_racion_id IN ( SELECT korm_racion_id 
+												FROM korm_potrebnost_zagon_line 
+												WHERE korm_potrebnost_id=%s) and
+						  z.korm_potrebnost_id=%s
+					
+				""" %(self.id,self.id,)
+		#print zapros
+		self._cr.execute(zapros,)
+		korms = self._cr.fetchall()
+		for k in korms:
+			
+			limit_line.create({
+								'korm_potrebnost_id':   self.id,
+								'stado_zagon_id':   k[0],
+								'korm_racion_id':   k[1],
+								'kol_golov':   k[2],
+								'nomen_nomen_id':   k[3],
+								'kol_golova':   k[4],
+								'kol_day':  k[4] * k[2],
+								'kol_za_period': k[4] * k[2] * self.period_day,
+								})
+
+		self.kol_golov_limit = self.kol_korma_limit = 0
+		for line in self.korm_potrebnost_limit_line:
+			self.kol_golov_limit += line.kol_golov
+			self.kol_korma_limit += line.kol_day
+
 
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
-	date_start = fields.Date(string='Дата начала', required=True, copy=False, default=fields.Datetime.now)
-	date_end = fields.Date(string='Дата окончания', required=True, copy=False, default=fields.Datetime.now)
+	date_start = fields.Date(string='Дата начала', required=True, copy=False, readonly=False, compute='return_name', default=fields.Datetime.now)
+	date_end = fields.Date(string='Дата окончания', required=True, copy=False, readonly=False, compute='return_name', default=fields.Datetime.now)
 	
+	is_limit = fields.Boolean(string=u"Это лимит")
+	month = fields.Selection([
+		('01', "Январь"),
+		('02', "Февряль"),
+		('03', "Март"),
+		('04', "Апрель"),
+		('05', "Май"),
+		('06', "Июнь"),
+		('07', "Июль"),
+		('08', "Август"),
+		('09', "Сентябрь"),
+		('10', "Октябрь"),
+		('11', "Ноябрь"),
+		('12', "Декабрь"),
+	], default='', required=True, string=u"Месяц")
+	
+	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+	month_text = fields.Char(string=u"Год", compute='return_name')
+
 	kol_day = fields.Integer(string=u"Расчет поголовья за, дней назад", default=7, store=True, copy=True)
 	period_day = fields.Integer(string=u"Кол-во дней в периоде", compute='get_period_day', store=True, copy=True)
 	
@@ -2456,6 +2548,7 @@ class korm_potrebnost(models.Model):
 	korm_potrebnost_zagon_line = fields.One2many('korm.potrebnost_zagon_line', 'korm_potrebnost_id', string=u"Структура стада", copy=True)
 	korm_potrebnost_korm_line = fields.One2many('korm.potrebnost_korm_line', 'korm_potrebnost_id', string=u"Потребность в кормах")
 	korm_potrebnost_kombikorm_line = fields.One2many('korm.potrebnost_kombikorm_line', 'korm_potrebnost_id', string=u"Расчет для комбикормов")
+	korm_potrebnost_limit_line = fields.One2many('korm.potrebnost_limit_line', 'korm_potrebnost_id', string=u"Расчет Лимиты кормления")
 	
 	
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
@@ -2463,6 +2556,9 @@ class korm_potrebnost(models.Model):
 	
 	kol_golov = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
 	kol_korma = fields.Integer(string=u"Кол-во корма", readonly=True, store=True, copy=True)
+
+	kol_golov_limit = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
+	kol_korma_limit = fields.Integer(string=u"Кол-во корма", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 
 		
@@ -2582,6 +2678,47 @@ class korm_potrebnost_kombikorm_line(models.Model):
 	#поля для сортировки
 	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
 	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)
+
+
+class korm_potrebnost_limit_line(models.Model):
+	_name = 'korm.potrebnost_limit_line'
+	_description = u'Строки Потребность в кормах в разрезе групп кормления'
+	_order = 'sorting_group, sorting_name'
+
+
+	@api.one
+	def return_name(self):
+		if self.nomen_nomen_id:
+			self.name = self.nomen_nomen_id.name
+	
+
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
+	
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы', related='stado_fiz_group_id.stado_vid_fiz_group_id')
+	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы', related='stado_fiz_group_id.stado_podvid_fiz_group_id')
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id')
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
+	
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	kol_golov = fields.Integer(string=u"Ср.поголовье в сутки", store=True)
+	
+
+
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
+	nomen_group_id = fields.Many2one('nomen.group', string=u'Группа', related='nomen_nomen_id.nomen_group_id', readonly=True,  store=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	
+	kol_golova = fields.Float(digits=(10, 3), string=u"Кол-во на голову", copy=False, readonly=True)
+	kol_day = fields.Float(digits=(10, 3), string=u"Кол-во в сутки, на загон", copy=False, readonly=True)
+	kol_za_period = fields.Float(digits=(10, 3), string=u"Кол-во на период", copy=False, readonly=True, store=True)
+	#поля для сортировки
+	sorting_name = fields.Char(string=u"Наименование", related='nomen_nomen_id.name',  store=True)
+	sorting_group = fields.Char(string=u"Группа", related='nomen_nomen_id.nomen_group_id.name',  store=True)
+
+
+
+
 
 
 
@@ -3165,4 +3302,8 @@ class korm_analiz_smes_korma_svod_line(models.Model):
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', readonly=True, string=u'Физиологическая группа', store=True, related='stado_zagon_id.stado_fiz_group_id')
 	sv = fields.Float(digits=(10, 1), string=u"СВ, %", copy=True)
 	struktura = fields.Float(digits=(10, 1), string=u"Структура, %", copy=True)
+
+
+
+
 

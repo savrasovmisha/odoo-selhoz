@@ -33,6 +33,8 @@
 
         <menuitem id="korm_potrebnost_menu" name="Потребность в кормах" sequence="5" parent="korm_menu_norm" action="korm_potrebnost_action" groups="group_korm_manager,group_korm_users"/>
 
+        <menuitem id="korm_potrebnost_limit_menu" name="Лимиты кормления" sequence="5" parent="korm_menu_norm" action="korm_potrebnost_limit_action" groups="group_korm_manager,group_korm_users"/>
+
         <menuitem id="korm_racion_menu" name="Рацион кормления" sequence="6" parent="korm_menu_norm" action="korm_racion_list_action" groups="group_korm_manager,group_korm_users"/>
 
         <menuitem id="korm_receptura_menu" name="Рецептуры комбикормов" sequence="7" parent="korm_menu_norm" action="korm_receptura_list_action" groups="group_korm_manager,group_korm_users"/>

@@ -6,6 +6,17 @@ from datetime import datetime, timedelta
 from openerp.exceptions import ValidationError
 import math
 
+import sys
+import os
+import base64
+import zipfile
+import tempfile
+from pandas import DataFrame, pivot_table
+from xlsxwriter.utility import xl_rowcol_to_cell
+import xlsxwriter
+import pandas as pd
+import numpy as np
+
 parametrs = ['ov', 'sv', 'oe', 'sp', 'pp', 'sk', 'sj', 'ca', 'p', 
 		'sahar', 'krahmal', 'bev', 'magniy', 'natriy', 'kaliy', 'hlor', 'sera', 
 		'udp', 'me', 'xp', 'nrp', 'rnb', 'nrp_p']
@@ -2368,9 +2379,21 @@ class korm_potrebnost(models.Model):
 
 	@api.one
 	def action_zapolnit_zagoni(self):
-
+		#Очищаем все таблицы
 		zagon_line = self.env['korm.potrebnost_zagon_line']
 		del_line = zagon_line.search([('korm_potrebnost_id',    '=',    self.id)])
+		del_line.unlink()
+
+		korma_line = self.env['korm.potrebnost_korm_line']
+		del_line = korma_line.search([('korm_potrebnost_id',    '=',    self.id)])
+		del_line.unlink()
+
+		kombikorm_line = self.env['korm.potrebnost_kombikorm_line']
+		del_line = kombikorm_line.search([('korm_potrebnost_id',    '=',    self.id)])
+		del_line.unlink()
+
+		limit_line = self.env['korm.potrebnost_limit_line']
+		del_line = limit_line.search([('korm_potrebnost_id',    '=',    self.id)])
 		del_line.unlink()
 
 
@@ -2381,15 +2404,17 @@ class korm_potrebnost(models.Model):
 		
 		ras_date_start = ras_date_end - timedelta(days=self.kol_day)
 		#print 'ddddddddddddddd=', (ras_date_start,ras_date_end )
-		zapros = """SELECT  stado_zagon_id, 
-							max(stado_fiz_group_id),
-							max(korm_racion_id),
-							avg(kol_golov_zagon)
-					FROM korm_korm_line
-					WHERE date>='%s' and date<='%s' 
-					GROUP BY stado_zagon_id
-					Order by stado_zagon_id
-				""" %(ras_date_start.date(), ras_date_end.date())
+		zapros = """SELECT  k.stado_zagon_id, 
+							max(k.stado_fiz_group_id),
+							max(k.korm_racion_id),
+							avg(k.kol_golov_zagon)
+					FROM korm_korm_line k
+					left join stado_zagon z on (z.id = k.stado_zagon_id)
+					WHERE k.date>='%s' and k.date<='%s' and 
+							z.date_start<='%s' and (z.date_end is Null or z.date_end>='%s')
+					GROUP BY k.stado_zagon_id
+					Order by k.stado_zagon_id
+				""" %(ras_date_start.date(), ras_date_end.date(), self.date, self.date)
 		#print zapros
 		self._cr.execute(zapros,)
 		zagons = self._cr.fetchall()
@@ -2512,8 +2537,93 @@ class korm_potrebnost(models.Model):
 
 		self.kol_golov_limit = self.kol_korma_limit = 0
 		for line in self.korm_potrebnost_limit_line:
-			self.kol_golov_limit += line.kol_golov
+			#self.kol_golov_limit += line.kol_golov
 			self.kol_korma_limit += line.kol_day
+
+	
+	@api.multi
+	def limit_report_print(self):
+		"""Отчет Лимиты кормления"""
+
+		self.ensure_one()
+		reload(sys)
+		sys.setdefaultencoding("utf-8")
+		
+		tmp_dir = tempfile.mkdtemp()
+
+		file_name = 'LimitKormReport.xlsx'
+
+		output_filename = tmp_dir + '/' + file_name
+
+		#workbook = xlsxwriter.Workbook(output_filename, {'default_date_format': 'DD.MM.YYYY'})
+
+
+		spisok = []
+		for line in self.korm_potrebnost_limit_line:
+			spisok.append([
+				line.stado_vid_fiz_group_id.name,
+				line.stado_podvid_fiz_group_id.name,
+				line.stado_fiz_group_id.name,
+				#line.stado_zagon_id.name,
+				line.kol_golov,
+				line.nomen_group_id.name,
+				line.nomen_nomen_id.name,
+				line.kol_golova,
+				line.kol_day,
+				line.kol_za_period
+				])
+
+
+		datas = pd.DataFrame(data=spisok,
+							 columns=[ 
+									u'Вид физ.гр', 
+									u'Подвид физ.гр.', 
+									u'Физ.гр.', 
+									#'stado_zagon_id',
+									u'Поголовье',
+									u'Группа корма',
+									u'Наименование корма',
+									u'Кол. на голову',
+									u'Кол. на сутки',
+									u'Кол. на период',
+									], dtype=int )
+
+		table = pd.pivot_table(datas, 
+                       index=[u'Группа корма',u'Наименование корма'],
+                       columns=[
+                                u'Подвид физ.гр.', 
+                                u'Физ.гр.', 
+                                u'Вид физ.гр', 
+                                u'Поголовье'
+                               ],
+                       values=[u'Кол. на голову', u'Кол. на сутки', u'Кол. на период'],
+                       aggfunc=pd.np.sum, fill_value=0).swaplevel(0,3, axis=1).sort_index(axis=1)
+		
+		# Create a Pandas Excel writer using XlsxWriter as the engine.
+		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
+
+		# Convert the dataframe to an XlsxWriter Excel object.
+		table.to_excel(writer, sheet_name='Sheet1')
+
+		# Close the Pandas Excel writer and output the Excel file.
+		writer.save()
+
+
+		#workbook.close()
+
+		export_id = self.pool.get('excel.extended').create(self.env.cr, self.env.uid, 
+					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': file_name}, context=self.env.context)
+
+		return{
+			'view_mode': 'form',
+			'res_id': export_id,
+			'res_model': 'excel.extended',
+			'view_type': 'form',
+			'type': 'ir.actions.act_window',
+			'context': self.env.context,
+			'target': 'new',
+			}
+
 
 
 
@@ -2536,9 +2646,9 @@ class korm_potrebnost(models.Model):
 		('10', "Октябрь"),
 		('11', "Ноябрь"),
 		('12', "Декабрь"),
-	], default='', required=True, string=u"Месяц")
+	], default='', required=False, string=u"Месяц")
 	
-	year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+	year = fields.Char(string=u"Год", required=False, default=str(datetime.today().year))
 	month_text = fields.Char(string=u"Год", compute='return_name')
 
 	kol_day = fields.Integer(string=u"Расчет поголовья за, дней назад", default=7, store=True, copy=True)
@@ -2554,11 +2664,11 @@ class korm_potrebnost(models.Model):
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
 	utverdil_id = fields.Many2one('res.partner', string='Утвердил')
 	
-	kol_golov = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
-	kol_korma = fields.Integer(string=u"Кол-во корма", readonly=True, store=True, copy=True)
+	kol_golov = fields.Integer(string=u"Ср.поголовье в сутки", store=True, readonly=True, copy=True)
+	kol_korma = fields.Float(digits=(10, 3),string=u"Кол-во корма в сутки", readonly=True, store=True, copy=True)
 
-	kol_golov_limit = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
-	kol_korma_limit = fields.Integer(string=u"Кол-во корма", readonly=True, store=True, copy=True)
+	#kol_golov_limit = fields.Integer(string=u"Кол-во голов", store=True, readonly=True, copy=True)
+	kol_korma_limit = fields.Float(digits=(10, 3), string=u"Кол-во корма в сутки", readonly=True, store=True, copy=True)
 	description = fields.Text(string=u"Коментарии")
 
 		
@@ -2695,9 +2805,9 @@ class korm_potrebnost_limit_line(models.Model):
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_potrebnost_id = fields.Many2one('korm.potrebnost', ondelete='cascade', string=u"Потребность в кормах", required=True)
 	
-	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы', related='stado_fiz_group_id.stado_vid_fiz_group_id')
-	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы', related='stado_fiz_group_id.stado_podvid_fiz_group_id')
-	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id')
+	stado_vid_fiz_group_id = fields.Many2one('stado.vid_fiz_group', string=u'Вид физ. группы', related='stado_fiz_group_id.stado_vid_fiz_group_id',  store=True)
+	stado_podvid_fiz_group_id = fields.Many2one('stado.podvid_fiz_group', string=u'Подвид физ. группы', related='stado_fiz_group_id.stado_podvid_fiz_group_id',  store=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id',  store=True)
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
 	
 	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')

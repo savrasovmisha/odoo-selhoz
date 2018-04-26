@@ -8,6 +8,7 @@
             <form string="Форма Потребность в кормах">
                
                 <sheet>
+                    <button name="limit_report_print" string="Отчет Лимиты кормления" type="object" icon="gtk-print"/>
                     <group>
                         <group>
                             <field name="name"/>
@@ -15,8 +16,8 @@
                             <field name="is_limit" invisible="True"/> 
                             <field name="month" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
                             <field name="year" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
-                            <field name="date_start" />
-                            <field name="date_end" />
+                            <field name="date_start" attrs="{'invisible': [('is_limit',  '=', True)]}"/>
+                            <field name="date_end" attrs="{'invisible': [('is_limit',  '=', True)]}"/>
                             <!-- <field name="date_start" attrs="{'invisible': [('is_limit',  '=', True)]}"/>
                             <field name="date_end" attrs="{'invisible': [('is_limit',  '=', True)]}"/> -->
                             <field name="period_day"/>
@@ -113,7 +114,7 @@
                         <page string="Лимиты кормления">
 
                             <field name="korm_potrebnost_limit_line">
-                                <tree string="korm_potrebnost_limit_line" editable="botton">
+                                <tree string="korm_potrebnost_limit_line" editable="botton" limit="20">
                                     
                                     <field name="stado_vid_fiz_group_id"/>
                                     <field name="stado_podvid_fiz_group_id"/>
@@ -134,8 +135,8 @@
                             </field>
                             
                                 <group>
-                                    <field name="kol_korma_limit"/>
-                                    <field name="kol_golov_limit"/>
+                                    <field name="kol_korma_limit" widget="integer"/>
+                                    
                                 </group>
                                                
                            
@@ -148,7 +149,7 @@
                     <group>
                         <h2> Итого: </h2>
                         <group>
-                            <field name="kol_korma"/>
+                            <field name="kol_korma" widget="integer"/>
                             <field name="kol_golov"/>
                         </group>
                                        

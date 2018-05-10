@@ -2564,7 +2564,7 @@ class korm_potrebnost(models.Model):
 				line.stado_vid_fiz_group_id.name,
 				line.stado_podvid_fiz_group_id.name,
 				line.stado_fiz_group_id.name,
-				#line.stado_zagon_id.name,
+				line.stado_zagon_id.name+'_',
 				line.kol_golov,
 				line.nomen_group_id.name,
 				line.nomen_nomen_id.name,
@@ -2579,7 +2579,7 @@ class korm_potrebnost(models.Model):
 									u'Вид физ.гр', 
 									u'Подвид физ.гр.', 
 									u'Физ.гр.', 
-									#'stado_zagon_id',
+									u'Загон',
 									u'Поголовье',
 									u'Группа корма',
 									u'Наименование корма',
@@ -2589,22 +2589,54 @@ class korm_potrebnost(models.Model):
 									], dtype=int )
 
 		table = pd.pivot_table(datas, 
-                       index=[u'Группа корма',u'Наименование корма'],
-                       columns=[
-                                u'Подвид физ.гр.', 
-                                u'Физ.гр.', 
+                       columns=[u'Группа корма',u'Наименование корма'],
+                       index=[
                                 u'Вид физ.гр', 
+                                u'Подвид физ.гр.', 
+                                u'Физ.гр.',
+                                u'Загон', 
                                 u'Поголовье'
                                ],
-                       values=[u'Кол. на голову', u'Кол. на сутки', u'Кол. на период'],
-                       aggfunc=pd.np.sum, fill_value=0).swaplevel(0,3, axis=1).sort_index(axis=1)
+                       values=[u'Кол. на период'],
+                       aggfunc=pd.np.sum, fill_value=0).sort_index(axis=1)#.swaplevel(0,3, axis=1)
 		
 		# Create a Pandas Excel writer using XlsxWriter as the engine.
 		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
 
-		# Convert the dataframe to an XlsxWriter Excel object.
-		table.to_excel(writer, sheet_name='Sheet1')
 
+
+		# Set the format but not the column width.
+		#worksheet.set_column('C:C', None, format2)
+
+		# Convert the dataframe to an XlsxWriter Excel object.
+		table.to_excel(writer, sheet_name='Base')
+		# Get the xlsxwriter workbook and worksheet objects.
+		workbook  = writer.book
+		worksheet = writer.sheets['Base']
+
+		# Add some cell formats.
+		format_text = workbook.add_format({'num_format': '@'})
+		text_fmt = workbook.add_format({   'text_wrap': True,
+											'border':1,
+											'align':'center',
+											'valign':'vcenter',
+											'font_size':8       })
+		#format2 = workbook.add_format({'num_format': '0%'})
+
+		# Note: It isn't possible to format any cells that already have a format such
+		# as the index or headers or any cells that contain dates or datetimes.
+
+		# Set the column width and format.
+		worksheet.set_column('A:D', 8, text_fmt)
+
+		worksheet.set_zoom(90)
+		worksheet.freeze_panes(1, 0)
+		#Установки печати
+		worksheet.set_landscape() #Ландшафт
+		worksheet.set_margins(0.5, 0.5, 0.5, 0.5) #Поля по умолчанию
+		worksheet.repeat_rows(0)
+		#print_area( first_row , first_col , last_row , last_col )
+		worksheet.fit_to_pages(1, 100) #Разместить на одной странице
 		# Close the Pandas Excel writer and output the Excel file.
 		writer.save()
 

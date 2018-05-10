@@ -592,6 +592,7 @@ class korm_buh_report(models.Model):
 	date_end = fields.Date(string='Дата окончания', required=True, index=True, copy=False, compute='return_name')
 	
 	po_fiz_group = fields.Boolean(string=u"Формировать по физиологическим группам (по рационам)")
+	count_day = fields.Integer(string=u"Кол-во дней в периоде", compute='return_name')
 
 	#list_nomer = fields.Integer(string=u"Номер листа", default=0)
 	
@@ -655,7 +656,14 @@ class korm_buh_report(models.Model):
 
 		self.ensure_one()
 		
-		def write_sheet(workbook, name_group, data_pivot, list_nomer='', korm_racion=None, normi_dict=None):
+		def write_sheet(workbook, 
+						name_group, 
+						data_pivot, 
+						list_nomer='', 
+						korm_racion=None, 
+						normi_dict=None,
+						normi_kol_golov=None
+						):
 			start_row_num = 13 #Начало данных таблицы
 			start_col_num = 2 #Начало названий корма
 
@@ -767,7 +775,7 @@ class korm_buh_report(models.Model):
 
 			worksheet.merge_range('A9:B9', u'Норма на одну голову, кг', format_table_head)
 			worksheet.merge_range('A10:B10', u'Факт на одну голову, кг', format_table_head)
-			worksheet.merge_range('A11:B11', u'Лимит на месяц, кг', format_table_head)
+			worksheet.merge_range('A11:B11', u'Лимит на месяц (%s гол/сут), кг' % normi_kol_golov, format_table_head)
 
 			worksheet.merge_range('C12:%s' % (xl_rowcol_to_cell(11, total_cols-1)), 
 									u'Наименование использованных кормов', 
@@ -787,15 +795,20 @@ class korm_buh_report(models.Model):
 				worksheet.set_column(0, col_num+1, 10) #Задаем ширину колонки
 
 				#Вставляем нормы из рациона
-				if self.po_fiz_group and normi_dict !=None:
+				if normi_dict !=None:
 					if value in normi_dict: #проверяем есть ли такой корм в словаре
-						norma = normi_dict[value]
-						worksheet.write(8, col_num, norma, format_table_float)
+						norma_golova = normi_dict[value]
+						worksheet.write(8, col_num, norma_golova, format_table_float)
+					if value+'_za_period' in normi_dict: #проверяем есть ли такой корм в словаре
+						norma_za_period = normi_dict[value+'_za_period']
+						worksheet.write(10, col_num, norma_za_period, format_table_int)
+						# worksheet.write_formula(10, col_num,
+						# 			'{=%s*%s*%s}' % (xl_rowcol_to_cell(8, col_num), normi_kol_golov, self.count_day), format_table_int)
 
 
 				num=col_num + 1
 
-
+			worksheet.set_column(0, 0, 13) #Задаем ширину первой колонки
 			worksheet.set_row(12,50) #Задаем высоту строк с названиями корма
 
 			worksheet.merge_range('C14:%s' % (xl_rowcol_to_cell(13, total_cols-1)), 
@@ -897,14 +910,14 @@ class korm_buh_report(models.Model):
 								  format_table_head)
 			
 			#Остаток лимита
-			if self.po_fiz_group and korm_racion !=None:
-				col_num = start_col_num
-				for i in range(len(data_pivot.columns)-2):
-					
-					worksheet.write_formula(row_num, col_num,
-										'{=%s-%s}' % (xl_rowcol_to_cell(10, col_num),
-															xl_rowcol_to_cell(row_num-1, col_num)), format_table_int)
-					col_num+=1
+			
+			col_num = start_col_num
+			for i in range(len(data_pivot.columns)-2):
+				
+				worksheet.write_formula(row_num, col_num,
+									'{=%s-%s}' % (xl_rowcol_to_cell(10, col_num),
+														xl_rowcol_to_cell(row_num-1, col_num)), format_table_int)
+				col_num+=1
 
 			
 
@@ -947,6 +960,61 @@ class korm_buh_report(models.Model):
 		list_nomer = '' #Номерация листов. 1,  1.1, 2, 2.2
 		list_nomer_vid = 0
 		#writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')
+
+		#Получаем поголовье в разрезе видов физ групп
+		zapros = """SELECT
+						z.stado_vid_fiz_group_id,
+						sum(z.kol_golov)
+						
+					FROM
+					(
+					select
+						distinct on (l.stado_zagon_id) 
+						
+						l.stado_vid_fiz_group_id,
+						l.kol_golov
+						
+					from korm_potrebnost_limit_line l
+					left join korm_potrebnost k on (k.id=l.korm_potrebnost_id)
+					left join nomen_nomen n on (n.id=l.nomen_nomen_id)
+					where k.month = '%s' and k.year = '%s' and k.is_limit=True
+					) z
+					Group by z.stado_vid_fiz_group_id
+				 """ % (self.month,self.year)
+		self.env.cr.execute(zapros,)
+		vid_groups = self.env.cr.fetchall()
+		pogolove_vid_fiz_group = {}
+		for line in vid_groups:
+			pogolove_vid_fiz_group[line[0]] = line[1]
+		#Получаем поголовье в разрезе видов физ групп
+		zapros = """SELECT
+						z.stado_podvid_fiz_group_id,
+						sum(z.kol_golov)
+						
+					FROM
+					(
+					select
+						distinct on (l.stado_zagon_id) 
+						
+						l.stado_podvid_fiz_group_id,
+						l.kol_golov
+						
+					from korm_potrebnost_limit_line l
+					left join korm_potrebnost k on (k.id=l.korm_potrebnost_id)
+					left join nomen_nomen n on (n.id=l.nomen_nomen_id)
+					where k.month = '%s' and k.year = '%s' and k.is_limit=True
+					) z
+					Group by z.stado_podvid_fiz_group_id
+				 """ % (self.month,self.year)
+		self.env.cr.execute(zapros,)
+		podvid_groups = self.env.cr.fetchall()
+		pogolove_podvid_fiz_group = {}
+		for line in podvid_groups:
+			pogolove_podvid_fiz_group[line[0]] = line[1]
+
+
+
+
 		stado_vid_fiz_group_ids = self.env['stado.vid_fiz_group'].search([])
 		
 		for stado_vid_fiz_group in stado_vid_fiz_group_ids:
@@ -1026,9 +1094,37 @@ class korm_buh_report(models.Model):
 							data_pivot.loc[index, "Total"] = gol[1]
 					#print row['date'], row['Total']
 
+				normi_dict = {}
+				normi_kol_golov = 0
+				if self.po_fiz_group:
+					pass
+					# for line in korm_racion.korm_racion_line:
+					# 	normi_dict[line.nomen_nomen_id.name] = line.kol
+				else:
+					zapros = """select
+									n.name, 
+									sum(l.kol_day)/sum(l.kol_golov),
+									sum(l.kol_za_period)
+									
+								from korm_potrebnost_limit_line l
+								left join korm_potrebnost k on (k.id=l.korm_potrebnost_id)
+								left join nomen_nomen n on (n.id=l.nomen_nomen_id)
+								where k.month = '%s' and k.year = '%s' and
+										l.stado_vid_fiz_group_id = %s and k.is_limit=True
+								group by n.name
+									
+														
+									
 
+									""" % (self.month,self.year, stado_vid_fiz_group.id)
+					self.env.cr.execute(zapros,)
+					limits = self.env.cr.fetchall()
+					for line in limits:
+						normi_dict[line[0]] = line[1]
+						normi_dict[line[0]+'_za_period'] = line[2]
 
-
+					if stado_vid_fiz_group.id in pogolove_vid_fiz_group:
+						normi_kol_golov = pogolove_vid_fiz_group[stado_vid_fiz_group.id]
 
 				#print data_pivot
 				Total = data_pivot['Total']
@@ -1037,7 +1133,7 @@ class korm_buh_report(models.Model):
 				
 				list_nomer_vid += 1
 				list_nomer = str(list_nomer_vid) + '.'
-				write_sheet(workbook, stado_vid_fiz_group.name, data_pivot, list_nomer)
+				write_sheet(workbook, stado_vid_fiz_group.name, data_pivot, list_nomer, normi_dict=normi_dict, normi_kol_golov=normi_kol_golov)
 
 
 
@@ -1124,8 +1220,40 @@ class korm_buh_report(models.Model):
 									data_pivot.loc[index, "Total"] = gol[1]
 							#print row['date'], row['Total']
 
+						normi_dict = {}
+						normi_kol_golov = 0
+						if self.po_fiz_group:
+							pass
+							# for line in korm_racion.korm_racion_line:
+							# 	normi_dict[line.nomen_nomen_id.name] = line.kol
+						else:
+							zapros = """select
+											n.name, 
+											sum(l.kol_day)/sum(l.kol_golov),
+											sum(l.kol_za_period)
+											
+										from korm_potrebnost_limit_line l
+										left join korm_potrebnost k on (k.id=l.korm_potrebnost_id)
+										left join nomen_nomen n on (n.id=l.nomen_nomen_id)
+										where k.month = '%s' and k.year = '%s' and
+												l.stado_vid_fiz_group_id = %s and
+												l.stado_podvid_fiz_group_id = %s and k.is_limit=True
+										group by n.name
+											
+																
+											
 
+											""" % (self.month,self.year, stado_vid_fiz_group.id, stado_podvid_fiz_group.id)
+							self.env.cr.execute(zapros,)
+							limits = self.env.cr.fetchall()
+							for line in limits:
+								normi_dict[line[0]] = line[1]
+								normi_dict[line[0]+'_za_period'] = line[2]
 
+							if stado_podvid_fiz_group.id in pogolove_podvid_fiz_group:
+								normi_kol_golov = pogolove_podvid_fiz_group[stado_podvid_fiz_group.id]
+
+							#print normi_dict
 
 
 						#print data_pivot
@@ -1136,7 +1264,7 @@ class korm_buh_report(models.Model):
 						
 						list_nomer_podvid += 1
 						list_nomer = str(list_nomer_vid) + '.' + str(list_nomer_podvid)
-						write_sheet(workbook, name_group , data_pivot, list_nomer)
+						write_sheet(workbook, name_group , data_pivot, list_nomer, normi_dict=normi_dict, normi_kol_golov=normi_kol_golov)
 
 						
 
@@ -1288,8 +1416,11 @@ class korm_buh_report(models.Model):
 
 											#Данные по норме кормления
 											normi_dict = {}
+											
 											for line in korm_racion.korm_racion_line:
 												normi_dict[line.nomen_nomen_id.name] = line.kol
+											
+
 
 
 											#print data_pivot

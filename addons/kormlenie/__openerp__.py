@@ -68,6 +68,8 @@
         'wizard/korm_korm_wiz_view.xml',
         'reports/korm_buh_report.xml',
         'reports/korm_buh_report_view.xml',
+        
+        'reports/korm_analiz_kormleniya_report_view.xml',
         'reports/korm_analiz_potrebleniya_kormov_report_view.xml',
         'reports/korm_analiz_efekt_korm_report_view.xml',
 
@@ -79,6 +81,7 @@
         
         #'views/templates.xml',
     ],
+    'qweb': ['static/src/xml/*.xml'],
     #'update_xml': ["update.sql",],
     #'css': ['static/css/style.css'],
    

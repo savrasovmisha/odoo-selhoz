@@ -49,6 +49,7 @@ spisok.append(['stado.fiz_group',''])
 spisok.append(['stado.zagon',''])
 spisok.append(['korm.analiz_potrebleniya_kormov_report',''])
 spisok.append(['korm.analiz_efekt_korm_report',''])
+spisok.append(['korm.analiz_kormleniya_report',''])
 
 
 

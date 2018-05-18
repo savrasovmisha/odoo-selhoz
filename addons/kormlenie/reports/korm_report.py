@@ -1748,7 +1748,44 @@ class korm_buh_report(models.Model):
 		#       }
 
 
+	@api.multi
+	def report_analiz_potrebleniya_kormov(self):
+		self.ensure_one()
 
+		reload(sys)
+		sys.setdefaultencoding("utf-8")
+		
+		tmp_dir = tempfile.mkdtemp()
+
+		output_filename = tmp_dir + '/AnalizPotrebleniyaKormov.xlsx'
+
+		workbook = xlsxwriter.Workbook(output_filename, {'default_date_format': 'DD.MM.YYYY'})
+
+
+
+
+		workbook.close()
+
+		export_id = self.pool.get('excel.extended').create(self.env.cr, self.env.uid, 
+					{'excel_file': base64.encodestring(open(output_filename,"rb").read()), 'file_name': 'AnalizPotrebleniyaKormov.xlsx'}, context=self.env.context)
+
+		return{
+
+			'view_mode': 'form',
+
+			'res_id': export_id,
+
+			'res_model': 'excel.extended',
+
+			'view_type': 'form',
+
+			'type': 'ir.actions.act_window',
+
+			'context': self.env.context,
+
+			'target': 'new',
+
+			}
 # SELECT
 #                         *
 

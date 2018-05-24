@@ -68,7 +68,9 @@ class korm_analiz_kormleniya_report(models.Model):
 		if self.month == '11' : self.month_text = u"Ноябрь"
 		if self.month == '12' : self.month_text = u"Декабрь"
 
-
+	@api.model
+	def my_method(self):
+		return {"hello": "world"}
 	
 	# date = fields.Date(string='Дата')
 	# # nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма')

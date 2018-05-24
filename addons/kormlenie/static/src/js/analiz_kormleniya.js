@@ -7,6 +7,7 @@ openerp.kormlenie = function(instance, local) {
     local.analiz_kormleniya = instance.Widget.extend({
         template: "HomePage",
         start: function() {
+        	
         	/*this.$el.append("<div>Hello dear Odoo user!</div>");*/
         	 return $.when(
                 new local.stado_zagon_list(this).appendTo(this.$('.oe_petstore_homepage_left'))
@@ -21,7 +22,14 @@ openerp.kormlenie = function(instance, local) {
 	    template: 'stado_zagon_list',
 	    
 	    start: function () {
-	        var self = this;
+
+	    	var self = this;
+	        var model = new instance.web.Model("korm.analiz_kormleniya_report");
+	        model.call("my_method", {context: new instance.web.CompoundContext()}).then(function(result) {
+	            self.$el.append("<div>Hello " + result["hello"] + "</div>");
+	            // will show "Hello world" to the user
+	        });
+	       /* var self = this;
 	        return new instance.web.Model('stado.zagon')
 	            .query(['name'])
 	            .limit(15)
@@ -30,7 +38,7 @@ openerp.kormlenie = function(instance, local) {
 	                _(results).each(function (item) {
 	                    self.$el.append(QWeb.render('stado_zagon', {item: item}));
 	                });
-	            });
+	            });*/
 	    },
 	});
 

@@ -1452,13 +1452,26 @@ class milk_nadoy_group(models.Model):
 						if otk_parabone == 0:
 							break
 
+	@api.one				
+	def import_file(self):
+		from pandas import read_csv
+		import base64
+		data_file_p = open('/tmp/milk_load.csv','w')
 
+		data_file_p.write((base64.b64decode(self.data)))
 
+		data_file_p.close()
+		
+
+		out = read_csv('/tmp/milk_load.csv', sep=' ', header=0)
+		#print out[:10]
 
 
 	name = fields.Char(string=u"Номер", store=False, copy=False, index=True, compute='return_name')
 	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
 	
+	data = fields.Binary('Import files')
+
 	kol_golov = fields.Integer(string=u"Считано голов", compute='return_kol_golov', store=True, group_operator="avg", default=0)
 	nadoy_golova = fields.Float(digits=(3, 2), string=u"Надой на голову, л", compute='return_kol_golov', store=True, group_operator="avg")
 	nadoy_itog = fields.Integer(string=u"Надой всего, л", compute='return_kol_golov', store=True, group_operator="sum", default=0)

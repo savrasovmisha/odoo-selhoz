@@ -74,6 +74,7 @@ class stado_zagon(models.Model):
 	nomer = fields.Integer(string=u"Номер", required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
 	uniform_id = fields.Integer(string=u"ID Uniform",default=-1)
+	dc305_id = fields.Integer(string=u"ID DC305",default=-1)
 	utro = fields.Integer(string=u"Утро,%", default=100)
 	vecher = fields.Integer(string=u"Вечер,%", default=0)
 	#active = fields.Boolean(string=u"Активный", default=True)

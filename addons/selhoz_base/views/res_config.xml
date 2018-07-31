@@ -15,6 +15,13 @@
                             name="cancel" class="oe_link"/>
                     </header>
                     <sheet>
+
+                        <separator string="Программа по управлению стадом" />
+                        <group>
+                            <field name="hm_programms" string="Наименование программы"/>
+                        </group>
+
+                        
                         <separator string="Подключение к серверу API" />
                         <group>
                             

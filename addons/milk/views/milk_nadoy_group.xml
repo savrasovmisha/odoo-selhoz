@@ -11,9 +11,8 @@
                     <sheet>
                         <group >
                             <group>
-                                <field name="data" />
 
-                                <button name="import_file" string="Import" type="object"  class="oe_highlight" />
+                                <!-- <button name="import_file" string="Import" type="object"  class="oe_highlight" /> -->
                                 
                                 <field name="date" string="Дата"/>
                                 <field name="massage"/>
@@ -36,6 +35,11 @@
                             
 
                         </group>
+
+                        <group>
+                                <field name="file_milk" widget="binary" height="64"/>
+                        </group>
+                                
                         <group>
                                 <div class="oe_button_box" name="button_box">
                                     <button name="action_load"
@@ -45,6 +49,7 @@
                                        >
                                     </button>
                                 </div>
+
                                 <div class="oe_button_box" name="button_box">
                                     <button name="action_raschet"
                                         type="object"
@@ -55,54 +60,9 @@
                                 </div>
                                
                                <!--  <field name="procent_graph" widget="image"/>    -->
-                            </group>
-                        <group>
-                            <group string="Надой по дням лактации">
-                                <field name="nadoy_0_40"/>
-                                <field name="nadoy_40_150"/>
-                                <field name="nadoy_150_300"/>
-                                <field name="nadoy_300"/>
-                                
-                                <separator string="Надой по лактациям" colspan="2"/>
-                                <field name="nadoy_l1"/>
-                                <field name="nadoy_l2"/>
-                                <field name="nadoy_l3"/>
-
-
-                                <separator string="% голов по надоям" colspan="2"/>
-                                <field name="procent_0_15"/>
-                                <field name="procent_15_20"/>
-                                <field name="procent_20_25"/>
-                                <field name="procent_25_30"/>
-                                <field name="procent_30_35"/>
-                                <field name="procent_35_40"/>
-                                <field name="procent_40_45"/>
-                                <field name="procent_45"/>
-                                
-                            </group>
-                            <group string="В разрезе лактаций и дней лактаций">
-                      
-                                <separator string="1-я лактация" colspan="2"/>
-                             
-                                <field name="nadoy_l1_0_40"/>
-                                <field name="nadoy_l1_40_150"/>
-                                <field name="nadoy_l1_150_300"/>
-                                <field name="nadoy_l1_300"/>
-
-                                <separator string="2-я лактация" colspan="2"/>
-                                <field name="nadoy_l2_0_40"/>
-                                <field name="nadoy_l2_40_150"/>
-                                <field name="nadoy_l2_150_300"/>
-                                <field name="nadoy_l2_300"/>
-
-                                <separator string="3-я и более лактация" colspan="2"/>
-                                <field name="nadoy_l3_0_40"/>
-                                <field name="nadoy_l3_40_150"/>
-                                <field name="nadoy_l3_150_300"/>
-                                <field name="nadoy_l3_300"/>
-                            </group>
-
                         </group>
+
+                        
                          
                          
                             <notebook>
@@ -147,6 +107,89 @@
                                            
                                         </tree>
                                     </field>
+                                </page>
+                                <page string="Надой в разрезах">
+                                    <group>
+                                        <group string="Надой по дням лактации">
+                                            <field name="nadoy_0_21"/>
+                                            <field name="nadoy_22_100"/>
+                                            <field name="nadoy_101_300"/>
+                                            <field name="nadoy_300"/>
+                                            
+                                            <separator string="Надой по лактациям" colspan="2"/>
+                                            <field name="nadoy_l1"/>
+                                            <field name="nadoy_l2"/>
+                                            <field name="nadoy_l3"/>
+
+
+                                            <separator string="% голов по надоям" colspan="2"/>
+                                            <field name="procent_0_15"/>
+                                            <field name="procent_15_20"/>
+                                            <field name="procent_20_25"/>
+                                            <field name="procent_25_30"/>
+                                            <field name="procent_30_35"/>
+                                            <field name="procent_35_40"/>
+                                            <field name="procent_40_45"/>
+                                            <field name="procent_45"/>
+                                            
+                                        </group>
+                                        <group string="В разрезе лактаций и дней лактаций">
+                                  
+                                            <separator string="1-я лактация" colspan="2"/>
+                                         
+                                            <field name="nadoy_l1_0_21"/>
+                                            <field name="nadoy_l1_22_100"/>
+                                            <field name="nadoy_l1_150_300"/>
+                                            <field name="nadoy_l1_300"/>
+
+                                            <separator string="2-я лактация" colspan="2"/>
+                                            <field name="nadoy_l2_0_21"/>
+                                            <field name="nadoy_l2_22_100"/>
+                                            <field name="nadoy_l2_101_300"/>
+                                            <field name="nadoy_l2_300"/>
+
+                                            <separator string="3-я и более лактация" colspan="2"/>
+                                            <field name="nadoy_l3_0_21"/>
+                                            <field name="nadoy_l3_22_100"/>
+                                            <field name="nadoy_l3_101_300"/>
+                                            <field name="nadoy_l3_300"/>
+                                        </group>
+
+                                    </group>
+                                </page>
+                                <page string="Надой в разрезах (устаревший)">
+                                    <group>
+                                        <group string="Надой по дням лактации">
+                                            <field name="nadoy_0_40"/>
+                                            <field name="nadoy_40_150"/>
+                                            <field name="nadoy_150_300"/>
+                                            <field name="nadoy_300"/>
+                                            
+                                                                                        
+                                        </group>
+                                        <group string="В разрезе лактаций и дней лактаций">
+                                  
+                                            <separator string="1-я лактация" colspan="2"/>
+                                         
+                                            <field name="nadoy_l1_0_40"/>
+                                            <field name="nadoy_l1_40_150"/>
+                                            <field name="nadoy_l1_150_300"/>
+                                            <field name="nadoy_l1_300"/>
+
+                                            <separator string="2-я лактация" colspan="2"/>
+                                            <field name="nadoy_l2_0_40"/>
+                                            <field name="nadoy_l2_40_150"/>
+                                            <field name="nadoy_l2_150_300"/>
+                                            <field name="nadoy_l2_300"/>
+
+                                            <separator string="3-я и более лактация" colspan="2"/>
+                                            <field name="nadoy_l3_0_40"/>
+                                            <field name="nadoy_l3_40_150"/>
+                                            <field name="nadoy_l3_150_300"/>
+                                            <field name="nadoy_l3_300"/>
+                                        </group>
+
+                                    </group>
                                 </page>
                             </notebook>
                             <notebook colspan="4">

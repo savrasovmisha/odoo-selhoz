@@ -21,6 +21,11 @@ class milk_config_settings(models.TransientModel):
 
 	milk_nomen_default = fields.Many2one('nomen.nomen', string='Номенклатура молока')
 
+	hm_programms = fields.Selection([
+		('DC305', "DC305"),
+		('UNIFORM', "UNIFORM"),
+	], string='Программа по управлению стадом')
+
 	# #@api.one
 	# def get_default_dsn_selex(self, cr, uid, ids, context=None):
 	# 	#mc = self.search([('create_date', '>', '01.07.2016')],limit=1)
@@ -59,7 +64,8 @@ class milk_config_settings(models.TransientModel):
 			'kod_otel': int(conf.get_param('kod_otel')),
 			'kod_osemeneniya': int(conf.get_param('kod_osemeneniya')),
 			'kod_abort': int(conf.get_param('kod_abort')),
-			'milk_nomen_default': int(conf.get_param('milk_nomen_default'))
+			'milk_nomen_default': int(conf.get_param('milk_nomen_default')),
+			'hm_programms': conf.get_param('hm_programms')
 			
 		}
 	@api.one
@@ -76,3 +82,4 @@ class milk_config_settings(models.TransientModel):
 		conf.set_param('kod_osemeneniya', int(self.kod_osemeneniya))
 		conf.set_param('kod_abort', int(self.kod_abort))
 		conf.set_param('milk_nomen_default', self.milk_nomen_default.id)
+		conf.set_param('hm_programms', self.hm_programms)

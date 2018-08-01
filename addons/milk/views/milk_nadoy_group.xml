@@ -139,7 +139,7 @@
                                          
                                             <field name="nadoy_l1_0_21"/>
                                             <field name="nadoy_l1_22_100"/>
-                                            <field name="nadoy_l1_150_300"/>
+                                            <field name="nadoy_l1_101_300"/>
                                             <field name="nadoy_l1_300"/>
 
                                             <separator string="2-я лактация" colspan="2"/>
@@ -163,7 +163,7 @@
                                             <field name="nadoy_0_40"/>
                                             <field name="nadoy_40_150"/>
                                             <field name="nadoy_150_300"/>
-                                            <field name="nadoy_300"/>
+                                            
                                             
                                                                                         
                                         </group>
@@ -174,19 +174,19 @@
                                             <field name="nadoy_l1_0_40"/>
                                             <field name="nadoy_l1_40_150"/>
                                             <field name="nadoy_l1_150_300"/>
-                                            <field name="nadoy_l1_300"/>
+                                            
 
                                             <separator string="2-я лактация" colspan="2"/>
                                             <field name="nadoy_l2_0_40"/>
                                             <field name="nadoy_l2_40_150"/>
                                             <field name="nadoy_l2_150_300"/>
-                                            <field name="nadoy_l2_300"/>
+                                           
 
                                             <separator string="3-я и более лактация" colspan="2"/>
                                             <field name="nadoy_l3_0_40"/>
                                             <field name="nadoy_l3_40_150"/>
                                             <field name="nadoy_l3_150_300"/>
-                                            <field name="nadoy_l3_300"/>
+                                            
                                         </group>
 
                                     </group>
@@ -219,9 +219,9 @@
                 <tree string="Надой молока по группам" default_order='date desc'>
                    
                     <field name="date" string="Дата"/>
-                    <field name="nadoy_0_40"/>
-                    <field name="nadoy_40_150"/>
-                    <field name="nadoy_150_300"/>
+                    <field name="nadoy_0_21"/>
+                    <field name="nadoy_22_100"/>
+                    <field name="nadoy_101_300"/>
                     <field name="nadoy_300"/>
                     <field name="nadoy_l1"/>
                     <field name="nadoy_l2"/>
@@ -260,7 +260,7 @@
             <field name="name">Надой молока по группам</field>
             <field name="res_model">milk.nadoy_group</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первый документ Надой молока по группам
                 </p>

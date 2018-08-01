@@ -1355,6 +1355,7 @@ class milk_nadoy_group(models.Model):
 		self.kol_golov = frame[u"ИД"].count()
 
 		frame[u"kol_milk"] = frame[u"МОЛ1"].astype(int)
+		frame = frame[frame[u'kol_milk']!=0] #Удаляем записи где надой молока =0
 		frame[u"GROEPNR"] = frame[u"ГРУПА"].astype(int)
 		frame[u"ДДНИ"] = frame[u"ДДНИ"].astype(int)
 		frame[u"ЛАКТ"] = frame[u"ЛАКТ"].astype(int)
@@ -1452,14 +1453,33 @@ class milk_nadoy_group(models.Model):
 
 
 		if self.kol_golov>0:
-			self.procent_0_15 = frame['n015'].sum()/self.kol_golov*100		
-			self.procent_15_20 = frame['n1520'].sum()/self.kol_golov*100
-			self.procent_20_25 = frame['n2025'].sum()/self.kol_golov*100
-			self.procent_25_30 = frame['n2530'].sum()/self.kol_golov*100
-			self.procent_30_35 = frame['n3035'].sum()/self.kol_golov*100
-			self.procent_35_40 = frame['n3540'].sum()/self.kol_golov*100
-			self.procent_40_45 = frame['n4045'].sum()/self.kol_golov*100
-			self.procent_45 = frame['n45'].sum()/self.kol_golov*100
+			kol_golov = frame[u"ИД"].count()
+			self.procent_0_15 = frame['n015'].sum()*100/kol_golov		
+			self.procent_15_20 = frame['n1520'].sum()*100/kol_golov
+			self.procent_20_25 = frame['n2025'].sum()*100/kol_golov
+			self.procent_25_30 = frame['n2530'].sum()*100/kol_golov
+			self.procent_30_35 = frame['n3035'].sum()*100/kol_golov
+			self.procent_35_40 = frame['n3540'].sum()*100/kol_golov
+			self.procent_40_45 = frame['n4045'].sum()*100/kol_golov
+			self.procent_45 = frame['n45'].sum()*100/kol_golov
+
+		self.nadoy_0_21 = frame[frame[u'ДДНИ']<22].kol_milk.mean()		
+		self.nadoy_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100)].kol_milk.mean()		
+		self.nadoy_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300)].kol_milk.mean()	
+		self.nadoy_300 = frame[frame[u'ДДНИ']>300].kol_milk.mean()
+
+		self.nadoy_l1_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+		self.nadoy_l1_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+		self.nadoy_l1_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+		self.nadoy_l1_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+		self.nadoy_l2_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+		self.nadoy_l2_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+		self.nadoy_l2_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+		self.nadoy_l2_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+		self.nadoy_l3_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+		self.nadoy_l3_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+		self.nadoy_l3_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+		self.nadoy_l3_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
 
 
 		if len(err)>0:
@@ -1643,32 +1663,32 @@ class milk_nadoy_group(models.Model):
 
 	#dd = fields.Float(digits=(10, 2), string=u"Базовая цена (без НДС)", required=True)
 
-	### 1-й вариант разреза
+	### 1-й вариант разреза (устаревший)
 	nadoy_0_40 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
 	nadoy_40_150 = fields.Float(digits=(3, 2), string=u"Надой 40-150", store=True, group_operator="avg")
 	nadoy_150_300 = fields.Float(digits=(3, 2), string=u"Надой 150-300", store=True, group_operator="avg")
-	nadoy_300 = fields.Float(digits=(3, 2), string=u"Надой >300", store=True, group_operator="avg")
+	#nadoy_300 = fields.Float(digits=(3, 2), string=u"Надой >300", store=True, group_operator="avg")
 
 	nadoy_l1_0_40 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 0-40", store=True, group_operator="avg")
 	nadoy_l1_40_150 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 40-150", store=True, group_operator="avg")
 	nadoy_l1_150_300 = fields.Float(digits=(3, 2), string=u"1-я л. Надой 150-300", store=True, group_operator="avg")
-	nadoy_l1_300 = fields.Float(digits=(3, 2), string=u"1-я л. Надой >300", store=True, group_operator="avg")
+	#nadoy_l1_300 = fields.Float(digits=(3, 2), string=u"1-я л. Надой >300", store=True, group_operator="avg")
 
 	nadoy_l2_0_40 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 0-40", store=True, group_operator="avg")
 	nadoy_l2_40_150 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 40-150", store=True, group_operator="avg")
 	nadoy_l2_150_300 = fields.Float(digits=(3, 2), string=u"2-я л. Надой 150-300", store=True, group_operator="avg")
-	nadoy_l2_300 = fields.Float(digits=(3, 2), string=u"2-я л. Надой >300", store=True, group_operator="avg")
+	#nadoy_l2_300 = fields.Float(digits=(3, 2), string=u"2-я л. Надой >300", store=True, group_operator="avg")
 
 	nadoy_l3_0_40 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 0-40", store=True, group_operator="avg")
 	nadoy_l3_40_150 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 40-150", store=True, group_operator="avg")
 	nadoy_l3_150_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой 150-300", store=True, group_operator="avg")
-	nadoy_l3_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой >300", store=True, group_operator="avg")
+	#nadoy_l3_300 = fields.Float(digits=(3, 2), string=u">=3-я л. Надой >300", store=True, group_operator="avg")
 	###############
 
 	### 2-й вариант разреза
-	nadoy_0_21 = fields.Float(digits=(3, 2), string=u"Надой 0-40", store=True, group_operator="avg")
-	nadoy_22_100 = fields.Float(digits=(3, 2), string=u"Надой 40-150", store=True, group_operator="avg")
-	nadoy_101_300 = fields.Float(digits=(3, 2), string=u"Надой 150-300", store=True, group_operator="avg")
+	nadoy_0_21 = fields.Float(digits=(3, 2), string=u"Надой 0-21", store=True, group_operator="avg")
+	nadoy_22_100 = fields.Float(digits=(3, 2), string=u"Надой 22-100", store=True, group_operator="avg")
+	nadoy_101_300 = fields.Float(digits=(3, 2), string=u"Надой 101-300", store=True, group_operator="avg")
 	nadoy_300 = fields.Float(digits=(3, 2), string=u"Надой >300", store=True, group_operator="avg")
 
 

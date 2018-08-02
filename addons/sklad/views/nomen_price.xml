@@ -11,12 +11,14 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" string="Номер" />
-                            
+                            <field name="name" string="Номер" attrs="{'readonly': [('obj_osnovaniya_id', '>', 0)]}"/>
+                            <field name="obj_name" string="Документ основания" attrs="{'invisible': [('obj_osnovaniya_id', '=', 0)]}"/>
+                            <field name="obj_osnovaniya" invisible="True"/>
+                            <field name="obj_osnovaniya_id" invisible="True"/>
                             
                         </group>
                         <group>
-                            <field name="date" />
+                            <field name="date" attrs="{'readonly': [('obj_osnovaniya_id', '>', 0)]}"/>
                             
                         </group>
                       
@@ -25,7 +27,7 @@
                     </group>
                     <notebook>
                         <page string="Товары">
-                            <field name="nomen_price_line" >
+                            <field name="nomen_price_line" attrs="{'readonly': [('obj_osnovaniya_id', '>', 0)]}">
                                 <tree string="nomen_price_line" editable="botton">
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>

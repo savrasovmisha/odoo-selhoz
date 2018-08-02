@@ -13,6 +13,8 @@ access_korm_receptura_manager,korm.receptura,model_korm_receptura,group_korm_man
 access_korm_receptura_users,korm.receptura,model_korm_receptura,group_korm_users,1,0,0,0
 access_korm_receptura_line_manager,korm.receptura_line,model_korm_receptura_line,group_korm_manager,1,1,1,1
 access_korm_receptura_line_users,korm.receptura_line,model_korm_receptura_line,group_korm_users,1,0,0,0
+access_korm_receptura_price_line_manager,korm.receptura_price_line,model_korm_receptura_price_line,group_korm_manager,1,1,1,1
+access_korm_receptura_price_line_users,korm.receptura_price_line,model_korm_receptura_price_line,group_korm_users,1,0,0,0
 access_korm_norm_manager,korm.norm,model_korm_norm,group_korm_manager,1,1,1,1
 access_korm_norm_users,korm.norm,model_korm_norm,group_korm_users,1,0,0,0
 access_korm_racion_manager,korm.racion,model_korm_racion,group_korm_manager,1,1,1,1

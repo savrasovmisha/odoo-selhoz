@@ -36,6 +36,9 @@
                        
                             <notebook>
                                 <page string="Состав комбикорма">
+                                    <group>
+                                        <field name="date_raschet"/>
+                                    </group>
                                     <field name="korm_receptura_line">
                                         <tree string="korm_receptura_line" editable="botton" colors="red:((amount == 0) or (kol == 0) or (price == 0))">
                                             <field name="nomen_nomen_id"/>
@@ -46,6 +49,8 @@
                                             <field name="procent"/>
                                             <field name="price"/>
                                             <field name="amount"/>
+                                            <field name="price_date"/>
+                                            <field name="amount_date"/>
                                                                                 
                                         </tree>
                                     </field>
@@ -62,10 +67,40 @@
                                             
                                         </div>
                                         <field name="price" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="price_ustanovlennaya" />
+                                            
+                                        </div>
+                                        <field name="price_ustanovlennaya" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="price_date" />
+                                            
+                                        </div>
+                                        <field name="price_date" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+
+                                        <div class="oe_button_box" name="button_box">
+                                            <button name="action_new_price"
+                                                type="object"
+                                                class="oe_stat_button oe_edit_only"
+                                                icon="fa-refresh" string="Установить новую стоимость"
+                                               >
+                                            </button>
+                                        </div>
                                     </group>
                                     
                                 </page>
+                                <page string="Изменение стоимости">
+                                    <field name="korm_receptura_price_line">
+                                        <tree string="korm_receptura_price_line">
+                                            <field name="date"/>
+                                            <field name="price"/>
+                                                                               
+                                        </tree>
+                                    </field>
 
+                                </page>
                             </notebook>
                        
                     <group string="Рацион содержит">

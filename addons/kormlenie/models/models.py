@@ -497,35 +497,6 @@ class korm_receptura(models.Model):
 
 		return result
 
-	# @api.depends('nomen_nomen_id')
-	# def _standart(self):
-	# 	for st in self:
-	# 		if st.nomen_nomen_id:
-	# 			standart = self.env['korm.pit_standart'].search([('nomen_nomen_id', '=', st.nomen_nomen_id.id)],limit=1)
-	# 			if len(standart)>0:
-	# 				st.ov_s=standart.ov
-	# 				st.sv_s=standart.sv
-	# 				st.oe_s=standart.oe
-	# 				st.sp_s=standart.sp
-	# 				st.pp_s=standart.pp
-	# 				st.sk_s=standart.sk
-	# 				st.sj_s=standart.sj
-	# 				st.ca_s=standart.ca
-	# 				st.p_s=standart.p
-	# 				st.sahar_s=standart.sahar
-	# 				st.krahmal_s=standart.krahmal
-	# 				st.bev_s=standart.bev
-	# 				st.magniy_s=standart.magniy
-	# 				st.natriy_s=standart.natriy
-	# 				st.kaliy_s=standart.kaliy
-	# 				st.hlor_s=standart.hlor
-	# 				st.sera_s=standart.sera
-	# 				st.udp_s=standart.udp
-	# 				st.me_s=standart.me
-	# 				st.xp_s=standart.xp
-	# 				st.nrp_s=standart.nrp
-	# 				st.rnb_s=standart.rnb
-	# 				st.nrp_p_s=standart.nrp_p
 
 	@api.one
 	@api.depends('korm_receptura_line.kol')
@@ -542,24 +513,7 @@ class korm_receptura(models.Model):
 			
 		if self.amount>0:
 			self.price = self.price_amount/self.amount
-		# 	for par in parametrs:
-		# 		self[par] = self[par]/self.amount
 
-				
-		# if self.sv and self.nrp_p:
-		# 	self.nrp = self.sp * self.nrp_p/100.00
-		
-		# if self.sv>0 and self.nrp:
-		# 	self.udp = self.nrp/self.sv
-
-		# if self.sv>0 and self.oe:
-		# 	self.me = self.oe/self.sv
-
-		# if self.sv>0 and self.sp:
-		# 	self.xp = self.sp/self.sv
-
-		# if self.xp!=0 and self.me and self.udp:
-		# 	self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
 
 
 	@api.one
@@ -576,18 +530,50 @@ class korm_receptura(models.Model):
 
 		self._raschet()
 
+	@api.one
+	@api.depends('date_raschet')
+	def _raschet_date(self):
+		price_amount_date = 0
+		self.korm_receptura_line._rashet_na_date()
+		for line in self.korm_receptura_line:
+			
+			price_amount_date += line.amount_date
 
+			
+		if self.amount>0:
+			self.price_date = price_amount_date/self.amount
+
+	@api.one
+	def _raschet_ustanovlennaya(self):
+		
+		self.price_ustanovlennaya = self.korm_receptura_price_line.search([('korm_receptura_id', '=', self.id)], order="date desc",limit=1).price
+		#analiz_id = analiz.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id)], order="date desc",limit=1).id
+		
+
+
+	@api.one
+	def action_new_price(self):
+		
+		self.korm_receptura_price_line.create({
+								'korm_receptura_id': self.id,
+								'date': self.date_raschet,
+								'price':  self.price_date
+								})
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Наименование', required=True)
 	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+	date_raschet = fields.Date(string='Дата расчета стоимости', default=fields.Datetime.now)
 	#korm_analiz_pit_id = fields.One2many('korm.analiz_pit', 'korm_receptura_id', string=u"Анализ кормов")
 	korm_receptura_line = fields.One2many('korm.receptura_line', 'korm_receptura_id', string=u"Строка Рецептура комбикормов")
+	korm_receptura_price_line = fields.One2many('korm.receptura_price_line', 'korm_receptura_id', string=u"Строка изменения стоимости Рецептура комбикормов")
 	amount = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
 	
 	price_amount = fields.Float(digits=(10, 2), string=u"Всего стоимость, руб", store=True, compute='_raschet')
 	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы, руб", store=True, compute='_raschet')
+	price_ustanovlennaya = fields.Float(digits=(10, 2), string=u"Стоимость еденицы установленная, руб", store=False, compute='_raschet_ustanovlennaya')
+	price_date = fields.Float(digits=(10, 2), string=u"Стоимость еденицы на дату, руб", store=False, compute='_raschet_date')
 	
 	active = fields.Boolean(string=u"Используется", default=True)
 
@@ -732,6 +718,22 @@ class korm_receptura_line(models.Model):
 		self.amount = self.price * self.kol  
 
 
+	@api.multi
+	@api.depends('korm_receptura_id.date_raschet')
+	def _rashet_na_date(self):
+		"""
+		Compute the total amounts.
+		"""
+		
+		for line in self:  
+			if line.nomen_nomen_id:
+				obj_price = self.env['nomen.price_line']
+				price = obj_price.search([('nomen_nomen_id', '=', line.nomen_nomen_id.id), ('date', '<=', line.korm_receptura_id.date_raschet)], order="date desc",limit=1).price
+				line.price_date = price
+
+				line.amount_date = line.price_date * line.kol
+
+
 
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
@@ -744,8 +746,68 @@ class korm_receptura_line(models.Model):
 	procent = fields.Float(digits=(10, 1), string=u"%", store=True, readonly=True)
 	price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
 	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
+	price_date = fields.Float(digits=(10, 2), string=u"Цена на дату", compute='_rashet_na_date',  store=False)
+	amount_date = fields.Float(digits=(10, 2), string=u"Сумма на дату", compute='_rashet_na_date',  store=False)
 	
 
+class korm_receptura_price_line(models.Model):
+	_name = 'korm.receptura_price_line'
+	_description = u'Строка изменения цен Рецептура комбикормов'
+	#_order = 'date desc, nomen_nomen_id'
+
+
+	@api.one
+	def return_name(self):
+		self.name = self.date
+
+	@api.model
+	def create(self, vals):
+		result = super(korm_receptura_price_line, self).create(vals)
+
+		vals['obj_osnovaniya'] = self.__class__.__name__
+		vals['obj_osnovaniya_id'] = result.id
+		vals['date'] = result.date
+
+		result_np = self.env['nomen.price'].create(vals)
+		self.env['nomen.price_line'].create({
+								'nomen_price_id': result_np.id,
+								'nomen_nomen_id': result.korm_receptura_id.nomen_nomen_id.id,
+								'price':  result.price
+								})
+		return result
+
+	@api.multi
+	def write(self, vals):
+		result = super(korm_receptura_price_line, self).write(vals)
+		vals['obj_osnovaniya'] = self.__class__.__name__
+		vals['obj_osnovaniya_id'] = result.id
+		vals['date'] = result.date
+		nomen_price = self.env['korm.analiz_pit']
+		poisk = analiz.search([('korm_receptura_id', '=', self.id)],limit=1)
+		if len(poisk)>0:
+			analiz.browse(poisk.id).write(vals)
+
+		return result
+
+
+	@api.multi
+	def unlink(self):
+		
+		for pp in self:
+			nomen_price = self.env['nomen.price']
+			poisk = nomen_price.search([('obj_osnovaniya', '=', self.__class__.__name__),('obj_osnovaniya_id', '=', pp.id)],limit=1)
+			if len(poisk)>0:
+				poisk[0].obj_osnovaniya = ''
+				nomen_price.browse(poisk.id).unlink()
+
+		return super(korm_receptura_price_line, self).unlink()
+
+
+	
+	name = fields.Char(string=u"Наименование", compute='return_name')
+	date = fields.Date(string='Дата установки стоимости', required=True)
+	price = fields.Float(digits=(10, 2), string=u"Цена", store=True)
+	korm_receptura_id = fields.Many2one('korm.receptura', ondelete='cascade', string=u"Рецептура комбикормов", required=True)
 
 
 
@@ -2589,16 +2651,16 @@ class korm_potrebnost(models.Model):
 									], dtype=int )
 
 		table = pd.pivot_table(datas, 
-                       columns=[u'Группа корма',u'Наименование корма'],
-                       index=[
-                                u'Вид физ.гр', 
-                                u'Подвид физ.гр.', 
-                                u'Физ.гр.',
-                                u'Загон', 
-                                u'Поголовье'
-                               ],
-                       values=[u'Кол. на период'],
-                       aggfunc=pd.np.sum, fill_value=0).sort_index(axis=1)#.swaplevel(0,3, axis=1)
+					   columns=[u'Группа корма',u'Наименование корма'],
+					   index=[
+								u'Вид физ.гр', 
+								u'Подвид физ.гр.', 
+								u'Физ.гр.',
+								u'Загон', 
+								u'Поголовье'
+							   ],
+					   values=[u'Кол. на период'],
+					   aggfunc=pd.np.sum, fill_value=0).sort_index(axis=1)#.swaplevel(0,3, axis=1)
 		
 		# Create a Pandas Excel writer using XlsxWriter as the engine.
 		writer = pd.ExcelWriter(output_filename, engine='xlsxwriter')

@@ -1231,7 +1231,7 @@ class nomen_price(models.Model):
     
     @api.model
     def create(self, vals):
-        print "ssssssssssssssssssssssssssss", self.date
+        #print "ssssssssssssssssssssssssssss", self.date
         if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
             vals['name'] = self.env['ir.sequence'].next_by_code('nomen.price') or 'New'
             
@@ -1251,12 +1251,29 @@ class nomen_price(models.Model):
 
         return result
 
+    @api.multi
+    def unlink(self):
+        
+        for pp in self:
+            if pp.obj_osnovaniya:
+                raise exceptions.ValidationError(_(u"Документ Установка цен %s от %s не может быть удален, т.к создан на основании %s и удаляется вместе с ним!  " % (pp.name, pp.date, pp.obj_osnovaniya)))
 
+        return super(nomen_price, self).unlink()
 
+    @api.one
+    def _get_name_obj(self):
+        if self.obj_osnovaniya!='':
+            obj = self.env[self.obj_osnovaniya].browse(self.obj_osnovaniya_id)
+            self.obj_name = obj[0]._description + u' от ' + obj[0].date
+        else:
+            self.obj_name = ''
 
     name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
     date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
     nomen_price_line = fields.One2many('nomen.price_line', 'nomen_price_id', string=u"Строка Установка цен номенклатуры")
+    obj_osnovaniya = fields.Char(string=u"Введен на основании объекта", copy=False, default='')
+    obj_osnovaniya_id = fields.Integer(string=u"Id объекта основания", copy=False, default=0)
+    obj_name = fields.Char(store=False, copy=False, compute='_get_name_obj')
     
 
 class nomen_price_line(models.Model):

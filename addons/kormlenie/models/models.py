@@ -2400,26 +2400,15 @@ class korm_potrebnost(models.Model):
 		return result
 
 	@api.one
-	@api.depends('date_start','date_end')
-	def get_period_day(self):
-		if self.date_start and self.date_end:
-			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
-			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
-			self.period_day = (d2-d1).days + 1
-	
-
-	@api.one
 	@api.depends('month', 'year')
 	def return_name(self):
-		if self.month and self.year and self.is_limit:
-			#self.name = self.year + '-' + self.month
-			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
-			last_day = last_day_of_month(self.date_start)
-			self.date_end = last_day
-			self.count_day = last_day.day
-		if self.is_limit == False:
-			self.date_start = datetime.today()
-			self.date_end = datetime.today()
+
+		self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+		last_day = last_day_of_month(self.date_start)
+		self.date_end = last_day
+		# if self.is_limit == False:
+		# 	self.date_start = datetime.today()
+		# 	self.date_end = datetime.today()
 
 		#if month == '01' : month_text = u"Январь"
 		if self.month == '01' : self.month_text = u"Январь"
@@ -2434,9 +2423,24 @@ class korm_potrebnost(models.Model):
 		if self.month == '10' : self.month_text = u"Октябрь"
 		if self.month == '11' : self.month_text = u"Ноябрь"
 		if self.month == '12' : self.month_text = u"Декабрь"
+		self.get_period_day()
+	
 
 
-
+	@api.one
+	@api.depends('date_start', 'date_end')
+	def get_period_day(self):
+		if self.date_start and self.date_end and not self.is_limit:
+			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
+			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
+			self.period_day = (d2-d1).days + 1
+	
+		if self.month and self.year and self.is_limit:
+			#self.name = self.year + '-' + self.month
+			date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+			last_day = last_day_of_month(date_start)
+			date_end = last_day
+			self.period_day = last_day.day
 
 
 	@api.one
@@ -2723,8 +2727,8 @@ class korm_potrebnost(models.Model):
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
-	date_start = fields.Date(string='Дата начала', required=True, copy=False, readonly=False, compute='return_name', default=fields.Datetime.now)
-	date_end = fields.Date(string='Дата окончания', required=True, copy=False, readonly=False, compute='return_name', default=fields.Datetime.now)
+	date_start = fields.Date(string='Дата начала', required=True, copy=False, readonly=False, default=fields.Datetime.now)
+	date_end = fields.Date(string='Дата окончания', required=True, copy=False, readonly=False, default=fields.Datetime.now)
 	
 	is_limit = fields.Boolean(string=u"Это лимит")
 	month = fields.Selection([

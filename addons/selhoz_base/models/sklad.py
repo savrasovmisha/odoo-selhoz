@@ -82,11 +82,18 @@ class nomen_nomen(models.Model):
 class sklad_sklad(models.Model):
     _name = 'sklad.sklad'
     _description = u'Склады'
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    #_order  = 'parent_left'
   
     name = fields.Char(string=u"Наименование", required=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
     id_1c = fields.Char(string=u"Номер в 1С")
-
+    parent_id = fields.Many2one('sklad.sklad', string=u'Родительский элемент', index=True, ondelete='cascade')
+    child_ids = fields.One2many('sklad.sklad', 'parent_id', string=u'Подчиненные элементы')
+    parent_left = fields.Integer('Left Parent', index=True),
+    parent_right = fields.Integer('Right Parent', index=True),
     
 
 #----------------------------------------------------------

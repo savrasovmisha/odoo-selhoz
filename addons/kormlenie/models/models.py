@@ -2403,14 +2403,19 @@ class korm_potrebnost(models.Model):
 	@api.depends('month', 'year')
 	def return_name(self):
 
-		self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
-		last_day = last_day_of_month(self.date_start)
-		self.date_end = last_day
+		print "ffffffffffffffffffffffffffffffffffff"
+		if self.month and self.year and self.is_limit:
+			print "ffff2222222222222222222222222"
+			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+			last_day = last_day_of_month(self.date_start)
+			self.date_end = last_day
+
 		# if self.is_limit == False:
 		# 	self.date_start = datetime.today()
 		# 	self.date_end = datetime.today()
 
 		#if month == '01' : month_text = u"Январь"
+		#self.month_text = u""
 		if self.month == '01' : self.month_text = u"Январь"
 		if self.month == '02' : self.month_text = u"Февряль"
 		if self.month == '03' : self.month_text = u"Март"
@@ -2430,17 +2435,19 @@ class korm_potrebnost(models.Model):
 	@api.one
 	@api.depends('date_start', 'date_end')
 	def get_period_day(self):
-		if self.date_start and self.date_end and not self.is_limit:
+		print 'dddddddddddddddddddddddddd'
+		if self.date_start and self.date_end:
 			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
 			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
 			self.period_day = (d2-d1).days + 1
+			print 'dd333333333333333333333333'
 	
-		if self.month and self.year and self.is_limit:
-			#self.name = self.year + '-' + self.month
-			date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
-			last_day = last_day_of_month(date_start)
-			date_end = last_day
-			self.period_day = last_day.day
+		# if self.month and self.year and self.is_limit:
+		# 	#self.name = self.year + '-' + self.month
+		# 	date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
+		# 	last_day = last_day_of_month(date_start)
+		# 	date_end = last_day
+		# 	self.period_day = last_day.day
 
 
 	@api.one
@@ -2727,8 +2734,8 @@ class korm_potrebnost(models.Model):
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Date(string='Дата', required=True, copy=False, default=fields.Datetime.now)
-	date_start = fields.Date(string='Дата начала', required=True, copy=False, readonly=False, default=fields.Datetime.now)
-	date_end = fields.Date(string='Дата окончания', required=True, copy=False, readonly=False, default=fields.Datetime.now)
+	date_start = fields.Date(string='Дата начала', required=True, store=True, copy=False, readonly=False, default=fields.Datetime.now)
+	date_end = fields.Date(string='Дата окончания', required=True, store=True, copy=False, readonly=False, default=fields.Datetime.now)
 	
 	is_limit = fields.Boolean(string=u"Это лимит")
 	month = fields.Selection([
@@ -2908,7 +2915,7 @@ class korm_potrebnost_limit_line(models.Model):
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', related='stado_zagon_id.stado_fiz_group_id',  store=True)
 	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон')
 	
-	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True)
 	kol_golov = fields.Integer(string=u"Ср.поголовье в сутки", store=True)
 	
 

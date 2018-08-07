@@ -15,6 +15,7 @@
 
                             <field name="is_limit" invisible="True"/> 
                             <field name="month" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
+                            <field name="month_text" invisible="True"/>
                             <field name="year" attrs="{'invisible': [('is_limit',  '=', False)]}"/>
                             <field name="date_start" attrs="{'invisible': [('is_limit',  '=', True)]}"/>
                             <field name="date_end" attrs="{'invisible': [('is_limit',  '=', True)]}"/>

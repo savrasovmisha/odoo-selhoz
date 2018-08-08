@@ -85,15 +85,57 @@ class sklad_sklad(models.Model):
     _parent_name = "parent_id"
     _parent_store = True
     _parent_order = 'name'
-    #_order  = 'parent_left'
-  
+    _order  = 'parent_left'
+    _rec_name = 'complete_name'
+
+
+    @api.one
+    @api.depends('name', 'parent_id.complete_name')
+    def _complete_name(self):
+        """ Forms complete name of location from parent location to child location. """
+        if self.parent_id.complete_name:
+            self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
+        else:
+            self.complete_name = self.name
+
+
+    @api.one
+    def _name_get(self):
+        name = self.name
+        parent_id = self.parent_id
+        while parent_id:
+            name = parent_id.name + '/' + name
+            parent_id = parent_id.parent_id
+        return name
+        
+
+    @api.multi
+    def name_get(self):
+        
+        res = []
+        for doc in self:
+            name = doc._name_get()
+            res.append((doc.id, name[0]))
+         
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        result = super(sklad_sklad, self).create(vals)
+        self.env['sklad.sklad']._parent_store_compute()   
+        self.env.cr.commit()
+        return result
+
+
     name = fields.Char(string=u"Наименование", required=True) 
+    complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
     id_1c = fields.Char(string=u"Номер в 1С")
     parent_id = fields.Many2one('sklad.sklad', string=u'Родительский элемент', index=True, ondelete='cascade')
     child_ids = fields.One2many('sklad.sklad', 'parent_id', string=u'Подчиненные элементы')
-    parent_left = fields.Integer('Left Parent', index=True),
-    parent_right = fields.Integer('Right Parent', index=True),
+    parent_left = fields.Integer('Left Parent', index=True)
+    parent_right = fields.Integer('Right Parent', index=True)
     
 
 #----------------------------------------------------------

@@ -99,25 +99,46 @@ class sklad_sklad(models.Model):
             self.complete_name = self.name
 
 
-    @api.one
-    def _name_get(self):
-        name = self.name
-        parent_id = self.parent_id
-        while parent_id:
-            name = parent_id.name + '/' + name
-            parent_id = parent_id.parent_id
-        return name
+    # @api.one
+    # def _name_get(self):
+    #     name = self.name
+    #     parent_id = self.parent_id
+    #     while parent_id:
+    #         name = parent_id.name + '/' + name
+    #         parent_id = parent_id.parent_id
+    #     return name
         
 
-    @api.multi
-    def name_get(self):
+    # @api.multi
+    # def name_get(self):
         
-        res = []
-        for doc in self:
-            name = doc._name_get()
-            res.append((doc.id, name[0]))
+    #     res = []
+    #     for doc in self:
+    #         name = doc._name_get()
+    #         res.append((doc.id, name[0]))
          
-        return res
+    #     return res
+
+    def name_get(self):
+        ret_list = []
+        for parent_id in self:
+            orig_location = parent_id
+            name = parent_id.name
+            while parent_id.parent_id:
+                parent_id = parent_id.parent_id
+                if not name:
+                    raise UserError(_('You have to set a name for this location.'))
+                name = parent_id.name + "/" + name
+            ret_list.append((orig_location.id, name))
+        return ret_list
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        """ search full name and barcode """
+        if args is None:
+            args = []
+        recs = self.search(['|', ('name', operator, name), ('complete_name', operator, name)] + args, limit=limit)
+        return recs.name_get()
 
 
     @api.model

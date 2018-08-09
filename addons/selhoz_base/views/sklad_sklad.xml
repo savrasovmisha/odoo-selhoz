@@ -25,9 +25,9 @@
         <record model="ir.ui.view" id="view_sklad_sklad_tree">
             <field name="name">sklad_sklad.tree</field>
             <field name="model">sklad.sklad</field>
-            <!-- <field name="type">tree</field>
-            <field name="view_type">tree</field>
-            <field name="field_parent">child_ids</field> -->
+            <field name="type">tree</field>
+            <!-- <field name="view_type">tree</field> -->
+            <field name="field_parent">child_ids</field>
             <field name="arch" type="xml">
                 <tree string="Склады">
                     <field name="display_name"/>
@@ -64,7 +64,8 @@
             <!-- <field name="view_mode">tree,form</field> -->
             <!-- <field name="domain">[('parent_id','=',False)]</field> -->
             <!-- <field name="view_type">tree</field> -->
-            <field name="view_id" ref="view_sklad_sklad_tree"/> 
+            <field name="view_id" ref="view_sklad_sklad_tree"/>
+            <field name="search_view_id" ref="sklad_sklad_search_view"/> 
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Склад
                 </p>

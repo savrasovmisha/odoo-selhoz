@@ -279,7 +279,7 @@ class pokupka_pokupka(models.Model):
     @api.multi
     def unlink(self):
         
-        print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
+        #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
             if pp.state != 'done':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
@@ -332,7 +332,7 @@ class pokupka_pokupka(models.Model):
                              'kol': line.kol, 
                             })
 
-                print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
             if reg_ostatok_move(self, vals, 'prihod-draft')==True:
                 self.state = 'draft'
@@ -354,7 +354,7 @@ class pokupka_pokupka(models.Model):
                              'kol': line.kol, 
                             })
 
-                print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
             if reg_ostatok_move(self, vals, 'prihod')==True:
                 self.state = 'confirmed'
@@ -543,7 +543,7 @@ class sklad_peremeshenie_line(models.Model):
         """
         Compute the total amounts.
         """
-        print "---------------------**********************"  
+        #print "---------------------**********************"  
         if self.nomen_nomen_id:
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
@@ -591,7 +591,7 @@ class prodaja_prodaja(models.Model):
     @api.multi
     def unlink(self):
         
-        print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
+        #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
             if pp.state != 'done':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
@@ -644,7 +644,7 @@ class prodaja_prodaja(models.Model):
                              'kol': line.kol, 
                             })
 
-                print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
             if reg_ostatok_move(self, vals, 'rashod-draft')==True:
                 self.state = 'draft'
@@ -666,7 +666,7 @@ class prodaja_prodaja(models.Model):
                              'kol': line.kol, 
                             })
 
-                print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
             if reg_ostatok_move(self, vals, 'rashod')==True:
                 self.state = 'confirmed'
@@ -719,7 +719,7 @@ class prodaja_prodaja_line(models.Model):
         """
         Compute the total amounts.
         """
-        print "---------------------**********************"  
+        #print "---------------------**********************"  
         if self.nomen_nomen_id:
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
@@ -750,7 +750,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
 
     @api.model
     def create(self, vals):
-        print '******************',vals
+        #print '******************',vals
         if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
             vals['name'] = self.env['ir.sequence'].next_by_code('sklad.trebovanie_nakladnaya') or 'New'
             vals['state'] = 'draft'
@@ -1028,7 +1028,7 @@ class sklad_spisanie_line(models.Model):
         Compute the total amounts.
         """
 
-        print "---------------------**********************"  
+        #print "---------------------**********************"  
         if self.nomen_nomen_id:
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id

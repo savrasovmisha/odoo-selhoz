@@ -23,6 +23,7 @@
                         <field name="buh_nomen_group_id"/>
                         <field name="buh_stati_zatrat_id"/>
                         <field name="id_1c"/>
+                        <field name="ostatok"/>
                         
                         
                     </group>

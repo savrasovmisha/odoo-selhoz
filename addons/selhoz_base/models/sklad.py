@@ -46,11 +46,62 @@ class ed_izm(models.Model):
 # Номенклатура
 #----------------------------------------------------------
 class nomen_categ(models.Model):
+    """Категории используются для вывода иерархического вида справочника"""
     _name = 'nomen.categ'
     _description = u'Категории номенклатуры'
-    """Категории используются для вывода иерархического вида справочника"""
-   
-    name = fields.Char(string=u"Наименование", required=True)
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    _order  = 'parent_left'
+    _rec_name = 'complete_name'
+
+
+    @api.one
+    @api.depends('name', 'parent_id.complete_name')
+    def _complete_name(self):
+        """ Forms complete name of location from parent location to child location. """
+        if self.parent_id.complete_name:
+            self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
+        else:
+            self.complete_name = self.name
+
+
+    def name_get(self):
+        ret_list = []
+        for parent_id in self:
+            orig_location = parent_id
+            name = parent_id.name
+            while parent_id.parent_id:
+                parent_id = parent_id.parent_id
+                if not name:
+                    raise UserError(_('You have to set a name for this location.'))
+                name = parent_id.name + "/" + name
+            ret_list.append((orig_location.id, name))
+        return ret_list
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        """ search full name and barcode """
+        if args is None:
+            args = []
+        recs = self.search(['|', ('name', operator, name), ('complete_name', operator, name)] + args, limit=limit)
+        return recs.name_get()
+
+
+    @api.model
+    def create(self, vals):
+        result = super(nomen_categ, self).create(vals)
+        self.env['nomen.categ']._parent_store_compute()   
+        self.env.cr.commit()
+        return result
+
+
+    name = fields.Char(string=u"Наименование", required=True) 
+    complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
+    parent_id = fields.Many2one('nomen.categ', string=u'Родительский элемент', index=True, ondelete='cascade')
+    child_ids = fields.One2many('nomen.categ', 'parent_id', string=u'Подчиненные элементы')
+    parent_left = fields.Integer('Left Parent', index=True)
+    parent_right = fields.Integer('Right Parent', index=True)
 
 class nomen_group(models.Model):
     _name = 'nomen.group'
@@ -65,6 +116,15 @@ class nomen_nomen(models.Model):
     _description = u'Номенклатура'
     _order = 'name'
 
+    @api.one
+    def _get_ostatok(self):
+        reg = self.env['sklad.ostatok']
+        result = reg.search([ ('nomen_nomen_id', '=', self.id), 
+                                    ('date', '<=', str(datetime.today())),
+                                  ], order="date desc",limit=1)
+        if len(result)>0:
+            self.ostatok = result.kol
+
     name = fields.Char(string=u"Наименование", required=True)
     nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
@@ -74,6 +134,7 @@ class nomen_nomen(models.Model):
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат')
     id_1c = fields.Char(string=u"Номер в 1С")
     active = fields.Boolean(string=u"Используется", default=True)
+    ostatok = fields.Float(digits=(10, 3), string=u"Кол-во", store=False, compute="_get_ostatok")
 
 #----------------------------------------------------------
 # Склад
@@ -98,26 +159,6 @@ class sklad_sklad(models.Model):
         else:
             self.complete_name = self.name
 
-
-    # @api.one
-    # def _name_get(self):
-    #     name = self.name
-    #     parent_id = self.parent_id
-    #     while parent_id:
-    #         name = parent_id.name + '/' + name
-    #         parent_id = parent_id.parent_id
-    #     return name
-        
-
-    # @api.multi
-    # def name_get(self):
-        
-    #     res = []
-    #     for doc in self:
-    #         name = doc._name_get()
-    #         res.append((doc.id, name[0]))
-         
-    #     return res
 
     def name_get(self):
         ret_list = []

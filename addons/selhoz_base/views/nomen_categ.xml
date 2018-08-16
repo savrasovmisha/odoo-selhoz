@@ -9,6 +9,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
+                        <field name="parent_id"/>
                         
                         
                     </group>
@@ -21,11 +22,11 @@
         <record model="ir.ui.view" id="view_nomen_categ_tree">
             <field name="name">nomen_categ.tree</field>
             <field name="model">nomen.categ</field>
+            <field name="type">tree</field>
+            <field name="field_parent">child_ids</field>
             <field name="arch" type="xml">
                 <tree string="Категории номенклатуры">
-                    <field name="name"/>
-                  
-                    
+                    <field name="display_name"/>
                     
                    
                 </tree>
@@ -38,6 +39,7 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
+                    <field name="parent_id" string="Основной"/>
                     
                 </search>
             </field>
@@ -51,7 +53,9 @@
             <field name="name">Категории номенклатуры</field>
             <field name="res_model">nomen.categ</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+           <!--  <field name="view_mode">tree,form</field> -->
+           <field name="view_id" ref="view_nomen_categ_tree"/>
+            <field name="search_view_id" ref="nomen_categ_search_view"/> 
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Категории номенклатуры
                 </p>

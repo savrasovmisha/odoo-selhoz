@@ -76,6 +76,9 @@
             </field>
         </record>	
 	
+
+
+
         <record model="ir.actions.act_window" id="sklad_peremeshenie_list_action">
             <field name="name">Перемещение товаров</field>
             <field name="res_model">sklad.peremeshenie</field>
@@ -88,6 +91,17 @@
         </record>
 
         
+        <record id="sklad_peremeshenie_role_access" model="ir.rule">
+            <field name="name">Перемещение товаров Роль доступ только к своим</field>
+            <field name="model_id" search="[('model','=','sklad.peremeshenie')]" model="ir.model"/>
+            <!-- <field name="model">sklad.peremeshenie</field> -->
+            <field name="groups" eval="[(4, ref('group_sklad_manager'))]" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+            <field name="domain_force">[('sklad_otp_id.partner_id', '=', user.partner_id.id)]</field>
+        </record>
     </data>
 </openerp>
 

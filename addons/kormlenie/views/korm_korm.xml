@@ -33,6 +33,7 @@
                             <field name="sostavil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="utverdil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="vremya_dnya" attrs="{'invisible': [('is_vremya_dnya', '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" />
+                            <field name="pogreshnost" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
 
                         </group>
                      </group>
@@ -117,8 +118,10 @@
                                     <field name="ed_izm_id"/>
                                     <field name="kol_norma"/>
                                     <field name="kol_fakt"/>
-                                    <field name="formula" on_change="raschet_formuli(formula)"/>
-                                    
+                                    <field name="kol_pogreshnost"/>
+                                    <field name="formula"/>
+                                    <!-- <field name="formula" on_change="raschet_formuli(formula, korm_korm_id.pogreshnost)"/>
+                                     -->
                                     <!-- <field name="description" nolabel="1"/> -->
                                     
                                     

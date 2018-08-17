@@ -1557,6 +1557,7 @@ class korm_korm(models.Model):
 	], default=u'Утро', string="Время дня")
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", store=True, readonly=True, copy=True)
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов по загонам", readonly=True, store=True, copy=True)
+	pogreshnost = fields.Integer(string=u"Погрешность весов, %", store=True, copy=True, default=0, help=u'При вычислении строки Формыла сложение к итоговой сумме будет прибавлятся процент погрешности')
 	description = fields.Text(string=u"Коментарии")
 	state = fields.Selection([
 		('create', "Создан"),
@@ -2100,13 +2101,15 @@ class korm_korm_detail_line(models.Model):
 	def _amount(self):
 		self.amount = self.price * self.kol 
 
-	
-	def raschet_formuli(self, cr, uid, ids, formula, context=None):
+
+	@api.one
+	@api.depends('formula')
+	def raschet_formuli(self):
 		try:
-			if formula==False:
+			if self.formula==False:
 				return False
 
-			formula=formula.replace(',','.')
+			formula=self.formula.replace(',','.')
 
 			zn = formula.split('+')
 			ss=[]
@@ -2114,18 +2117,44 @@ class korm_korm_detail_line(models.Model):
 				ss.append(float(l))
 
 			total = sum(ss)
-			res = {
-					'value': {
-							'kol_fakt': total
-							}
-				} 
-			return res
+			if self.korm_korm_id.pogreshnost:
+				self.kol_pogreshnost = total * self.korm_korm_id.pogreshnost/100
+				total = total + self.kol_pogreshnost
+			self.kol_fakt = total
+			
 		except Exception as exc:
 			raise exceptions.ValidationError(_(u"Ошибка в формуле! Поле Формула должно быть вида: 25.56+45.589. Ошибка:%s" % (exc)))
 	   
 
 
-	raschet_formuli
+	
+	
+	# def raschet_formuli(self, cr, uid, ids, formula, context=None):
+	# 	try:
+	# 		if formula==False:
+	# 			return False
+
+	# 		formula=formula.replace(',','.')
+
+	# 		zn = formula.split('+')
+	# 		ss=[]
+	# 		for l in zn:
+	# 			ss.append(float(l))
+
+	# 		total = sum(ss)
+			
+	# 		res = {
+	# 				'value': {
+	# 						'kol_fakt': total
+	# 						}
+	# 			} 
+	# 		return res
+	# 	except Exception as exc:
+	# 		raise exceptions.ValidationError(_(u"Ошибка в формуле! Поле Формула должно быть вида: 25.56+45.589. Ошибка:%s" % (exc)))
+	   
+
+
+	# raschet_formuli
 	
 	@api.one
 	@api.depends('korm_korm_id.date')
@@ -2141,7 +2170,8 @@ class korm_korm_detail_line(models.Model):
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True, readonly=True)
 	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", readonly=True)
-	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", default=0.0)
+	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", default=0.0, compute='raschet_formuli', store=True)
+	kol_pogreshnost = fields.Float(digits=(10, 3), string=u"Погрешность", default=0.0, compute='raschet_formuli', store=True)
 	formula = fields.Char(string=u"Формула сложения")
 	description = fields.Text(string=u"Коментарии")
 

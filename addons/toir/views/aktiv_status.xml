@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_status_form_view">
+            <field name="name">aktiv_status.form</field>
+            <field name="model">aktiv.status</field>
+            <field name="arch" type="xml">
+                <form string="Форма Статус активов">
+                    <sheet>
+                        <group>
+                            <field name="name" string="Наименование"/>
+                           
+                        </group>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_status_search_view">
+            <field name="name">aktiv_status.search</field>
+            <field name="model">aktiv.status</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_status_list_action">
+            <field name="name">Статус активов</field>
+            <field name="res_model">aktiv.status</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Статус активов
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

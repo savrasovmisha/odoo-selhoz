@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+	    <record id="aktiv_status_vrabote" model="aktiv.status">
+	        <field name="name">В работе</field>
+	    </record>
+
+	    <record id="aktiv_status_vprostoe" model="aktiv.status">
+	        <field name="name">В простое</field>
+	    </record>
+
+	    <record id="aktiv_status_vplanremonte" model="aktiv.status">
+	        <field name="name">В плановом ремонте</field>
+	    </record>
+
+	    <record id="aktiv_status_vneplanremonte" model="aktiv.status">
+	        <field name="name">Во внеплановом ремонте</field>
+	    </record>
+
+	    <record id="aktiv_status_neispraven" model="aktiv.status">
+	        <field name="name">Неисправное состояние</field>
+	    </record>
+
+	    <record id="aktiv_status_srokslujbi" model="aktiv.status">
+	        <field name="name">Превышение срока службы</field>
+	    </record>
+
+	    <record id="aktiv_status_defekt" model="aktiv.status">
+	        <field name="name">Обнаружены дефекты</field>
+	    </record>
+
+	    <record id="aktiv_status_spisan" model="aktiv.status">
+	        <field name="name">Списан</field>
+	    </record>
+	  
+	</data>
+</openerp> 
+
+
+

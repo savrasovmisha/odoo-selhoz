@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="sklad_sklad_form_view">
-        <field name="name">sklad_sklad.form</field>
-        <field name="model">sklad.sklad</field>
+	<record model="ir.ui.view" id="aktiv_categ_form_view">
+        <field name="name">aktiv_categ.form</field>
+        <field name="model">aktiv.categ</field>
         <field name="arch" type="xml">
-            <form string="Форма Склады">
+            <form string="Форма Категории активов (оборудования)">
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="partner_id"/>
-                        <field name="id_1c"/>
+                        
                         <field name="parent_id"/>
                         <!-- <field name="child_ids"/> -->
            
@@ -22,17 +21,16 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_sklad_sklad_tree">
-            <field name="name">sklad_sklad.tree</field>
-            <field name="model">sklad.sklad</field>
+        <record model="ir.ui.view" id="view_aktiv_categ_tree">
+            <field name="name">aktiv_categ.tree</field>
+            <field name="model">aktiv.categ</field>
             <field name="type">tree</field>
             <!-- <field name="view_type">tree</field> -->
             <field name="field_parent">child_ids</field>
             <field name="arch" type="xml">
-                <tree string="Склады">
+                <tree string="Категории активов (оборудования)">
                     <field name="display_name"/>
-                    <field name="partner_id"/>
-                             
+                                   
                     
                     
                    
@@ -40,13 +38,13 @@
             </field>
         </record>	
 	
-	<record model="ir.ui.view" id="sklad_sklad_search_view">
-            <field name="name">sklad_sklad.search</field>
-            <field name="model">sklad.sklad</field>
+	   <record model="ir.ui.view" id="aktiv_categ_search_view">
+            <field name="name">aktiv_categ.search</field>
+            <field name="model">aktiv.categ</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
-                    <field name="parent_id" string="Основной"/>
+                    <field name="parent_id" string="Parent Location"/>
                 </search>
             </field>
         </record>
@@ -55,17 +53,17 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
-        <record model="ir.actions.act_window" id="sklad_sklad_list_action">
-            <field name="name">Склады</field>
-            <field name="res_model">sklad.sklad</field>
+        <record model="ir.actions.act_window" id="aktiv_categ_list_action">
+            <field name="name">Категории активов (оборудования)</field>
+            <field name="res_model">aktiv.categ</field>
             <field name="view_type">form</field>
             <!-- <field name="view_mode">tree,form</field> -->
             <!-- <field name="domain">[('parent_id','=',False)]</field> -->
             <!-- <field name="view_type">tree</field> -->
-            <field name="view_id" ref="view_sklad_sklad_tree"/>
-            <field name="search_view_id" ref="sklad_sklad_search_view"/> 
+            <field name="view_id" ref="view_aktiv_categ_tree"/>
+            <field name="search_view_id" ref="aktiv_categ_search_view"/> 
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Склад
+                <p class="oe_view_nocontent_create">Создайте первую запись Категории активов (оборудования)
                 </p>
             </field>
         </record>

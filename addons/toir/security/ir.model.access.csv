@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aktiv_categ_manager,aktiv.categ,model_aktiv_categ,group_toir_manager,1,1,1,1
+access_aktiv_categ_users,aktiv.categ,model_aktiv_categ,group_toir_users,1,0,0,0
+access_aktiv_aktiv_manager,aktiv.aktiv,model_aktiv_aktiv,group_toir_manager,1,1,1,1
+access_aktiv_aktiv_users,aktiv.aktiv,model_aktiv_aktiv,group_toir_users,1,0,0,0

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="aktiv_aktiv_form_view">
+        <field name="name">aktiv_aktiv.form</field>
+        <field name="model">aktiv.aktiv</field>
+        <field name="arch" type="xml">
+            <form string="Форма Активы (оборудование)">
+                <sheet>
+                    <group>
+                        <field name="parent_id"/>
+                        <field name="name"/>
+                        <field name="complete_name"/>
+                        <field name="is_uzel"/>
+                        <field name="aktiv_categ_id"/>
+                        <field name="id_1c"/>
+                        <field name="active"/>
+                        <field name="model"/>
+                        <field name="kod"/>
+                        <field name="inv_nomer"/>
+                        <field name="serial_nomer"/>
+                        <field name="reg_nomer"/>
+                        <field name="zavod_nomer"/>
+                        <field name="zavod_name"/>
+                        <field name="country_id"/>
+                        <field name="postavshik_id"/>
+                        <field name="otvetstvenniy_id"/>
+                        <field name="aktiv_type_id"/>
+                        <field name="date_vipuska"/>
+                        <field name="date_postupleniya"/>
+                        <field name="date_vvoda"/>
+                        <field name="date_spisaniya"/>
+                        <field name="aktiv_status_id"/>
+                        <field name="price"/>
+                        <field name="srok_slujbi"/>
+                        <field name="srok_slujbi_ot_vvoda"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        
+                        <field name="teh_har"/>
+                        <field name="description"/>
+                        <!-- <field name="child_ids"/> -->
+           
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_aktiv_aktiv_tree">
+            <field name="name">aktiv_aktiv.tree</field>
+            <field name="model">aktiv.aktiv</field>
+            <field name="type">tree</field>
+            <!-- <field name="view_type">tree</field> -->
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Активы (оборудование)">
+                    <field name="display_name"/>
+                                   
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	   <record model="ir.ui.view" id="aktiv_aktiv_search_view">
+            <field name="name">aktiv_aktiv.search</field>
+            <field name="model">aktiv.aktiv</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="parent_id" string="Parent Location"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="aktiv_aktiv_list_action">
+            <field name="name">Активы (оборудование)</field>
+            <field name="res_model">aktiv.aktiv</field>
+            <field name="view_type">form</field>
+            <!-- <field name="view_mode">tree,form</field> -->
+            <!-- <field name="domain">[('parent_id','=',False)]</field> -->
+            <!-- <field name="view_type">tree</field> -->
+            <field name="view_id" ref="view_aktiv_aktiv_tree"/>
+            <field name="search_view_id" ref="aktiv_aktiv_search_view"/> 
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Активы (оборудование)
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- top level menu: no parent -->
+        <menuitem id="base.main_toir_menu" name="ТОиР"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+
+        <menuitem id="toir_menu" name="Справочники" sequence="1" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
+        
+        <menuitem id="aktiv_aktiv_menu" name="Активы (оборудование)" sequence="1" parent="toir_menu" action="aktiv_aktiv_list_action" groups="group_toir_manager,group_toir_users"/>
+        
+        <menuitem id="aktiv_categ_menu" name="Категории активов" sequence="2" parent="toir_menu" action="aktiv_categ_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="aktiv_type_menu" name="Типы активов" sequence="2" parent="toir_menu" action="aktiv_type_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="aktiv_status_menu" name="Статус активов" sequence="2" parent="toir_menu" action="aktiv_status_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        
+
+
+        <menuitem id="toir_menu_doc" name="Документы" sequence="2" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
+
+    <!--     <menuitem id="korm_korm_menu" name="Кормление" sequence="1" parent="korm_menu_doc" action="korm_korm_list_action" groups="group_korm_manager,group_korm_users"/> -->
+
+        
+
+        
+<!--
+         Левое меню
+-->
+        <menuitem id="toir_menu_report" name="Отчеты" sequence="3" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
+
+
+
+
+        
+
+    
+
+
+        
+    </data>
+</openerp>

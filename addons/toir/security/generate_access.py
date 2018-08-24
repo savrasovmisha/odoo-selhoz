@@ -1,6 +1,8 @@
 spisok = []
 spisok.append(['aktiv.categ',''])
 spisok.append(['aktiv.aktiv',''])
+spisok.append(['aktiv.type',''])
+spisok.append(['aktiv.status',''])
 
 # spisok_read = []
 # spisok_read.append(['buh.nomen_group',''])

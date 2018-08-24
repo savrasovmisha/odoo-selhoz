@@ -134,7 +134,7 @@ class aktiv_aktiv(models.Model):
 
     @api.model
     def create(self, vals):
-        result = super(aktiv_categ, self).create(vals)
+        result = super(aktiv_aktiv, self).create(vals)
         return result
 
 
@@ -167,7 +167,7 @@ class aktiv_aktiv(models.Model):
     aktiv_categ_id = fields.Many2one('aktiv.categ', string=u"Категория", default=None)
     id_1c = fields.Char(string=u"Номер в 1С")
     active = fields.Boolean(string=u"Используется", default=True)
-    is_uzel = fields.Boolean(string=u"Узел объекта", default=True)
+    is_uzel = fields.Boolean(string=u"Узел объекта", default=False)
 
     model = fields.Char(string=u"Модель")
     kod = fields.Char(string=u"Код")

@@ -3,3 +3,7 @@ access_aktiv_categ_manager,aktiv.categ,model_aktiv_categ,group_toir_manager,1,1,
 access_aktiv_categ_users,aktiv.categ,model_aktiv_categ,group_toir_users,1,0,0,0
 access_aktiv_aktiv_manager,aktiv.aktiv,model_aktiv_aktiv,group_toir_manager,1,1,1,1
 access_aktiv_aktiv_users,aktiv.aktiv,model_aktiv_aktiv,group_toir_users,1,0,0,0
+access_aktiv_type_manager,aktiv.type,model_aktiv_type,group_toir_manager,1,1,1,1
+access_aktiv_type_users,aktiv.type,model_aktiv_type,group_toir_users,1,0,0,0
+access_aktiv_status_manager,aktiv.status,model_aktiv_status,group_toir_manager,1,1,1,1
+access_aktiv_status_users,aktiv.status,model_aktiv_status,group_toir_users,1,0,0,0

@@ -13,14 +13,22 @@
         
         <menuitem id="aktiv_categ_menu" name="Категории активов" sequence="2" parent="toir_menu" action="aktiv_categ_list_action" groups="group_toir_manager,group_toir_users"/>
 
+
+
         <menuitem id="aktiv_type_menu" name="Типы активов" sequence="2" parent="toir_menu" action="aktiv_type_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="aktiv_tr_menu" name="Типовые ремонты" sequence="2" parent="toir_menu" action="aktiv_tr_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="aktiv_vid_remonta_menu" name="Виды ремонтов и диагностирования" sequence="2" parent="toir_menu" action="aktiv_vid_remonta_list_action" groups="group_toir_manager,group_toir_users"/>
+        
+        <menuitem id="aktiv_vid_rabot_menu" name="Виды работ" sequence="2" parent="toir_menu" action="aktiv_vid_rabot_list_action" groups="group_toir_manager,group_toir_users"/>
 
         <menuitem id="aktiv_status_menu" name="Статус активов" sequence="2" parent="toir_menu" action="aktiv_status_list_action" groups="group_toir_manager,group_toir_users"/>
 
-        
-
 
         <menuitem id="toir_menu_doc" name="Документы" sequence="2" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
+
+
 
     <!--     <menuitem id="korm_korm_menu" name="Кормление" sequence="1" parent="korm_menu_doc" action="korm_korm_list_action" groups="group_korm_manager,group_korm_users"/> -->
 

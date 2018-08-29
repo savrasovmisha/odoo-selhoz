@@ -68,13 +68,6 @@ class aktiv_categ(models.Model):
 
 
 
-class aktiv_type(models.Model):
-    """Типы активов (Оборудование, транспорт и т.п"""
-    _name = 'aktiv.type'
-    _description = u'Типы активов'
-    _order  = 'name'
-  
-    name = fields.Char(string=u"Наименование", required=True) 
 
 
 class aktiv_status(models.Model):
@@ -87,10 +80,219 @@ class aktiv_status(models.Model):
 
 
 
+class aktiv_vid_rabot(models.Model):
+    """Виды работ по ТОиР"""
+    _name = 'aktiv.vid_rabot'
+    _description = u'Виды работ'
+    _order  = 'name'
+
+ 
+    name = fields.Char(string=u"Наименование", required=True)
+    description = fields.Text(string=u"Коментарии")
+
+    aktiv_vid_rabot_price_line = fields.One2many('aktiv.vid_rabot_price_line', 'aktiv_vid_rabot_id', string=u"Строка Стоимость Виды работ", copy=True)
+
+
+class aktiv_vid_rabot_price_line(models.Model):
+    """Строка Стоимость работ"""
+    _name = 'aktiv.vid_rabot_price_line'
+    _description = u'Строка Стоимость работ'
+    _order  = 'date desc'
+    
+    @api.one
+    @api.depends('aktiv_vid_rabot_id.name')
+    def return_name(self):
+        self.name = self.aktiv_vid_rabot_id.name
+    
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', ondelete='cascade', string=u"Виды работ", required=True)
+
+    date = fields.Date(string='Дата', required=True, index=True, copy=False)
+    aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', required=True)
+    price = fields.Float(digits=(10, 2), string=u"Стоимость работ", required=True)
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", default=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", default=False)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик')
+
+
+
+
+
+class aktiv_vid_remonta(models.Model):
+    """Виды ремонтов и диагностирования"""
+    _name = 'aktiv.vid_remonta'
+    _description = u'Виды ремонтов и диагностирования'
+    _order  = 'name'
+  
+    name = fields.Char(string=u"Наименование", required=True)
+    
+
+
+class aktiv_type(models.Model):
+    """Типы активов (Оборудование, транспорт и т.п"""
+    _name = 'aktiv.type'
+    _description = u'Типы активов'
+    _order  = 'name'
+  
+    name = fields.Char(string=u"Наименование", required=True) 
+    aktiv_tr = fields.One2many('aktiv.tr', 'aktiv_type_id', string=u"Типовые ремонты", copy=True)
+
+
+
+class aktiv_tr(models.Model):
+    """Типовые ремонты"""
+    _name = 'aktiv.tr'
+    _description = u'Типовые ремонты'
+    _order  = 'name'
+
+    
+    @api.one
+    @api.depends('is_raschet_price','aktiv_tr_price_line','aktiv_tr_raboti_line', 'aktiv_tr_raboti_line.aktiv_vid_rabot_id.aktiv_vid_rabot_price_line')
+    def _get_price(self):
+        
+        self.price_raboti = self.price_raboti = self.price_nomen = 0
+        if self.is_raschet_price == True:
+            if self.aktiv_tr_price_line:
+                self.price_raboti = self.aktiv_tr_price_line[0].price
+        else:
+            for line in self.aktiv_tr_raboti_line:
+                self.price_raboti += line.price
+
+        self.price = self.price_raboti + self.price_nomen
+
+  
+    name = fields.Char(string=u"Наименование ремонта", required=True)
+
+    aktiv_type_id = fields.Many2one('aktiv.type', ondelete='cascade', string='Тип актива', required=True)
+    aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', string='Виды ремонтов и диагностирования')
+
+    
+    is_raschet_price = fields.Boolean(string=u"Стоимость задается в ручную", default=True)
+    price_raboti = fields.Float(digits=(10, 2), string=u"Стоимость работ", compute='_get_price', store=True)
+    price_nomen = fields.Float(digits=(10, 2), string=u"Стоимость ТМЦ", compute='_get_price', store=True)
+    price = fields.Float(digits=(10, 2), string=u"Общая стоимость", compute='_get_price', store=True)
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", default=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", default=False)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик')
+
+    period1 = fields.Integer(string="Периодичность 1")
+    period1_edizm = fields.Selection([
+        ('hours', "час"),
+        ('days', "дней"),
+        ('months', "месяц"),
+        ('years', "год"),
+        ('km', "км"),
+    ], default='hours', string="Ед.изм.")
+    period2 = fields.Integer(string="Периодичность 2")
+    period2_edizm = fields.Selection([
+        ('hours', "час"),
+        ('days', "дней"),
+        ('months', "месяц"),
+        ('years', "год"),
+        ('km', "км"),
+    ], default='hours', string="Ед.изм.")
+    
+    
+
+
+
+    aktiv_tr_raboti_line = fields.One2many('aktiv.tr_raboti_line', 'aktiv_tr_id', string=u"Строка регламентных работ. Типовые ремонты", copy=True)
+    aktiv_tr_nomen_line = fields.One2many('aktiv.tr_nomen_line', 'aktiv_tr_id', string=u"Строка материалы. Типовые ремонты", copy=True)
+    aktiv_tr_price_line = fields.One2many('aktiv.tr_price_line', 'aktiv_tr_id', string=u"Строка Стоимость Типовые ремонты", copy=False)
+
+
+class aktiv_tr_price_line(models.Model):
+    """Строка Стоимость Типовые ремонты"""
+    _name = 'aktiv.tr_price_line'
+    _description = u'Строка Стоимость Типовые ремонты'
+    _order  = 'date desc'
+    
+    @api.one
+    @api.depends('date')
+    def return_name(self):
+        self.name = self.aktiv_tr_id.name
+    
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_tr_id = fields.Many2one('aktiv.tr', ondelete='cascade', string=u"Типовые ремонты", required=True)
+
+    date = fields.Date(string='Дата', required=True, index=True, copy=False)
+    price = fields.Float(digits=(10, 2), string=u"Стоимость работ", required=True)
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", default=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", default=False)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик')
+
+
+class aktiv_tr_raboti_line(models.Model):
+    """Строка регламентных работ. Типовые ремонты"""
+    _name = 'aktiv.tr_raboti_line'
+    _description = u'Строка регламентных работ'
+    _order  = 'name'
+
+
+    @api.one
+    @api.depends('aktiv_vid_rabot_id')
+    def return_name(self):
+        self.name = self.aktiv_vid_rabot_id.name
+
+
+    @api.one
+    @api.depends('aktiv_vid_rabot_id', 'aktiv_vid_rabot_id.aktiv_vid_rabot_price_line')
+    def _get_price(self):
+        # for line in self:
+        #     vr_price = line.aktiv_vid_rabot_id.aktiv_vid_rabot_price_line.search([('aktiv_type_id', '=', line.aktiv_tr_id.aktiv_type_id.id),],order="date desc", limit=1)
+        #     if vr_price:
+        #         line.price = vr_price[0].price
+        vr_price = self.aktiv_vid_rabot_id.aktiv_vid_rabot_price_line.search([
+                                                                                ('aktiv_type_id', '=', self.aktiv_tr_id.aktiv_type_id.id),
+                                                                                ('aktiv_vid_rabot_id', '=', self.aktiv_vid_rabot_id.id),
+
+                                                                            ],order="date desc", limit=1)
+        if vr_price:
+            self.price = vr_price[0].price
+  
+
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_tr_id = fields.Many2one('aktiv.tr', ondelete='cascade', string=u"Типовые ремонты", required=True)
+
+    aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', string='Виды работ')
+    
+
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", default=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", default=False)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик')
+    price = fields.Float(digits=(10, 2), string=u"Стоимость", compute='_get_price', store=True)
+
+
+    aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_tr_id.aktiv_type_id', readonly=True,  store=True)
+    aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', string='Виды ремонтов и диагностирования', related='aktiv_tr_id.aktiv_vid_remonta_id', readonly=True,  store=True)
+
+
+class aktiv_tr_nomen_line(models.Model):
+    """Строка материалы. Типовые ремонты"""
+    _name = 'aktiv.tr_nomen_line'
+    _description = u'Строка материалы'
+    _order  = 'name'
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def return_name(self):
+        self.name = self.nomen_nomen_id.name
+  
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_tr_id = fields.Many2one('aktiv.tr', ondelete='cascade', string=u"Типовые ремонты", required=True)
+
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Материалы', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+
+    aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_tr_id.aktiv_type_id', readonly=True,  store=True)
+    aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', string='Виды ремонтов и диагностирования', related='aktiv_tr_id.aktiv_vid_remonta_id', readonly=True,  store=True)
+
+
 
 
 class aktiv_aktiv(models.Model):
-    """Активы предприятия. ОС."""
+    """Активы предприятия. ОС и оборудования."""
     _name = 'aktiv.aktiv'
     _description = u'Активы (оборудование)'
     _parent_name = "parent_id"
@@ -158,9 +360,9 @@ class aktiv_aktiv(models.Model):
         
 
     name = fields.Char(string=u"Наименование", required=True)
-    complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
-    parent_id = fields.Many2one('aktiv.aktiv', string=u'Родительский элемент', index=True, ondelete='cascade')
-    child_ids = fields.One2many('aktiv.aktiv', 'parent_id', string=u'Подчиненные элементы')
+    complete_name = fields.Char(string=u"Представление", compute='_complete_name', store=True) 
+    parent_id = fields.Many2one('aktiv.aktiv', string=u'Входит в состав', index=True, ondelete='cascade')
+    child_ids = fields.One2many('aktiv.aktiv', 'parent_id', string=u'Составные части')
     parent_left = fields.Integer('Left Parent', index=True)
     parent_right = fields.Integer('Right Parent', index=True)
     
@@ -203,3 +405,4 @@ class aktiv_aktiv(models.Model):
 
     description = fields.Text(string=u"Коментарии")
     
+

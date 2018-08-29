@@ -1566,10 +1566,12 @@ class milk_nadoy_group(models.Model):
 				""" % {'date': self.date, 'id': line.stado_zagon_id.id}
 			
 			self._cr.execute(zapros,)
+			#print 'ddddddddd===', rows_count
 			schitanno = self._cr.fetchone()
-			if len(schitanno)>0:
-				line.kol_golov = schitanno[0]
-				line.nadoy_golova = schitanno[1]
+			if schitanno:
+				if len(schitanno)>0:
+					line.kol_golov = schitanno[0]
+					line.nadoy_golova = schitanno[1]
 
 		
 		self.nadoy_parabone=self.nadoy_karusel=self.valoviy_nadoy=0

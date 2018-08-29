@@ -3,6 +3,12 @@ spisok.append(['aktiv.categ',''])
 spisok.append(['aktiv.aktiv',''])
 spisok.append(['aktiv.type',''])
 spisok.append(['aktiv.status',''])
+spisok.append(['aktiv.vid_rabot',''])
+spisok.append(['aktiv.vid_rabot_price',''])
+spisok.append(['aktiv.vid_remonta',''])
+spisok.append(['aktiv.tr',''])
+spisok.append(['aktiv.tr_raboti_line',''])
+spisok.append(['aktiv.tr_nomen_line',''])
 
 # spisok_read = []
 # spisok_read.append(['buh.nomen_group',''])

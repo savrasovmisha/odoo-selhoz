@@ -11,6 +11,21 @@
                             <field name="name" string="Наименование"/>
                            
                         </group>
+                        <notebook>
+                            <page string="Типовые ремонты">
+                                <field name="aktiv_tr">
+                                    <tree string="aktiv_tr" editable="botton">
+                                        <field name="name"/>
+                                        <field name="aktiv_vid_remonta_id"/>
+                                        <field name="price"/>
+                                        <field name="partner_id"/>
+                                        
+
+                                    </tree>
+                                </field>
+
+                            </page>
+                        </notebook>
     		            
                     </sheet>
                 </form>

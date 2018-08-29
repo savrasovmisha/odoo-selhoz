@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_vid_remonta_form_view">
+            <field name="name">aktiv_vid_remonta.form</field>
+            <field name="model">aktiv.vid_remonta</field>
+            <field name="arch" type="xml">
+                <form string="Форма Виды ремонтов и диагностирования">
+                    <sheet>
+                        <group>
+                            <field name="name" string="Наименование"/>
+                           
+                        </group>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_vid_remonta_search_view">
+            <field name="name">aktiv_vid_remonta.search</field>
+            <field name="model">aktiv.vid_remonta</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_vid_remonta_list_action">
+            <field name="name">Виды ремонтов и диагностирования</field>
+            <field name="res_model">aktiv.vid_remonta</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Виды ремонтов и диагностирования
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

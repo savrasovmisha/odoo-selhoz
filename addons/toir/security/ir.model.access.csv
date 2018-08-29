@@ -7,3 +7,15 @@ access_aktiv_type_manager,aktiv.type,model_aktiv_type,group_toir_manager,1,1,1,1
 access_aktiv_type_users,aktiv.type,model_aktiv_type,group_toir_users,1,0,0,0
 access_aktiv_status_manager,aktiv.status,model_aktiv_status,group_toir_manager,1,1,1,1
 access_aktiv_status_users,aktiv.status,model_aktiv_status,group_toir_users,1,0,0,0
+access_aktiv_vid_rabot_manager,aktiv.vid_rabot,model_aktiv_vid_rabot,group_toir_manager,1,1,1,1
+access_aktiv_vid_rabot_users,aktiv.vid_rabot,model_aktiv_vid_rabot,group_toir_users,1,0,0,0
+access_aktiv_vid_rabot_price_manager,aktiv.vid_rabot_price,model_aktiv_vid_rabot_price,group_toir_manager,1,1,1,1
+access_aktiv_vid_rabot_price_users,aktiv.vid_rabot_price,model_aktiv_vid_rabot_price,group_toir_users,1,0,0,0
+access_aktiv_vid_remonta_manager,aktiv.vid_remonta,model_aktiv_vid_remonta,group_toir_manager,1,1,1,1
+access_aktiv_vid_remonta_users,aktiv.vid_remonta,model_aktiv_vid_remonta,group_toir_users,1,0,0,0
+access_aktiv_tr_manager,aktiv.tr,model_aktiv_tr,group_toir_manager,1,1,1,1
+access_aktiv_tr_users,aktiv.tr,model_aktiv_tr,group_toir_users,1,0,0,0
+access_aktiv_tr_raboti_line_manager,aktiv.tr_raboti_line,model_aktiv_tr_raboti_line,group_toir_manager,1,1,1,1
+access_aktiv_tr_raboti_line_users,aktiv.tr_raboti_line,model_aktiv_tr_raboti_line,group_toir_users,1,0,0,0
+access_aktiv_tr_nomen_line_manager,aktiv.tr_nomen_line,model_aktiv_tr_nomen_line,group_toir_manager,1,1,1,1
+access_aktiv_tr_nomen_line_users,aktiv.tr_nomen_line,model_aktiv_tr_nomen_line,group_toir_users,1,0,0,0

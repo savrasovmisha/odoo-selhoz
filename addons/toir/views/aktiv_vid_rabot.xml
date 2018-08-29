@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_vid_rabot_form_view">
+            <field name="name">aktiv_vid_rabot.form</field>
+            <field name="model">aktiv.vid_rabot</field>
+            <field name="arch" type="xml">
+                <form string="Форма Виды работ">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+
+                        </group>
+
+                        <notebook>
+                            <page string="Стоимость работ">
+                                <field name="aktiv_vid_rabot_price_line">
+                                    <tree string="aktiv_vid_rabot_price_line" editable="botton">
+                                        <field name="aktiv_type_id"/>
+                                        <field name="date"/>
+                                        <field name="price"/>
+                                        <field name="is_hozsposob"/>
+                                        <field name="is_podryad"/>
+                                        <field name="partner_id"/>
+
+                                    </tree>
+                                </field>
+
+                               
+                            </page>
+                        </notebook>
+
+                        <notebook colspan="4">
+                            <page string="Комментарии">
+                                <field name="description" nolabel="1"/>
+                            </page>
+                        </notebook>
+                           
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_vid_rabot_search_view">
+            <field name="name">aktiv_vid_rabot.search</field>
+            <field name="model">aktiv.vid_rabot</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_vid_rabot_list_action">
+            <field name="name">Виды работ</field>
+            <field name="res_model">aktiv.vid_rabot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Виды работ
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

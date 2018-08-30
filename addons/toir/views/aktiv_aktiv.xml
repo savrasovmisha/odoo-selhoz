@@ -15,7 +15,11 @@
                         </button>
                     </div>
                     <group>
-                        <field name="name"/>
+                            <h1><field name="name" placeholder="Наименование актива (оборудования)"/></h1>
+                            
+                        </group>
+                    <group>
+                        
                         <field name="is_uzel"/>
                         <field name="parent_id"/>
                         <field name="complete_name"/>
@@ -94,9 +98,11 @@
         <record model="ir.ui.view" id="view_aktiv_aktiv_tree">
             <field name="name">aktiv_aktiv.tree</field>
             <field name="model">aktiv.aktiv</field>
-            <field name="type">tree</field>
-            <!-- <field name="view_type">tree</field> -->
+            <!-- <field name="type">tree</field>
+
+            <field name="view_type">form</field>
             <field name="field_parent">child_ids</field>
+             -->
             <field name="arch" type="xml">
                 <tree string="Активы (оборудование)">
                     <field name="display_name"/>
@@ -126,12 +132,12 @@
         <record model="ir.actions.act_window" id="aktiv_aktiv_list_action">
             <field name="name">Активы (оборудование)</field>
             <field name="res_model">aktiv.aktiv</field>
-            <field name="view_type">form</field>
-            <!-- <field name="view_mode">tree,form</field> -->
             <!-- <field name="domain">[('parent_id','=',False)]</field> -->
-            <!-- <field name="view_type">tree</field> -->
-            <field name="view_id" ref="view_aktiv_aktiv_tree"/>
-            <field name="search_view_id" ref="aktiv_aktiv_search_view"/> 
+            <field name="view_type">form</field> 
+            <field name="view_mode">tree,form</field> 
+            
+            <!-- <field name="view_id" ref="view_aktiv_aktiv_tree"/>
+            <field name="search_view_id" ref="aktiv_aktiv_search_view"/>  -->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Активы (оборудование)
                 </p>

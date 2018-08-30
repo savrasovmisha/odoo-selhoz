@@ -125,6 +125,16 @@ class nomen_nomen(models.Model):
         if len(result)>0:
             self.ostatok = result.kol
 
+    @api.one
+    @api.depends('nomen_nomen_price_line')
+    def _get_price(self):
+        
+        self.price = 0
+        if self.nomen_nomen_price_line:
+            self.price = self.nomen_nomen_price_line[0].price
+            self.partner_id = self.nomen_nomen_price_line[0].partner_id
+
+        
     name = fields.Char(string=u"Наименование", required=True)
     nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
@@ -135,6 +145,39 @@ class nomen_nomen(models.Model):
     id_1c = fields.Char(string=u"Номер в 1С")
     active = fields.Boolean(string=u"Используется", default=True)
     ostatok = fields.Float(digits=(10, 3), string=u"Кол-во", store=False, compute="_get_ostatok")
+    model = fields.Char(string=u"Модель")
+    kod = fields.Char(string=u"Код")
+    zavod_name = fields.Char(string=u"Завод производитель")
+    country_id = fields.Many2one('res.country', string=u"Страна производитель")
+    srok_slujbi = fields.Integer(string=u"Срок службы, лет")
+    teh_har = fields.Text(string=u"Технические характеристики")
+    price = fields.Float(digits=(10, 2), string=u"Цена с НДС", compute='_get_price', store=True)
+    partner_id = fields.Many2one('res.partner', string='Поставщик', compute='_get_price', store=True)
+    description = fields.Text(string=u"Коментарии")
+
+
+    nomen_nomen_price_line = fields.One2many('nomen.nomen_price_line', 'nomen_nomen_id', string=u"Строка Закупочная стоимость Номенклатуры", copy=False)
+
+
+
+class nomen_nomen_price_line(models.Model):
+    """Строка Закупочная стоимость Номенклатуры"""
+    _name = 'nomen.nomen_price_line'
+    _description = u'Строка Закупочная стоимость Номенклатуры'
+    _order  = 'date desc'
+    
+    @api.one
+    @api.depends('date')
+    def return_name(self):
+        self.name = self.nomen_nomen_id.name
+    
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', ondelete='cascade', string=u"Номенклатура", required=True)
+
+    date = fields.Date(string='Дата', required=True, index=True, copy=False)
+    price = fields.Float(digits=(10, 2), string=u"Цена с НДС", required=True)
+    partner_id = fields.Many2one('res.partner', string='Поставщик')
+
 
 #----------------------------------------------------------
 # Склад

@@ -8,6 +8,7 @@ access_nomen_ed_izm_users,nomen.ed_izm,model_nomen_ed_izm,base.group_user,1,0,0,
 access_nomen_categ_users,nomen.categ,model_nomen_categ,base.group_user,1,0,0,0
 access_nomen_group_users,nomen.group,model_nomen_group,base.group_user,1,0,0,0
 access_nomen_nomen_users,nomen.nomen,model_nomen_nomen,base.group_user,1,0,0,0
+access_nomen_nomen_price_line_users,nomen.nomen_price_line,model_nomen_nomen_price_line,base.group_user,1,0,0,0
 access_sklad_sklad_users,sklad.sklad,model_sklad_sklad,base.group_user,1,0,0,0
 access_dogovor_users,dogovor,model_dogovor,base.group_user,1,0,0,0
 access_nalog_nds_users,nalog.nds,model_nalog_nds,base.group_user,1,0,0,0

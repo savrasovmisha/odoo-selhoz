@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_gr_form_view">
+            <field name="name">aktiv_gr.form</field>
+            <field name="model">aktiv.gr</field>
+            <field name="arch" type="xml">
+                <form string="Форма График ремонтов">
+                    <sheet>
+                        <group>
+                            <h1><field name="name" placeholder="Наименование графика ремонта"/></h1>
+                            
+                        </group>
+                        
+                        <group>
+                            <group string="Актив">
+                                
+                                <field name="aktiv_aktiv_id"/>
+                                <field name="is_view_price"/>
+                            </group>
+                            <group string="Период">
+                                
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                           
+                            </group>
+                        </group>
+
+                        
+                        <notebook>
+                            <page string="Типовые ремонты">
+                                <field name="aktiv_gr_line">
+                                    <tree string="aktiv_gr_line" editable="botton">
+                                        <field name="aktiv_tr_id"/>
+                                        <field name="date_last"/>
+                                        <field name="m1"/>
+                                        <field name="p1"/>
+                                      <!--   <field name="p1" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m2"/>
+                                        <field name="p2" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m3"/>
+                                        <field name="p3" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m4"/>
+                                        <field name="p4" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m5"/>
+                                        <field name="p5" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m6"/>
+                                        <field name="p6" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m7"/>
+                                        <field name="p7" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m8"/>
+                                        <field name="p8" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m9"/>
+                                        <field name="p9" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m10"/>
+                                        <field name="p10" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m11"/>
+                                        <field name="p11" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <field name="m12"/>
+                                        <field name="p12" attrs="{'invisible': [('is_view_price',  '=', False)]}"/> -->
+
+
+                                    </tree>
+                                </field>
+
+                                
+                            </page>
+                            
+                        </notebook>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_gr_search_view">
+            <field name="name">aktiv_gr.search</field>
+            <field name="model">aktiv.gr</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_gr_list_action">
+            <field name="name">График ремонтов</field>
+            <field name="res_model">aktiv.gr</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись График ремонтов
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

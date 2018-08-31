@@ -49,23 +49,23 @@
                         <notebook>
                             <page string="Регламентные работы">
                                 <field name="aktiv_tr_raboti_line">
-                                    <tree string="aktiv_tr_raboti_line" editable="botton">
+                                    <tree string="aktiv_tr_raboti_line" editable="botton" sum="true">
                                         <field name="aktiv_vid_rabot_id"/>
                                         <field name="is_hozsposob"/>
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>
-                                        <field name="price"/>
+                                        <field name="price" sum="price"/>
 
                                     </tree>
                                 </field>
 
                                 <field name="aktiv_tr_nomen_line">
-                                    <tree string="aktiv_tr_nomen_line" editable="botton">
+                                    <tree string="aktiv_tr_nomen_line" editable="botton" sum="true">
                                         <field name="nomen_nomen_id"/>
                                         <field name="ed_izm_id"/>
-                                        <field name="kol"/>
+                                        <field name="kol" sum="kol"/>
                                         <field name="price"/>
-                                        <field name="amount"/>
+                                        <field name="amount" sum="amount"/>
 
                                     </tree>
                                 </field>

@@ -28,6 +28,8 @@
 
         <menuitem id="toir_menu_doc" name="Документы" sequence="2" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
 
+        <menuitem id="aktiv_gr_menu" name="Графики ремонтов" sequence="1" parent="toir_menu_doc" action="aktiv_gr_list_action" groups="group_toir_manager,group_toir_users"/>
+
 
 
     <!--     <menuitem id="korm_korm_menu" name="Кормление" sequence="1" parent="korm_menu_doc" action="korm_korm_list_action" groups="group_korm_manager,group_korm_users"/> -->

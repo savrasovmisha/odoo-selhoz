@@ -37,6 +37,7 @@
         'views/aktiv_vid_rabot.xml',
         'views/aktiv_vid_remonta.xml',
         'views/aktiv_tr.xml',
+        'views/aktiv_gr.xml',
                 
         
         'views/menu.xml',

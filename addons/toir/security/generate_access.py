@@ -9,6 +9,8 @@ spisok.append(['aktiv.vid_remonta',''])
 spisok.append(['aktiv.tr',''])
 spisok.append(['aktiv.tr_raboti_line',''])
 spisok.append(['aktiv.tr_nomen_line',''])
+spisok.append(['aktiv.gr',''])
+spisok.append(['aktiv.gr_line',''])
 
 # spisok_read = []
 # spisok_read.append(['buh.nomen_group',''])

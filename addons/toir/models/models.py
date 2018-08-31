@@ -422,3 +422,83 @@ class aktiv_aktiv(models.Model):
     description = fields.Text(string=u"Коментарии")
     
 
+
+
+
+class aktiv_gr(models.Model):
+    """График ремонтов"""
+    _name = 'aktiv.gr'
+    _description = u'График ремонтов'
+    _order  = 'date_start'
+
+    
+    
+    name = fields.Char(string=u"Наименование ремонта", required=True)
+
+    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
+    is_view_price = fields.Boolean(string=u"Показать стоимость", default=False)
+
+    date_start = fields.Date(string='Дата начала')
+    date_end = fields.Date(string='Дата окончания')
+
+    aktiv_gr_line = fields.One2many('aktiv.gr_line', 'aktiv_gr_id', string=u"Строка График ремонтов", copy=False)
+
+
+class aktiv_gr_line(models.Model):
+    """Строка График ремонтов"""
+    _name = 'aktiv.gr_line'
+    _description = u'Строка График ремонтов'
+    _order  = 'name'
+
+    @api.one
+    def _get_price(self):
+        pass
+
+    # @api.one
+    # @api.depends('aktiv_gr_id.is_view_price')
+    # def _get_view_price(self):
+    #     self.is_view_price = self.aktiv_gr_id.is_view_price
+    
+    name = fields.Char(string=u"Наименование ремонта")
+    aktiv_gr_id = fields.Many2one('aktiv.gr', ondelete='cascade', string=u"График ремонтов", required=True)
+
+    aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовые ремонты')
+    # is_view_price = fields.Boolean(string=u"Показать стоимость", compute='_get_view_price')
+   
+    date_last = fields.Date(string='Дата последнего ремонта')
+
+    m1 = fields.Boolean(string=u"Ян", default=False)
+    p1 = fields.Float(digits=(10, 2), string=u"Цена Ян", compute='_get_price', store=True)
+
+    m2 = fields.Boolean(string=u"Фв", default=False)
+    p2 = fields.Float(digits=(10, 2), string=u"Цена Фв", compute='_get_price', store=True)
+
+    m3 = fields.Boolean(string=u"Мар", default=False)
+    p3 = fields.Float(digits=(10, 2), string=u"Цена Мар", compute='_get_price', store=True)
+
+    m4 = fields.Boolean(string=u"Ап", default=False)
+    p4 = fields.Float(digits=(10, 2), string=u"Цена Ап", compute='_get_price', store=True)
+
+    m5 = fields.Boolean(string=u"Май", default=False)
+    p5 = fields.Float(digits=(10, 2), string=u"Цена Май", compute='_get_price', store=True)
+
+    m6 = fields.Boolean(string=u"Июн", default=False)
+    p6 = fields.Float(digits=(10, 2), string=u"Цена Июн", compute='_get_price', store=True)
+
+    m7 = fields.Boolean(string=u"Июл", default=False)
+    p7 = fields.Float(digits=(10, 2), string=u"Цена Июл", compute='_get_price', store=True)
+
+    m8 = fields.Boolean(string=u"Авг", default=False)
+    p8 = fields.Float(digits=(10, 2), string=u"Цена Авг", compute='_get_price', store=True)
+
+    m9 = fields.Boolean(string=u"Сен", default=False)
+    p9 = fields.Float(digits=(10, 2), string=u"Цена Сен", compute='_get_price', store=True)
+
+    m10 = fields.Boolean(string=u"Окт", default=False)
+    p10 = fields.Float(digits=(10, 2), string=u"Цена Окт", compute='_get_price', store=True)
+
+    m11 = fields.Boolean(string=u"Ноя", default=False)
+    p11 = fields.Float(digits=(10, 2), string=u"Цена Ноя", compute='_get_price', store=True)
+    
+    m12 = fields.Boolean(string=u"Дек", default=False)
+    p12 = fields.Float(digits=(10, 2), string=u"Цена Дек", compute='_get_price', store=True)

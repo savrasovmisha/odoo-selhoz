@@ -20,12 +20,13 @@
                         </group>
                     <group>
                         
-                        <field name="is_uzel"/>
+                        <field name="is_group"/>
+                        <field name="is_uzel" attrs="{'invisible': [('is_group',  '=', True)]}"/>
                         <field name="parent_id"/>
                         <field name="complete_name"/>
                     </group>
 
-                    <notebook>
+                    <notebook attrs="{'invisible': [('is_group',  '=', True)]}">
                         <page string="Паспорт">    
                             <group>
                                 <group>

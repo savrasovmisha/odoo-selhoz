@@ -184,20 +184,20 @@ class aktiv_tr(models.Model):
     is_podryad = fields.Boolean(string=u"Подрядный", default=False)
     partner_id = fields.Many2one('res.partner', string='Подрядчик')
 
-    period1 = fields.Integer(string="Периодичность 1")
+    period1 = fields.Integer(string="Интервал 1")
     period1_edizm = fields.Selection([
-        ('hours', "час"),
-        ('days', "дней"),
-        ('months', "месяц"),
-        ('years', "год"),
-        ('km', "км"),
+        ('hours', "ч."),
+        ('days', "дн."),
+        ('months', "мес."),
+        ('years', "г."),
+        ('km', "км."),
     ], default='hours', string="Ед.изм.")
-    period2 = fields.Integer(string="Периодичность 2")
+    period2 = fields.Integer(string="Интервал 2")
     period2_edizm = fields.Selection([
-        ('hours', "час"),
-        ('days', "дней"),
-        ('months', "месяц"),
-        ('years', "год"),
+        ('hours', "ч."),
+        ('days', "дн."),
+        ('months', "мес."),
+        ('years', "г."),
         ('km', "км"),
     ], default='hours', string="Ед.изм.")
     
@@ -385,6 +385,7 @@ class aktiv_aktiv(models.Model):
     id_1c = fields.Char(string=u"Номер в 1С")
     active = fields.Boolean(string=u"Используется", default=True)
     is_uzel = fields.Boolean(string=u"Узел объекта", default=False)
+    is_group = fields.Boolean(string=u"Это группа", default=False)
 
     model = fields.Char(string=u"Модель")
     kod = fields.Char(string=u"Код")

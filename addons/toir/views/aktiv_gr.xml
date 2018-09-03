@@ -16,7 +16,7 @@
                             <group string="Актив">
                                 
                                 <field name="aktiv_aktiv_id"/>
-                                <field name="is_view_price"/>
+                                
                             </group>
                             <group string="Период">
                                 
@@ -26,38 +26,59 @@
                             </group>
                         </group>
 
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_zapolnit"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Заполнить"
+                                
+                               >
+                            </button>
+                        
+                            <button name="action_raschet"
+                                type="object"
+                                class="oe_stat_button oe_edit_only"
+                                icon="fa-refresh" string="Расчитать"
+                                
+                               >
+                            </button>
+                        </div>
+
                         
                         <notebook>
                             <page string="Типовые ремонты">
                                 <field name="aktiv_gr_line">
-                                    <tree string="aktiv_gr_line" editable="botton">
-                                        <field name="aktiv_tr_id"/>
+                                    <tree string="aktiv_gr_line" editable="botton" colors="green:is_group==True" fonts="bold:not aktiv_tr_id">
+                                        <field name="nomer"/>
+                                        <field name="name"/>
+                                        <field name="is_group" invisible="1"/>
+                                        <field name="aktiv_aktiv_id" invisible="1"/>
+                                        <field name="aktiv_tr_id" invisible="1"/>
                                         <field name="date_last"/>
                                         <field name="m1"/>
-                                        <field name="p1"/>
-                                      <!--   <field name="p1" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p1"/> -->
                                         <field name="m2"/>
-                                        <field name="p2" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p2"/> -->
                                         <field name="m3"/>
-                                        <field name="p3" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p3"/> -->
                                         <field name="m4"/>
-                                        <field name="p4" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                       <!--  <field name="p4"/> -->
                                         <field name="m5"/>
-                                        <field name="p5" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p5"/> -->
                                         <field name="m6"/>
-                                        <field name="p6" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p6"/> -->
                                         <field name="m7"/>
-                                        <field name="p7" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p7"/> -->
                                         <field name="m8"/>
-                                        <field name="p8" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p8"/> -->
                                         <field name="m9"/>
-                                        <field name="p9" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p9"/> -->
                                         <field name="m10"/>
-                                        <field name="p10" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p10"/> -->
                                         <field name="m11"/>
-                                        <field name="p11" attrs="{'invisible': [('is_view_price',  '=', False)]}"/>
+                                        <!-- <field name="p11"/> -->
                                         <field name="m12"/>
-                                        <field name="p12" attrs="{'invisible': [('is_view_price',  '=', False)]}"/> -->
+                                        <!-- <field name="p12"/> --> 
 
 
                                     </tree>

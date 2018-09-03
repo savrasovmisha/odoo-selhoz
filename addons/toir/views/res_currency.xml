@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.actions.act_window" id="currency_rate_list_action">
+		    <field name="name">Курсы валют</field>
+		    <field name="res_model">res.currency.rate</field>
+		    <field name="view_type">form</field>
+		    <field name="view_mode">tree,form</field>
+		    <field name="help" type="html">
+		        <p class="oe_view_nocontent_create">Создайте первую запись Курсы валют
+		        </p>
+		    </field>
+		</record> 
+
+    </data>
+</openerp>

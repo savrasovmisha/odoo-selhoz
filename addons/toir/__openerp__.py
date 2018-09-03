@@ -38,6 +38,7 @@
         'views/aktiv_vid_remonta.xml',
         'views/aktiv_tr.xml',
         'views/aktiv_gr.xml',
+        'views/res_currency.xml',
                 
         
         'views/menu.xml',

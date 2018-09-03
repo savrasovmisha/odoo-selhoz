@@ -55,6 +55,7 @@
                                 <group>
                                     <field name="nalog_nds_id"/>
                                     <field name="price"/>
+                                    <field name="currency_id"/>
                                     <field name="partner_id"/>
                                 </group>
                             </group>
@@ -81,6 +82,7 @@
                                 <tree string="nomen_nomen_price_line" editable="botton">
                                     <field name="date"/>
                                     <field name="price"/>
+                                    <field name="currency_id"/>
                                     <field name="partner_id"/>
                                    
                                 </tree>

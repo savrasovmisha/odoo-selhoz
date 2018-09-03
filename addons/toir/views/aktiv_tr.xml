@@ -22,6 +22,7 @@
                                 <field name="price_raboti" string="Работы"/>
                                 <field name="price_nomen" string="Метериалы"/>
                                 <field name="price" string="Общая стоимость"/>
+                                <field name="currency_id"/>
                             </group>
                             <group string="Способ выполнения ремонта">
                                 <field name="is_hozsposob"/>
@@ -55,6 +56,7 @@
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>
                                         <field name="price" sum="price"/>
+                                        <field name="currency_id"/>
 
                                     </tree>
                                 </field>
@@ -65,6 +67,7 @@
                                         <field name="ed_izm_id"/>
                                         <field name="kol" sum="kol"/>
                                         <field name="price"/>
+                                        <field name="currency_id"/>
                                         <field name="amount" sum="amount"/>
 
                                     </tree>
@@ -78,6 +81,7 @@
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>
                                         <field name="price"/>
+                                        <field name="currency_id"/>
 
                                     </tree>
                                 </field>

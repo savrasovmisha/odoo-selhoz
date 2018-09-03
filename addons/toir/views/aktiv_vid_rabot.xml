@@ -19,6 +19,7 @@
                                         <field name="aktiv_type_id"/>
                                         <field name="date"/>
                                         <field name="price"/>
+                                        <field name="currency_id"/>
                                         <field name="is_hozsposob"/>
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>

@@ -132,6 +132,7 @@ class nomen_nomen(models.Model):
         self.price = 0
         if self.nomen_nomen_price_line:
             self.price = self.nomen_nomen_price_line[0].price
+            self.currency_id = self.nomen_nomen_price_line[0].currency_id
             self.partner_id = self.nomen_nomen_price_line[0].partner_id
 
         
@@ -153,6 +154,7 @@ class nomen_nomen(models.Model):
     teh_har = fields.Text(string=u"Технические характеристики")
     price = fields.Float(digits=(10, 2), string=u"Цена с НДС", compute='_get_price', store=True)
     partner_id = fields.Many2one('res.partner', string='Поставщик', compute='_get_price', store=True)
+    currency_id = fields.Many2one('res.currency', string='Валюта', compute='_get_price', store=True)
     description = fields.Text(string=u"Коментарии")
 
 
@@ -176,6 +178,7 @@ class nomen_nomen_price_line(models.Model):
 
     date = fields.Date(string='Дата', required=True, index=True, copy=False)
     price = fields.Float(digits=(10, 2), string=u"Цена с НДС", required=True)
+    currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id.id)
     partner_id = fields.Many2one('res.partner', string='Поставщик')
 
 

@@ -13,16 +13,17 @@
                         </group>
                         
                         <group>
-                            <group string="Актив">
+                            <group>
                                 
                                 <field name="aktiv_aktiv_id"/>
                                 
                             </group>
-                            <group string="Период">
+                            <group>
                                 
-                                <field name="date_start"/>
+                                <field name="year"/>
+                                <!-- <field name="date_start"/>
                                 <field name="date_end"/>
-                           
+                            -->
                             </group>
                         </group>
 
@@ -48,12 +49,13 @@
                         <notebook>
                             <page string="Типовые ремонты">
                                 <field name="aktiv_gr_line">
-                                    <tree string="aktiv_gr_line" editable="botton" colors="green:is_group==True" fonts="bold:not aktiv_tr_id">
+                                    <tree string="aktiv_gr_line" editable="botton" colors="green:is_group==True" fonts="bold:not aktiv_tr_id" sum="true">
                                         <field name="nomer"/>
                                         <field name="name"/>
                                         <field name="is_group" invisible="1"/>
                                         <field name="aktiv_aktiv_id" invisible="1"/>
                                         <field name="aktiv_tr_id" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
                                         <field name="date_last"/>
                                         <field name="m1"/>
                                         <!-- <field name="p1"/> -->
@@ -79,6 +81,50 @@
                                         <!-- <field name="p11"/> -->
                                         <field name="m12"/>
                                         <!-- <field name="p12"/> --> 
+                                        <field name="amount" widget='monetary' options="{'currency_field': 'currency_id'}" sum="amount"/>
+
+
+                                    </tree>
+                                </field>
+
+                                
+                            </page>
+                            <page string="Стоимость">
+                                <field name="aktiv_gr_price_line" attrs="{'readonly': True}">
+                                    <tree string="aktiv_gr_price_line" colors="green:is_group==True" fonts="bold:not aktiv_tr_id" sum="true">
+                                        <field name="nomer"/>
+                                        <field name="name"/>
+                                        <field name="is_group" invisible="1"/>
+                                        <field name="aktiv_aktiv_id" invisible="1"/>
+                                        <field name="aktiv_tr_id" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="kol"/>
+                                        
+                                        <field name="amount" widget='monetary' options="{'currency_field': 'currency_id'}" sum="amount"/> 
+                                        
+                                        <field name="p1" sum="p1"/>
+                                        
+                                        <field name="p2" sum="p2"/>
+                                        
+                                        <field name="p3" sum="p3"/>
+                                       
+                                        <field name="p4" sum="p4"/>
+                                       
+                                        <field name="p5" sum="p5"/>
+                                        
+                                        <field name="p6" sum="p6"/>
+                                        
+                                        <field name="p7" sum="p7"/>
+                                        
+                                        <field name="p8" sum="p8"/>
+                                        
+                                        <field name="p9" sum="p9"/>
+                                        
+                                        <field name="p10" sum="p10"/>
+                                        
+                                        <field name="p11" sum="p11"/>
+                                        
+                                        <field name="p12" sum="p12"/> 
 
 
                                     </tree>

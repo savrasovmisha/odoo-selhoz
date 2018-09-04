@@ -516,11 +516,13 @@ class aktiv_gr(models.Model):
     @api.one
     def action_raschet(self):
         """Расчитать график"""
-        pass
+        for line in self.aktiv_gr_line:
+            line.raschet()
       
     
     
     name = fields.Char(string=u"Наименование ремонта", required=True)
+    year = fields.Integer(string=u"Год планирования", required=True)
 
     aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
     #is_view_price = fields.Boolean(string=u"Показать стоимость", default=False)
@@ -529,6 +531,7 @@ class aktiv_gr(models.Model):
     date_end = fields.Date(string='Дата окончания')
 
     aktiv_gr_line = fields.One2many('aktiv.gr_line', 'aktiv_gr_id', string=u"Строка График ремонтов", copy=False)
+    aktiv_gr_price_line = fields.One2many('aktiv.gr_line', 'aktiv_gr_id', copy=False)
 
 
 class aktiv_gr_line(models.Model):
@@ -539,7 +542,13 @@ class aktiv_gr_line(models.Model):
 
     @api.one
     def _get_price(self):
-        pass
+        self.amount = self.kol = 0
+        self.currency_id = self.aktiv_tr_id.currency_id
+        for m in range(1,13):
+            self.amount += self['p'+str(m)]
+            if self['m'+str(m)] == True:
+                self.kol += 1
+
 
     @api.one
     def return_name(self):
@@ -548,6 +557,40 @@ class aktiv_gr_line(models.Model):
         else:
             self.name = self.aktiv_aktiv_id.name
 
+    @api.one
+    def raschet(self):
+        """Расчет графика ремонта для текущего типового ремонта"""
+        if self.aktiv_tr_id:
+            for m in range(1,13):
+                self['m'+str(m)] = False
+                self['p'+str(m)] = 0
+
+            period = self.aktiv_tr_id.period1
+            if self.aktiv_tr_id.period1_edizm == "months" and period > 0:
+                #Если дата последнего ремонта определена то определяем месяц следующего ремонта
+                #иначе планируем ремонт на первый месяц
+                if self.date_last:
+                    date_last = datetime.strptime(self.date_last, "%Y-%m-%d").date()
+                    m_last = date_last.month
+                    y_last = date_last.year
+                    m_next = m_last
+                    y_next = y_last
+                    y_today = self.aktiv_gr_id.year
+                    if y_last < y_today:
+                        while (m_next<=12 and y_next<y_today):
+                            m_next += period
+                            if m_next>12:
+                                y_next += 1
+                                m_next = m_next - 12
+
+                else:
+                    m_next = 1
+
+                while m_next<=12:
+                    self['m'+str(m_next)] = True
+                    self['p'+str(m_next)] = self.aktiv_tr_id.price
+                    m_next += period
+            self._get_price()
 
     # @api.one
     # @api.depends('aktiv_gr_id.is_view_price')
@@ -568,41 +611,43 @@ class aktiv_gr_line(models.Model):
     date_last = fields.Date(string='Дата последнего ремонта')
 
     m1 = fields.Boolean(string=u"1", default=False)
-    p1 = fields.Float(digits=(10, 2), string=u"Цена Ян", compute='_get_price', store=True)
+    p1 = fields.Float(digits=(10, 2), string=u"1", compute='_get_price', store=True)
 
     m2 = fields.Boolean(string=u"2", default=False)
-    p2 = fields.Float(digits=(10, 2), string=u"Цена Фв", compute='_get_price', store=True)
+    p2 = fields.Float(digits=(10, 2), string=u"2", compute='_get_price', store=True)
 
     m3 = fields.Boolean(string=u"3", default=False)
-    p3 = fields.Float(digits=(10, 2), string=u"Цена Мар", compute='_get_price', store=True)
+    p3 = fields.Float(digits=(10, 2), string=u"3", compute='_get_price', store=True)
 
     m4 = fields.Boolean(string=u"4", default=False)
-    p4 = fields.Float(digits=(10, 2), string=u"Цена Ап", compute='_get_price', store=True)
+    p4 = fields.Float(digits=(10, 2), string=u"4", compute='_get_price', store=True)
 
     m5 = fields.Boolean(string=u"5", default=False)
-    p5 = fields.Float(digits=(10, 2), string=u"Цена Май", compute='_get_price', store=True)
+    p5 = fields.Float(digits=(10, 2), string=u"5", compute='_get_price', store=True)
 
     m6 = fields.Boolean(string=u"6", default=False)
-    p6 = fields.Float(digits=(10, 2), string=u"Цена Июн", compute='_get_price', store=True)
+    p6 = fields.Float(digits=(10, 2), string=u"6", compute='_get_price', store=True)
 
     m7 = fields.Boolean(string=u"7", default=False)
-    p7 = fields.Float(digits=(10, 2), string=u"Цена Июл", compute='_get_price', store=True)
+    p7 = fields.Float(digits=(10, 2), string=u"7", compute='_get_price', store=True)
 
     m8 = fields.Boolean(string=u"8", default=False)
-    p8 = fields.Float(digits=(10, 2), string=u"Цена Авг", compute='_get_price', store=True)
+    p8 = fields.Float(digits=(10, 2), string=u"8", compute='_get_price', store=True)
 
     m9 = fields.Boolean(string=u"9", default=False)
-    p9 = fields.Float(digits=(10, 2), string=u"Цена Сен", compute='_get_price', store=True)
+    p9 = fields.Float(digits=(10, 2), string=u"9", compute='_get_price', store=True)
 
     m10 = fields.Boolean(string=u"10", default=False)
-    p10 = fields.Float(digits=(10, 2), string=u"Цена Окт", compute='_get_price', store=True)
+    p10 = fields.Float(digits=(10, 2), string=u"10", compute='_get_price', store=True)
 
     m11 = fields.Boolean(string=u"11", default=False)
-    p11 = fields.Float(digits=(10, 2), string=u"Цена Ноя", compute='_get_price', store=True)
+    p11 = fields.Float(digits=(10, 2), string=u"11", compute='_get_price', store=True)
     
     m12 = fields.Boolean(string=u"12", default=False)
-    p12 = fields.Float(digits=(10, 2), string=u"Цена Дек", compute='_get_price', store=True)
+    p12 = fields.Float(digits=(10, 2), string=u"12", compute='_get_price', store=True)
 
+    kol = fields.Float(digits=(10, 2), string=u"Кол-во", compute='_get_price', store=True)
     price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
+    currency_id = fields.Many2one('res.currency', string='Валюта', compute='_get_price', store=True)
     #currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id.id)
     amount = fields.Float(digits=(10, 2), string=u"Стоимость", compute='_get_price', store=True)

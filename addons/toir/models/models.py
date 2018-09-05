@@ -656,10 +656,85 @@ class aktiv_gr_line(models.Model):
 
 
 
-# class aktiv_remont(models.Model):
-#     """Ремонты"""
-#     _name = 'aktiv.remont'
-#     _description = u'Ремонты'
-#     _order  = 'date'
+class aktiv_remont(models.Model):
+    """Ремонты"""
+    _name = 'aktiv.remont'
+    _description = u'Ремонты'
+    _order  = 'date'
 
-#     date = fields.Date(string='Дата')
+    @api.one
+    @api.depends('aktiv_aktiv_id')
+    def return_name(self):
+        self.name = self.aktiv_aktiv_id.name
+
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    
+    date = fields.Date(string='Дата')
+
+    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
+    
+    date_start = fields.Date(string='Дата начала')
+    date_end = fields.Date(string='Дата окончания')
+
+    aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовой ремонт')
+
+
+    aktiv_remont_raboti_line = fields.One2many('aktiv.remont_raboti_line', 'aktiv_remont_id', string=u"Строка регламентных работ. Ремонты", copy=True)
+    aktiv_remont_nomen_line = fields.One2many('aktiv.remont_nomen_line', 'aktiv_remont_id', string=u"Строка материалы. Ремонты", copy=True)
+    
+
+
+
+class aktiv_remont_raboti_line(models.Model):
+    """Строка регламентных работ. Типовые ремонты"""
+    _name = 'aktiv.remont_raboti_line'
+    _description = u'Строка регламентных работ'
+    _order  = 'name'
+
+
+    @api.one
+    @api.depends('aktiv_vid_rabot_id')
+    def return_name(self):
+        self.name = self.aktiv_vid_rabot_id.name
+
+
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_remont_id = fields.Many2one('aktiv.remont', ondelete='cascade', string=u"Ремонты", required=True)
+
+    aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', string='Виды работ')
+ 
+    price = fields.Float(digits=(10, 2), string=u"Стоимость")
+    currency_id = fields.Many2one('res.currency', string='Валюта')
+
+    
+
+class aktiv_remont_nomen_line(models.Model):
+    """Строка материалы. Ремонты"""
+    _name = 'aktiv.remont_nomen_line'
+    _description = u'Строка материалы'
+    _order  = 'name'
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def return_name(self):
+        self.name = self.nomen_nomen_id.name
+
+
+    @api.one
+    @api.depends('nomen_nomen_id', 'nomen_nomen_id.nomen_nomen_price_line', 'kol')
+    def _get_price(self):
+        self.amount = self.price * self.kol
+  
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_remont_id = fields.Many2one('aktiv.remont', ondelete='cascade', string=u"Ремонты", required=True)
+
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Материалы', required=True)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена с НДС")
+    currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.nomen_nomen_id.currency_id)
+    amount = fields.Float(digits=(10, 2), string=u"Стоимость", compute='_get_price', store=True)
+
+    # aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_tr_id.aktiv_type_id', readonly=True,  store=True)
+    # aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', string='Виды ремонтов и диагностирования', related='aktiv_tr_id.aktiv_vid_remonta_id', readonly=True,  store=True)
+

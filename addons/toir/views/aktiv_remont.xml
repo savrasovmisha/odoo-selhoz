@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_remont_form_view">
+            <field name="name">aktiv_remont.form</field>
+            <field name="model">aktiv.remont</field>
+            <field name="arch" type="xml">
+                <form string="Форма Ремонты">
+                    <sheet>
+                        <group>
+                            <field name="date"/>
+                            <field name="aktiv_aktiv_id"/>
+                            
+                        </group>
+                        <group>
+                            
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="aktiv_tr_id"/>
+                            <!-- <group string="Стоимость ремонта">
+                                <field name="is_raschet_price"/>
+                                <field name="price_raboti" string="Работы"/>
+                                <field name="price_nomen" string="Метериалы"/>
+                                <field name="price" string="Общая стоимость"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <group string="Способ выполнения ремонта">
+                                <field name="is_hozsposob"/>
+                                <field name="is_podryad"/>
+                                <field name="partner_id"/>
+                           
+                            </group> -->
+                        </group>
+
+                        
+
+                        <notebook>
+                            <page string="Регламентные работы">
+                                <field name="aktiv_remont_raboti_line">
+                                    <tree string="aktiv_remont_raboti_line" editable="botton" sum="true">
+                                        <field name="aktiv_vid_rabot_id"/>
+                                        <field name="price" sum="price"/>
+                                        <field name="currency_id"/>
+
+                                    </tree>
+                                </field>
+
+                                <field name="aktiv_remont_nomen_line">
+                                    <tree string="aktiv_remont_nomen_line" editable="botton" sum="true">
+                                        <field name="nomen_nomen_id"/>
+                                        <field name="ed_izm_id"/>
+                                        <field name="kol" sum="kol"/>
+                                        <field name="price"/>
+                                        <field name="currency_id"/>
+                                        <field name="amount" sum="amount"/>
+
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                        </notebook>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_remont_search_view">
+            <field name="name">aktiv_remont.search</field>
+            <field name="model">aktiv.remont</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_remont_list_action">
+            <field name="name">Ремонты</field>
+            <field name="res_model">aktiv.remont</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Ремонты
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

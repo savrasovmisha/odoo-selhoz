@@ -25,6 +25,8 @@
 
         <menuitem id="aktiv_status_menu" name="Статус активов" sequence="2" parent="toir_menu" action="aktiv_status_list_action" groups="group_toir_manager,group_toir_users"/>
 
+        <menuitem id="aktiv_nomen_nomen_list_menu" name="Номенклатура" parent="toir_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_toir_manager,group_toir_users"/>
+
 
         <menuitem id="toir_menu_doc" name="Документы" sequence="2" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
 

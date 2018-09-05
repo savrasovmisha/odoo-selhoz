@@ -78,6 +78,12 @@
                                 <field name="teh_har" nolabel="1"/>
                             </group>
 
+                        </page>
+                        <page string="Документация">    
+                            <group>
+                                <field name="attachment_ids"  class="oe_inline" widget="many2many_binary" string="Прикрепить файл" nolabel="1"/>
+                            </group>
+
 
 
                                 

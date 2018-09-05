@@ -19,6 +19,8 @@ access_aktiv_tr_raboti_line_manager,aktiv.tr_raboti_line,model_aktiv_tr_raboti_l
 access_aktiv_tr_raboti_line_users,aktiv.tr_raboti_line,model_aktiv_tr_raboti_line,group_toir_users,1,0,0,0
 access_aktiv_tr_nomen_line_manager,aktiv.tr_nomen_line,model_aktiv_tr_nomen_line,group_toir_manager,1,1,1,1
 access_aktiv_tr_nomen_line_users,aktiv.tr_nomen_line,model_aktiv_tr_nomen_line,group_toir_users,1,0,0,0
+access_aktiv_tr_price_line_manager,aktiv.tr_price_line,model_aktiv_tr_price_line,group_toir_manager,1,1,1,1
+access_aktiv_tr_price_line_users,aktiv.tr_price_line,model_aktiv_tr_price_line,group_toir_users,1,0,0,0
 access_aktiv_gr_manager,aktiv.gr,model_aktiv_gr,group_toir_manager,1,1,1,1
 access_aktiv_gr_users,aktiv.gr,model_aktiv_gr,group_toir_users,1,0,0,0
 access_aktiv_gr_line_manager,aktiv.gr_line,model_aktiv_gr_line,group_toir_manager,1,1,1,1

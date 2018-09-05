@@ -427,7 +427,9 @@ class aktiv_aktiv(models.Model):
 
     description = fields.Text(string=u"Коментарии")
     
-
+    attachment_ids = fields.Many2many(
+        'ir.attachment', 'aktiv_aktiv_ir_attachments_rel',
+        'aktiv_aktiv_id', 'attachment_id', string='Вложения')
 
 
 
@@ -651,3 +653,13 @@ class aktiv_gr_line(models.Model):
     currency_id = fields.Many2one('res.currency', string='Валюта', compute='_get_price', store=True)
     #currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id.id)
     amount = fields.Float(digits=(10, 2), string=u"Стоимость", compute='_get_price', store=True)
+
+
+
+# class aktiv_remont(models.Model):
+#     """Ремонты"""
+#     _name = 'aktiv.remont'
+#     _description = u'Ремонты'
+#     _order  = 'date'
+
+#     date = fields.Date(string='Дата')

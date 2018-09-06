@@ -131,6 +131,21 @@
                 </search>
             </field>
         </record>
+
+
+        <record model="ir.ui.view" id="aktiv_aktiv_filter_view">
+            <field name="name">aktiv_aktiv.filter</field>
+            <field name="model">aktiv.aktiv</field>
+            <!-- <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/> -->
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <filter name="base">
+                    <filter string="Основные" domain="[('is_uzel', '=', False)]"/>
+                
+                </filter>
+            </field>
+        </record>
+
         <!-- window action Верхняя панель -->
         <!--
             The following tag is an action definition for a "window action",

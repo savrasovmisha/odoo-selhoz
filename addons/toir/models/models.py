@@ -157,7 +157,7 @@ class aktiv_tr(models.Model):
                     )
     def _get_price(self):
         
-        self.price_raboti = self.price_raboti = self.price_nomen = 0
+        self.price = self.price_raboti = self.price_nomen = 0
         if self.is_raschet_price == True:
             if self.aktiv_tr_price_line:
                 self.price_raboti = self.aktiv_tr_price_line[0].price
@@ -193,7 +193,7 @@ class aktiv_tr(models.Model):
         ('months', "мес."),
         ('years', "г."),
         ('km', "км."),
-    ], default='hours', string="Ед.изм.")
+    ], default='months', string="Ед.изм.")
     period2 = fields.Integer(string="Интервал 2")
     period2_edizm = fields.Selection([
         ('hours', "ч."),
@@ -201,7 +201,7 @@ class aktiv_tr(models.Model):
         ('months', "мес."),
         ('years', "г."),
         ('km', "км"),
-    ], default='hours', string="Ед.изм.")
+    ], default='months', string="Ед.изм.")
     
     
 
@@ -663,21 +663,110 @@ class aktiv_remont(models.Model):
     _order  = 'date'
 
     @api.one
-    @api.depends('aktiv_aktiv_id')
+    @api.depends('aktiv_tr_id')
     def return_name(self):
-        self.name = self.aktiv_aktiv_id.name
+        if self.is_graph:
+            self.name = self.aktiv_tr_id.name
+            self.aktiv_vid_remonta_id = self.aktiv_tr_id.aktiv_vid_remonta_id
+        else:
+            self.name = self.name_remonta
+
+    @api.one
+    def action_zapolnit(self):
+        """Действие при нажати на кнопку Заполнить"""
+
+        self.aktiv_remont_raboti_line.unlink()
+        for line in self.aktiv_tr_id.aktiv_tr_raboti_line:
+            self.aktiv_remont_raboti_line.create({
+                        'aktiv_remont_id' : self.id,
+                        'aktiv_vid_rabot_id' : line.aktiv_vid_rabot_id.id,
+                        'price' : line.price,
+                        'currency_id' : line.currency_id.id,
+                        
+                })
+        
+        self.aktiv_remont_nomen_line.unlink()
+        for line in self.aktiv_tr_id.aktiv_tr_nomen_line:
+            self.aktiv_remont_nomen_line.create({
+                        'aktiv_remont_id' : self.id,
+                        'nomen_nomen_id' : line.nomen_nomen_id.id,
+                        'kol' : line.kol,
+                        'price' : line.price,
+                        'currency_id' : line.currency_id.id,
+                        
+                })
+
+
+    @api.one
+    @api.depends(   'is_raschet_price',
+                    'price_raboti_r',
+                    'aktiv_remont_raboti_line', 
+                    'aktiv_remont_nomen_line',
+                    )
+    def _get_price(self):
+        
+        self.price = self.price_raboti = self.price_nomen = 0
+        if self.is_raschet_price == True:
+            self.price_raboti = self.price_raboti_r #Введенная в ручную
+        else:
+            for line in self.aktiv_remont_raboti_line:
+                self.price_raboti += line.price
+
+        if self.aktiv_remont_nomen_line:
+            for line in self.aktiv_remont_nomen_line:
+                self.price_nomen += line.amount
+        self.price = self.price_raboti + self.price_nomen
+
+    @api.one
+    @api.depends(   'aktiv_tr_id',
+                    'aktiv_vid_remonta_id_r',
+                    'is_graph', 
+                    )
+    def _get_aktiv_vid_remonta(self):
+        if self.is_graph:
+            if self.aktiv_tr_id:
+                self.aktiv_vid_remonta_id = self.aktiv_tr_id.aktiv_vid_remonta_id
+        else:
+            self.aktiv_vid_remonta_id = self.aktiv_vid_remonta_id_r
+
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    is_graph = fields.Boolean(string=u"По графику", default=False)
+    name_remonta = fields.Char(string=u"Наименование ремонта")
     
-    date = fields.Date(string='Дата')
+    date = fields.Date(string='Дата ремонта', required=True)
 
-    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
+    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив', required=True)
+    aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_aktiv_id.aktiv_type_id', store=True)
+    aktiv_vid_remonta_id_r = fields.Many2one('aktiv.vid_remonta', string='Вид ремона и диагностирования') #Ручной ввод
+    aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', compute="_get_aktiv_vid_remonta", string='Вид ремона и диагностирования')
+
+    otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный')
+    ispolnitel_id = fields.Many2one('res.partner', string='Исполнитель')
+    company_id = fields.Many2one('res.partner', string='Компания', default=lambda self: self.env.user.company_id.id)
     
     date_start = fields.Date(string='Дата начала')
     date_end = fields.Date(string='Дата окончания')
 
     aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовой ремонт')
 
+    is_raschet_price = fields.Boolean(string=u"Стоимость работ задается в ручную", default=True)
+    price_raboti_r = fields.Float(digits=(10, 2), string=u"Стоимость работ")
+    price_raboti = fields.Float(digits=(10, 2), string=u"Стоимость работ", compute='_get_price', store=True)
+    price_nomen = fields.Float(digits=(10, 2), string=u"Стоимость ТМЦ", compute='_get_price', store=True)
+    price = fields.Float(digits=(10, 2), string=u"Общая стоимость", compute='_get_price', store=True)
+    currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id)
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", default=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", default=False)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик')
+
+    period = fields.Integer(string="Время выполнения ремонта")
+    period_edizm = fields.Selection([
+        ('hours', "ч."),
+        ('days', "дн."),
+        
+    ], default='hours', string="Ед.изм.")
+    description = fields.Text(string=u"Коментарии")
 
     aktiv_remont_raboti_line = fields.One2many('aktiv.remont_raboti_line', 'aktiv_remont_id', string=u"Строка регламентных работ. Ремонты", copy=True)
     aktiv_remont_nomen_line = fields.One2many('aktiv.remont_nomen_line', 'aktiv_remont_id', string=u"Строка материалы. Ремонты", copy=True)
@@ -701,7 +790,7 @@ class aktiv_remont_raboti_line(models.Model):
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
     aktiv_remont_id = fields.Many2one('aktiv.remont', ondelete='cascade', string=u"Ремонты", required=True)
 
-    aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', string='Виды работ')
+    aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', string='Виды работ', required=True)
  
     price = fields.Float(digits=(10, 2), string=u"Стоимость")
     currency_id = fields.Many2one('res.currency', string='Валюта')

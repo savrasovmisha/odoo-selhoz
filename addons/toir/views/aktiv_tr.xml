@@ -27,7 +27,7 @@
                             <group string="Способ выполнения ремонта">
                                 <field name="is_hozsposob"/>
                                 <field name="is_podryad"/>
-                                <field name="partner_id"/>
+                                <field name="partner_id" attrs="{'invisible': [('is_podryad',  '=', False)]}"/>
                            
                             </group>
                         </group>

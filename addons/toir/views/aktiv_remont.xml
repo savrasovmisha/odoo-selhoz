@@ -7,37 +7,81 @@
             <field name="arch" type="xml">
                 <form string="Форма Ремонты">
                     <sheet>
+
                         <group>
-                            <field name="date"/>
+                            <h1><field name="name" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', False)]}"/></h1>
+                        </group>
+                        <group>
+                            <h1><field name="name_remonta" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', True)]}"/></h1>
+                        </group>
+                        <group>
+                            
                             <field name="aktiv_aktiv_id"/>
-                            
+                            <field name="company_id" invisible='1'/>
+                            <field name="aktiv_type_id" invisible='1'/>
                         </group>
                         <group>
-                            
-                            <field name="date_start"/>
-                            <field name="date_end"/>
+                            <group>
+                                
+                                <field name="is_graph"/>
+                                <field name="aktiv_tr_id" attrs="{'invisible': [('is_graph',  '=', False)]}" domain="[('aktiv_type_id','=', aktiv_type_id)]"/>
+                                <field name="aktiv_vid_remonta_id_r" attrs="{'invisible': [('is_graph',  '=', True)]}"/>
+
+                                
+                            </group>
+                            <group>
+                                
+                                <field name="date"/>
+                                <label for="period"/>
+                                <div>
+                                     <field name="period" class="oe_inline" />
+                                     <field name="period_edizm" class="oe_inline" />
+                                     
+                                </div>
+                                
+                            </group>
                         </group>
+                       <!--  <group>
+                            <group>
+                                
+                            </group>
+                            <group>
+                                
+                            </group>
+                        </group> -->
                         <group>
-                            <field name="aktiv_tr_id"/>
-                            <!-- <group string="Стоимость ремонта">
+                            <group string="Стоимость ремонта">
                                 <field name="is_raschet_price"/>
-                                <field name="price_raboti" string="Работы"/>
+                                <field name="price_raboti_r" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', False)]}"/>
+                                <field name="price_raboti" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', True)]}"/>
                                 <field name="price_nomen" string="Метериалы"/>
                                 <field name="price" string="Общая стоимость"/>
                                 <field name="currency_id"/>
                             </group>
                             <group string="Способ выполнения ремонта">
+                                <field name="otvetstvenniy_id" domain="[('parent_id', '=', company_id)]"/>
                                 <field name="is_hozsposob"/>
+                                <field name="ispolnitel_id" attrs="{'invisible': [('is_hozsposob',  '=', False)]}"  domain="[('parent_id', '=', company_id)]"/>
                                 <field name="is_podryad"/>
-                                <field name="partner_id"/>
+                                <field name="partner_id" attrs="{'invisible': [('is_podryad',  '=', False)]}" domain="[('company_type','=','company')]"/>
                            
-                            </group> -->
+                            </group>
                         </group>
 
                         
 
                         <notebook>
                             <page string="Регламентные работы">
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_zapolnit"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Заполнить"
+                                        
+                                       >
+                                    </button>
+                                
+                                </div>
                                 <field name="aktiv_remont_raboti_line">
                                     <tree string="aktiv_remont_raboti_line" editable="botton" sum="true">
                                         <field name="aktiv_vid_rabot_id"/>
@@ -60,6 +104,11 @@
                                 </field>
                             </page>
                             
+                        </notebook>
+                        <notebook colspan="4">
+                            <page string="Комментарии">
+                                <field name="description" nolabel="1"/>
+                            </page>
                         </notebook>
     		            
                     </sheet>

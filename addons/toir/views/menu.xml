@@ -27,10 +27,14 @@
 
         <menuitem id="aktiv_nomen_nomen_list_menu" name="Номенклатура" parent="toir_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_toir_manager,group_toir_users"/>
 
+         <menuitem id="aktiv_remont_service_menu" name="Ремонтные службы" parent="toir_menu" action="aktiv_remont_service_list_action" groups="group_toir_manager,group_toir_users"/>
+
 
         <menuitem id="toir_menu_doc" name="Документы" sequence="2" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
 
         <menuitem id="aktiv_gr_menu" name="Графики ремонтов" sequence="1" parent="toir_menu_doc" action="aktiv_gr_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="aktiv_plan_remont_menu" name="План ремонтов" sequence="1" parent="toir_menu_doc" action="aktiv_plan_remont_list_action" groups="group_toir_manager,group_toir_users"/>
 
         <menuitem id="aktiv_remont_menu" name="Ремонты" sequence="1" parent="toir_menu_doc" action="aktiv_remont_list_action" groups="group_toir_manager,group_toir_users"/>
 

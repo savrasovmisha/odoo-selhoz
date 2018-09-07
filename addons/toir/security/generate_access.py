@@ -1,4 +1,5 @@
 spisok = []
+spisok.append(['aktiv.remont_service','', 1])
 spisok.append(['aktiv.categ','', 1])
 spisok.append(['aktiv.aktiv','', 1])
 spisok.append(['aktiv.type','', 1])
@@ -17,6 +18,8 @@ spisok.append(['nomen.nomen_price_line','selhoz_base', 0])
 spisok.append(['aktiv.remont','', 1])
 spisok.append(['aktiv.remont_raboti_line','', 1])
 spisok.append(['aktiv.remont_nomen_line','', 1])
+spisok.append(['aktiv.plan_remont','', 1])
+spisok.append(['aktiv.plan_remont_line','', 1])
 
 
 # access_nomen_nomen_manager,nomen.nomen,selhoz_base.model_nomen_nomen,group_sklad_manager,1,1,1,1

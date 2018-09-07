@@ -9,6 +9,68 @@ from openerp.exceptions import ValidationError
 #----------------------------------------------------------
 # Активы предприятия
 #----------------------------------------------------------
+
+
+class aktiv_remont_service(models.Model):
+    """Ремонтные службы"""
+    _name = 'aktiv.remont_service'
+    _description = u'Ремонтные службы'
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    _order  = 'parent_left'
+    _rec_name = 'complete_name'
+
+
+    @api.one
+    @api.depends('name', 'parent_id.complete_name')
+    def _complete_name(self):
+        """ Forms complete name of location from parent location to child location. """
+        if self.parent_id.complete_name:
+            self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
+        else:
+            self.complete_name = self.name
+
+    @api.multi
+    def name_get(self):
+        ret_list = []
+        for parent_id in self:
+            orig_location = parent_id
+            name = parent_id.name
+            while parent_id.parent_id:
+                parent_id = parent_id.parent_id
+                if not name:
+                    raise UserError(_('You have to set a name for this location.'))
+                name = parent_id.name + "/" + name
+            ret_list.append((orig_location.id, name))
+        return ret_list
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        """ search full name and barcode """
+        if args is None:
+            args = []
+        recs = self.search(['|', ('name', operator, name), ('complete_name', operator, name)] + args, limit=limit)
+        return recs.name_get()
+
+
+    @api.model
+    def create(self, vals):
+        result = super(aktiv_remont_service, self).create(vals)
+        return result
+
+
+    name = fields.Char(string=u"Наименование", required=True) 
+    complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
+    parent_id = fields.Many2one('aktiv.remont_service', string=u'Родительский элемент', index=True, ondelete='cascade')
+    child_ids = fields.One2many('aktiv.remont_service', 'parent_id', string=u'Подчиненные элементы')
+    parent_left = fields.Integer('Left Parent', index=True)
+    parent_right = fields.Integer('Right Parent', index=True)
+
+    otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный')
+
+
+
 class aktiv_categ(models.Model):
     """Категории  активов. используются для вывода иерархического вида справочника"""
     _name = 'aktiv.categ'
@@ -332,7 +394,7 @@ class aktiv_aktiv(models.Model):
         else:
             self.complete_name = self.name
 
-
+    @api.multi
     def name_get(self):
         ret_list = []
         for parent_id in self:
@@ -377,7 +439,12 @@ class aktiv_aktiv(models.Model):
                 date_end = fields.Date.from_string(self.date_start)# + timedelta(days=self.srok_slujbi*365)
                 self.date_end = fields.Date.to_string(date_end.replace(year=date_end.year+self.srok_slujbi))
    
-
+    @api.one
+    @api.onchange('on_year')
+    def _onchange_on_year(self):
+        if self.on_year:
+            for m in range(1, 13):
+                self['m'+str(m)] = True
         
 
     name = fields.Char(string=u"Наименование", required=True)
@@ -405,7 +472,8 @@ class aktiv_aktiv(models.Model):
     country_id = fields.Many2one('res.country', string=u"Страна производитель")
 
     postavshik_id = fields.Many2one('res.partner', string='Поставщик')
-    otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный')
+    aktiv_remont_service_id = fields.Many2one('aktiv.remont_service', string=u"Ремонтная служба")
+    otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный', related='aktiv_remont_service_id.otvetstvenniy_id')
     aktiv_type_id = fields.Many2one('aktiv.type', string='Тип')
 
 
@@ -424,7 +492,21 @@ class aktiv_aktiv(models.Model):
     date_end = fields.Date(string='Срок службы, Дата окончания', compute='_srok_slujbi', store=True)
 
     teh_har = fields.Text(string=u"Технические характеристики")
-
+    
+    on_year = fields.Boolean(string=u"Круглогодично", default=True)
+    m1 = fields.Boolean(string=u"1", default=True)
+    m2 = fields.Boolean(string=u"2", default=True)
+    m3 = fields.Boolean(string=u"3", default=True)
+    m4 = fields.Boolean(string=u"4", default=True)
+    m5 = fields.Boolean(string=u"5", default=True)
+    m6 = fields.Boolean(string=u"6", default=True)
+    m7 = fields.Boolean(string=u"7", default=True)
+    m8 = fields.Boolean(string=u"8", default=True)
+    m9 = fields.Boolean(string=u"9", default=True)
+    m10 = fields.Boolean(string=u"10", default=True)
+    m11 = fields.Boolean(string=u"11", default=True)
+    m12 = fields.Boolean(string=u"12", default=True)
+    
     description = fields.Text(string=u"Коментарии")
     
     attachment_ids = fields.Many2many(
@@ -827,3 +909,73 @@ class aktiv_remont_nomen_line(models.Model):
     # aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_tr_id.aktiv_type_id', readonly=True,  store=True)
     # aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', string='Виды ремонтов и диагностирования', related='aktiv_tr_id.aktiv_vid_remonta_id', readonly=True,  store=True)
 
+
+
+
+
+class aktiv_plan_remont(models.Model):
+    """План ремонтов"""
+    _name = 'aktiv.plan_remont'
+    _description = u'План ремонтов'
+    _order  = 'year desc, month desc'
+
+    @api.one
+    @api.depends('month', 'year')
+    def return_name(self):
+        self.name = str(self.year) + '-'+str(self.month)
+
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+
+    month = fields.Selection([
+        ('01', "Январь"),
+        ('02', "Февряль"),
+        ('03', "Март"),
+        ('04', "Апрель"),
+        ('05', "Май"),
+        ('06', "Июнь"),
+        ('07', "Июль"),
+        ('08', "Август"),
+        ('09', "Сентябрь"),
+        ('10', "Октябрь"),
+        ('11', "Ноябрь"),
+        ('12', "Декабрь"),
+    ], default='', required=False, string=u"Месяц")
+    
+    year = fields.Char(string=u"Год", required=False, default=str(datetime.today().year))
+
+    aktiv_remont_service_id = fields.Many2one('aktiv.remont_service', string=u"Ремонтная служба")
+    description = fields.Text(string=u"Коментарии")
+
+
+    aktiv_plan_remont_line = fields.One2many('aktiv.plan_remont_line', 'aktiv_plan_remont_id', string=u"Строка План ремонтов", copy=False)
+    
+
+
+class aktiv_plan_remont_line(models.Model):
+    """Строка План ремонтов"""
+    _name = 'aktiv.plan_remont_line'
+    _description = u'Строка План ремонтов'
+    _order  = 'name'
+    
+
+    @api.one
+    @api.depends('aktiv_tr_id')
+    def return_name(self):
+        self.name = self.aktiv_tr_id.name
+
+
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    aktiv_plan_remont_id = fields.Many2one('aktiv.plan_remont', ondelete='cascade', string=u"План ремонтов", required=True)
+
+
+    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив', required=True)
+    aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_aktiv_id.aktiv_type_id', store=True)
+    
+    aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовой ремонт')
+    date = fields.Date(string='Дата ремонта')
+
+    price = fields.Float(digits=(10, 2), string=u"Общая стоимость", related='aktiv_tr_id.price', store=True)
+    currency_id = fields.Many2one('res.currency', string='Валюта', related='aktiv_tr_id.currency_id', store=True)
+    is_hozsposob = fields.Boolean(string=u"Хозспособ", related='aktiv_tr_id.is_hozsposob', store=True)
+    is_podryad = fields.Boolean(string=u"Подрядный", related='aktiv_tr_id.is_podryad', store=True)
+    partner_id = fields.Many2one('res.partner', string='Подрядчик', related='aktiv_tr_id.partner_id', store=True)

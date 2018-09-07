@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="aktiv_plan_remont_form_view">
+            <field name="name">aktiv_plan_remont.form</field>
+            <field name="model">aktiv.plan_remont</field>
+            <field name="arch" type="xml">
+                <form string="Форма План ремонтов">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="month"/>
+                            <field name="year"/>
+                            <field name="aktiv_remont_service_id"/>
+
+                        </group>
+
+                        <notebook>
+                            <page string="Планируемые ремонты">
+                                <field name="aktiv_plan_remont_line">
+                                    <tree string="aktiv_plan_remont_line" editable="botton">
+                                        <field name="aktiv_aktiv_id"/>
+                                        <field name="aktiv_tr_id"/>
+                                        <field name="date"/>
+                                        <field name="price"/>
+                                        <field name="currency_id"/>
+                                        <field name="is_hozsposob"/>
+                                        <field name="is_podryad"/>
+                                        <field name="partner_id"/>
+
+                                    </tree>
+                                </field>
+
+                               
+                            </page>
+                        </notebook>
+
+                        <notebook colspan="4">
+                            <page string="Комментарии">
+                                <field name="description" nolabel="1"/>
+                            </page>
+                        </notebook>
+                           
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+	
+	
+	   <record model="ir.ui.view" id="aktiv_plan_remont_search_view">
+            <field name="name">aktiv_plan_remont.search</field>
+            <field name="model">aktiv.plan_remont</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Наименование"/>
+                    
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="aktiv_plan_remont_list_action">
+            <field name="name">План ремонтов</field>
+            <field name="res_model">aktiv.plan_remont</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись План ремонтов
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

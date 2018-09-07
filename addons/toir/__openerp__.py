@@ -30,6 +30,7 @@
         'security/base_security.xml',
         'security/ir.model.access.csv',
         
+        'views/aktiv_remont_service.xml',
         'views/aktiv_categ.xml',
         'views/aktiv_type.xml',
         'views/aktiv_status.xml',
@@ -40,6 +41,7 @@
         'views/aktiv_gr.xml',
         'views/res_currency.xml',
         'views/aktiv_remont.xml',
+        'views/aktiv_plan_remont.xml',
                 
         
         'views/menu.xml',

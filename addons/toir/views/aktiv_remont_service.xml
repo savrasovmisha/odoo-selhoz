@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="aktiv_remont_service_form_view">
+        <field name="name">aktiv_remont_service.form</field>
+        <field name="model">aktiv.remont_service</field>
+        <field name="arch" type="xml">
+            <form string="Форма Ремонтные службы">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        
+                        <field name="parent_id"/>
+                        <!-- <field name="child_ids"/> -->
+
+                        <field name="otvetstvenniy_id" domain="[('parent_id', '=', 1)]"/>
+
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_aktiv_remont_service_tree">
+            <field name="name">aktiv_remont_service.tree</field>
+            <field name="model">aktiv.remont_service</field>
+            <field name="type">tree</field>
+            <!-- <field name="view_type">tree</field> -->
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="Ремонтные службы">
+                    <field name="display_name"/>
+                                   
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	   <record model="ir.ui.view" id="aktiv_remont_service_search_view">
+            <field name="name">aktiv_remont_service.search</field>
+            <field name="model">aktiv.remont_service</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="parent_id" string="Parent Location"/>
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="aktiv_remont_service_list_action">
+            <field name="name">Ремонтные службы</field>
+            <field name="res_model">aktiv.remont_service</field>
+            <field name="view_type">form</field>
+            <!-- <field name="view_mode">tree,form</field> -->
+            <!-- <field name="domain">[('parent_id','=',False)]</field> -->
+            <!-- <field name="view_type">tree</field> -->
+            <field name="view_id" ref="view_aktiv_remont_service_tree"/>
+            <field name="search_view_id" ref="aktiv_remont_service_search_view"/> 
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Ремонтные службы
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

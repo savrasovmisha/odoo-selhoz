@@ -99,6 +99,7 @@
                                         <field name="price"/>
                                         <field name="currency_id"/>
                                         <field name="amount" sum="amount"/>
+                                       
 
                                     </tree>
                                 </field>

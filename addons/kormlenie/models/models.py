@@ -2433,9 +2433,9 @@ class korm_potrebnost(models.Model):
 	@api.depends('month', 'year')
 	def return_name(self):
 
-		print "ffffffffffffffffffffffffffffffffffff"
+		
 		if self.month and self.year and self.is_limit:
-			print "ffff2222222222222222222222222"
+			
 			self.date_start = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
 			last_day = last_day_of_month(self.date_start)
 			self.date_end = last_day
@@ -2465,12 +2465,12 @@ class korm_potrebnost(models.Model):
 	@api.one
 	@api.depends('date_start', 'date_end')
 	def get_period_day(self):
-		print 'dddddddddddddddddddddddddd'
+		
 		if self.date_start and self.date_end:
 			d1 = datetime.strptime(self.date_start, "%Y-%m-%d")
 			d2 = datetime.strptime(self.date_end, "%Y-%m-%d")
 			self.period_day = (d2-d1).days + 1
-			print 'dd333333333333333333333333'
+			
 	
 		# if self.month and self.year and self.is_limit:
 		# 	#self.name = self.year + '-' + self.month

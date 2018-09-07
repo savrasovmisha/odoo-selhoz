@@ -1,4 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aktiv_remont_service_manager,aktiv.remont_service,model_aktiv_remont_service,group_toir_manager,1,1,1,1
+access_aktiv_remont_service_users,aktiv.remont_service,model_aktiv_remont_service,group_toir_users,1,0,0,0
 access_aktiv_categ_manager,aktiv.categ,model_aktiv_categ,group_toir_manager,1,1,1,1
 access_aktiv_categ_users,aktiv.categ,model_aktiv_categ,group_toir_users,1,0,0,0
 access_aktiv_aktiv_manager,aktiv.aktiv,model_aktiv_aktiv,group_toir_manager,1,1,1,1
@@ -33,3 +35,7 @@ access_aktiv_remont_raboti_line_manager,aktiv.remont_raboti_line,model_aktiv_rem
 access_aktiv_remont_raboti_line_users,aktiv.remont_raboti_line,model_aktiv_remont_raboti_line,group_toir_users,1,0,0,0
 access_aktiv_remont_nomen_line_manager,aktiv.remont_nomen_line,model_aktiv_remont_nomen_line,group_toir_manager,1,1,1,1
 access_aktiv_remont_nomen_line_users,aktiv.remont_nomen_line,model_aktiv_remont_nomen_line,group_toir_users,1,0,0,0
+access_aktiv_plan_remont_manager,aktiv.plan_remont,model_aktiv_plan_remont,group_toir_manager,1,1,1,1
+access_aktiv_plan_remont_users,aktiv.plan_remont,model_aktiv_plan_remont,group_toir_users,1,0,0,0
+access_aktiv_plan_remont_line_manager,aktiv.plan_remont_line,model_aktiv_plan_remont_line,group_toir_manager,1,1,1,1
+access_aktiv_plan_remont_line_users,aktiv.plan_remont_line,model_aktiv_plan_remont_line,group_toir_users,1,0,0,0

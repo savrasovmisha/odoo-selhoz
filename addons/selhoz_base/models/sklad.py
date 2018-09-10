@@ -182,6 +182,69 @@ class nomen_nomen_price_line(models.Model):
     partner_id = fields.Many2one('res.partner', string='Поставщик')
 
 
+
+#----------------------------------------------------------
+# Маста нахождения
+#----------------------------------------------------------
+
+class location_location(models.Model):
+    _name = 'location.location'
+    _description = u'Места нахождения'
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    _order  = 'parent_left'
+    _rec_name = 'complete_name'
+
+
+    @api.one
+    @api.depends('name', 'parent_id.complete_name')
+    def _complete_name(self):
+        """ Forms complete name of location from parent location to child location. """
+        if self.parent_id.complete_name:
+            self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
+        else:
+            self.complete_name = self.name
+
+    @api.multi
+    def name_get(self):
+        ret_list = []
+        for parent_id in self:
+            orig_location = parent_id
+            name = parent_id.name
+            while parent_id.parent_id:
+                parent_id = parent_id.parent_id
+                if not name:
+                    raise UserError(_('You have to set a name for this location.'))
+                name = parent_id.name + "/" + name
+            ret_list.append((orig_location.id, name))
+        return ret_list
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        """ search full name and barcode """
+        if args is None:
+            args = []
+        recs = self.search(['|', ('name', operator, name), ('complete_name', operator, name)] + args, limit=limit)
+        return recs.name_get()
+
+
+    @api.model
+    def create(self, vals):
+        result = super(location_location, self).create(vals)
+        return result
+
+
+    name = fields.Char(string=u"Наименование", required=True) 
+    complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
+    
+    parent_id = fields.Many2one('location.location', string=u'Родительский элемент', index=True, ondelete='cascade')
+    child_ids = fields.One2many('location.location', 'parent_id', string=u'Подчиненные элементы')
+    parent_left = fields.Integer('Left Parent', index=True)
+    parent_right = fields.Integer('Right Parent', index=True)
+
+
+
 #----------------------------------------------------------
 # Склад
 #----------------------------------------------------------
@@ -205,7 +268,7 @@ class sklad_sklad(models.Model):
         else:
             self.complete_name = self.name
 
-
+    @api.multi
     def name_get(self):
         ret_list = []
         for parent_id in self:
@@ -240,6 +303,7 @@ class sklad_sklad(models.Model):
     complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
     id_1c = fields.Char(string=u"Номер в 1С")
+    location_location_id = fields.Many2one('location.location', string='Местонахождение')
     parent_id = fields.Many2one('sklad.sklad', string=u'Родительский элемент', index=True, ondelete='cascade')
     child_ids = fields.One2many('sklad.sklad', 'parent_id', string=u'Подчиненные элементы')
     parent_left = fields.Integer('Left Parent', index=True)

@@ -27,6 +27,8 @@
 
         <menuitem id="aktiv_nomen_nomen_list_menu" name="Номенклатура" parent="toir_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_toir_manager,group_toir_users"/>
 
+        <menuitem id="aktiv_location_location_list_menu" name="Места нахождения" parent="toir_menu" action="selhoz_base.location_location_list_action" groups="group_toir_manager,group_toir_users"/>
+
          <menuitem id="aktiv_remont_service_menu" name="Ремонтные службы" parent="toir_menu" action="aktiv_remont_service_list_action" groups="group_toir_manager,group_toir_users"/>
 
 

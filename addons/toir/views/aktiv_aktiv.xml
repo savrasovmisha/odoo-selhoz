@@ -45,6 +45,7 @@
                                 <group>
                                     <field name="aktiv_remont_service_id"/>
                                     <field name="otvetstvenniy_id"/>
+                                    <field name="location_location_id"/>
                                     <field name="id_1c"/>
                                     <field name="inv_nomer"/>
                                     <field name="serial_nomer"/>
@@ -86,18 +87,18 @@
                             </group>
                             <group string="Месяца эксплуатации">
                                 <div>
-                                <field name="m1"/>
-                                <field name="m2"/>
-                                <field name="m3"/>
-                                <field name="m4"/>
-                                <field name="m5"/>
-                                <field name="m6"/>
-                                <field name="m7"/>
-                                <field name="m8"/>
-                                <field name="m9"/>
-                                <field name="m10"/>
-                                <field name="m11"/>
-                                <field name="m12"/>
+                                    <label for="m1"/><field name="m1"/>
+                                    <label for="m2"/><field name="m2"/>
+                                    <label for="m3"/><field name="m3"/>
+                                    <label for="m4"/><field name="m4"/>
+                                    <label for="m5"/><field name="m5"/>
+                                    <label for="m6"/><field name="m6"/>
+                                    <label for="m7"/><field name="m7"/>
+                                    <label for="m8"/><field name="m8"/>
+                                    <label for="m9"/><field name="m9"/>
+                                    <label for="m10"/><field name="m10"/>
+                                    <label for="m11"/><field name="m11"/>
+                                    <label for="m12"/><field name="m12"/>
                                 </div>
                                 
                             </group>

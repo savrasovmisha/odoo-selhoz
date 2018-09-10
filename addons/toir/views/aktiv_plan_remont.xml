@@ -7,16 +7,42 @@
             <field name="arch" type="xml">
                 <form string="Форма План ремонтов">
                     <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="month"/>
-                            <field name="year"/>
-                            <field name="aktiv_remont_service_id"/>
-
+                        <group colspan="4">
+                            <group colspan="1">
+                                <field name="month"/>
+                            </group>
+                            <group colspan="1">
+                                <field name="year"/>
+                            </group>
                         </group>
+
+                        <group string="Параметры автозаполнения">
+                            <group>
+                                <field name="sel_zapolnit"/>
+
+                            </group>
+                            <group>
+                                <field name="aktiv_aktiv_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'aktiv')]}"/>
+                                <field name="aktiv_remont_service_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'service')]}"/>/>
+                                <field name="aktiv_gr_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'gr')]}"/>/>
+                                <field name="location_location_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'location')]}"/>/>
+                            </group>
+                        </group>
+                            
+
 
                         <notebook>
                             <page string="Планируемые ремонты">
+                                <div class="oe_button_box" name="button_box">
+                                    <button name="action_zapolnit"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Заполнить"
+                                        
+                                       >
+                                    </button>
+                                
+                                </div>
                                 <field name="aktiv_plan_remont_line">
                                     <tree string="aktiv_plan_remont_line" editable="botton">
                                         <field name="aktiv_aktiv_id"/>

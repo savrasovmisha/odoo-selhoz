@@ -48,6 +48,7 @@
         'views/nomen_group.xml',
         'views/nomen_categ.xml',
         'views/nomen_nomen.xml',
+        'views/location_location.xml',
         'views/sklad_sklad.xml',
 
 

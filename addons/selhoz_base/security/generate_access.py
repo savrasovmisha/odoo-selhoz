@@ -13,6 +13,7 @@ spisok_read.append(['nomen.nomen_price_line',''])
 spisok_read.append(['sklad.sklad',''])
 spisok_read.append(['dogovor',''])
 spisok_read.append(['nalog.nds',''])
+spisok_read.append(['location.location',''])
 
 
 

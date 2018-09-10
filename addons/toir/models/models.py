@@ -445,7 +445,7 @@ class aktiv_aktiv(models.Model):
         if self.on_year:
             for m in range(1, 13):
                 self['m'+str(m)] = True
-        
+
 
     name = fields.Char(string=u"Наименование", required=True)
     complete_name = fields.Char(string=u"Представление", compute='_complete_name', store=True) 
@@ -459,6 +459,8 @@ class aktiv_aktiv(models.Model):
     active = fields.Boolean(string=u"Используется", default=True)
     is_uzel = fields.Boolean(string=u"Узел объекта", default=False)
     is_group = fields.Boolean(string=u"Это группа", default=False)
+
+    location_location_id = fields.Many2one('location.location', string='Местонахождение')
 
     model = fields.Char(string=u"Модель")
     kod = fields.Char(string=u"Код")
@@ -682,11 +684,14 @@ class aktiv_gr_line(models.Model):
     #     self.is_view_price = self.aktiv_gr_id.is_view_price
     
     name = fields.Char(string=u"Наименование ремонта", compute='return_name', store=True)
+    year = fields.Integer(string=u"Год планирования", related='aktiv_gr_id.year', stote=True)
     nomer = fields.Char(string=u"№")
     aktiv_gr_id = fields.Many2one('aktiv.gr', ondelete='cascade', string=u"График ремонтов", required=True)
 
     # is_view_price = fields.Boolean(string=u"Показать стоимость", compute='_get_view_price')
     aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
+    location_location_id = fields.Many2one('location.location', string='Место нахождение', related='aktiv_aktiv_id.location_location_id', stote=True)
+    aktiv_remont_service_id = fields.Many2one('aktiv.remont_service', string='Ремонтная служба', related='aktiv_aktiv_id.aktiv_remont_service_id', stote=True)
     
     is_group = fields.Boolean(string=u"Это группа", related='aktiv_aktiv_id.is_group', stote=True)
     
@@ -924,6 +929,48 @@ class aktiv_plan_remont(models.Model):
     def return_name(self):
         self.name = str(self.year) + '-'+str(self.month)
 
+
+    @api.one
+    def action_zapolnit(self):
+        """Заполнить строки плана в зависимости от выбранных параметров"""
+        self.aktiv_plan_remont_line.unlink()
+        month = int(self.month)
+
+        if self.sel_zapolnit == 'service' and self.aktiv_remont_service_id:
+            aktiv_gr_lines = self.aktiv_gr_id.aktiv_gr_line.search([
+                ('aktiv_remont_service_id', 'child_of', self.aktiv_remont_service_id.id),
+                ('m'+str(month), '=', True)
+                ])
+
+        
+        if self.sel_zapolnit == 'aktiv' and self.aktiv_aktiv_id:
+            aktiv_gr_lines = self.aktiv_gr_id.aktiv_gr_line.search([
+                ('aktiv_aktiv_id', 'child_of', self.aktiv_aktiv_id.id),
+                ('m'+str(month), '=', True)
+                ])
+
+        if self.sel_zapolnit == 'location' and self.location_location_id:
+            aktiv_gr_lines = self.aktiv_gr_id.aktiv_gr_line.search([
+                ('location_location_id', 'child_of', self.location_location_id.id),
+                ('m'+str(month), '=', True)
+                ])
+
+        if self.sel_zapolnit == 'gr' and self.aktiv_gr_id:
+            aktiv_gr_lines = self.aktiv_gr_id.aktiv_gr_line.search([
+                ('aktiv_gr_id', '=', self.aktiv_gr_id.id),
+                ('m'+str(month), '=', True)
+                ])
+
+        if aktiv_gr_lines:
+            for aktiv_gr_line in aktiv_gr_lines:
+                self.aktiv_plan_remont_line.create({
+                        'aktiv_plan_remont_id' : self.id,
+                        'aktiv_aktiv_id' : aktiv_gr_line.aktiv_aktiv_id.id,
+                        'aktiv_tr_id' : aktiv_gr_line.aktiv_tr_id.id,
+                        
+                    })
+
+
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
 
     month = fields.Selection([
@@ -940,15 +987,25 @@ class aktiv_plan_remont(models.Model):
         ('11', "Ноябрь"),
         ('12', "Декабрь"),
     ], default='', required=False, string=u"Месяц")
-    
+
     year = fields.Char(string=u"Год", required=False, default=str(datetime.today().year))
 
-    aktiv_remont_service_id = fields.Many2one('aktiv.remont_service', string=u"Ремонтная служба")
-    description = fields.Text(string=u"Коментарии")
-
-
-    aktiv_plan_remont_line = fields.One2many('aktiv.plan_remont_line', 'aktiv_plan_remont_id', string=u"Строка План ремонтов", copy=False)
+    sel_zapolnit = fields.Selection([
+        ('service', u"Ремонтной службе"),
+        ('aktiv', u"Активу"),
+        ('location', u"Месторасположению"),
+        ('gr', u"Графику ремонтов")
+    ], default='service', string=u"Заполнить по")
     
+
+    aktiv_remont_service_id = fields.Many2one('aktiv.remont_service', string=u"Ремонтная служба")
+
+    aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив')
+    aktiv_gr_id = fields.Many2one('aktiv.gr', string='График ремонтов')
+    location_location_id = fields.Many2one('location.location', string='Местонахождение')
+    
+    description = fields.Text(string=u"Коментарии")
+    aktiv_plan_remont_line = fields.One2many('aktiv.plan_remont_line', 'aktiv_plan_remont_id', string=u"Строка План ремонтов", copy=False)
 
 
 class aktiv_plan_remont_line(models.Model):

@@ -41,15 +41,23 @@
                                         
                                        >
                                     </button>
+                                    <button name="action_raschet"
+                                        type="object"
+                                        class="oe_stat_button oe_edit_only"
+                                        icon="fa-refresh" string="Расчитать"
+                                        
+                                       >
+                                    </button>
                                 
                                 </div>
                                 <field name="aktiv_plan_remont_line">
-                                    <tree string="aktiv_plan_remont_line" editable="botton">
+                                    <tree string="aktiv_plan_remont_line" editable="botton" sum="true">
                                         <field name="aktiv_aktiv_id"/>
                                         <field name="aktiv_tr_id"/>
+                                        <field name="date_last"/>
                                         <field name="date"/>
-                                        <field name="price"/>
-                                        <field name="currency_id"/>
+                                        <field name="price"  widget='monetary' options="{'currency_field': 'currency_id'}" sum="price"/>
+                                        <field name="currency_id" invisible="1"/>
                                         <field name="is_hozsposob"/>
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>

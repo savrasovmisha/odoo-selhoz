@@ -3,6 +3,7 @@
 from __future__ import division #при делении будет возвращаться float
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 
 
@@ -928,6 +929,7 @@ class aktiv_plan_remont(models.Model):
     @api.depends('month', 'year')
     def return_name(self):
         self.name = str(self.year) + '-'+str(self.month)
+        self.date = datetime.strptime(self.year+'-'+self.month+'-01', "%Y-%m-%d").date()
 
 
     @api.one
@@ -970,6 +972,11 @@ class aktiv_plan_remont(models.Model):
                         
                     })
 
+    @api.one
+    def action_raschet(self):
+        for line in self.aktiv_plan_remont_line:
+            line._get_date()
+        
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
 
@@ -989,6 +996,7 @@ class aktiv_plan_remont(models.Model):
     ], default='', required=False, string=u"Месяц")
 
     year = fields.Char(string=u"Год", required=False, default=str(datetime.today().year))
+    date = fields.Date(string='Дата', compute='return_name', store=True)
 
     sel_zapolnit = fields.Selection([
         ('service', u"Ремонтной службе"),
@@ -1020,6 +1028,25 @@ class aktiv_plan_remont_line(models.Model):
     def return_name(self):
         self.name = self.aktiv_tr_id.name
 
+    @api.one
+    @api.depends('aktiv_tr_id', 'aktiv_aktiv_id')
+    def _get_date_last(self):
+        if self.aktiv_tr_id and self.aktiv_aktiv_id:
+            akriv_remont_last = self.env['aktiv.remont'].search([
+                    ('aktiv_aktiv_id', '=', self.aktiv_aktiv_id.id),
+                    ('aktiv_tr_id', '=', self.aktiv_tr_id.id),
+                    ('date', '<=', self.aktiv_plan_remont_id.date),
+                 ], order="date desc", limit=1)
+            if akriv_remont_last:
+                self.date_last = akriv_remont_last.date
+
+    @api.one
+    @api.onchange('aktiv_tr_id', 'aktiv_aktiv_id')
+    def _get_date(self):
+        if self.aktiv_tr_id and self.aktiv_aktiv_id:
+            if self.date_last:
+                if self.aktiv_tr_id.period1_edizm == 'months':
+                    self.date = (datetime.strptime(self.date_last,'%Y-%m-%d') + relativedelta(months=int(self.aktiv_tr_id.period1))).strftime('%Y-%m-%d') 
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
     aktiv_plan_remont_id = fields.Many2one('aktiv.plan_remont', ondelete='cascade', string=u"План ремонтов", required=True)
@@ -1029,7 +1056,8 @@ class aktiv_plan_remont_line(models.Model):
     aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_aktiv_id.aktiv_type_id', store=True)
     
     aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовой ремонт')
-    date = fields.Date(string='Дата ремонта')
+    date_last = fields.Date(string='Дата предыдущего ремонта', compute='_get_date_last', store=True)
+    date = fields.Date(string='Планируемая дата ремонта')
 
     price = fields.Float(digits=(10, 2), string=u"Общая стоимость", related='aktiv_tr_id.price', store=True)
     currency_id = fields.Many2one('res.currency', string='Валюта', related='aktiv_tr_id.currency_id', store=True)

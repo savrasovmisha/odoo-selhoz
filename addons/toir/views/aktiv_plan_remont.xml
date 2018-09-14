@@ -6,26 +6,40 @@
             <field name="model">aktiv.plan_remont</field>
             <field name="arch" type="xml">
                 <form string="Форма План ремонтов">
+                    <header>
+                        <button name="action_draft" type="object"
+                                string="Отменить планирование"
+                                states="confirmed"/>
+                        <button name="action_confirm" type="object"
+                                string="Запланировать" states="draft"
+                                class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft"  style="margin-left: 100px;"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
                     <sheet>
                         <group colspan="4">
                             <group colspan="1">
-                                <field name="month"/>
+                                <field name="month" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             </group>
                             <group colspan="1">
-                                <field name="year"/>
+                                <field name="year" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             </group>
                         </group>
 
                         <group string="Параметры автозаполнения">
                             <group>
-                                <field name="sel_zapolnit"/>
+                                <field name="sel_zapolnit" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
 
                             </group>
                             <group>
-                                <field name="aktiv_aktiv_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'aktiv')]}"/>
-                                <field name="aktiv_remont_service_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'service')]}"/>/>
-                                <field name="aktiv_gr_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'gr')]}"/>/>
-                                <field name="location_location_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'location')]}"/>/>
+                                <field name="aktiv_aktiv_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'aktiv')], 'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="aktiv_remont_service_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'service')], 'readonly': [('state', 'in', ['confirmed',])]}"/>/>
+                                <field name="aktiv_gr_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'gr')], 'readonly': [('state', 'in', ['confirmed',])]}"/>/>
+                                <field name="location_location_id" attrs="{'invisible': [('sel_zapolnit',  '!=', 'location')], 'readonly': [('state', 'in', ['confirmed',])]}"/>/>
                             </group>
                         </group>
                             
@@ -33,7 +47,7 @@
 
                         <notebook>
                             <page string="Планируемые ремонты">
-                                <div class="oe_button_box" name="button_box">
+                                <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state', 'in', ['confirmed','done'])]}">
                                     <button name="action_zapolnit"
                                         type="object"
                                         class="oe_stat_button oe_edit_only"
@@ -50,7 +64,7 @@
                                     </button>
                                 
                                 </div>
-                                <field name="aktiv_plan_remont_line">
+                                <field name="aktiv_plan_remont_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                     <tree string="aktiv_plan_remont_line" editable="botton" sum="true">
                                         <field name="aktiv_aktiv_id"/>
                                         <field name="aktiv_tr_id"/>

@@ -817,6 +817,30 @@ class aktiv_remont(models.Model):
         else:
             self.aktiv_vid_remonta_id = self.aktiv_vid_remonta_id_r
 
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            self.state = 'draft'
+            
+
+        
+    
+
+    @api.multi
+    def action_confirm(self):
+                
+        for doc in self:
+                          
+            self.state = 'confirmed'
+            # else:
+            #     err = u'Ошибка при проведении'
+            #     raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+                        
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
     is_graph = fields.Boolean(string=u"По графику", default=False)
@@ -855,6 +879,13 @@ class aktiv_remont(models.Model):
         
     ], default='hours', string="Ед.изм.")
     description = fields.Text(string=u"Коментарии")
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Запланирован"),
+        ('confirmed', "Выполнен"),
+        ('done', "Отменен"),
+        
+    ], default='draft')
 
     aktiv_remont_raboti_line = fields.One2many('aktiv.remont_raboti_line', 'aktiv_remont_id', string=u"Строка регламентных работ. Ремонты", copy=True)
     aktiv_remont_nomen_line = fields.One2many('aktiv.remont_nomen_line', 'aktiv_remont_id', string=u"Строка материалы. Ремонты", copy=True)
@@ -976,6 +1007,31 @@ class aktiv_plan_remont(models.Model):
     def action_raschet(self):
         for line in self.aktiv_plan_remont_line:
             line._get_date()
+
+
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            self.state = 'draft'
+            
+
+        
+    
+
+    @api.multi
+    def action_confirm(self):
+                
+        for doc in self:
+                          
+            self.state = 'confirmed'
+            # else:
+            #     err = u'Ошибка при проведении'
+            #     raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+                        
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
         
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
@@ -1013,6 +1069,14 @@ class aktiv_plan_remont(models.Model):
     location_location_id = fields.Many2one('location.location', string='Местонахождение')
     
     description = fields.Text(string=u"Коментарии")
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Черновик"),
+        ('confirmed', "Запланировано"),
+        ('done', "Отменен"),
+        
+    ], default='draft')
+
     aktiv_plan_remont_line = fields.One2many('aktiv.plan_remont_line', 'aktiv_plan_remont_id', string=u"Строка План ремонтов", copy=False)
 
 

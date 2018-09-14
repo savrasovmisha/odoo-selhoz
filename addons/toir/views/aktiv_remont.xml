@@ -6,36 +6,50 @@
             <field name="model">aktiv.remont</field>
             <field name="arch" type="xml">
                 <form string="Форма Ремонты">
+                    <header>
+                        <button name="action_draft" type="object"
+                                string="Отменить выполнение"
+                                states="confirmed"/>
+                        <button name="action_confirm" type="object"
+                                string="Выполнен" states="draft"
+                                class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft"  style="margin-left: 100px;"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
+
                     <sheet>
 
                         <group>
-                            <h1><field name="name" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', False)]}"/></h1>
+                            <h1><field name="name" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}"/></h1>
                         </group>
                         <group>
-                            <h1><field name="name_remonta" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', True)]}"/></h1>
+                            <h1><field name="name_remonta" placeholder="Наименование ремонта" attrs="{'invisible': [('is_graph',  '=', True)], 'readonly': [('state', 'in', ['confirmed',])]}"/></h1>
                         </group>
                         <group>
                             
-                            <field name="aktiv_aktiv_id"/>
+                            <field name="aktiv_aktiv_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="company_id" invisible='1'/>
                             <field name="aktiv_type_id" invisible='1'/>
                         </group>
                         <group>
                             <group>
                                 
-                                <field name="is_graph"/>
-                                <field name="aktiv_tr_id" attrs="{'invisible': [('is_graph',  '=', False)]}" domain="[('aktiv_type_id','=', aktiv_type_id)]"/>
-                                <field name="aktiv_vid_remonta_id_r" attrs="{'invisible': [('is_graph',  '=', True)]}"/>
+                                <field name="is_graph" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="aktiv_tr_id" attrs="{'invisible': [('is_graph',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" domain="[('aktiv_type_id','=', aktiv_type_id)]"/>
+                                <field name="aktiv_vid_remonta_id_r" attrs="{'invisible': [('is_graph',  '=', True)], 'readonly': [('state', 'in', ['confirmed',])]}"/>
 
                                 
                             </group>
                             <group>
                                 
-                                <field name="date"/>
-                                <label for="period"/>
+                                <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <label for="period" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 <div>
-                                     <field name="period" class="oe_inline" />
-                                     <field name="period_edizm" class="oe_inline" />
+                                     <field name="period" class="oe_inline" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                     <field name="period_edizm" class="oe_inline" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                      
                                 </div>
                                 
@@ -51,19 +65,19 @@
                         </group> -->
                         <group>
                             <group string="Стоимость ремонта">
-                                <field name="is_raschet_price"/>
-                                <field name="price_raboti_r" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', False)]}"/>
-                                <field name="price_raboti" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', True)]}"/>
-                                <field name="price_nomen" string="Метериалы"/>
-                                <field name="price" string="Общая стоимость"/>
-                                <field name="currency_id"/>
+                                <field name="is_raschet_price" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="price_raboti_r" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="price_raboti" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', True)], 'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="price_nomen" string="Метериалы" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="price" string="Общая стоимость" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="currency_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             </group>
                             <group string="Способ выполнения ремонта">
-                                <field name="otvetstvenniy_id" domain="[('parent_id', '=', company_id)]"/>
-                                <field name="is_hozsposob"/>
-                                <field name="ispolnitel_id" attrs="{'invisible': [('is_hozsposob',  '=', False)]}"  domain="[('parent_id', '=', company_id)]"/>
-                                <field name="is_podryad"/>
-                                <field name="partner_id" attrs="{'invisible': [('is_podryad',  '=', False)]}" domain="[('company_type','=','company')]"/>
+                                <field name="otvetstvenniy_id" domain="[('parent_id', '=', company_id)]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="is_hozsposob" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="ispolnitel_id" attrs="{'invisible': [('is_hozsposob',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}"  domain="[('parent_id', '=', company_id)]"/>
+                                <field name="is_podryad" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                                <field name="partner_id" attrs="{'invisible': [('is_podryad',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" domain="[('company_type','=','company')]"/>
                            
                             </group>
                         </group>
@@ -77,12 +91,12 @@
                                         type="object"
                                         class="oe_stat_button oe_edit_only"
                                         icon="fa-refresh" string="Заполнить"
-                                        
+                                        attrs="{'invisible': [('state', 'in', ['confirmed','done'])]}"
                                        >
                                     </button>
                                 
                                 </div>
-                                <field name="aktiv_remont_raboti_line">
+                                <field name="aktiv_remont_raboti_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                     <tree string="aktiv_remont_raboti_line" editable="botton" sum="true">
                                         <field name="aktiv_vid_rabot_id"/>
                                         <field name="price" sum="price"/>
@@ -91,7 +105,7 @@
                                     </tree>
                                 </field>
 
-                                <field name="aktiv_remont_nomen_line">
+                                <field name="aktiv_remont_nomen_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                     <tree string="aktiv_remont_nomen_line" editable="botton" sum="true">
                                         <field name="nomen_nomen_id"/>
                                         <field name="ed_izm_id"/>
@@ -116,7 +130,19 @@
                 </form>
             </field>
         </record>
-	
+	   
+       <record model="ir.ui.view" id="aktiv_remont_calendar_view">
+            <field name="name">aktiv_remont.calendar</field>
+            <field name="model">aktiv.remont</field>
+            <field name="arch" type="xml">
+                <calendar string="Ремонты" date_start="date" date_stop="date" display="[name]" mode="month" color="company_id">
+                    
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    
+                </calendar>
+            </field>
+        </record>
 	
 	   <record model="ir.ui.view" id="aktiv_remont_search_view">
             <field name="name">aktiv_remont.search</field>
@@ -133,7 +159,7 @@
             <field name="name">Ремонты</field>
             <field name="res_model">aktiv.remont</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,calendar</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Ремонты
                 </p>

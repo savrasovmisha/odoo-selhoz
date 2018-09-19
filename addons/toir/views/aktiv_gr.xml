@@ -152,6 +152,22 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_aktiv_gr_tree">
+            <field name="name">aktiv_gr.tree</field>
+            <field name="model">aktiv.gr</field>
+
+            <field name="arch" type="xml">
+                <tree string="Ремонты">
+                    <field name="year"  type="char"/>
+                    <field name="aktiv_aktiv_id"/>
+                    <field name="name"/>
+                   
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="aktiv_gr_list_action">
             <field name="name">График ремонтов</field>
             <field name="res_model">aktiv.gr</field>

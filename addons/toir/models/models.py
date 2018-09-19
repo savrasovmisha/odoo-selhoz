@@ -748,7 +748,7 @@ class aktiv_remont(models.Model):
     """Ремонты"""
     _name = 'aktiv.remont'
     _description = u'Ремонты'
-    _order  = 'date'
+    _order  = 'date desc'
 
     @api.one
     @api.depends('aktiv_tr_id')
@@ -841,6 +841,14 @@ class aktiv_remont(models.Model):
     def action_done(self):
         self.state = 'done'
 
+    @api.one
+    def _get_name_obj(self):
+        if self.obj_osnovaniya!='':
+            obj = self.env[self.obj_osnovaniya].browse(self.obj_osnovaniya_id)
+            self.obj_name = obj[0].name + u' от ' + obj[0].date
+        else:
+            self.obj_name = ''
+
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
     is_graph = fields.Boolean(string=u"По графику", default=False)
@@ -886,6 +894,11 @@ class aktiv_remont(models.Model):
         ('done', "Отменен"),
         
     ], default='draft')
+
+    obj_osnovaniya = fields.Char(string=u"Введен на основании объекта", copy=False, default='')
+    obj_osnovaniya_id = fields.Integer(string=u"Id объекта основания", copy=False, default=0)
+    obj_name = fields.Char(store=False, copy=False, compute='_get_name_obj')
+    
 
     aktiv_remont_raboti_line = fields.One2many('aktiv.remont_raboti_line', 'aktiv_remont_id', string=u"Строка регламентных работ. Ремонты", copy=True)
     aktiv_remont_nomen_line = fields.One2many('aktiv.remont_nomen_line', 'aktiv_remont_id', string=u"Строка материалы. Ремонты", copy=True)
@@ -1012,7 +1025,8 @@ class aktiv_plan_remont(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            self.state = 'draft'
+            doc._unlink_remont()
+        self.state = 'draft'
             
 
         
@@ -1022,6 +1036,21 @@ class aktiv_plan_remont(models.Model):
     def action_confirm(self):
                 
         for doc in self:
+            for line in doc.aktiv_plan_remont_line:
+                aktiv_remont_id = line.aktiv_remont_id.create({
+                    'is_graph' : True,
+                    'date' : line.date,
+                    'aktiv_aktiv_id' : line.aktiv_aktiv_id.id,
+                    'aktiv_tr_id' : line.aktiv_tr_id.id,
+                    'obj_osnovaniya' : self.__class__.__name__,
+                    'obj_osnovaniya_id' : doc.id,
+
+
+
+                    })
+                aktiv_remont_id.action_zapolnit()
+                aktiv_remont_id.action_draft()
+                line.aktiv_remont_id = aktiv_remont_id.id
                           
             self.state = 'confirmed'
             # else:
@@ -1031,7 +1060,16 @@ class aktiv_plan_remont(models.Model):
 
     @api.multi
     def action_done(self):
+        for doc in self:
+            doc._unlink_remont()
         self.state = 'done'
+
+
+    @api.one
+    def _unlink_remont(self):
+        for line in self.aktiv_plan_remont_line:
+            line.aktiv_remont_id.unlink()
+
         
 
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
@@ -1118,6 +1156,7 @@ class aktiv_plan_remont_line(models.Model):
 
     aktiv_aktiv_id = fields.Many2one('aktiv.aktiv', string='Актив', required=True)
     aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_aktiv_id.aktiv_type_id', store=True)
+    aktiv_remont_id = fields.Many2one('aktiv.remont', string='Ремонт')
     
     aktiv_tr_id = fields.Many2one('aktiv.tr', string='Типовой ремонт')
     date_last = fields.Date(string='Дата предыдущего ремонта', compute='_get_date_last', store=True)

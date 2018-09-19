@@ -155,6 +155,24 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_aktiv_remont_tree">
+            <field name="name">aktiv_remont.tree</field>
+            <field name="model">aktiv.remont</field>
+
+            <field name="arch" type="xml">
+                <tree string="Ремонты">
+                    <field name="date"/>
+                    <field name="aktiv_aktiv_id"/>
+                    <field name="name"/>
+                    <field name="otvetstvenniy_id"/>
+                                   
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="aktiv_remont_list_action">
             <field name="name">Ремонты</field>
             <field name="res_model">aktiv.remont</field>

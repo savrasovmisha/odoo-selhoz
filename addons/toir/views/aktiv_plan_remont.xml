@@ -75,6 +75,7 @@
                                         <field name="is_hozsposob"/>
                                         <field name="is_podryad"/>
                                         <field name="partner_id"/>
+                                        <field name="aktiv_remont_id"/>
 
                                     </tree>
                                 </field>
@@ -104,6 +105,25 @@
                     <field name="name" string="Наименование"/>
                     
                 </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_aktiv_plan_remont_tree">
+            <field name="name">aktiv_plan_remont.tree</field>
+            <field name="model">aktiv.plan_remont</field>
+
+            <field name="arch" type="xml">
+                <tree string="План ремонтов">
+                    <field name="name"/>
+                    <field name="aktiv_remont_service_id"/>
+                    <field name="aktiv_aktiv_id"/>
+                    <field name="aktiv_gr_id"/>
+                    <field name="location_location_id"/>
+                                   
+                    
+                    
+                   
+                </tree>
             </field>
         </record>
 

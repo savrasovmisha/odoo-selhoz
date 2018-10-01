@@ -2118,7 +2118,7 @@ class korm_korm_detail_line(models.Model):
 
 			total = sum(ss)
 			if self.korm_korm_id.pogreshnost:
-				self.kol_pogreshnost = total * self.korm_korm_id.pogreshnost/100
+				self.kol_pogreshnost = int(round(total * self.korm_korm_id.pogreshnost/100))
 				total = total + self.kol_pogreshnost
 			self.kol_fakt = total
 			

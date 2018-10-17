@@ -110,7 +110,7 @@
                                              <tr>
                                                 <th style="padding: 2px;" class="text-center">Наим. загона</th>
                                                 <th style="padding: 2px;" class="text-center">№ заг.</th>
-                                                <th style="padding: 2px; width:90px;" class="text-center">Гол.</th>
+                                                <th style="padding: 2px; width:80px;" class="text-center">Гол.</th>
                                                 <th style="padding: 2px;" class="text-center">Масса</th>
                                                 <!-- <th style="padding: 2px;">Остатки</th> -->
 
@@ -119,7 +119,7 @@
                                              <t t-foreach="doc.korm_korm_line" t-as="line">
                                                  <t t-if="line.sorting==svod.sorting">
                                                      <tr>
-                                                        <td class="text-left" style="padding: 2px;">
+                                                        <td class="text-left" style="padding: 2px; font-size:13px">
                                                             <t t-esc="line.stado_zagon_id.name"/>
                                                         </td>
                                                         <td class="text-center" style="padding: 2px;">

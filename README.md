@@ -204,3 +204,24 @@ the format expected by the server.
 source bin/activate
 python lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
 ################################################################
+
+
+
+
+
+########################################################################
+###########   ОШИБКИ и ИСПРАВЛЕНИЯ #####################################
+
+
+#### 'rules' property from 'CSSStyleSheet' #################
+
+При появлении сообщения об ошибки при редактировании или создания пользователя
+Uncaught SecurityError: Failed to read the 'rules' property from 'CSSStyleSheet': Cannot access rules
+
+Необходимо изменить файл 
+/usr/lib/python2.7/dist-packages/openerp/addons/web_editor/static/src/js/transcoder.js
+
+16 строку:   if (sheets[i].rules) {
+Заменит на:  if (sheets[i].hasOwnProperty('rules')) {
+
+######################################################################

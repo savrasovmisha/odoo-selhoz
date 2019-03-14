@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="kombikorma_proizvodstvo_form_view">
+        <field name="name">kombikorma_proizvodstvo.form</field>
+        <field name="model">kombikorma.proizvodstvo</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Производство комбикорма">
+                <header>
+                    <button name="action_draft" type="object"
+                            string="Отменить проведение"
+                            states="confirmed"/>
+                    <button name="action_confirm" type="object"
+                            string="Провести" states="draft"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object"
+                            string="Удалить" 
+                            states="draft"  style="margin-left: 100px;"/>
+                    
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                            <field name="nomen_nomen_id"/>
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="mol_id"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Ингредиенты">
+                            <field name="kombikorma_proizvodstvo_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="kombikorma_proizvodstvo_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="sequence" widget="handle"/>
+                                    
+                                </tree>
+                            </field>
+                            
+                        </page>
+                        
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_kombikorma_proizvodstvo_tree">
+            <field name="name">kombikorma_proizvodstvo.tree</field>
+            <field name="model">kombikorma.proizvodstvo</field>
+            <field name="arch" type="xml">
+                <tree string="Производство комбикорма" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name" string="Наименование"/>
+                    <field name="date"/>
+                    <field name="nomen_nomen_id"/>
+                    <field name="sklad_sklad_id"/>
+                    <field name="state"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="kombikorma_proizvodstvo_list_action">
+            <field name="name">Производство комбикорма</field>
+            <field name="res_model">kombikorma.proizvodstvo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Производство комбикорма
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

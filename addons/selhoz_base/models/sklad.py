@@ -121,9 +121,10 @@ class nomen_nomen(models.Model):
         reg = self.env['sklad.ostatok']
         result = reg.search([ ('nomen_nomen_id', '=', self.id), 
                                     ('date', '<=', str(datetime.today())),
-                                  ], order="date desc",limit=1)
-        if len(result)>0:
-            self.ostatok = result.kol
+                                  ], order="date desc")
+        for line in result:
+            self.ostatok+=line.kol
+        
 
     @api.one
     @api.depends('nomen_nomen_price_line')

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kombikorma_proizvodstvo_manager,kombikorma.proizvodstvo,model_kombikorma_proizvodstvo,group_kombikorma_manager,1,1,1,1
+access_kombikorma_proizvodstvo_users,kombikorma.proizvodstvo,model_kombikorma_proizvodstvo,group_kombikorma_users,1,0,0,0
+access_kombikorma_proizvodstvo_line_manager,kombikorma.proizvodstvo_line,model_kombikorma_proizvodstvo_line,group_kombikorma_manager,1,1,1,1
+access_kombikorma_proizvodstvo_line_users,kombikorma.proizvodstvo_line,model_kombikorma_proizvodstvo_line,group_kombikorma_users,1,0,0,0

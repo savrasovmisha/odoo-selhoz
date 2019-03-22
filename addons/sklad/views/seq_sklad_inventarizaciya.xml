@@ -6,7 +6,7 @@
         <record id="seq_sklad_inventarizaciya" model="ir.sequence">
             <field name="name">sklad inventarizaciya</field>
             <field name="code">sklad.inventarizaciya</field>
-            <field name="prefix">INV/%(year)s/</field>
+            <field name="prefix">INV/%(year)s/%(month)s/</field>
             <field name="padding">4</field>
             <field name="use_date_range" eval="True"/>
             <field name="company_id" eval="False"/>

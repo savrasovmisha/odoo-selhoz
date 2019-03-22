@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nomen_ed_izm_categ_manager,nomen.ed_izm_categ,selhoz_base.model_nomen_ed_izm_categ,group_sklad_manager,1,1,1,1
+access_nomen_ed_izm_manager,nomen.ed_izm,selhoz_base.model_nomen_ed_izm,group_sklad_manager,1,1,1,1
+access_nomen_categ_manager,nomen.categ,selhoz_base.model_nomen_categ,group_sklad_manager,1,1,1,1
+access_nomen_group_manager,nomen.group,selhoz_base.model_nomen_group,group_sklad_manager,1,1,1,1
+access_nomen_nomen_manager,nomen.nomen,selhoz_base.model_nomen_nomen,group_sklad_manager,1,1,1,1
+access_nomen_nomen_price_line_manager,nomen.nomen_price_line,selhoz_base.model_nomen_nomen_price_line,group_sklad_manager,1,1,1,1
+access_sklad_sklad_manager,sklad.sklad,selhoz_base.model_sklad_sklad,group_sklad_manager,1,1,1,1
+access_nomen_price_econom,nomen.price,model_nomen_price,selhoz_base.group_base_selhoz_econom,1,1,1,1
+access_nomen_price_line_econom,nomen.price_line,model_nomen_price_line,selhoz_base.group_base_selhoz_econom,1,1,1,1
+access_buh_nomen_group_manager,buh.nomen_group,selhoz_base.model_buh_nomen_group,group_sklad_manager,1,1,1,1
+access_buh_stati_zatrat_manager,buh.stati_zatrat,selhoz_base.model_buh_stati_zatrat,group_sklad_manager,1,1,1,1

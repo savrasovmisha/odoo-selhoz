@@ -1513,11 +1513,19 @@ class reg_rashod_kormov(models.Model):
 				#print 'cccccccc    ', line
 				nl = reg.create(line)
 
+
+				#Запись в регистр reg.rashod_kormov_razvernutiy
+				#Раскладываем Комбикорма на составляющие
+				
 				#print nl.nomen_nomen_id.name
 				if nl.nomen_nomen_id.is_proizvodim == True:
 					#print "----"
 					kol_kombikorma = line['kol']
-					kol_kombikorma_norma = line['kol_norma']
+
+					if 'kol_norma' in line:
+						kol_kombikorma_norma = line['kol_norma']
+					else:
+						kol_kombikorma_norma = 0
 
 					recept_id = recept.search([  ('nomen_nomen_id', '=', nl.nomen_nomen_id.id),
 									('date', '<=', obj.date),

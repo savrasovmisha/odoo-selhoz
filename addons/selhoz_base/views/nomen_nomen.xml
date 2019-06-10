@@ -48,11 +48,14 @@
                                     <field name="nomen_categ_id"/>
                                     <field name="nomen_group_id"/>
                                 
+                                    <field name="is_pokupaem"/>
+                                    <field name="is_proizvodim"/>
+                                    <field name="is_prodaem"/>
+                                </group>
+                                <group>
                                     <field name="buh_nomen_group_id"/>
                                     <field name="buh_stati_zatrat_id"/>
                                     <field name="id_1c"/>
-                                </group>
-                                <group>
                                     <field name="nalog_nds_id"/>
                                     <field name="price"/>
                                     <field name="currency_id"/>

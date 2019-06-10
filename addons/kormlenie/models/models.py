@@ -1405,6 +1405,60 @@ class korm_racion_pit_line(models.Model):
 				
 
 					]
+class reg_rashod_kormov_razvernutiy(models.Model):
+	_name = 'reg.rashod_kormov_razvernutiy'
+	_description = u'Регистр Расход кормов и добавок (развернутый)'
+  
+	name = fields.Char(string=u"Регистратор", required=True)
+	obj = fields.Char(string=u"Регистратор", required=True)
+	obj_id = fields.Integer(string=u"ID Регистратора", required=True)
+	date = fields.Datetime(string='Дата', required=True)
+	
+	
+	vid_korma = fields.Char(string=u"Вид корма", required=True)
+	nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+	kombikorm_id = fields.Many2one('nomen.nomen', string='Комбикорм')
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', required=True)
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления')
+	kol = fields.Float(digits=(10, 3), string=u"Кол-во по факту")
+	kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме")
+	korm_receptura_id = fields.Many2one('korm.receptura', string=u'Рецептура комбикормов')
+
+	def move(self, obj, vals, vid_dvijeniya):
+		"""
+			Ф-я осуществляет запись в таблицу Регистр Расход кормов и добавок
+			vid_dvijeniya='create' Создать записи
+			vid_dvijeniya='unlink' Удалить записи
+		"""
+
+		message = ''
+			
+
+		reg = obj.env['reg.rashod_kormov_razvernutiy']
+		if vid_dvijeniya == 'create':
+			
+			for line in vals:
+				#print 'cccccccc    ', line
+				line['id'] = False
+				reg.create(line)
+
+
+		elif vid_dvijeniya == 'unlink':
+			ids_del = reg.search([  ('obj_id', '=', obj.id),
+									('obj', '=', obj.__class__.__name__),
+									])
+			ids_del.unlink()
+		
+
+		return True
+
+
+
+
+
+
 
 class reg_rashod_kormov(models.Model):
 	_name = 'reg.rashod_kormov'
@@ -1432,9 +1486,12 @@ class reg_rashod_kormov(models.Model):
 		"""
 
 		message = ''
-			
+		
+		recept = obj.env['korm.receptura']	
 
 		reg = obj.env['reg.rashod_kormov']
+		reg_razvernutiy = obj.env['reg.rashod_kormov_razvernutiy']
+		vals_razvernutiy=[]
 		if vid_dvijeniya == 'create':
 			if len(vals) == 0:
 				message = u"Нет данных для проведения документа. Не заполненна табличная часть"
@@ -1454,10 +1511,63 @@ class reg_rashod_kormov(models.Model):
 					
 			for line in vals:
 				#print 'cccccccc    ', line
-				reg.create(line)
+				nl = reg.create(line)
+
+				#print nl.nomen_nomen_id.name
+				if nl.nomen_nomen_id.is_proizvodim == True:
+					#print "----"
+					kol_kombikorma = line['kol']
+					kol_kombikorma_norma = line['kol_norma']
+
+					recept_id = recept.search([  ('nomen_nomen_id', '=', nl.nomen_nomen_id.id),
+									('date', '<=', obj.date),
+									],order="date desc",limit=1).id
+					recept_lines = recept.browse(recept_id).korm_receptura_line
+					for recept_line in recept_lines:
+						
+						vals_razvernutiy.append({
+									'id' : False,
+									'obj' : obj.__class__.__name__,
+									'obj_id': obj.id,
+									'date': obj.date,
+									'vid_korma': u'Комбикорма',
+									'kombikorm_id': line['nomen_nomen_id'],
+									'nomen_nomen_id': recept_line.nomen_nomen_id.id,
+									'name': recept_line.nomen_nomen_id.name,
+									'stado_zagon_id': line['stado_zagon_id'],
+									'stado_fiz_group_id': line['stado_fiz_group_id'],
+									'korm_racion_id': line['korm_racion_id'],
+									'korm_receptura_id': recept_id,
+									'kol': recept_line.kol_tonna*kol_kombikorma/1000,
+									'kol_norma': recept_line.kol_tonna*kol_kombikorma_norma/1000,
+
+
+
+
+							})
+				else:
+					line['kombikorm_id'] = False
+					line['korm_receptura_id'] = False
+					line['vid_korma'] = u'Корма'
+					vals_razvernutiy.append(line)
+
+
+					
+			if self.env['reg.rashod_kormov_razvernutiy'].move(obj, vals_razvernutiy, 'create')==False:
+			
+				err = u'Ошибка при проведении'
+				ids_del = reg.search([  ('obj_id', '=', obj.id),
+									('obj', '=', obj.__class__.__name__),
+									])
+				ids_del.unlink()
+				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+						
+
 
 
 		elif vid_dvijeniya == 'unlink':
+			self.env['reg.rashod_kormov_razvernutiy'].move(obj, [], 'unlink')
+			
 			ids_del = reg.search([  ('obj_id', '=', obj.id),
 									('obj', '=', obj.__class__.__name__),
 									])

@@ -49,7 +49,7 @@
 
         <menuitem id="buh_stati_zatrat_menu" name="Статьи затрат" parent="sklad_menu" action="selhoz_base.buh_stati_zatrat_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="reg_sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu" action="reg_sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
         
     </data>
 </openerp>

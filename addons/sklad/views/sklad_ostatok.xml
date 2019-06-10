@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="reg_sklad_ostatok_form_view">
-        <field name="name">reg.sklad_ostatok.form</field>
-        <field name="model">reg.sklad_ostatok</field>
+	<record model="ir.ui.view" id="sklad_ostatok_form_view">
+        <field name="name">sklad_ostatok.form</field>
+        <field name="model">sklad.ostatok</field>
         <field name="arch" type="xml">
             <form string="Форма Номенклатура">
                 <sheet>
@@ -21,9 +21,9 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_reg_sklad_ostatok_tree" >
-            <field name="name">reg.sklad_ostatok.tree</field>
-            <field name="model">reg.sklad_ostatok</field>
+        <record model="ir.ui.view" id="view_sklad_ostatok_tree" >
+            <field name="name">sklad_ostatok.tree</field>
+            <field name="model">sklad.ostatok</field>
             <field name="arch" type="xml">
                 <tree string="Номенклатура остатки" >
                         <field name="sklad_sklad_id"/>
@@ -36,9 +36,9 @@
             </field>
         </record>	
 	
-	<record model="ir.ui.view" id="reg_sklad_ostatok_search_view">
-            <field name="name">reg.sklad_ostatok.search</field>
-            <field name="model">reg.sklad_ostatok</field>
+	<record model="ir.ui.view" id="sklad_ostatok_search_view">
+            <field name="name">sklad_ostatok.search</field>
+            <field name="model">sklad.ostatok</field>
             <field name="arch" type="xml">
                 <search>
                     <filter name="group_sklad_sklad_id" string="По складам" domain="[]" context="{'group_by': 'sklad_sklad_id'}"/>
@@ -54,9 +54,9 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
-        <record model="ir.actions.act_window" id="reg_sklad_ostatok_list_action">
+        <record model="ir.actions.act_window" id="sklad_ostatok_list_action">
             <field name="name">Остатки номенклатуры</field>
-            <field name="res_model">reg.sklad_ostatok</field>
+            <field name="res_model">sklad.ostatok</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
             <field name="help" type="html">

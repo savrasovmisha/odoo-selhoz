@@ -6,7 +6,7 @@
         <record id="seq_sklad_trebovanie_nakladnaya" model="ir.sequence">
             <field name="name">sklad trebovanie_nakladnaya</field>
             <field name="code">sklad.trebovanie_nakladnaya</field>
-            <field name="prefix">STN/%(year)s/%(month)s/</field>
+            <field name="prefix">STN/%(year)s/</field>
             <field name="padding">4</field>
             <field name="use_date_range" eval="True"/>
             <field name="company_id" eval="False"/>

@@ -2122,16 +2122,18 @@ class korm_analiz_efekt_korm_report(models.Model):
     
     zatrati_korma_fur = fields.Float(digits=(10, 1), string=u"Затраты корма на фуражных, тыс.руб", group_operator="sum")
     zatrati_korma_doy = fields.Float(digits=(10, 1), string=u"Затраты корма на дойных, тыс.руб", group_operator="sum")
+    zatrati_korma_pokupaem = fields.Float(digits=(10, 1), string=u"Затраты на покупные корма, тыс.руб", group_operator="sum")
+    procent_korma_pokupaem = fields.Float(digits=(10, 1), string=u"Доля покупных кормов в затратах, %", group_operator="avg")
     
     amount_sale = fields.Float(digits=(10, 1),string="Выручка, тыс.руб.", group_operator="sum")
     sale_natura = fields.Float(digits=(10, 1),string="Натура, тонн", group_operator="sum")
     sale_zachet = fields.Float(digits=(10, 1),string="Зачетный вес, тонн", group_operator="sum")
     
-    zatrati_fur_golova = fields.Float(digits=(10, 1),string="Затраты на фуражную голову, руб/гол", group_operator="avg")
+    zatrati_fur_golova = fields.Float(digits=(10, 1),string="Затраты на фур. голову, руб/гол", group_operator="avg")
     zatrati_doy_golova = fields.Float(digits=(10, 1),string="Затраты на дойную голову, руб/гол", group_operator="avg")
-    zatrati_fur_kg_milk = fields.Float(digits=(10, 1),string="Затраты (фуражные) на 1 кг произведенного молока, руб/кг", group_operator="avg")
-    zatrati_fur90_kg_milk = fields.Float(digits=(10, 1),string="Затраты на корм в себестоимости молока, руб/кг", group_operator="avg")
-    zatrati_doy_kg_milk = fields.Float(digits=(10, 1),string="Затраты (дойные) на 1 кг произведенного молока, руб/кг", group_operator="avg", oldname='zatrati_kg_milk')
+    zatrati_fur_kg_milk = fields.Float(digits=(10, 1),string="Затраты (фур.) на 1 кг произ-го молока, руб/кг", group_operator="avg")
+    zatrati_fur90_kg_milk = fields.Float(digits=(10, 1),string="Затраты на корм в себес-ти молока, руб/кг", group_operator="avg")
+    zatrati_doy_kg_milk = fields.Float(digits=(10, 1),string="Затраты (дойные) на 1 кг произ-го молока, руб/кг", group_operator="avg", oldname='zatrati_kg_milk')
     
     
     _order = 'date'
@@ -2139,12 +2141,18 @@ class korm_analiz_efekt_korm_report(models.Model):
     def init(self, cr):
         tools.sql.drop_view_if_exists(cr, self._table)
         cr.execute("""
+        	
+
             create or replace view korm_analiz_efekt_korm_report as (
                 WITH currency_rate as (%s)
                 SELECT
                     row_number() OVER () AS id,
                     ttt.*,
                     ttt.zatrati_fur_kg_milk*0.9 as zatrati_fur90_kg_milk,
+                    case
+                        when ttt.zatrati_korma_fur>0 then ttt.zatrati_korma_pokupaem/ttt.zatrati_korma_fur*100
+                        else 0
+                    end as procent_korma_pokupaem,
                     (((mpt.price * mpt.ko * mpt.kss + (ttt.sale_belok - mpt.bb)/0.01 * mpt.pb + (ttt.sale_jir - mpt.bj)/0.01 * mpt.pj) * mpt.kk + mpt.h) * ttt.sale_natura) as amount_sale
                 FROM
 
@@ -2161,6 +2169,7 @@ class korm_analiz_efekt_korm_report(models.Model):
                         tm.sale_zachet/1000.0 as sale_zachet,
                         k.zatrati_korma_fur/1000.0 as zatrati_korma_fur,
                         k.zatrati_korma_doy/1000.0 as zatrati_korma_doy,
+                        --k.zatrati_korma_pokupaem/1000.0 as zatrati_korma_pokupaem,
                         case
                             when tm.cow_fur>0 then k.zatrati_korma_fur/tm.cow_fur
                             else 0
@@ -2183,7 +2192,34 @@ class korm_analiz_efekt_korm_report(models.Model):
                             Where mp.date::date<=tm.date_doc::date
                             Order by mp.date desc
                             Limit 1
-                        ) as milk_price_id
+                        ) as milk_price_id,
+                        ( 
+                        	--Покупные корма
+                        	Select
+								sum(rp.kol*rp.price/1000)
+
+                        	FROM
+                        	(
+                        		Select 
+	                                rr.kol,
+									n.name,
+	                                (
+	                                    Select 
+	                                        np.price
+	                                    From nomen_price_line np
+	                                    Where np.nomen_nomen_id = rr.nomen_nomen_id and
+	                                        np.date::date<=tm.date_doc::date
+	                                    Order by np.date desc
+	                                    Limit 1
+	                                ) as price
+                                
+                            	From reg_rashod_kormov_razvernutiy rr
+                            	Left join nomen_nomen n on (n.id=rr.nomen_nomen_id)
+                            	Where 	rr.date::date=tm.date_doc::date and
+                            	  		n.is_pokupaem=True
+                            ) as rp
+                            
+                        ) as zatrati_korma_pokupaem
                         
                         
                         
@@ -2196,6 +2232,7 @@ class korm_analiz_efekt_korm_report(models.Model):
                             tt.date,
                             sum(tt.kol_korma * tt.price) as zatrati_korma_fur,
                             sum(tt.kol_korma_doy * tt.price) as zatrati_korma_doy
+                            
                         FROM
                             (
                             SELECT
@@ -2225,8 +2262,10 @@ class korm_analiz_efekt_korm_report(models.Model):
                                                 else 0
                                             end) as kol_korma_doy
                                         
+                                        
                                     from reg_rashod_kormov r
                                     left join stado_zagon s on (s.id = r.stado_zagon_id)
+                                    left join nomen_nomen n on (n.id = r.nomen_nomen_id)
                                     where (s.mastit=True or s.doynie=True or s.suhostoy=True)
                                     group by r.date::date, r.nomen_nomen_id
                                  )  t

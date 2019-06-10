@@ -25,13 +25,3 @@ print u"Следующий ремонт ", m_next
 
 for m in range(1,13):
 	print m
-
-
-my_dict = {'key': 'value'}
-key_exists = my_dict.has_key('key')  # Устаревший способ.
-key_exists = 'key1' in my_dict  # Актуальный способ.
-
-if 'key1' not in my_dict:
-	print True
-else:
-	print False

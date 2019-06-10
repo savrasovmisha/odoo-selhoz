@@ -6,7 +6,7 @@
         <record id="seq_pokupka_pokupka" model="ir.sequence">
             <field name="name">Pokupka</field>
             <field name="code">pokupka.pokupka</field>
-            <field name="prefix">P/%(year)s/%(month)s/</field>
+            <field name="prefix">P/%(year)s/</field>
             <field name="padding">4</field>
             <field name="use_date_range" eval="True"/>
             <field name="company_id" eval="False"/>

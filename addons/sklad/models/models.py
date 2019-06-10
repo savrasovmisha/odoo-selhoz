@@ -106,49 +106,35 @@ from openerp.exceptions import ValidationError
 #----------------------------------------------------------
 # Регистры остатков и оборотов
 #----------------------------------------------------------
-class reg_sklad_ostatok(models.Model):
-    _name = 'reg.sklad_ostatok'
+class sklad_ostatok(models.Model):
+    _name = 'sklad.ostatok'
     _description = u'Остатки номенклатуры'
   
-    name = fields.Char(string=u"Наименование", compute='return_name', store = True)
+    name = fields.Char(string=u"Регистратор", required=True)
+    date = fields.Datetime(string='Дата последнего изменения')
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
-
-    @api.one
-    @api.depends('nomen_nomen_id')
-    def _get_name(self):
-        self.name = self.nomen_nomen_id.name
-
-
-    def get_id(self, sklad_sklad_id, nomen_nomen_id):
-        res = self.search([
-            ('sklad_sklad_id', '=', sklad_sklad_id),
-            ('nomen_nomen_id', '=', nomen_nomen_id),
-            ], limit=1)
-        if len(res)>0:
-            return {'id' : res.id, 'kol' : res.kol}
-        else:
-            return False #Записи нет
-        
+    # def zapis(self, vals, prihod, kol):
+    #     """Если prihod=True тогда это поступление и будет прибавленно кол-во иначе вычтено"""
+    #     if prihod == True:
+    #         so = self.search([
+    #             ('sklad_sklad_id', '=', self.sklad_sklad_id.id),
+    #             ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+    #             ])
+    #         if len(so)>0:
+    #             print 'kkkkkkkkkkkkkkkkkkkkkk'
+    #             kol = so[0].kol
 
 
-    def move(self, val):
-        #ost = self.env['sklad.ostatok']
-        res = self.get_id(val['sklad_sklad_id'], val['nomen_nomen_id'])
-        if val['vid_dvijeniya'] == 'rashod': 
-            val['kol'] = -1 * val['kol'] #Изменяем знак на отрицательный
-        if res == False: #Записи нет создаем новую
-            self.create(val)
-        else:
-            val['kol'] += res['kol'] #Складываем остаток с поступившим/убывшим кол-вом
-            self.browse(res['id']).write(val)
-        return True
+    #         else:
+    #             print '=========================================='
 
+    #             self.create(vals)
 
-class reg_sklad_ostatok_period(models.Model):
-    _name = 'reg.sklad_ostatok_period'
+class sklad_ostatok_period(models.Model):
+    _name = 'sklad.ostatok_period'
     _description = u'Остатки по периодам'
     """Регистр остатков по периодам, Если период равен 01.01.5000 то это тек. остатки."""
   
@@ -159,52 +145,20 @@ class reg_sklad_ostatok_period(models.Model):
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
 
-class reg_sklad_oborot(models.Model):
-    _name = 'reg.sklad_oborot'
+class sklad_oborot(models.Model):
+    _name = 'sklad.oborot'
     _description = u'Остатки номенклатуры. Движение'
   
-    name = fields.Char(string=u"Наименование", compute='return_name', store = True)
+    name = fields.Char(string=u"Регистратор", required=True)
     obj = fields.Char(string=u"Регистратор", required=True)
     obj_id = fields.Integer(string=u"ID Регистратора", required=True)
     date = fields.Datetime(string='Дата', required=True)
-    vid_dvijeniya = fields.Char(string=u"Вид движения", required=True)
+    vid = fields.Char(string=u"Вид движения", required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
     kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход")
     kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход")
-
-    @api.one
-    @api.depends('nomen_nomen_id')
-    def _get_name(self):
-        self.name = self.nomen_nomen_id.name
-
-
-    def get_id(self, sklad_sklad_id, nomen_nomen_id):
-        res = self.search([
-            ('sklad_sklad_id', '=', sklad_sklad_id),
-            ('nomen_nomen_id', '=', nomen_nomen_id),
-            ], limit=1)
-        if len(res)>0:
-            return {'id' : res.id, 'kol' : res.kol}
-        else:
-            return False #Записи нет
-        
-
-
-    def move(self, val):
-        #ost = self.env['sklad.ostatok']
-        #res = get_id(val['sklad_sklad_id'], val['nomen_nomen_id'])
-        
-        if val['vid_dvijeniya'] == 'rashod': 
-            val['kol_oborot'] = -1 * val['kol']
-            val['kol_rashod'] = val['kol']
-        else:
-            val['kol_oborot'] = val['kol']
-            val['kol_prihod'] = val['kol']
-        
-        self.create(val)
-        return True
 
 
 
@@ -227,6 +181,10 @@ def reg_ostatok_move(obj,vals, vid_dvijeniya):
             ('nomen_nomen_id', '=', line['nomen_nomen_id']),
             ])
         line['err'] = False
+        line['id'] = False
+        line['obj'] = obj.__class__.__name__
+        line['obj_id'] = obj.id
+        line['date'] = obj.date
         line['vid'] = vid_dvijeniya
         if vid_dvijeniya == 'prihod':
             line['kol_prihod'] = line['kol']
@@ -239,7 +197,7 @@ def reg_ostatok_move(obj,vals, vid_dvijeniya):
             line['err'] = True
             message = u"Кол-во должно быть больше нуля"
 
-        #print line
+        print line
         if len(ost_nomen)>0:
         
             line['id'] = ost_nomen[0].id
@@ -283,169 +241,7 @@ def reg_ostatok_move(obj,vals, vid_dvijeniya):
 
 
             
-class reg_sklad_move(models.Model):
-    _name = 'reg.sklad_move'
-    _description = u'Регистр складских движений'
-  
-    name = fields.Char(string=u"Регистратор", required=True)
-    obj = fields.Char(string=u"Регистратор", required=True)
-    obj_id = fields.Integer(string=u"ID Регистратора", required=True)
-    date = fields.Datetime(string='Дата', required=True)
 
-    #partner_id = fields.Many2one('res.partner', string='Контрагент')
-    #sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад')
-    #sklad_pol_id = fields.Many2one('sklad.sklad', string='Склад получатель')
-    #nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    #ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
-    #kol = fields.Float(digits=(10, 3), string=u"Кол-во")
-    #kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
-    #price = fields.Float(digits=(10, 2), string=u"Цена без НДС")
-    #amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС")
-    #amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС")
-    #amount_total = fields.Float(digits=(10, 2), string=u"Сумма с НДС")
-        
-    is_peremeshenie = fields.Boolean(string=u"Это внутреннее перемещение?", default=False)
-    vid_dvijeniya = fields.Char(string=u"Вид движения", required=True)
-    proveden = fields.Boolean(string=u"Проведен?", default=False)
-
-
-    def move(self, obj=False, vals=''):
-        """
-            Ф-я осуществляет запись в таблицу Регистр складских движений
-            vid_dvijeniya: pokupka, prodaja, peremeshenie, proizvodstvo, prihod, spisanie, unlink
-        """
-
-        message = ''
-
-        #Проверка данных
-        if len(vals) == 0:
-            message += u"Нет данных для проведения документа. Не заполненна табличная часть"
-
-        if obj == False:
-            message += u"Не указан объект данных (obj)"
-            obj_name = "-"
-        else:
-            obj_name = obj.name
-            
-        for line in vals:
-            if 'vid_dvijeniya' not in line:
-                message += u"Не указан Вид движения (vid_dvijeniya)"
-            else:
-                if line['vid_dvijeniya']!='prihod' and line['vid_dvijeniya']!='rashod':
-                    message += u"Указан не верный Вид движения (vid_dvijeniya=prihod или rashod)"
-
-            if 'sklad_sklad_id' not in line:
-                message += u"Не указан Склад (sklad_sklad_id)"
-            if 'nomen_nomen_id' not in line:
-                message += u"Не указана Номенклатура (nomen_nomen_id)"
-            if 'kol' not in line:
-                message += u"Не указано Кол-во (kol)"
-            else:
-                if line['kol']<0:
-                    message = u"Кол-во должно быть больше нуля"
-            if 'date' not in line:
-                message += u"Не указана Дата (date)"
-
-        if message != '':       
-            raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj_name, message)))
-            return False
-        #Конец Проверка данных
-
-
-        
-        #Создаем запись в регистре с пометкой Проведен=False
-        #По окончанию работы с регистрами остатков, если все хорошо изменем его на True  
-        reg_ostatok = obj.env['reg.sklad_ostatok']  
-        reg_oborot = obj.env['reg.sklad_oborot']  
-        for line in vals:
-            line['id'] = False
-            line['name'] = obj.name
-            line['obj'] = obj.__class__.__name__
-            line['obj_id'] = obj.id
-            reg = self.create(line)
-            line['reg_id'] = reg.id
-            if reg_ostatok.move(line) == True and reg_oborot.move(line) == True:
-                reg.proveden = True
-
-            
-        
-        # for line in vals:
-        #     if line['vid_dvijeniya'] == 'prihod':
-
-        #     else:
-        #         pass
-
-        
-        # reg = obj.env['reg.sklad_move']
-        
-        # if vid_dvijeniya == 'pokupka':
-        #     vid = 'prihod'
-        #     for line in vals:
-        #         line['sklad_sklad_id'] = line['sklad_pol_id']
-
-        #     if reg_ostatok_move(obj, vals, vid)==True:
-        #         for line in vals:
-        #             reg.create(line)
-                
-
-        # if vid_dvijeniya == 'prodaja' or vid_dvijeniya == 'spisanie':
-        #     vid = 'rashod'
-        #     for line in vals:
-        #         line['sklad_sklad_id'] = line['sklad_otp_id']
-
-        #     if reg_ostatok_move(obj, vals, vid)==True:
-        #         for line in vals:
-        #             reg.create(line)
-
-
-
-
-        # if vid_dvijeniya == 'peremeshenie':
-        #     vals_prihod = vals_rashod = vals
-        #     for line in vals_rashod:
-        #         line['sklad_sklad_id'] = line['sklad_otp_id']
-            
-        #     for line in vals_prihod:
-        #         line['sklad_sklad_id'] = line['sklad_pol_id']
-
-        #     if reg_ostatok_move(obj, vals_rashod, 'rashod')==True and reg_ostatok_move(obj, vals_prihod, 'prihod')==True:
-        #         for line in vals:
-        #             reg.create(line)
-
-            
-        
-
-
-        # if vid_dvijeniya == 'unlink':
-        #     ids_del = reg.search([  ('obj_id', '=', obj.id),
-        #                             ('obj', '=', obj.__class__.__name__),
-        #                             ])
-        #     if len(ids_del)>0:
-        #         org_vid_dvijeniya = ids_del[0].vid_dvijeniya
-        #         if org_vid_dvijeniya == 'pokupka':
-        #             for line in vals:
-        #                 line['sklad_sklad_id'] = line['sklad_pol_id']
-        #             if reg_ostatok_move(obj, vals, 'prihod-draft')==True:
-        #                 ids_del.unlink()
-
-        #         if org_vid_dvijeniya == 'prodaja' or org_vid_dvijeniya == 'spisanie':
-        #             for line in vals:
-        #                 line['sklad_sklad_id'] = line['sklad_otp_id']
-        #             if reg_ostatok_move(obj, vals, 'rashod-draft')==True:
-        #                 ids_del.unlink()
-        #         if org_vid_dvijeniya == 'peremeshenie':
-        #             vals_prihod = vals_rashod = vals
-        #             for line in vals_rashod:
-        #                 line['sklad_sklad_id'] = line['sklad_otp_id']
-                    
-        #             for line in vals_prihod:
-        #                 line['sklad_sklad_id'] = line['sklad_pol_id']
-
-        #             if reg_ostatok_move(obj, vals_rashod, 'rashod-draft')==True and reg_ostatok_move(obj, vals_prihod, 'prihod-draft')==True:
-        #                 ids_del.unlink()
-        
-
-        return True
 
         
              
@@ -531,16 +327,15 @@ class pokupka_pokupka(models.Model):
             for line in doc.pokupka_pokupka_line:
                 vals.append({
                              'name': line.nomen_nomen_id.name, 
-                             'sklad_pol_id': doc.sklad_sklad_id.id, 
+                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
                              'kol': line.kol, 
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-            if self.env['reg.sklad_move'].move(self, vals, 'unlink')==True:
-                self.state = 'confirmed'    
-            # if reg_ostatok_move(self, vals, 'prihod-draft')==True:
-            #     self.state = 'draft'
+                
+            if reg_ostatok_move(self, vals, 'prihod-draft')==True:
+                self.state = 'draft'
 
         
     
@@ -553,8 +348,6 @@ class pokupka_pokupka(models.Model):
             vals = []
             for line in doc.pokupka_pokupka_line:
                 vals.append({
-                             'vid_dvijeniya': 'prihod', 
-                             'date': doc.date, 
                              'name': line.nomen_nomen_id.name, 
                              'sklad_sklad_id': doc.sklad_sklad_id.id, 
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
@@ -563,10 +356,10 @@ class pokupka_pokupka(models.Model):
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
-            # if reg_ostatok_move(self, vals, 'prihod')==True:
-            #     self.state = 'confirmed'
-            if self.env['reg.sklad_move'].move(self, vals)==True:
+            if reg_ostatok_move(self, vals, 'prihod')==True:
                 self.state = 'confirmed'
+
+
 
 
 
@@ -687,17 +480,20 @@ class sklad_peremeshenie(models.Model):
             vals_otp = []
             vals_pol = []
             for line in doc.sklad_peremeshenie_line:
-                vals.append({
+                vals_otp.append({
                              'name': line.nomen_nomen_id.name, 
-                             'sklad_otp_id': doc.sklad_otp_id.id, 
-                             'sklad_pol_id': doc.sklad_pol_id.id, 
+                             'sklad_sklad_id': doc.sklad_otp_id.id, 
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
                              'kol': line.kol, 
                             })
-                
+                vals_pol.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': doc.sklad_pol_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
 
-            #if reg_ostatok_move(self, vals_otp, 'rashod-draft')==True and reg_ostatok_move(self, vals_pol, 'prihod-draft')==True:
-            if self.env['reg.sklad_move'].move(self, vals, 'unlink')==True:
+            if reg_ostatok_move(self, vals_otp, 'rashod-draft')==True and reg_ostatok_move(self, vals_pol, 'prihod-draft')==True:
                 self.state = 'draft'
 
         
@@ -724,8 +520,7 @@ class sklad_peremeshenie(models.Model):
                              'kol': line.kol, 
                             })
 
-            #if reg_ostatok_move(self, vals_otp, 'rashod')==True and reg_ostatok_move(self, vals_pol, 'prihod')==True:
-            if self.env['reg.sklad_move'].move(self, vals, 'peremeshenie')==True:
+            if reg_ostatok_move(self, vals_otp, 'rashod')==True and reg_ostatok_move(self, vals_pol, 'prihod')==True:
                 self.state = 'confirmed'
 
 

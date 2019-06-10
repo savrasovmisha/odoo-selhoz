@@ -163,17 +163,7 @@
             </field>
         </record>
 
-       <record id="krs_struktura__graph" model="ir.ui.view">
-             <field name="name">krs_struktura.graph</field>
-             <field name="model">krs.struktura</field>
-             <field name="arch" type="xml">
-                 <graph string="Структура стада">
-                     <field name="date" type="row" interval="month"/>
-                     <field name="cow_itog_fur" type="measure"/>
-                     
-                 </graph>
-             </field>
-        </record>
+       
         <!-- window action Верхняя панель -->
         <!--
             The following tag is an action definition for a "window action",
@@ -183,7 +173,7 @@
             <field name="name">Структура стада</field>
             <field name="res_model">krs.struktura</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Структура стада
                 </p>

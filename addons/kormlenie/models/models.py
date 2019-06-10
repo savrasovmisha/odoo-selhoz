@@ -1516,7 +1516,7 @@ class reg_rashod_kormov(models.Model):
 
 				#Запись в регистр reg.rashod_kormov_razvernutiy
 				#Раскладываем Комбикорма на составляющие
-				
+
 				#print nl.nomen_nomen_id.name
 				if nl.nomen_nomen_id.is_proizvodim == True:
 					#print "----"
@@ -1526,6 +1526,11 @@ class reg_rashod_kormov(models.Model):
 						kol_kombikorma_norma = line['kol_norma']
 					else:
 						kol_kombikorma_norma = 0
+
+					if 'korm_racion_id' in line:
+						korm_racion_id = line['korm_racion_id']
+					else:
+						korm_racion_id = False 
 
 					recept_id = recept.search([  ('nomen_nomen_id', '=', nl.nomen_nomen_id.id),
 									('date', '<=', obj.date),
@@ -1544,7 +1549,7 @@ class reg_rashod_kormov(models.Model):
 									'name': recept_line.nomen_nomen_id.name,
 									'stado_zagon_id': line['stado_zagon_id'],
 									'stado_fiz_group_id': line['stado_fiz_group_id'],
-									'korm_racion_id': line['korm_racion_id'],
+									'korm_racion_id': korm_racion_id,
 									'korm_receptura_id': recept_id,
 									'kol': recept_line.kol_tonna*kol_kombikorma/1000,
 									'kol_norma': recept_line.kol_tonna*kol_kombikorma_norma/1000,

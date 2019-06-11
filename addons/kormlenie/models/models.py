@@ -1409,7 +1409,7 @@ class reg_rashod_kormov_razvernutiy(models.Model):
 	_name = 'reg.rashod_kormov_razvernutiy'
 	_description = u'Регистр Расход кормов и добавок (развернутый)'
   
-	name = fields.Char(string=u"Регистратор", required=True)
+	name = fields.Char(string=u"Наименование", required=True)
 	obj = fields.Char(string=u"Регистратор", required=True)
 	obj_id = fields.Integer(string=u"ID Регистратора", required=True)
 	date = fields.Datetime(string='Дата', required=True)

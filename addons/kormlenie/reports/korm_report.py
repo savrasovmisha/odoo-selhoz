@@ -2215,8 +2215,10 @@ class korm_analiz_efekt_korm_report(models.Model):
                                 
                             	From reg_rashod_kormov_razvernutiy rr
                             	Left join nomen_nomen n on (n.id=rr.nomen_nomen_id)
+                            	left join stado_zagon s on (s.id = rr.stado_zagon_id)
                             	Where 	rr.date::date=tm.date_doc::date and
-                            	  		n.is_pokupaem=True
+                            	  		n.is_pokupaem=True and
+                            	  		(s.mastit=True or s.doynie=True or s.suhostoy=True)
                             ) as rp
                             
                         ) as zatrati_korma_pokupaem

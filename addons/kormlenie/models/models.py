@@ -1037,38 +1037,15 @@ class korm_racion(models.Model):
 
 		self.amount=self.ov=self.sv = 0
 
-		# for line in self.korm_racion_line:
-		#   self.amount += line.kol
-		#   for par in parametrs:
-		#       self[par] += line.kol * line.korm_analiz_pit_id[par]
-			
-		# if self.amount>0:
-		#   for par in parametrs:
-		#       self[par] = self[par]/self.amount
-
-				
-		# if self.sv and self.nrp_p:
-		#   self.nrp = self.sp * self.nrp_p/100.00
-		
-		# if self.sv>0 and self.nrp:
-		#   self.udp = self.nrp/self.sv
-
-		# if self.sv>0 and self.oe:
-		#   self.me = self.oe/self.sv
-
-		# if self.sv>0 and self.sp:
-		#   self.xp = self.sp/self.sv
-
-		# if self.xp!=0 and self.me and self.udp:
-		#   self.rnb = (self.xp-((11.93-(6.82*(self.udp/self.xp)))*self.me+(1.03*self.udp)))/6.25
-
-		self.kol = self.amount = 0.00
+		self.kol = self.amount = self.amount_date = 0.00
 		for line in self.korm_racion_line:
 			self.kol += line.kol
 			self.amount += line.amount
+			self.amount_date += line.amount_date
 
 		if self.kol>0:
 			self.price = self.amount/self.kol
+			self.price_date = self.amount_date/self.kol
 
 
 
@@ -1113,13 +1090,17 @@ class korm_racion(models.Model):
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string='Физиологическая группа', required=True)
 	date = fields.Date(string='Дата', required=True,copy=False, default=fields.Datetime.now)
-	
+	date_raschet = fields.Date(string='Дата расчета стоимости', default=fields.Datetime.now)
+
 	korm_racion_line = fields.One2many('korm.racion_line', 'korm_racion_id', string=u"Строка Рацион кормления", copy=True)
 	korm_racion_pit_line = fields.One2many('korm.racion_pit_line', 'korm_racion_id', string=u"Строка питательности кормов Рацион кормления", copy=True)
 	
 	kol = fields.Float(digits=(10, 3), string=u"Всего Кол-во, кг", store=True, compute='_raschet')
 	amount = fields.Float(digits=(10, 2), string=u"Всего стоимость, руб", store=True, compute='_raschet')
 	price = fields.Float(digits=(10, 2), string=u"Стоимость еденицы, руб", store=True, compute='_raschet')
+	amount_date = fields.Float(digits=(10, 2), string=u"Всего стоимость на дату, руб", store=True, compute='_raschet')
+	price_date = fields.Float(digits=(10, 2), string=u"Стоимость еденицы на дату, руб", store=True, compute='_raschet')
+	
 	milk = fields.Float(digits=(10, 1), string=u"Молоко, кг", store=True)
 	jir = fields.Float(digits=(10, 2), string=u"Жир, %", store=True)
 	belok = fields.Float(digits=(10, 2), string=u"Белок, %", store=True)
@@ -1327,16 +1308,22 @@ class korm_racion_line(models.Model):
 			self.korm_analiz_pit_id = analiz_id
 
 			obj_price = self.env['nomen.price_line']
+			
+
 			price = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date)], order="date desc",limit=1).price
 			self.price = price
+			price_date = obj_price.search([('nomen_nomen_id', '=', self.nomen_nomen_id.id), ('date', '<=', self.korm_racion_id.date_raschet)], order="date desc",limit=1).price
+			self.price_date = price_date
 
 			self.amount = self.price * self.kol
+			self.amount_date = self.price_date * self.kol
 			self.sorting = self.nomen_nomen_id.nomen_group_id.sorting
 
 	@api.one
 	@api.depends('kol')
 	def _amount(self):
 		self.amount = self.price * self.kol           
+		self.amount_date = self.price_date * self.kol           
 
 
 	sequence = fields.Integer(string=u"Сорт.", help="Сортировка", oldname='sorting')
@@ -1344,10 +1331,13 @@ class korm_racion_line(models.Model):
 	nomen_nomen_id = fields.Many2one('nomen.nomen', string=u'Наименование корма', required=True)
 	korm_analiz_pit_id = fields.Many2one('korm.analiz_pit', string=u'Анализ корма', store=True, compute='_nomen')
 	korm_racion_id = fields.Many2one('korm.racion', ondelete='cascade', string=u"Рацион кормления", required=True)
-	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+	ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед. изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
 	kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
 	price = fields.Float(digits=(10, 2), string=u"Цена", compute='_nomen',  store=True)
 	amount = fields.Float(digits=(10, 2), string=u"Сумма", compute='_amount',  store=True)
+
+	price_date = fields.Float(digits=(10, 2), string=u"Цена на дату", compute='_nomen',  store=True)
+	amount_date = fields.Float(digits=(10, 2), string=u"Сумма на дату", compute='_amount',  store=True)
 	#sorting = fields.Integer(string=u"Порядок", required=True, default=100)
 	date_start = fields.Date(string='Дата начала перехода', copy=False)
 	day = fields.Integer(string=u"Дней на переход", help="Дней на переход на новый корм")

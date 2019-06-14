@@ -46,6 +46,9 @@
                        
                             <notebook>
                                 <page string="Состав">
+                                    <group>
+                                        <field name="date_raschet"/>
+                                    </group>
                                     <field name="korm_racion_line">
                                         <tree string="korm_racion_line" editable="botton" colors="red:((amount == 0) or (kol == 0) or (price == 0))">
                                             <field name="sequence" widget="handle"/>
@@ -56,6 +59,8 @@
                                             <field name="kol"/>
                                             <field name="price"/>
                                             <field name="amount"/>
+                                            <field name="price_date"/>
+                                            <field name="amount_date"/>
                                             <field name="date_start"/>
                                             <field name="day"/>
                                             <field name="new_nomen_nomen_id"/>
@@ -72,6 +77,13 @@
                                             
                                         </div>
                                         <field name="price" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+
+                                        <field name="amount_date" widget='monetary'/>
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="price_date" />
+                                            
+                                        </div>
+                                        <field name="price_date" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
                                     </group>
                                     
                                 </page>
@@ -97,6 +109,149 @@
                                                                                 
                                         </tree>
                                     </field>
+
+
+                                    <group string="Рацион содержит">
+                                        <group >
+                                            
+                                            <field name="sv_racion"/>
+                                            <field name="chel_racion"/>
+                                            <field name="nxp_racion"/>
+                                            <field name="rnb_racion"/>
+                                            <field name="sk_racion"/>
+                                            <field name="ssk_racion"/>
+                                            
+                                        </group>
+                                        <group>
+                                            <field name="kalciy_racion"/>
+                                            <field name="fosfor_racion"/>
+                                            <field name="magniy_racion"/>
+                                            <field name="natriy_racion"/>
+                                            <field name="kaliy_racion"/>
+                                            <field name="hlor_racion"/>
+                                            
+                                        </group>
+                                    </group>
+
+
+
+                                    <group string="_______________________________________">
+                                            <field name="sv"/>
+                                            
+                                    </group>
+
+                                    <group>
+                                        <group string="Содержание вещ., г/кг СВ">
+                                            <field name="sz"/>
+                                            <field name="ov"/>
+                                            <field name="sp"/>
+                                            <field name="sj"/>
+                                            <field name="sk"/>
+                                            <field name="bev"/>
+                                            <field name="krahmal"/>
+                                            <field name="sahar"/>
+                                            <field name="uglevodi"/>
+                                        </group>
+                                        <group string="Физиология в %">
+                                            <field name="pov"/>
+                                            <field name="pp"/>
+                                            <field name="psj"/>
+                                            <field name="psk"/>
+                                            <field name="pbev"/>
+                                            <field name="ssk"/>
+                                            <field name="nsp"/>
+                                            <field name="uk"/>
+                                        </group>
+                                    </group>
+
+                                    <group>
+                                        <group string="Минеральные вещ. г/кг СВ">
+                                            
+                                            <field name="kalciy"/>
+                                            <field name="fosfor"/>
+                                            <field name="magniy"/>
+                                            <field name="natriy"/>
+                                            <field name="kaliy"/>
+                                            <field name="hlor"/>
+                                            <field name="sera"/>
+                                        </group>
+
+                                        <group string="Обработан пользователем">
+                                            <field name="nxp"/>
+                                            <field name="rnb"/>
+                                            <field name="oe"/>
+                                            <field name="chel"/>
+                                            <separator string="___________"/>
+                                            <newline/>
+                                            <field name="pok_struk"/>
+                                        </group>
+                                    </group>
+                                       
+                                    <group>
+                                        <group string="г/кг СВ">
+                                            <field name="uk_sv"/>
+                                            <field name="sk_sv"/>
+                                        </group>
+
+                                        <group string="Баланс катионов-анионов">
+                                            <field name="dcab"/>
+                                        </group>
+                                    </group>
+
+
+
+
+                                    <group>
+                                        <group string="Микроэлементы, мг/кг СВ">
+                                            <field name="jelezo"/>
+                                            <field name="marganec"/>
+                                            <field name="med"/>
+                                            <field name="kobalt"/>
+                                            <field name="selen"/>
+                                            <field name="cink"/>
+                                            <field name="iod"/>
+                                            <field name="molibden"/>
+                                        </group>
+
+                                        <group string="Витамины МЕ/кг СВ">
+                                            <field name="vit_a"/>
+                                            <field name="vit_d"/>
+                                            <field name="vit_e"/>
+                                            <field name="beta_karotin"/>
+                                            <separator string="мг/кг СВ"/>
+                                            <newline/>
+                                            <field name="b1"/>
+                                            <field name="niacin"/>
+                                        </group>
+                                    </group>
+
+
+
+                                    <group>
+                                        <group string="Углеводы г/кг СВ">
+                                            <field name="ndk"/>
+                                            <field name="kdk"/>
+                                            <field name="ru"/>
+                                            <field name="p"/>
+                                        </group>
+
+                                        <group string="Протеины, %">
+                                            <field name="rp"/>
+                                            <field name="nrsp"/>
+                                            <field name="rsp"/>
+                                        </group>
+                                    </group>
+
+
+                                    <group>
+                                        <group string="Аминокислоты. г/кг СВ">
+                                            <field name="lizin"/>
+                                            <field name="metionin"/>
+                                            <field name="triptofan"/>
+                                        </group>
+                                    </group>
+
+
                                     
                                     
                                 </page>
@@ -106,146 +261,6 @@
                    
 
 
-
-                    <group string="Рацион содержит">
-                        <group >
-                            
-                            <field name="sv_racion"/>
-                            <field name="chel_racion"/>
-                            <field name="nxp_racion"/>
-                            <field name="rnb_racion"/>
-                            <field name="sk_racion"/>
-                            <field name="ssk_racion"/>
-                            
-                        </group>
-                        <group>
-                            <field name="kalciy_racion"/>
-                            <field name="fosfor_racion"/>
-                            <field name="magniy_racion"/>
-                            <field name="natriy_racion"/>
-                            <field name="kaliy_racion"/>
-                            <field name="hlor_racion"/>
-                            
-                        </group>
-                    </group>
-
-
-
-                    <group string="_______________________________________">
-                            <field name="sv"/>
-                            
-                    </group>
-
-                    <group>
-                        <group string="Содержание вещ., г/кг СВ">
-                            <field name="sz"/>
-                            <field name="ov"/>
-                            <field name="sp"/>
-                            <field name="sj"/>
-                            <field name="sk"/>
-                            <field name="bev"/>
-                            <field name="krahmal"/>
-                            <field name="sahar"/>
-                            <field name="uglevodi"/>
-                        </group>
-                        <group string="Физиология в %">
-                            <field name="pov"/>
-                            <field name="pp"/>
-                            <field name="psj"/>
-                            <field name="psk"/>
-                            <field name="pbev"/>
-                            <field name="ssk"/>
-                            <field name="nsp"/>
-                            <field name="uk"/>
-                        </group>
-                    </group>
-
-                    <group>
-                        <group string="Минеральные вещ. г/кг СВ">
-                            
-                            <field name="kalciy"/>
-                            <field name="fosfor"/>
-                            <field name="magniy"/>
-                            <field name="natriy"/>
-                            <field name="kaliy"/>
-                            <field name="hlor"/>
-                            <field name="sera"/>
-                        </group>
-
-                        <group string="Обработан пользователем">
-                            <field name="nxp"/>
-                            <field name="rnb"/>
-                            <field name="oe"/>
-                            <field name="chel"/>
-                            <separator string="___________"/>
-                            <newline/>
-                            <field name="pok_struk"/>
-                        </group>
-                    </group>
-                       
-                    <group>
-                        <group string="г/кг СВ">
-                            <field name="uk_sv"/>
-                            <field name="sk_sv"/>
-                        </group>
-
-                        <group string="Баланс катионов-анионов">
-                            <field name="dcab"/>
-                        </group>
-                    </group>
-
-
-
-
-                    <group>
-                        <group string="Микроэлементы, мг/кг СВ">
-                            <field name="jelezo"/>
-                            <field name="marganec"/>
-                            <field name="med"/>
-                            <field name="kobalt"/>
-                            <field name="selen"/>
-                            <field name="cink"/>
-                            <field name="iod"/>
-                            <field name="molibden"/>
-                        </group>
-
-                        <group string="Витамины МЕ/кг СВ">
-                            <field name="vit_a"/>
-                            <field name="vit_d"/>
-                            <field name="vit_e"/>
-                            <field name="beta_karotin"/>
-                            <separator string="мг/кг СВ"/>
-                            <newline/>
-                            <field name="b1"/>
-                            <field name="niacin"/>
-                        </group>
-                    </group>
-
-
-
-                    <group>
-                        <group string="Углеводы г/кг СВ">
-                            <field name="ndk"/>
-                            <field name="kdk"/>
-                            <field name="ru"/>
-                            <field name="p"/>
-                        </group>
-
-                        <group string="Протеины, %">
-                            <field name="rp"/>
-                            <field name="nrsp"/>
-                            <field name="rsp"/>
-                        </group>
-                    </group>
-
-
-                    <group>
-                        <group string="Аминокислоты. г/кг СВ">
-                            <field name="lizin"/>
-                            <field name="metionin"/>
-                            <field name="triptofan"/>
-                        </group>
-                    </group>
                      
 
                       <notebook colspan="4">
@@ -253,103 +268,7 @@
                             <field name="description" nolabel="1" widget='html'/>
                         </page>
                     </notebook>   
-                        <!-- <group>
-                            <separator string="Показатели,  Min - расчет - Max" colspan="2"/>
-                            <label for="ov"/>
-                            <div class="o_row"> 
-                                <field name="ov_min" calss="oe_inline" /> - <field name="ov" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="ov_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sv"/>
-                            <div class="o_row"> 
-                                <field name="sv_min" calss="oe_inline" /> - <field name="sv" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sv_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="oe"/>
-                            <div class="o_row"> 
-                                <field name="oe_min" calss="oe_inline" /> - <field name="oe" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="oe_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sp"/>
-                            <div class="o_row"> 
-                                <field name="sp_min" calss="oe_inline" /> - <field name="sp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sp_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="pp"/>
-                            <div class="o_row"> 
-                                <field name="pp_min" calss="oe_inline" /> - <field name="pp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="pp_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sk"/>
-                            <div class="o_row"> 
-                                <field name="sk_min" calss="oe_inline" /> - <field name="sk" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sk_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sj"/>
-                            <div class="o_row"> 
-                                <field name="sj_min" calss="oe_inline" /> - <field name="sj" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sj_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="ca"/>
-                            <div class="o_row"> 
-                                <field name="ca_min" calss="oe_inline" /> - <field name="ca" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="ca_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="p"/>
-                            <div class="o_row"> 
-                                <field name="p_min" calss="oe_inline" /> - <field name="p" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="p_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sahar"/>
-                            <div class="o_row"> 
-                                <field name="sahar_min" calss="oe_inline" /> - <field name="sahar" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sahar_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="krahmal"/>
-                            <div class="o_row"> 
-                                <field name="krahmal_min" calss="oe_inline" /> - <field name="krahmal" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="krahmal_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="bev"/>
-                            <div class="o_row"> 
-                                <field name="bev_min" calss="oe_inline" /> - <field name="bev" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="bev_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="magniy"/>
-                            <div class="o_row"> 
-                                <field name="magniy_min" calss="oe_inline" /> - <field name="magniy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="magniy_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="natriy"/>
-                            <div class="o_row"> 
-                                <field name="natriy_min" calss="oe_inline" /> - <field name="natriy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="natriy_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="kaliy"/>
-                            <div class="o_row"> 
-                                <field name="kaliy_min" calss="oe_inline" /> - <field name="kaliy" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="kaliy_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="hlor"/>
-                            <div class="o_row"> 
-                                <field name="hlor_min" calss="oe_inline" /> - <field name="hlor" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="hlor_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="sera"/>
-                            <div class="o_row"> 
-                                <field name="sera_min" calss="oe_inline" /> - <field name="sera" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="sera_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="udp"/>
-                            <div class="o_row"> 
-                                <field name="udp_min" calss="oe_inline" /> - <field name="udp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="udp_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="me"/>
-                            <div class="o_row"> 
-                                <field name="me_min" calss="oe_inline" /> - <field name="me" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="me_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="xp"/>
-                            <div class="o_row"> 
-                                <field name="xp_min" calss="oe_inline" /> - <field name="xp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="xp_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="nrp"/>
-                            <div class="o_row"> 
-                                <field name="nrp_min" calss="oe_inline" /> - <field name="nrp" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="nrp_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="rnb"/>
-                            <div class="o_row"> 
-                                <field name="rnb_min" calss="oe_inline" /> - <field name="rnb" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="rnb_max" nolabel="1" class="oe_inline"/>
-                            </div>
-                            <label for="nrp_p"/>
-                            <div class="o_row"> 
-                                <field name="nrp_p_min" calss="oe_inline" /> - <field name="nrp_p" calss="oe_inline" nolabel="1" style="font-weight: bold"/> - <field name="nrp_p_max" nolabel="1" class="oe_inline"/>
-                            </div>
-
-
-                        </group> -->
+                       
                         
                         
                    

@@ -1234,6 +1234,9 @@ class nomen_price(models.Model):
         #print "ssssssssssssssssssssssssssss", self.date
         if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
             vals['name'] = self.env['ir.sequence'].next_by_code('nomen.price') or 'New'
+        if vals.get('obj_osnovaniya') == None:
+             vals['obj_osnovaniya'] = ''
+             vals['obj_osnovaniya_id'] = 0
             
         result = super(nomen_price, self).create(vals)
 
@@ -1262,7 +1265,8 @@ class nomen_price(models.Model):
 
     @api.one
     def _get_name_obj(self):
-        if self.obj_osnovaniya!='':
+        if self.obj_osnovaniya!='' and self.obj_osnovaniya!=False:
+            print "obj_osnovaniya=", self.obj_osnovaniya
             obj = self.env[self.obj_osnovaniya].browse(self.obj_osnovaniya_id)
             self.obj_name = obj[0]._description + u' от ' + obj[0].date
         else:

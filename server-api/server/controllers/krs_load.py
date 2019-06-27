@@ -934,3 +934,23 @@ def krs_load_struktura(date):
 	#print data
 	
 	return data
+
+
+
+def tt(datas):
+	print datas
+
+
+@app.route('/api/test', method='POST')
+def test():
+	
+	"""Проверка связи"""
+
+
+	datas = request.forms.get('datas')
+	print "dddd", datas
+	tt(datas)
+	data = "OK"
+	print data
+	
+	return data

@@ -57,10 +57,10 @@
                                             <field name="korm_analiz_pit_id"/>
                                             <field name="ed_izm_id"/>
                                             <field name="kol"/>
-                                            <field name="price"/>
-                                            <field name="amount"/>
-                                            <field name="price_date"/>
-                                            <field name="amount_date"/>
+                                            <field name="price" fg_color="blue:price&lt;price_date; blue:price&gt;price_date;"/>
+                                            <field name="amount" fg_color="blue:price&lt;price_date; blue:price&gt;price_date;"/>
+                                            <field name="price_date" fg_color="green:price&gt;price_date; red:price&lt;price_date;"/>
+                                            <field name="amount_date" fg_color="green:price&gt;price_date; red:price&lt;price_date;"/>
                                             <field name="date_start"/>
                                             <field name="day"/>
                                             <field name="new_nomen_nomen_id"/>
@@ -320,11 +320,27 @@
             The following tag is an action definition for a "window action",
             that is an action opening a view or a set of views
         -->
+
+
+        <record id="korm_racion_timeline" model="ir.ui.view">
+            <field name="model">korm.racion</field>
+            <field name="type">timeline</field>
+            <field name="arch" type="xml">
+                <timeline date_start="date"
+                          
+                          string="Рацион"
+                          default_group_by="stado_fiz_group_id"
+                          event_open_popup="true"
+                          >
+                </timeline>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="korm_racion_list_action">
             <field name="name">Рацион кормления</field>
             <field name="res_model">korm.racion</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,timeline</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Рацион кормления
                 </p>

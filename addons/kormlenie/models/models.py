@@ -2122,9 +2122,9 @@ class korm_korm_line(models.Model):
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
 	sequence = fields.Integer(string=u"Сортировка", help="Сортировка")
 	sorting = fields.Integer(string=u"Порядок", required=True)
-	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', required=True)
+	stado_zagon_id = fields.Many2one('stado.zagon', string=u'Загон', ondelete='RESTRICT', required=True)
 	stado_fiz_group_id = fields.Many2one('stado.fiz_group', string=u'Физиологическая группа', store=True, compute='return_name')
-	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', store=True, compute='return_name')
+	korm_racion_id = fields.Many2one('korm.racion', string=u'Рацион кормления', ondelete='RESTRICT', store=True, compute='return_name')
 	kol_golov = fields.Integer(string=u"Кол-во голов для расчета", compute='_raschet', store=True)
 	kol_golov_zagon = fields.Integer(string=u"Кол-во голов в загоне", required=True, store=True, readonly=True, default=0)
 	procent_dachi = fields.Integer(string=u"% дачи", store=True, compute='return_name')
@@ -3664,4 +3664,27 @@ class korm_analiz_smes_korma_svod_line(models.Model):
 
 
 
+
+# from openerp import http
+# import json
+# import logging
+# _logger = logging.getLogger(__name__)
+
+# class YourClass(http.Controller):
+#     @http.route('/web/yourlistoner/', type='json', auth="none", methods=['POST'],cors="*", csrf=False)
+#     def listoner(self, **kw):
+
+#         return http.request.params
+#         print "lllllllllllllllllllll"
+#         return json.dumps({"result":"Success"}) 
+
+#     @http.route('/my_url/some_html', type="http")
+#     def some_html(self):
+#         return "<h1>This is a test</h1>"
+
+#     @http.route('/web/test', type="http", auth="public", methods=['POST'],cors="*", csrf=False)
+#     def test(self, **kw):
+#     	print http.request.params
+#         print "lllllllllllllllllllll"
+#         return json.dumps({"result":"Success"})
 

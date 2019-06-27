@@ -139,7 +139,7 @@ class nomen_nomen(models.Model):
     name = fields.Char(string=u"Наименование", required=True)
     nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
-    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", default=None)
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", required=True)
     nalog_nds_id = fields.Many2one('nalog.nds', string=u"Ставка НДС %", default=None)
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат')

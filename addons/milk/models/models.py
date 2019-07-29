@@ -8,6 +8,13 @@ from work_date import week_magic, last_day_of_month
 
 
 
+def last_day_of_month(date):
+	if type(date)==str:
+		date = datetime.strptime(date, "%Y-%m-%d").date()
+	if date.month == 12:
+		return date.replace(day=31)
+	return date.replace(month=date.month+1, day=1) - timedelta(days=1)
+
 # class milk(models.Model):
 #     _name = 'milk.milk'
 
@@ -80,7 +87,23 @@ class sale_milk(models.Model):
 	name = fields.Char(string='Номер', required=True, copy=False, 
 						readonly=True,  
 						index=True, default='New')
-	
+	nomer_ttn = fields.Char(string='Номер ТТН', copy=False, store=True,
+							compute='_next_nomer', help=u'Номер машины в день')
+	nomer_partii = fields.Char(string='Номер партии', copy=False, store=True,
+							compute='_next_nomer', help=u'Номер с начала месяца')
+
+	# nomer_ttn_ruch = fields.Char(string='Номер ТТН (руч.)', copy=False, store=True,
+	# 						 help=u'Номер машины в день (ручное исправление)')
+	# nomer_partii_ruch = fields.Char(string='Номер партии (руч.)', copy=False, store=True,
+	# 						help=u'Номер с начала месяца (ручное исправление)')
+
+	is_nomer_ruch = fields.Boolean(string=u"№ ТТН вводится в ручную", default=False)
+	name_ttn = fields.Char(string='ТТН №', copy=False, store=True,
+							compute='_name_ttn', help=u'Нименование ТТН для печатной формы')
+	name_ttn_ruch = fields.Char(string='ТТН №', copy=False, store=True, default=u' партия ', 
+							 help=u'Нименование ТТН для печатной формы')
+
+		
 	date_doc = fields.Datetime(string='Дата документа', required=True,  
 						index=True, copy=False, default=fields.Datetime.now)
 	is_next_day = fields.Boolean(string=u"Зачесть следующим днем?", default=False)
@@ -137,10 +160,7 @@ class sale_milk(models.Model):
 		if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
 			vals['name'] = self.env['ir.sequence'].next_by_code('milk.sale_milk') or 'New'
 
-		#if not self.amount_ves_natura:
-		#	self.amount_ves_natura = 0
-		#if not self.amount_ves_zachet:
-		#	self.amount_ves_zachet = 0	
+					
 
 		result = super(sale_milk, self).create(vals)
 		return result
@@ -199,6 +219,50 @@ class sale_milk(models.Model):
 			self.avg_somo = _sum_somo / self.amount_ves_natura	
 			self.avg_kislotnost = round(_sum_kislotnost / self.amount_ves_natura)	
 			self.avg_temperatura = round(_sum_temperatura / self.amount_ves_natura)	
+
+
+	@api.one
+	@api.depends('date_doc')
+	def _next_nomer(self):
+
+		d = datetime.strptime(self.date_doc, "%Y-%m-%d %H:%M:%S")
+		
+		#Текущий день
+		d1 = datetime.strftime(d, "%Y-%m-%d 0:0:0")
+		d2 = datetime.strftime(d, "%Y-%m-%d 23:59:59")
+
+		#print 'count=====', line.id
+		
+		if self.id:
+			id = self.id
+		else:
+			id = None
+		
+		count = self.search_count([('date_doc', '>=', d1), ('date_doc', '<=', self.date_doc), ('id', '!=', id)])
+		self.nomer_ttn = str(count+1)
+
+
+		#Текущий месяц
+
+		d1 = datetime.strftime(d, "%Y-%m-1 0:0:0")
+		d2 = datetime.strftime(last_day_of_month(d), "%Y-%m-%d 23:59:59")
+		
+		count = self.search_count([('date_doc', '>=', d1), ('date_doc', '<=', self.date_doc), ('id', '!=', id)])
+		self.nomer_partii = str(count+1)
+
+
+	@api.one
+	@api.depends('nomer_ttn', 'nomer_partii' ,'is_nomer_ruch', 'name_ttn_ruch')
+	def _name_ttn(self):
+
+		
+		if self.is_nomer_ruch == True:
+			self.name_ttn = self.name_ttn_ruch
+		else:
+			#self._next_nomer()
+			self.name_ttn = self.nomer_ttn + u' партия ' + self.nomer_partii
+
+
 
 
 	def create_ttn(self, cr, uid, ids, context=None):

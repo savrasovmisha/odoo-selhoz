@@ -71,6 +71,27 @@
                                     <field name="avg_temperatura"/>
                                     <field name="avg_antibiotik"/>
                                 </group>
+
+                                <group>
+                                    <!-- <div class="oe_button_box" name="button_box">
+                                        <button name="action_next_number"
+                                            type="object"
+                                            class="oe_stat_button oe_edit_only"
+                                            icon="fa-refresh" string="Нумерация"
+                                           >
+                                        </button>
+                                    </div> -->
+                                    
+                                    <field name="is_nomer_ruch"/>
+                                    <field name="name_ttn" attrs="{'invisible': [('is_nomer_ruch',  '=', True)]}"/>
+                                    <field name="name_ttn_ruch" attrs="{'invisible': [('is_nomer_ruch',  '=', False)]}"/>
+                            
+                                    
+
+                                    <!-- <field name="nomer_ttn" attrs="{'invisible': [('is_nomer_ruch',  '=', True)]}"/>
+                                    <field name="nomer_partii" attrs="{'invisible': [('is_nomer_ruch',  '=', True)]}"/> -->
+                    
+                                </group>
                         
                             </group>
                             <notebook colspan="4">
@@ -125,6 +146,7 @@
             <field name="arch" type="xml">
                 <tree string="Реализация молока" >
                     <field name="name" string="№"/>
+                    <field name="name_ttn" string="№"/>
                     <field name="date_doc" string="Дата"/>
                     <field name="amount_ves_natura" string="В натуре"/>
                     <field name="amount_ves_zachet" string="Зачетный вес"/>

@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
     'category': 'Selskoe hozyaystvo',
-    'version': '0.24',
+    'version': '0.25',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'report', 'board', 'selhoz_base', 'krs'],

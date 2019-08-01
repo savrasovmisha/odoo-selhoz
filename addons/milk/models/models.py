@@ -1572,6 +1572,16 @@ class milk_nadoy_group(models.Model):
 	def action_raschet(self):
 		
 		"""Распределяет считанное молоко по молокосчетчикам на фактический надой"""
+
+
+		self.nadoy_parabone=self.nadoy_karusel=self.valoviy_nadoy=0
+		
+		tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date),], limit=1)
+		if len(tm)>0:
+			self.valoviy_nadoy = tm.valoviy_nadoy
+			self.nadoy_parabone = tm.parabone
+			self.nadoy_karusel = self.valoviy_nadoy - self.nadoy_parabone
+
 		
 		line = self.env['milk.nadoy_group_fakt_line']
 		del_line = line.search([('milk_nadoy_group_id',	'=',	self.id)])
@@ -1599,7 +1609,13 @@ class milk_nadoy_group(models.Model):
 		self.kol_golov_karusel = self.kol_golov_parabone = 0
 
 		for zagon in zagons:
-			zal_doeniya = zagon[2]
+
+			#Если есть доение на парабоне, то зал доения выбираем из запроса, иначе все доятся на карусели
+			if self.nadoy_parabone == 0:
+				zal_doeniya = u'Карусель'
+			else:
+				zal_doeniya = zagon[2]
+
 			kol_golov_zagon = zagon[3]
 			self.milk_nadoy_group_fakt_line.create({
 									'milk_nadoy_group_id':   self.id,
@@ -1638,13 +1654,13 @@ class milk_nadoy_group(models.Model):
 					line.nadoy_golova = schitanno[1]
 
 		
-		self.nadoy_parabone=self.nadoy_karusel=self.valoviy_nadoy=0
+		# self.nadoy_parabone=self.nadoy_karusel=self.valoviy_nadoy=0
 		
-		tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date),], limit=1)
+		# tm = self.env['milk.trace_milk'].search([('date_doc', '=', self.date),], limit=1)
 		if len(tm)>0:
-			self.valoviy_nadoy = tm.valoviy_nadoy
-			self.nadoy_parabone = tm.parabone
-			self.nadoy_karusel = self.valoviy_nadoy - self.nadoy_parabone
+			# self.valoviy_nadoy = tm.valoviy_nadoy
+			# self.nadoy_parabone = tm.parabone
+			# self.nadoy_karusel = self.valoviy_nadoy - self.nadoy_parabone
 			
 
 			nadoy_karusel_zagon_itog = 0
@@ -1852,7 +1868,7 @@ class milk_nadoy_group_fakt_line(models.Model):
 	def return_name(self):
 		for line in self:
 			if line.stado_zagon_id:
-				if self.stado_zagon_id.doynie == True and (line.stado_zagon_id.mastit == False or line.stado_zagon_id.mastit is None):
+				if self.stado_zagon_id.doynie == True and (	line.stado_zagon_id.mastit == False or line.stado_zagon_id.mastit is None or line.milk_nadoy_group_id.nadoy_parabone == 0):
 					line.name = "Карусель"
 				elif line.stado_zagon_id.doynie == True and line.stado_zagon_id.mastit == True:
 					line.name = "Парабона"

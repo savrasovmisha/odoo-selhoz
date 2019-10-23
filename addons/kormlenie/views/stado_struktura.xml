@@ -81,7 +81,7 @@
                             <field name="stado_struktura_line">
                                 <tree string="stado_struktura_line" editable="botton">
                                     
-                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
                                     <field name="kol_golov_zagon"/>
                                     <field name="sred_kol_milk"/>

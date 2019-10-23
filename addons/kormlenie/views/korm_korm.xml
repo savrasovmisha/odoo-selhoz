@@ -65,7 +65,7 @@
                                     <field name="name" attrs="{'invisible': True}" string=""/>
                                     <field name="sequence" widget="handle"/>
                                     <field name="sorting"/>
-                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="korm_racion_id"/>
                                     <field name="kol_golov_zagon"/>
                                     <field name="procent_dachi"/>

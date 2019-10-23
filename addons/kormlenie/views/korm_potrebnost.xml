@@ -56,7 +56,7 @@
                             <field name="korm_potrebnost_zagon_line">
                                 <tree string="korm_potrebnost_zagon_line" editable="botton">
                                     
-                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="korm_racion_id"/>
                                     <field name="kol_golov"/>
                                     

@@ -35,7 +35,7 @@
                             <field name="korm_analiz_smes_korma_line" attrs="{'readonly': [('svodno', '=', True)]}">
                                 <tree string="korm_analiz_smes_korma_line" editable="botton" edit="true" create="false" delete="false">
                                     <field name="sequence" widget="handle"/>
-                                    <field name="stado_zagon_id"/>
+                                    <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
                                     
                                     <field name="sv"/>

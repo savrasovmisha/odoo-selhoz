@@ -89,6 +89,11 @@
                 <search>
                     
                     <field name="name"/>
+                    <group expand = "0" string = "Group By"> 
+                    
+                           <filter string = "По физ.группам" domain = "[]" context = "{'group_by': 'stado_fiz_group_id'}" /> 
+                  
+                    </group>
 
                 </search>
             </field>

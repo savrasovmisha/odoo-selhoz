@@ -3,7 +3,7 @@
 from __future__ import division #при делении будет возвращаться float
 from openerp import models, fields, api
 from datetime import datetime, timedelta
-from openerp.exceptions import ValidationError
+from openerp.exceptions import ValidationError, Warning
 from work_date import week_magic, last_day_of_month
 
 
@@ -1392,7 +1392,7 @@ class milk_nadoy_group(models.Model):
 					self.dostovernost = False
 
 
-					
+	@api.one				
 	def load_dc305(self):
 		
 		err = ''
@@ -1405,6 +1405,7 @@ class milk_nadoy_group(models.Model):
 
 		data_file_p.close()
 		
+		print u"Подготовка к чтению фала"
 		try:
 
 			frame = pd.read_csv('/tmp/milk_load.csv', 
@@ -1414,138 +1415,154 @@ class milk_nadoy_group(models.Model):
 			                encoding='cp1251')
 		except:
 			err += u"Ошибка чтения файла."
-		frame = frame.drop(frame.index[len(frame)-1])
+			print 'Error read files'
 
-		self.kol_golov = frame[u"ИД"].count()
+	
 
-		frame[u"kol_milk"] = frame[u"МОЛ1"].astype(int)
-		frame = frame[frame[u'kol_milk']!=0] #Удаляем записи где надой молока =0
-		frame[u"GROEPNR"] = frame[u"ГРУПА"].astype(int)
-		frame[u"ДДНИ"] = frame[u"ДДНИ"].astype(int)
-		frame[u"ЛАКТ"] = frame[u"ЛАКТ"].astype(int)
-		frame[u"nomer_lakt"] = np.where(frame[u'ЛАКТ']>2, 3, frame[u'ЛАКТ'])
+		if err=='':
+			print u"Чтение файла прошло успешно"
+			frame = frame.drop(frame.index[len(frame)-1])
 
-		#frame[u"МОЛ2"] = frame[u"МОЛ1"]/2
-		frame['n015'] = np.where((frame[u'kol_milk']>0) & (frame[u'kol_milk']<15), 1, 0)
-		frame['n1520'] = np.where((frame[u'kol_milk']>=15) & (frame[u'kol_milk']<20), 1, 0)
-		frame['n2025'] = np.where((frame[u'kol_milk']>=20) & (frame[u'kol_milk']<25), 1, 0)
-		frame['n2530'] = np.where((frame[u'kol_milk']>=25) & (frame[u'kol_milk']<30), 1, 0)
-		frame['n3035'] = np.where((frame[u'kol_milk']>=30) & (frame[u'kol_milk']<35), 1, 0)
-		frame['n3540'] = np.where((frame[u'kol_milk']>=35) & (frame[u'kol_milk']<40), 1, 0)
-		frame['n4045'] = np.where((frame[u'kol_milk']>=40) & (frame[u'kol_milk']<45), 1, 0)
-		frame['n45'] = np.where(frame[u'kol_milk']>=45, 1, 0)
+			self.kol_golov = frame[u"ИД"].count()
 
+			frame[u"kol_milk"] = frame[u"МОЛ1"].astype(int)
+			frame = frame[frame[u'kol_milk']!=0] #Удаляем записи где надой молока =0
+			count_row = frame.shape[0]
+			#После удаления строк где надой нулевой, проверяем остались ли записи
+			if count_row > 0:
 
-		table = pd.pivot_table(
-                    frame, 
-                    values=[
-                        'kol_milk', 
-                        'n015',
-                        'n1520',
-                        'n2025',
-                        'n2530',
-                        'n3035',
-                        'n3540',
-                        'n4045',
-                        'n45',
-                    ], 
-                    index=['GROEPNR'], 
-                    aggfunc={
-                        'kol_milk':[np.mean, np.std, len],
-                        'n015':[np.sum],
-                        'n1520':[np.sum],
-                        'n2025':[np.sum],
-                        'n2530':[np.sum],
-                        'n3035':[np.sum],
-                        'n3540':[np.sum],
-                        'n4045':[np.sum],
-                        'n45':[np.sum]
-                        
-                        
-                    }, 
-                    fill_value=0
-    
-        )
+				frame[u"GROEPNR"] = frame[u"ГРУПА"].astype(int)
+				frame[u"ДДНИ"] = frame[u"ДДНИ"].astype(int)
+				frame[u"ЛАКТ"] = frame[u"ЛАКТ"].astype(int)
+				frame[u"nomer_lakt"] = np.where(frame[u'ЛАКТ']>2, 3, frame[u'ЛАКТ'])
+
+				#frame[u"МОЛ2"] = frame[u"МОЛ1"]/2
+				frame['n015'] = np.where((frame[u'kol_milk']>0) & (frame[u'kol_milk']<15), 1, 0)
+				frame['n1520'] = np.where((frame[u'kol_milk']>=15) & (frame[u'kol_milk']<20), 1, 0)
+				frame['n2025'] = np.where((frame[u'kol_milk']>=20) & (frame[u'kol_milk']<25), 1, 0)
+				frame['n2530'] = np.where((frame[u'kol_milk']>=25) & (frame[u'kol_milk']<30), 1, 0)
+				frame['n3035'] = np.where((frame[u'kol_milk']>=30) & (frame[u'kol_milk']<35), 1, 0)
+				frame['n3540'] = np.where((frame[u'kol_milk']>=35) & (frame[u'kol_milk']<40), 1, 0)
+				frame['n4045'] = np.where((frame[u'kol_milk']>=40) & (frame[u'kol_milk']<45), 1, 0)
+				frame['n45'] = np.where(frame[u'kol_milk']>=45, 1, 0)
 
 
-		stado_zagon = self.env['stado.zagon']
-		#data = res['data']
-		self.milk_nadoy_group_line.unlink()
-		
-		#print table[:10]
-		for line in table.index:
-			#print line, table.ix[line, u'МОЛ1']
+				table = pd.pivot_table(
+		                    frame, 
+		                    values=[
+		                        'kol_milk', 
+		                        'n015',
+		                        'n1520',
+		                        'n2025',
+		                        'n2530',
+		                        'n3035',
+		                        'n3540',
+		                        'n4045',
+		                        'n45',
+		                    ], 
+		                    index=['GROEPNR'], 
+		                    aggfunc={
+		                        'kol_milk':[np.mean, np.std, len],
+		                        'n015':[np.sum],
+		                        'n1520':[np.sum],
+		                        'n2025':[np.sum],
+		                        'n2530':[np.sum],
+		                        'n3035':[np.sum],
+		                        'n3540':[np.sum],
+		                        'n4045':[np.sum],
+		                        'n45':[np.sum]
+		                        
+		                        
+		                    }, 
+		                    fill_value=0
+		    
+		        )
 
-			zagon_id = stado_zagon.search([
-											('dc305_id',   '=',    line),
-											('date_start', '<=', self.date),'|',
-											('date_end', '>=', self.date),
-											('date_end', '=', False)
+				print table
+				stado_zagon = self.env['stado.zagon']
+				#data = res['data']
+				self.milk_nadoy_group_line.unlink()
+				
+				#print table[:10]
+				for line in table.index:
+					#print line, table.ix[line, u'МОЛ1']
+					print line
+					zagon_id = stado_zagon.search([
+													('dc305_id',   '=',    line),
+													('date_start', '<=', self.date),'|',
+													('date_end', '>=', self.date),
+													('date_end', '=', False)
 
-											], 
-											limit=1)
-			if len(zagon_id)>0:
-				#print line['kol_golov'], line['kol'],line['sko']
-				self.milk_nadoy_group_line.create({
-							'milk_nadoy_group_id':   self.id,
-							'name':   zagon_id.name,
-							'stado_zagon_id':   zagon_id.id,
-							#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
-							'kol_golov':  table.ix[line,('kol_milk', 'len')],
-							'kol':  table.ix[line,('kol_milk', 'mean')],
-							'sko':  table.ix[line,('kol_milk', 'std')],
-							'procent_0_15': table.ix[line, ('n015', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
-							'procent_15_20': table.ix[line, ('n1520', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
-							'procent_20_25': table.ix[line, ('n2025', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
-							'procent_25_30': table.ix[line, ('n2530', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
-							'procent_30_35': table.ix[line, ('n3035', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
-							'procent_35_40': table.ix[line, ('n3540', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
-							'procent_40_45': table.ix[line, ('n4045', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
-							'procent_45': table.ix[line, ('n45', 'sum')]/table.ix[line,('kol_milk', 'len')]*100	
+													], 
+													limit=1)
+					if len(zagon_id)>0:
+						#print line['kol_golov'], line['kol'],line['sko']
+						self.milk_nadoy_group_line.create({
+									'milk_nadoy_group_id':   self.id,
+									'name':   zagon_id.name,
+									'stado_zagon_id':   zagon_id.id,
+									#'stado_fiz_group_id':   zagon_id.stado_fiz_group_id.id,
+									'kol_golov':  table.ix[line,('kol_milk', 'len')],
+									'kol':  table.ix[line,('kol_milk', 'mean')],
+									'sko':  table.ix[line,('kol_milk', 'std')],
+									'procent_0_15': table.ix[line, ('n015', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
+									'procent_15_20': table.ix[line, ('n1520', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
+									'procent_20_25': table.ix[line, ('n2025', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
+									'procent_25_30': table.ix[line, ('n2530', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
+									'procent_30_35': table.ix[line, ('n3035', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
+									'procent_35_40': table.ix[line, ('n3540', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,		
+									'procent_40_45': table.ix[line, ('n4045', 'sum')]/table.ix[line,('kol_milk', 'len')]*100.0,	
+									'procent_45': table.ix[line, ('n45', 'sum')]/table.ix[line,('kol_milk', 'len')]*100	
 
-							
-							})
+									
+									})
+					else:
+						self.description += u'Не найден загон с номером: %s \n' %  (line)
+				
+					
+				frame_lakt = frame[frame.nomer_lakt==1]
+				self.nadoy_l1 = frame_lakt[u"kol_milk"].mean()		
+				frame_lakt = frame[frame.nomer_lakt==2]
+				self.nadoy_l2 = frame_lakt[u"kol_milk"].mean()	
+				frame_lakt = frame[frame.nomer_lakt==3]
+				self.nadoy_l3 = frame_lakt[u"kol_milk"].mean()	
+
+				
+				if self.kol_golov>0:
+					kol_golov = frame[u"ИД"].count()
+					self.procent_0_15 = frame['n015'].sum()*100/kol_golov		
+					self.procent_15_20 = frame['n1520'].sum()*100/kol_golov
+					self.procent_20_25 = frame['n2025'].sum()*100/kol_golov
+					self.procent_25_30 = frame['n2530'].sum()*100/kol_golov
+					self.procent_30_35 = frame['n3035'].sum()*100/kol_golov
+					self.procent_35_40 = frame['n3540'].sum()*100/kol_golov
+					self.procent_40_45 = frame['n4045'].sum()*100/kol_golov
+					self.procent_45 = frame['n45'].sum()*100/kol_golov
+				
+				self.nadoy_0_21 = frame[frame[u'ДДНИ']<22].kol_milk.mean()		
+				self.nadoy_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100)].kol_milk.mean()		
+				self.nadoy_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300)].kol_milk.mean()	
+				self.nadoy_300 = frame[frame[u'ДДНИ']>300].kol_milk.mean()
+
+				self.nadoy_l1_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+				self.nadoy_l1_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+				self.nadoy_l1_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+				self.nadoy_l1_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
+				self.nadoy_l2_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+				self.nadoy_l2_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+				self.nadoy_l2_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+				self.nadoy_l2_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
+				self.nadoy_l3_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+				self.nadoy_l3_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+				self.nadoy_l3_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+				self.nadoy_l3_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
+					
+			#endif count_row == 0:
 			else:
-				self.description += u'Не найден загон с номером: %s \n' %  (line)
-			
-		frame_lakt = frame[frame.nomer_lakt==1]
-		self.nadoy_l1 = frame_lakt[u"kol_milk"].mean()		
-		frame_lakt = frame[frame.nomer_lakt==2]
-		self.nadoy_l2 = frame_lakt[u"kol_milk"].mean()	
-		frame_lakt = frame[frame.nomer_lakt==3]
-		self.nadoy_l3 = frame_lakt[u"kol_milk"].mean()	
+				err += u"В файле нет данных для загрузки, занчения надоев нулевые"
 
-
-		if self.kol_golov>0:
-			kol_golov = frame[u"ИД"].count()
-			self.procent_0_15 = frame['n015'].sum()*100/kol_golov		
-			self.procent_15_20 = frame['n1520'].sum()*100/kol_golov
-			self.procent_20_25 = frame['n2025'].sum()*100/kol_golov
-			self.procent_25_30 = frame['n2530'].sum()*100/kol_golov
-			self.procent_30_35 = frame['n3035'].sum()*100/kol_golov
-			self.procent_35_40 = frame['n3540'].sum()*100/kol_golov
-			self.procent_40_45 = frame['n4045'].sum()*100/kol_golov
-			self.procent_45 = frame['n45'].sum()*100/kol_golov
-
-		self.nadoy_0_21 = frame[frame[u'ДДНИ']<22].kol_milk.mean()		
-		self.nadoy_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100)].kol_milk.mean()		
-		self.nadoy_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300)].kol_milk.mean()	
-		self.nadoy_300 = frame[frame[u'ДДНИ']>300].kol_milk.mean()
-
-		self.nadoy_l1_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
-		self.nadoy_l1_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
-		self.nadoy_l1_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
-		self.nadoy_l1_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==1)].kol_milk.mean()
-		self.nadoy_l2_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
-		self.nadoy_l2_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
-		self.nadoy_l2_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
-		self.nadoy_l2_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==2)].kol_milk.mean()
-		self.nadoy_l3_0_21 = frame[(frame[u'ДДНИ']<22) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
-		self.nadoy_l3_22_100 = frame[(frame[u'ДДНИ']>=22) & (frame[u'ДДНИ']<=100) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
-		self.nadoy_l3_101_300 = frame[(frame[u'ДДНИ']>=101) & (frame[u'ДДНИ']<=300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
-		self.nadoy_l3_300 = frame[(frame[u'ДДНИ']>300) & (frame[u'nomer_lakt']==3)].kol_milk.mean()
-
-
+		#Проверка на ошибки
+		print err, len(err)	
 		if len(err)>0:
 			
 			self.description += u'Не возможно загрузить данные по причине: \n' + err
@@ -1728,9 +1745,9 @@ class milk_nadoy_group(models.Model):
 
 
 	name = fields.Char(string=u"Номер", store=False, copy=False, index=True, compute='return_name')
-	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
+	date = fields.Date(string=u'Дата', required=True, default=fields.Datetime.now)
 	
-	file_milk = fields.Binary('Импортировать файл')
+	file_milk = fields.Binary(u'Импортировать файл')
 
 	kol_golov = fields.Integer(string=u"Считано голов", compute='return_kol_golov', store=True, group_operator="avg", default=0)
 	nadoy_golova = fields.Float(digits=(3, 2), string=u"Надой на голову, л", compute='return_kol_golov', store=True, group_operator="avg")
@@ -1793,7 +1810,7 @@ class milk_nadoy_group(models.Model):
 
 
 
-	nadoy_l1 = fields.Float(digits=(3, 2), string=u"Надой 1-я л.", store=True, group_operator="avg")
+	nadoy_l1 = fields.Float(digits=(3, 2), string=u"Надой 1-я л.", store=True, group_operator="avg", default=0.0)
 	nadoy_l2 = fields.Float(digits=(3, 2), string=u"Надой 2-я л.", store=True, group_operator="avg")
 	nadoy_l3 = fields.Float(digits=(3, 2), string=u"Надой 3-я л. и более", store=True, group_operator="avg")
 	

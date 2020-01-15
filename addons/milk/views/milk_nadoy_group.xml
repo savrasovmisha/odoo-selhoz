@@ -218,7 +218,7 @@
             <field name="arch" type="xml">
                 <tree string="Надой молока по группам" default_order='date desc'>
                    
-                    <field name="date" string="Дата"/>
+                    <field name="date"/>
                     <field name="nadoy_0_21"/>
                     <field name="nadoy_22_100"/>
                     <field name="nadoy_101_300"/>

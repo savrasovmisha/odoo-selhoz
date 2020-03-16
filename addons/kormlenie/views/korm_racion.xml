@@ -61,11 +61,13 @@
                                             <field name="amount" fg_color="blue:price&lt;price_date; blue:price&gt;price_date;"/>
                                             <field name="price_date" fg_color="green:price&gt;price_date; red:price&lt;price_date;"/>
                                             <field name="amount_date" fg_color="green:price&gt;price_date; red:price&lt;price_date;"/>
+
                                             <field name="date_start"/>
                                             <field name="day"/>
                                             <field name="new_nomen_nomen_id"/>
                                             <field name="kol_new"/>
-                                            <field name="stop"/>
+                                            <field name="stop"/> 
+                                            
                                                                                 
                                         </tree>
                                     </field>

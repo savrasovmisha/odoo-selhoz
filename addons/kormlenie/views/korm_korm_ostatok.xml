@@ -37,14 +37,14 @@
                                     <field name="sequence" widget="handle"/>
                                     <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
-                                    
-                                    <field name="kol_golov_zagon"/>
-                                    <field name="procent_raciona"/>
-                                    <field name="kol_korma_norma"/>
-                                    <field name="kol_korma_fakt"/>
+                                                                        
+                                    <field name="kol_golov_zagon" string="кол голов"/>
+                                    <field name="procent_raciona" string="% дачи рац"/>
+                                    <field name="kol_korma_norma" string="дача норм"/>
+                                    <field name="kol_korma_fakt" string="дача факт"/>
                                     <field name="kol_korma_otk"/>
                                     <field name="kol_ostatok"/>
-                                    <field name="procent_ostatkov"/>
+                                    <field name="procent_ostatkov" string="% ост."/>
                                     <field name="procent_ostatkov_prev"/>
                                     <field name="sv_golova"/>
                                     

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+
+    	<record model="ir.ui.view" id="dogovor_form_view">
+            <field name="name">dogovor.form</field>
+            <field name="model">dogovor</field>
+            <field name="arch" type="xml">
+                <form string="Форма Договор">
+                    <sheet>
+                        
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="nomer_partner"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                        
+                        <group>
+                            <group>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="amount"/>
+                                <field name="currency_id"/>
+                                <field name="dogovor_vid_id"/>
+                            </group>
+                            <group>
+                                <field name="otvetstvenniy_id"/>
+                                <field name="id_1c"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="predmet"/>
+                            
+                            
+                        </group>
+
+
+
+                        <group>
+                            <field name="attachment_ids"  class="oe_inline" widget="many2many_binary" string="Прикрепить файл" nolabel="1"/>
+                        </group>
+
+
+
+                                
+                                
+                    
+
+                        <notebook colspan="4">
+                            <page string="Комментарии">
+                                <field name="description" nolabel="1"/>
+                            </page>
+                        </notebook>
+    		            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_dogovor_tree">
+            <field name="name">dogovor.tree</field>
+            <field name="model">dogovor</field>
+            <field name="arch" type="xml">
+                <tree string="Договор">
+                    <field name="partner_id"/>
+                    <field name="name"/>
+                    <field name="date"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	   <record model="ir.ui.view" id="dogovor_search_view">
+            <field name="name">dogovor.search</field>
+            <field name="model">dogovor</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/>
+                    <field name="name"/>
+
+                     <filter name="group_dogovor_vid" string="По видам договоров" domain="[]" context="{'group_by': 'dogovor_vid_id'}"/>
+                     <filter name="group_currency" string="По валюте" domain="[]" context="{'group_by': 'currency_id'}"/>
+                     <filter name="group_date" string="По годам" domain="[]" context="{'group_by': 'date:year'}"/>
+                     <filter name="group_date" string="По месяцам" domain="[]" context="{'group_by': 'date:month'}"/>
+                    
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="dogovor_list_action">
+            <field name="name">Договор</field>
+            <field name="res_model">dogovor</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Договор
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

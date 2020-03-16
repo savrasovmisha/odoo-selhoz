@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+	    <record id="dogovor_vid_prokat" model="dogovor.vid">
+	        <field name="name">Покупка</field>
+	    </record>
+
+	    <record id="dogovor_vid_prodaja" model="dogovor.vid">
+	        <field name="name">Продажа</field>
+	    </record>
+
+	    <record id="dogovor_vid_mena" model="dogovor.vid">
+	        <field name="name">Мена</field>
+	    </record>
+
+	    <record id="dogovor_vid_arenda" model="dogovor.vid">
+	        <field name="name">Аренда</field>
+	    </record>
+
+	    <record id="dogovor_vid_podryad" model="dogovor.vid">
+	        <field name="name">Подряд</field>
+	    </record>
+
+	    <record id="dogovor_vid_vipolnenie_rabot" model="dogovor.vid">
+	        <field name="name">Выполнение работ</field>
+	    </record>
+
+	    <record id="dogovor_vid_okazanie_uslug" model="dogovor.vid">
+	        <field name="name">Оказание услуг</field>
+	    </record>
+
+	    <record id="dogovor_vid_kredit" model="dogovor.vid">
+	        <field name="name">Кредит</field>
+	    </record>
+	    <record id="dogovor_vid_zaym" model="dogovor.vid">
+	        <field name="name">Займ</field>
+	    </record>
+	    <record id="dogovor_vid_lizing" model="dogovor.vid">
+	        <field name="name">Лизинг</field>
+	    </record>
+	    <record id="dogovor_vid_strahovanie" model="dogovor.vid">
+	        <field name="name">Страхование</field>
+	    </record>
+	    <record id="dogovor_vid_daranie" model="dogovor.vid">
+	        <field name="name">Дарение</field>
+	    </record>
+	    <record id="dogovor_vid_pojertvovanie" model="dogovor.vid">
+	        <field name="name">Пожертвование</field>
+	    </record>
+	    <record id="dogovor_vid_prokat" model="dogovor.vid">
+	        <field name="name">Прокат</field>
+	    </record>
+	    <record id="dogovor_vid_naym" model="dogovor.vid">
+	        <field name="name">Найм</field>
+	    </record>
+	    <record id="dogovor_vid_bezvozmezdnoe" model="dogovor.vid">
+	        <field name="name">Безвозмездное пользование</field>
+	    </record>
+	    <record id="dogovor_vid_bank_schet" model="dogovor.vid">
+	        <field name="name">Банковский счет</field>
+	    </record>
+	    <record id="dogovor_vid_depozit" model="dogovor.vid">
+	        <field name="name">Депозит</field>
+	    </record>
+	    <record id="dogovor_vid_gos_kontrakt" model="dogovor.vid">
+	        <field name="name">Гос. контракт</field>
+	    </record>
+	    <record id="dogovor_vid_hranenie" model="dogovor.vid">
+	        <field name="name">Хранение</field>
+	    </record>
+	 <!--    <record id="dogovor_vid_" model="dogovor.vid">
+	        <field name="name"></field>
+	    </record>
+	    <record id="dogovor_vid_" model="dogovor.vid">
+	        <field name="name"></field>
+	    </record> -->
+	  
+	</data>
+</openerp> 
+
+
+

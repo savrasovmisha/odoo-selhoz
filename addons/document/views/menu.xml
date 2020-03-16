@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- top level menu: no parent -->
+        <menuitem id="base.main_document_menu" name="Документы"/>
+        <!-- A first level in the left side menu is needed
+             before using action= attribute -->
+
+        <menuitem id="document_dogovora_menu" name="Договора" sequence="1" parent="base.main_document_menu" groups="group_dogovora_users,group_dogovora_manager"/>
+        
+        <menuitem id="document_dogovor_menu" name="Договора" sequence="1" parent="document_dogovora_menu" action="dogovor_list_action" groups="group_dogovora_users,group_dogovora_manager"/>
+        
+    
+
+
+        <menuitem id="document_korrespondenciya_menu" name="Корреспонденция" sequence="2" parent="base.main_document_menu" groups="group_korrespondenciya_users,group_korrespondenciya_manager"/>
+        
+      
+        <menuitem id="document_lna_menu" name="ЛНА" sequence="3" parent="base.main_document_menu" groups="group_lna_users,group_lna_manager"/>
+        
+      
+
+    
+
+
+        
+    </data>
+</openerp>

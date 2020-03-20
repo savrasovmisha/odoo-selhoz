@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="rast_polya_form_view">
+        <field name="name">rast_polya.form</field>
+        <field name="model">rast.polya</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Поля">
+                
+                <sheet>
+                    <group>
+                        <group>
+                                                       
+                            <field name="name"/>
+                            <field name="ploshad"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_rast_polya_tree">
+            <field name="name">rast_polya.tree</field>
+            <field name="model">rast.polya</field>
+            <field name="arch" type="xml">
+                <tree string="Поля">
+                    <field name="name"/>
+                    <field name="ploshad"/>
+                    <field name="date"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="rast_polya_list_action">
+            <field name="name">Поля</field>
+            <field name="res_model">rast.polya</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Поля
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -9,19 +9,51 @@
             <form string="Форма Поля">
                 
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "active"}'/>
+                        </button>
+                    
+                    
+                    </div>
                     <group>
                         <group>
                                                        
                             <field name="name"/>
+                            <field name="psevdonim"/>
                             <field name="ploshad"/>
+                            <field name="kad_nomer"/>
+                            <field name="is_sobst"/>
                         </group>
                         <group>
-                            <field name="date"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
                         </group>
                       
                         
                         
                     </group>
+                    <notebook>
+                        <page string="Пайщики" attrs="{'invisible': [('is_sobst', '=', True)]}">
+                            <field name="rast_polya_pay_line" >
+                                <tree string="rast_polya_pay_line" editable="botton">
+                                    
+                                    <field name="partner_id"/>
+                                    <field name="dolya"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    
+                                    <field name="sequence" widget="handle"/>
+                                    
+                                </tree>
+                            </field>
+                            
+                        </page>
+                        
+                    </notebook>
                     
 		            
                 </sheet>
@@ -36,7 +68,11 @@
                 <tree string="Поля">
                     <field name="name"/>
                     <field name="ploshad"/>
-                    <field name="date"/>
+                    <field name="psevdonim"/>
+                    <field name="kad_nomer"/>
+                    <field name="is_sobst"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
                     
                     
                     
@@ -49,7 +85,7 @@
             <field name="name">Поля</field>
             <field name="res_model">rast.polya</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">Создайте первую запись Поля
                 </p>

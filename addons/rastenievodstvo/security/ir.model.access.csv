@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_rast_polya_manager,rast.polya,model_rast_polya,group_rast_manager,1,1,1,1
 access_rast_polya_users,rast.polya,model_rast_polya,group_rast_users,1,0,0,0
+access_rast_polya_pay_line_manager,rast.polya_pay_line,model_rast_polya_pay_line,group_rast_manager,1,1,1,1
+access_rast_polya_pay_line_users,rast.polya_pay_line,model_rast_polya_pay_line,group_rast_users,1,0,0,0
 access_rast_rashod_manager,rast.rashod,model_rast_rashod,group_rast_manager,1,1,1,1
 access_rast_rashod_users,rast.rashod,model_rast_rashod,group_rast_users,1,0,0,0

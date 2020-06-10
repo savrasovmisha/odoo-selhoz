@@ -55,7 +55,39 @@
             <field name="name">Текущий месяц</field>
             <field name="model_id">korm.analiz_efekt_korm_report</field>
             <field name="domain">[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('date','&gt;=',time.strftime('%Y-%m-01'))]</field>
+            <field name="is_default">0</field>
+            <field name="user_id"></field>
+            
+    </record>
+    <record id="filter10_korm_analiz_efekt_korm_report" model="ir.filters">
+            <field name="name">Последние 10 дней</field>
+            <field name="model_id">korm.analiz_efekt_korm_report</field>
+            <field name="domain">[('date','&gt;=',((context_today()-datetime.timedelta(days=10)).strftime('%Y-%m-%d')))]</field>
             <field name="is_default">1</field>
+            <field name="user_id"></field>
+            
+    </record>
+    <record id="filter20_korm_analiz_efekt_korm_report" model="ir.filters">
+            <field name="name">Последние 20 дней</field>
+            <field name="model_id">korm.analiz_efekt_korm_report</field>
+            <field name="domain">[('date','&gt;=',((context_today()-datetime.timedelta(days=20)).strftime('%Y-%m-%d')))]</field>
+            <field name="is_default">0</field>
+            <field name="user_id"></field>
+            
+    </record>
+    <record id="filter30_korm_analiz_efekt_korm_report" model="ir.filters">
+            <field name="name">Последние 30 дней</field>
+            <field name="model_id">korm.analiz_efekt_korm_report</field>
+            <field name="domain">[('date','&gt;=',((context_today()-datetime.timedelta(days=30)).strftime('%Y-%m-%d')))]</field>
+            <field name="is_default">0</field>
+            <field name="user_id"></field>
+            
+    </record>
+    <record id="filter60_korm_analiz_efekt_korm_report" model="ir.filters">
+            <field name="name">Последние 60 дней</field>
+            <field name="model_id">korm.analiz_efekt_korm_report</field>
+            <field name="domain">[('date','&gt;=',((context_today()-datetime.timedelta(days=60)).strftime('%Y-%m-%d')))]</field>
+            <field name="is_default">0</field>
             <field name="user_id"></field>
             
     </record>

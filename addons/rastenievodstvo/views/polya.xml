@@ -52,7 +52,16 @@
                             </field>
                             
                         </page>
+                        <page string="История">
+                            
+                        </page>
                         
+                    </notebook>
+
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
                     </notebook>
                     
 		            

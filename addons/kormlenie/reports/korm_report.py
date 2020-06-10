@@ -2218,7 +2218,8 @@ class korm_analiz_efekt_korm_report(models.Model):
                             	left join stado_zagon s on (s.id = rr.stado_zagon_id)
                             	Where 	rr.date::date=tm.date_doc::date and
                             	  		n.is_pokupaem=True and
-                            	  		(s.mastit=True or s.doynie=True or s.suhostoy=True)
+                            	  		(s.mastit=True or s.doynie=True or s.suhostoy=True) and
+                            	  		rr.date::date > current_timestamp - interval '60 day'
                             ) as rp
                             
                         ) as zatrati_korma_pokupaem
@@ -2268,17 +2269,19 @@ class korm_analiz_efekt_korm_report(models.Model):
                                     from reg_rashod_kormov r
                                     left join stado_zagon s on (s.id = r.stado_zagon_id)
                                     left join nomen_nomen n on (n.id = r.nomen_nomen_id)
-                                    where (s.mastit=True or s.doynie=True or s.suhostoy=True)
+                                    where (s.mastit=True or s.doynie=True or s.suhostoy=True) and
+					   						r.date > current_timestamp - interval '60 day'
                                     group by r.date::date, r.nomen_nomen_id
                                  )  t
                             ) tt
-
+                        WHERE tt.date > current_timestamp - interval '60 day'
                         GROUP BY tt.date
 
 
 
 
                         ) k on (k.date = tm.date_doc::date)
+                        WHERE tm.date_doc::date > current_timestamp - interval '60 day'
                 ) ttt
                 left join milk_price mpt on (mpt.id=ttt.milk_price_id)
               

@@ -30,6 +30,7 @@ class rast_polya(models.Model):
     kad_nomer = fields.Char(string=u"Кадастровый номер", copy=False)
     is_sobst = fields.Boolean(string=u"В собственности", default=True)
     active = fields.Boolean(string=u"Используется", default=True)
+    description = fields.Text(string=u"Коментарии")
 
     rast_polya_pay_line = fields.One2many('rast.polya_pay_line', 'rast_polya_id', string=u"Строка таблицы пайщиков")
     

@@ -566,7 +566,7 @@ class korm_receptura(models.Model):
 	date = fields.Date(string='Дата', required=True, default=fields.Datetime.now)
 	date_raschet = fields.Date(string='Дата расчета стоимости', default=fields.Datetime.now)
 	#korm_analiz_pit_id = fields.One2many('korm.analiz_pit', 'korm_receptura_id', string=u"Анализ кормов")
-	korm_receptura_line = fields.One2many('korm.receptura_line', 'korm_receptura_id', string=u"Строка Рецептура комбикормов")
+	korm_receptura_line = fields.One2many('korm.receptura_line', 'korm_receptura_id', string=u"Строка Рецептура комбикормов", copy=True)
 	korm_receptura_price_line = fields.One2many('korm.receptura_price_line', 'korm_receptura_id', string=u"Строка изменения стоимости Рецептура комбикормов")
 	amount = fields.Float(digits=(10, 3), string=u"Всего Кол-во", store=True, compute='_raschet')
 	

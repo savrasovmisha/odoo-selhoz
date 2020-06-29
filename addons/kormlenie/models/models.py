@@ -1659,6 +1659,7 @@ class korm_korm(models.Model):
 	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=False)
 	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=False)
 	
+	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
@@ -1683,8 +1684,17 @@ class korm_korm(models.Model):
 	@api.multi
 	def action_draft(self):
 		for doc in self:
-			
-			if self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True:
+			for detail in korm_detail_line:
+				vals_sklad.append({
+									 'name': detail.nomen_nomen_id.name, 
+									 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+									 'nomen_nomen_id': detail.nomen_nomen_id.id, 
+									 'kol': kol, 
+									})
+
+			sklad_ostatok = self.env['sklad.ostatok']
+			if (sklad_ostatok.reg_move(doc, vals_sklad, 'rashod-draft')==True and 
+				self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True):
 				self.state = 'draft'
 			
 
@@ -1697,6 +1707,7 @@ class korm_korm(models.Model):
 		
 		for doc in self:
 			vals = []
+			vals_sklad = []
 			k = 0.000
 			for svod in doc.korm_korm_svod_line:
 				index = 0
@@ -1756,9 +1767,19 @@ class korm_korm(models.Model):
 									})
 
 				
-			#if reg_rashod_kormov_move(self, vals, 'create')==True:
-			if self.env['reg.rashod_kormov'].move(self, vals, 'create')==True:
-				self.state = 'confirmed'
+			
+						vals_sklad.append({
+									 'name': detail.nomen_nomen_id.name, 
+									 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+									 'nomen_nomen_id': detail.nomen_nomen_id.id, 
+									 'kol': kol, 
+									})
+
+					
+			sklad_ostatok = self.env['sklad.ostatok']
+			if (sklad_ostatok.reg_move(doc, vals_sklad, 'rashod')==True and 
+				self.env['reg.rashod_kormov'].move(self, vals, 'create')==True):
+				doc.state = 'confirmed'
 			else:
 				err = u'Ошибка при проведении'
 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))

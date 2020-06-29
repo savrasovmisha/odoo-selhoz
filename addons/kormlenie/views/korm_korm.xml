@@ -30,6 +30,7 @@
                         </group>
                         <group>
                             <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="sostavil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="utverdil_id" domain="[('company_type','=','person')]" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="vremya_dnya" attrs="{'invisible': [('is_vremya_dnya', '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" />

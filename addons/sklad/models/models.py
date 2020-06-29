@@ -116,22 +116,126 @@ class sklad_ostatok(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
-    # def zapis(self, vals, prihod, kol):
-    #     """Если prihod=True тогда это поступление и будет прибавленно кол-во иначе вычтено"""
-    #     if prihod == True:
-    #         so = self.search([
-    #             ('sklad_sklad_id', '=', self.sklad_sklad_id.id),
-    #             ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
-    #             ])
-    #         if len(so)>0:
-    #             print 'kkkkkkkkkkkkkkkkkkkkkk'
-    #             kol = so[0].kol
+    #@api.one
+    def reg_move(self, obj, vals, vid_dvijeniya):
+        """
+            Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
+        """
+        print u"Начало проведение документа"
+        message = ''
+        
+        if len(vals) == 0:
+            message = u"Нет данных для проведения документа. Не заполненна табличная часть"
+            raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+            return False
+
+        ost = obj.env['sklad.ostatok']
+        for line in vals:
+            ost_nomen = ost.search([
+                ('sklad_sklad_id', '=', line['sklad_sklad_id']),
+                ('nomen_nomen_id', '=', line['nomen_nomen_id']),
+                ])
+            line['err'] = False
+            line['id'] = False
+            line['obj'] = obj.__class__.__name__
+            line['obj_id'] = obj.id
+            line['date'] = obj.date
+            line['vid'] = vid_dvijeniya
+            if vid_dvijeniya == 'prihod':
+                line['kol_prihod'] = line['kol']
+                line['kol_oborot'] = line['kol']
+            if vid_dvijeniya == 'rashod':
+                line['kol_rashod'] = line['kol']
+                line['kol_oborot'] = -1*line['kol']
+
+            if line['kol']<=0:
+                line['err'] = True
+                message = u"Кол-во должно быть больше нуля"
+
+            print line
+            if len(ost_nomen)>0:
+            
+                line['id'] = ost_nomen[0].id
+                kol_do = ost_nomen[0].kol
+                if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
+                    line['kol'] += kol_do
+                if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
+                    line['kol'] = kol_do - line['kol']
+                    
+            #Контроль отрицательных остатков
+            # if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
+            #         line['err'] = True
+            #         message = u'Невозможно списать %s %s. Требуется %s, на остатке %s' % (line['name'], line['kol'], line['kol_oborot'], kol_do)
+
+            if line['err'] == True:
+                raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+                return False
 
 
-    #         else:
-    #             print '=========================================='
+        for line in vals:
+            if line['id'] == False:
+                ost.create(line)
+            else:
+                ost.browse(line['id']).write(line)
 
-    #             self.create(vals)
+        #Движения по Регистру остатки - обороты
+        obr = obj.env['sklad.oborot']
+        if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
+            for line in vals:
+                obr.create(line)
+        else:
+
+            ids_del = obr.search([  ('obj_id', '=', obj.id),
+                                    ('obj', '=', obj.__class__.__name__),
+                                    ])
+            ids_del.unlink()
+
+        
+
+        return True
+
+    def reg_move_draft(self, obj):
+
+
+
+        obr = obj.env['sklad.oborot']
+        ids_del = obr.search([  ('obj_id', '=', obj.id),
+                                    ('obj', '=', obj.__class__.__name__),
+                                    ])
+        for line in ids_del:
+            vals = []
+            vid_dvijeniya = line['vid']+'-draft'
+            vals.append({
+                         'vid': line.vid, 
+                         'name': line.name, 
+                         'sklad_sklad_id': line.sklad_sklad_id, 
+                         'nomen_nomen_id': line.nomen_nomen_id, 
+                         'kol': line.kol_oborot>0 if line.kol_oborot>0 else -1*line.kol_oborot
+                        })
+
+            if self.reg_move(obj, vals, vid_dvijeniya) == False:
+                return False
+
+        # #Группируем спиcок по видам движения, преобразуем в формат:
+        # RESULT = [{vid: vid_dvijeniya, data: [{name,sklad_sklad_id,nomen_nomen_id,kol}]}]
+
+        # import itertools
+        # import operator
+        # def groupid_drop(d):
+        #     del d['vid']
+        #     return d
+        # RESULT=[{'vid': i, 'data': map(groupid_drop, grp)} for i, grp in itertools.groupby(vals, operator.itemgetter('vid'))]
+        # #print RESULT
+
+        # for line in RESULT:
+        #     vid_dvijeniya = line['vid']+'-draft'
+        #     sklad_ostatok = self.env['sklad.ostatok']    
+        #     if sklad_ostatok.reg_move(doc, line['data'], 'prihod-draft')==True:
+        #         self.state = 'draft'
+        return True
+
+
+    
 
 class sklad_ostatok_period(models.Model):
     _name = 'sklad.ostatok_period'
@@ -162,82 +266,83 @@ class sklad_oborot(models.Model):
 
 
 
-def reg_ostatok_move(obj,vals, vid_dvijeniya):
-    """
-        Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
-    """
+# def reg_ostatok_move(obj,vals, vid_dvijeniya):
+#     """
+#         Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
+#     """
 
-    message = ''
+
+#     message = ''
     
-    if len(vals) == 0:
-        message = u"Нет данных для проведения документа. Не заполненна табличная часть"
-        raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-        return False
+#     if len(vals) == 0:
+#         message = u"Нет данных для проведения документа. Не заполненна табличная часть"
+#         raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+#         return False
 
-    ost = obj.env['sklad.ostatok']
-    for line in vals:
-        ost_nomen = ost.search([
-            ('sklad_sklad_id', '=', line['sklad_sklad_id']),
-            ('nomen_nomen_id', '=', line['nomen_nomen_id']),
-            ])
-        line['err'] = False
-        line['id'] = False
-        line['obj'] = obj.__class__.__name__
-        line['obj_id'] = obj.id
-        line['date'] = obj.date
-        line['vid'] = vid_dvijeniya
-        if vid_dvijeniya == 'prihod':
-            line['kol_prihod'] = line['kol']
-            line['kol_oborot'] = line['kol']
-        if vid_dvijeniya == 'rashod':
-            line['kol_rashod'] = line['kol']
-            line['kol_oborot'] = -1*line['kol']
+#     ost = obj.env['sklad.ostatok']
+#     for line in vals:
+#         ost_nomen = ost.search([
+#             ('sklad_sklad_id', '=', line['sklad_sklad_id']),
+#             ('nomen_nomen_id', '=', line['nomen_nomen_id']),
+#             ])
+#         line['err'] = False
+#         line['id'] = False
+#         line['obj'] = obj.__class__.__name__
+#         line['obj_id'] = obj.id
+#         line['date'] = obj.date
+#         line['vid'] = vid_dvijeniya
+#         if vid_dvijeniya == 'prihod':
+#             line['kol_prihod'] = line['kol']
+#             line['kol_oborot'] = line['kol']
+#         if vid_dvijeniya == 'rashod':
+#             line['kol_rashod'] = line['kol']
+#             line['kol_oborot'] = -1*line['kol']
 
-        if line['kol']<=0:
-            line['err'] = True
-            message = u"Кол-во должно быть больше нуля"
+#         if line['kol']<=0:
+#             line['err'] = True
+#             message = u"Кол-во должно быть больше нуля"
 
-        print line
-        if len(ost_nomen)>0:
+#         print line
+#         if len(ost_nomen)>0:
         
-            line['id'] = ost_nomen[0].id
-            kol_do = ost_nomen[0].kol
-            if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
-                line['kol'] += kol_do
-            if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
-                line['kol'] = kol_do - line['kol']
+#             line['id'] = ost_nomen[0].id
+#             kol_do = ost_nomen[0].kol
+#             if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
+#                 line['kol'] += kol_do
+#             if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
+#                 line['kol'] = kol_do - line['kol']
                 
 
-        if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
-                line['err'] = True
-                message = u'Невозможно списать %s. Требуется %s, на остатке %s' % (line['kol'], line['kol_oborot'], kol_do)
+#         if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
+#                 line['err'] = True
+#                 message = u'Невозможно списать %s. Требуется %s, на остатке %s' % (line['kol'], line['kol_oborot'], kol_do)
 
-        if line['err'] == True:
-            raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-            return False
+#         if line['err'] == True:
+#             raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+#             return False
 
 
-    for line in vals:
-        if line['id'] == False:
-            ost.create(line)
-        else:
-            ost.browse(line['id']).write(line)
+#     for line in vals:
+#         if line['id'] == False:
+#             ost.create(line)
+#         else:
+#             ost.browse(line['id']).write(line)
 
-    #Движения по Регистру остатки - обороты
-    obr = obj.env['sklad.oborot']
-    if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
-        for line in vals:
-            obr.create(line)
-    else:
+#     #Движения по Регистру остатки - обороты
+#     obr = obj.env['sklad.oborot']
+#     if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
+#         for line in vals:
+#             obr.create(line)
+#     else:
 
-        ids_del = obr.search([  ('obj_id', '=', obj.id),
-                                ('obj', '=', obj.__class__.__name__),
-                                ])
-        ids_del.unlink()
+#         ids_del = obr.search([  ('obj_id', '=', obj.id),
+#                                 ('obj', '=', obj.__class__.__name__),
+#                                 ])
+#         ids_del.unlink()
 
     
 
-    return True
+#     return True
 
 
             
@@ -323,21 +428,23 @@ class pokupka_pokupka(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals = []
-            for line in doc.pokupka_pokupka_line:
-                vals.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
+            # vals = []
+            # for line in doc.pokupka_pokupka_line:
+            #     vals.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
 
-                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'prihod-draft')==True:
+            #     #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+            # sklad_ostatok = self.env['sklad.ostatok']    
+            # if sklad_ostatok.reg_move(doc, vals, 'prihod-draft')==True:
+            #     self.state = 'draft'
+
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move_draft(doc)==True:
                 self.state = 'draft'
-
-        
     
 
     @api.multi
@@ -356,8 +463,11 @@ class pokupka_pokupka(models.Model):
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
                 
-            if reg_ostatok_move(self, vals, 'prihod')==True:
-                self.state = 'confirmed'
+            sklad_ostatok = self.env['sklad.ostatok']
+            if sklad_ostatok.reg_move(doc, vals, 'prihod')==True:
+                doc.state = 'confirmed'
+            else:
+                print u"Ошибка при проведении документа"
 
 
 
@@ -492,8 +602,11 @@ class sklad_peremeshenie(models.Model):
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
                              'kol': line.kol, 
                             })
-
-            if reg_ostatok_move(self, vals_otp, 'rashod-draft')==True and reg_ostatok_move(self, vals_pol, 'prihod-draft')==True:
+            
+            sklad_ostatok = self.env['sklad.ostatok']
+            
+            if (sklad_ostatok.reg_move(doc, vals_otp, 'rashod-draft')==True and 
+                sklad_ostatok.reg_move(doc, vals_pol, 'prihod-draft')==True):
                 self.state = 'draft'
 
         
@@ -520,7 +633,9 @@ class sklad_peremeshenie(models.Model):
                              'kol': line.kol, 
                             })
 
-            if reg_ostatok_move(self, vals_otp, 'rashod')==True and reg_ostatok_move(self, vals_pol, 'prihod')==True:
+            sklad_ostatok = self.env['sklad.ostatok']
+            if (sklad_ostatok.reg_move(doc, vals_otp, 'rashod')==True and 
+                sklad_ostatok.reg_move(doc, vals_pol, 'prihod')==True):
                 self.state = 'confirmed'
 
 
@@ -645,8 +760,8 @@ class prodaja_prodaja(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod-draft')==True:
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
                 self.state = 'draft'
 
         
@@ -667,8 +782,8 @@ class prodaja_prodaja(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod')==True:
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals, 'rashod')==True:
                 self.state = 'confirmed'
 
 
@@ -808,8 +923,8 @@ class sklad_trebovanie_nakladnaya(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod-draft')==True:
+            sklad_ostatok = self.env['sklad.ostatok']     
+            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
                 self.state = 'draft'
 
         
@@ -830,8 +945,8 @@ class sklad_trebovanie_nakladnaya(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod')==True:
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals, 'rashod')==True:
                 self.state = 'confirmed'
 
 
@@ -981,8 +1096,8 @@ class sklad_spisanie(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod-draft')==True:
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
                 self.state = 'draft'
 
         
@@ -1003,8 +1118,8 @@ class sklad_spisanie(models.Model):
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if reg_ostatok_move(self, vals, 'rashod')==True:
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals, 'rashod')==True:
                 self.state = 'confirmed'
 
 
@@ -1115,9 +1230,9 @@ class sklad_inventarizaciya(models.Model):
                       
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if ((len(vals_prihod)==0 or reg_ostatok_move(self, vals_prihod, 'prihod-draft')==True) and 
-                (len(vals_rashod)==0 or reg_ostatok_move(self, vals_rashod, 'rashod-draft')==True)):
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if ((len(vals_prihod)==0 or sklad_ostatok.reg_move(doc, vals_prihod, 'prihod-draft')==True) and 
+                (len(vals_rashod)==0 or sklad_ostatok.reg_move(doc, vals_rashod, 'rashod-draft')==True)):
                 self.state = 'draft'
 
         
@@ -1148,9 +1263,9 @@ class sklad_inventarizaciya(models.Model):
                       
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-                
-            if ((len(vals_prihod)==0 or reg_ostatok_move(self, vals_prihod, 'prihod')==True) and 
-                (len(vals_rashod)==0 or reg_ostatok_move(self, vals_rashod, 'rashod')==True)):
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if ((len(vals_prihod)==0 or sklad_ostatok.reg_move(doc, vals_prihod, 'prihod')==True) and 
+                (len(vals_rashod)==0 or sklad_ostatok.reg_move(doc, vals_rashod, 'rashod')==True)):
                 self.state = 'confirmed'
 
 

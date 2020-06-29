@@ -24,7 +24,7 @@
                     <group>
                         <group>
                             <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
-                            <field name="partner_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="partner_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}" domain="[('company_type','=','company')]"/>
                             <field name="nds_price" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                         </group>
                         <group>

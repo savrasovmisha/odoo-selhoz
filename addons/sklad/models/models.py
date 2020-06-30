@@ -124,6 +124,8 @@ class sklad_ostatok(models.Model):
         print u"Начало проведение документа"
         message = ''
         
+
+
         if len(vals) == 0:
             message = u"Нет данных для проведения документа. Не заполненна табличная часть"
             raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
@@ -135,7 +137,7 @@ class sklad_ostatok(models.Model):
                 ('sklad_sklad_id', '=', line['sklad_sklad_id']),
                 ('nomen_nomen_id', '=', line['nomen_nomen_id']),
                 ])
-            line['err'] = False
+            err = False
             line['id'] = False
             line['obj'] = obj.__class__.__name__
             line['obj_id'] = obj.id
@@ -148,55 +150,63 @@ class sklad_ostatok(models.Model):
                 line['kol_rashod'] = line['kol']
                 line['kol_oborot'] = -1*line['kol']
 
+            #Проверка на ошибки
             if line['kol']<=0:
-                line['err'] = True
+                err = True
                 message = u"Кол-во должно быть больше нуля"
+            if line['sklad_sklad_id']==False or line['sklad_sklad_id']==None:
+                err = True
+                message = u"Не указан склад"
+            if line['nomen_nomen_id']==False or line['sklad_sklad_id']==None:
+                err = True
+                message = u"Не указана номенклатура"
 
-            print line
             if len(ost_nomen)>0:
-            
                 line['id'] = ost_nomen[0].id
                 kol_do = ost_nomen[0].kol
-                if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
-                    line['kol'] += kol_do
-                if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
-                    line['kol'] = kol_do - line['kol']
+            else:
+                kol_do = 0
+
+            if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
+                line['kol'] += kol_do
+            if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
+                line['kol'] = kol_do - line['kol']
                     
             #Контроль отрицательных остатков
             # if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
-            #         line['err'] = True
+            #         err = True
             #         message = u'Невозможно списать %s %s. Требуется %s, на остатке %s' % (line['name'], line['kol'], line['kol_oborot'], kol_do)
 
-            if line['err'] == True:
+            if err == True:
                 raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
                 return False
-
-
-        for line in vals:
+            
+            
+            #Формируем словарь с ключами для записи sklad_ostatok
+            ost_vals = {
+                             'name': line['name'], 
+                             'sklad_sklad_id': line['sklad_sklad_id'], 
+                             'nomen_nomen_id': line['nomen_nomen_id'], 
+                             'kol': line['kol'], 
+                            }
             if line['id'] == False:
-                ost.create(line)
+                ost.create(ost_vals)
             else:
-                ost.browse(line['id']).write(line)
-
-        #Движения по Регистру остатки - обороты
-        obr = obj.env['sklad.oborot']
-        if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
-            for line in vals:
+                ost.browse(line['id']).write(ost_vals)
+            
+            #Движения по Регистру остатки - обороты
+            line.pop('kol', None)  #Удаляем ключ kol т.к его нет в структуре sklad_oborot
+            obr = obj.env['sklad.oborot']
+            if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
                 obr.create(line)
-        else:
 
-            ids_del = obr.search([  ('obj_id', '=', obj.id),
-                                    ('obj', '=', obj.__class__.__name__),
-                                    ])
-            ids_del.unlink()
+
 
         
 
         return True
 
     def reg_move_draft(self, obj):
-
-
 
         obr = obj.env['sklad.oborot']
         ids_del = obr.search([  ('obj_id', '=', obj.id),
@@ -206,16 +216,21 @@ class sklad_ostatok(models.Model):
             vals = []
             vid_dvijeniya = line['vid']+'-draft'
             vals.append({
-                         'vid': line.vid, 
-                         'name': line.name, 
-                         'sklad_sklad_id': line.sklad_sklad_id, 
-                         'nomen_nomen_id': line.nomen_nomen_id, 
-                         'kol': line.kol_oborot>0 if line.kol_oborot>0 else -1*line.kol_oborot
+                         'name': line.nomen_nomen_id.name, 
+                         'sklad_sklad_id': line.sklad_sklad_id.id, 
+                         'nomen_nomen_id': line.nomen_nomen_id.id, 
+                         'kol': line.kol_oborot if line.kol_oborot>0 else -1*line.kol_oborot
                         })
-
+            #print vals
+            #Отменяем движения по регистрам
             if self.reg_move(obj, vals, vid_dvijeniya) == False:
                 return False
+            
+            line.na_udalenie = True #Пометка на удаление, если что пойдет не так, можно увидеть что не удалено
 
+        ids_del.unlink()  #Удаляем записи
+        
+        return True
         # #Группируем спиcок по видам движения, преобразуем в формат:
         # RESULT = [{vid: vid_dvijeniya, data: [{name,sklad_sklad_id,nomen_nomen_id,kol}]}]
 
@@ -232,7 +247,6 @@ class sklad_ostatok(models.Model):
         #     sklad_ostatok = self.env['sklad.ostatok']    
         #     if sklad_ostatok.reg_move(doc, line['data'], 'prihod-draft')==True:
         #         self.state = 'draft'
-        return True
 
 
     
@@ -263,7 +277,7 @@ class sklad_oborot(models.Model):
     kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
     kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход")
     kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход")
-
+    na_udalenie = fields.Boolean(string=u"На удаление?", default=False)
 
 
 # def reg_ostatok_move(obj,vals, vid_dvijeniya):

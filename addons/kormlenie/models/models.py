@@ -1659,7 +1659,7 @@ class korm_korm(models.Model):
 	korm_korm_svod_line = fields.One2many('korm.korm_svod_line', 'korm_korm_id', string=u"Строка Свода Кормление", copy=False)
 	korm_korm_detail_line = fields.One2many('korm.korm_detail_line', 'korm_korm_id', string=u"Детальные строки Кормления", copy=False)
 	
-	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=False)
 	transport_id = fields.Many2one('milk.transport', string=u'Транспорт', required=True)   
 	voditel_id = fields.Many2one('res.partner', string='Водитель', required=True)
 	sostavil_id = fields.Many2one('res.partner', string='Составил')
@@ -1684,16 +1684,8 @@ class korm_korm(models.Model):
 	@api.multi
 	def action_draft(self):
 		for doc in self:
-			for detail in korm_detail_line:
-				vals_sklad.append({
-									 'name': detail.nomen_nomen_id.name, 
-									 'sklad_sklad_id': doc.sklad_sklad_id.id, 
-									 'nomen_nomen_id': detail.nomen_nomen_id.id, 
-									 'kol': kol, 
-									})
-
 			sklad_ostatok = self.env['sklad.ostatok']
-			if (sklad_ostatok.reg_move(doc, vals_sklad, 'rashod-draft')==True and 
+			if (sklad_ostatok.reg_move_draft(doc)==True and 
 				self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True):
 				self.state = 'draft'
 			
@@ -3392,6 +3384,7 @@ class korm_rashod_kormov(models.Model):
 
 	name = fields.Char(string='Номер', required=True, copy=False, readonly=True, index=True, default='New')
 	date = fields.Datetime(string='Дата', required=True, copy=False, default=fields.Datetime.now)
+	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=False)
 	
 	korm_rashod_kormov_line = fields.One2many('korm.rashod_kormov_line', 'korm_rashod_kormov_id', string=u"Строка Расход кормов и добавок", copy=True)
 	
@@ -3407,9 +3400,11 @@ class korm_rashod_kormov(models.Model):
 	@api.multi
 	def action_draft(self):
 		for doc in self:
-			
-			if self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True:
+			sklad_ostatok = self.env['sklad.ostatok']
+			if (sklad_ostatok.reg_move_draft(doc)==True and 
+				self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True):
 				self.state = 'draft'
+		
 			
 
 		
@@ -3419,6 +3414,7 @@ class korm_rashod_kormov(models.Model):
 		
 		for doc in self:
 			vals = []
+			vals_sklad = []
 			k = 0.000
 			for line in doc.korm_rashod_kormov_line:
 				vals.append({
@@ -3429,10 +3425,21 @@ class korm_rashod_kormov(models.Model):
 							'kol': line.kol, 
 
 							})
+				vals_sklad.append({
+									 'name': line.nomen_nomen_id.name, 
+									 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+									 'nomen_nomen_id': line.nomen_nomen_id.id, 
+									 'kol': line.kol, 
+									})
 
+			sklad_ostatok = self.env['sklad.ostatok']
+			if (sklad_ostatok.reg_move(doc, vals_sklad, 'rashod')==True and 
+				self.env['reg.rashod_kormov'].move(self, vals, 'create')==True):
+				doc.state = 'confirmed'	
+			else:
+				err = u'Ошибка при проведении'
+				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
 				
-			if self.env['reg.rashod_kormov'].move(self, vals, 'create')==True:
-				self.state = 'confirmed'
 			
 
 

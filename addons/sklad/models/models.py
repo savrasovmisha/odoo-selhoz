@@ -601,26 +601,25 @@ class sklad_peremeshenie(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals_otp = []
-            vals_pol = []
-            for line in doc.sklad_peremeshenie_line:
-                vals_otp.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_otp_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
-                vals_pol.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_pol_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
+            # vals_otp = []
+            # vals_pol = []
+            # for line in doc.sklad_peremeshenie_line:
+            #     vals_otp.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_otp_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
+            #     vals_pol.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_pol_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
             
             sklad_ostatok = self.env['sklad.ostatok']
             
-            if (sklad_ostatok.reg_move(doc, vals_otp, 'rashod-draft')==True and 
-                sklad_ostatok.reg_move(doc, vals_pol, 'prihod-draft')==True):
+            if sklad_ostatok.reg_move_draft(doc)==True:
                 self.state = 'draft'
 
         
@@ -764,18 +763,18 @@ class prodaja_prodaja(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals = []
-            for line in doc.prodaja_prodaja_line:
-                vals.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
+            # vals = []
+            # for line in doc.prodaja_prodaja_line:
+            #     vals.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
             sklad_ostatok = self.env['sklad.ostatok']    
-            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
+            if sklad_ostatok.reg_move_draft(doc)==True:
                 self.state = 'draft'
 
         
@@ -927,18 +926,18 @@ class sklad_trebovanie_nakladnaya(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals = []
-            for line in doc.sklad_trebovanie_nakladnaya_line:
-                vals.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
+            # vals = []
+            # for line in doc.sklad_trebovanie_nakladnaya_line:
+            #     vals.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
             sklad_ostatok = self.env['sklad.ostatok']     
-            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
+            if sklad_ostatok.reg_move_draft(doc)==True:
                 self.state = 'draft'
 
         
@@ -1100,18 +1099,18 @@ class sklad_spisanie(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals = []
-            for line in doc.sklad_spisanie_line:
-                vals.append({
-                             'name': line.nomen_nomen_id.name, 
-                             'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                             'nomen_nomen_id': line.nomen_nomen_id.id, 
-                             'kol': line.kol, 
-                            })
+            # vals = []
+            # for line in doc.sklad_spisanie_line:
+            #     vals.append({
+            #                  'name': line.nomen_nomen_id.name, 
+            #                  'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                  'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                  'kol': line.kol, 
+            #                 })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
             sklad_ostatok = self.env['sklad.ostatok']    
-            if sklad_ostatok.reg_move(doc, vals, 'rashod-draft')==True:
+            if sklad_ostatok.reg_move_draft(doc)==True:
                 self.state = 'draft'
 
         
@@ -1224,30 +1223,32 @@ class sklad_inventarizaciya(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            vals_prihod = []
-            vals_rashod = []
-            for line in doc.sklad_inventarizaciya_line:
-                if line.kol_otk>0:
-                    vals_prihod.append({
-                                 'name': line.nomen_nomen_id.name, 
-                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
-                                 'kol': line.kol_otk, 
-                                })
-                if line.kol_otk<0:
-                    vals_rashod.append({
-                                 'name': line.nomen_nomen_id.name, 
-                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
-                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
-                                 'kol': line.kol_otk, 
-                                })
+            # vals_prihod = []
+            # vals_rashod = []
+            # for line in doc.sklad_inventarizaciya_line:
+            #     if line.kol_otk>0:
+            #         vals_prihod.append({
+            #                      'name': line.nomen_nomen_id.name, 
+            #                      'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                      'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                      'kol': line.kol_otk, 
+            #                     })
+            #     if line.kol_otk<0:
+            #         vals_rashod.append({
+            #                      'name': line.nomen_nomen_id.name, 
+            #                      'sklad_sklad_id': doc.sklad_sklad_id.id, 
+            #                      'nomen_nomen_id': line.nomen_nomen_id.id, 
+            #                      'kol': line.kol_otk, 
+            #                     })
                       
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
-            sklad_ostatok = self.env['sklad.ostatok']    
-            if ((len(vals_prihod)==0 or sklad_ostatok.reg_move(doc, vals_prihod, 'prihod-draft')==True) and 
-                (len(vals_rashod)==0 or sklad_ostatok.reg_move(doc, vals_rashod, 'rashod-draft')==True)):
-                self.state = 'draft'
+            sklad_ostatok = self.env['sklad.ostatok'] 
+            if sklad_ostatok.reg_move_draft(doc) == True:
+                 self.state = 'draft'   
+            # if ((len(vals_prihod)==0 or sklad_ostatok.reg_move(doc, vals_prihod, 'prihod-draft')==True) and 
+            #     (len(vals_rashod)==0 or sklad_ostatok.reg_move(doc, vals_rashod, 'rashod-draft')==True)):
+            #     self.state = 'draft'
 
         
     

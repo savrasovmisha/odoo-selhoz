@@ -110,11 +110,19 @@ class sklad_ostatok(models.Model):
     _name = 'sklad.ostatok'
     _description = u'Остатки номенклатуры'
   
+    @api.one
+    @api.depends('kol', 'amount')
+    def _get_price(self):
+        if self.kol!=0 and self.amount:
+            self.price = self.amount/self.kol
+
     name = fields.Char(string=u"Регистратор", required=True)
     date = fields.Datetime(string='Дата последнего изменения')
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
+    amount = fields.Float(digits=(10, 2), string=u"Сумма")
 
     #@api.one
     def reg_move(self, obj, vals, vid_dvijeniya):
@@ -164,13 +172,20 @@ class sklad_ostatok(models.Model):
             if len(ost_nomen)>0:
                 line['id'] = ost_nomen[0].id
                 kol_do = ost_nomen[0].kol
+                amount_do = ost_nomen[0].amount
             else:
                 kol_do = 0
+                amount_do = 0
+
+            if 'amount' not in line:
+                line['amount'] = 0
 
             if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
                 line['kol'] += kol_do
+                line['amount'] += amount_do
             if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
                 line['kol'] = kol_do - line['kol']
+                line['amount'] = amount_do - line['amount']
                     
             #Контроль отрицательных остатков
             # if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
@@ -188,6 +203,7 @@ class sklad_ostatok(models.Model):
                              'sklad_sklad_id': line['sklad_sklad_id'], 
                              'nomen_nomen_id': line['nomen_nomen_id'], 
                              'kol': line['kol'], 
+                             'amount': line['amount'], 
                             }
             if line['id'] == False:
                 ost.create(ost_vals)
@@ -277,6 +293,10 @@ class sklad_oborot(models.Model):
     kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
     kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход")
     kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход")
+    price = fields.Float(digits=(10, 2), string=u"Цена")
+    amount_oborot = fields.Float(digits=(10, 2), string=u"Сумма оборот")
+    amount_prihod = fields.Float(digits=(10, 2), string=u"Сумма приход")
+    amount_rashod = fields.Float(digits=(10, 2), string=u"Сумма расход")
     na_udalenie = fields.Boolean(string=u"На удаление?", default=False)
 
 
@@ -473,6 +493,7 @@ class pokupka_pokupka(models.Model):
                              'sklad_sklad_id': doc.sklad_sklad_id.id, 
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
                              'kol': line.kol, 
+                             'amount': line.amount_bez_nds, 
                             })
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id

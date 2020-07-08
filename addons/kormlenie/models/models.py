@@ -1776,9 +1776,7 @@ class korm_korm(models.Model):
 				err = u'Ошибка при проведении'
 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
 						
-
 			
-
 
 
 

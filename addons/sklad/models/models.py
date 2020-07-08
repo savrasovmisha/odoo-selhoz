@@ -106,23 +106,127 @@ from openerp.exceptions import ValidationError
 #----------------------------------------------------------
 # Регистры остатков и оборотов
 #----------------------------------------------------------
-class sklad_ostatok(models.Model):
-    _name = 'sklad.ostatok'
-    _description = u'Остатки номенклатуры'
+
+class sklad_ostatok_price(models.Model):
+    _name = 'sklad.ostatok_price'
+    _description = u'Стоимость Остатки номенклатуры'
   
+
+    name = fields.Char(string=u"Наименование", compute='_get_price', store=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во")
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
+    amount = fields.Float(digits=(10, 2), string=u"Сумма")
+
     @api.one
     @api.depends('kol', 'amount')
     def _get_price(self):
         if self.kol!=0 and self.amount:
             self.price = self.amount/self.kol
+        if self.nomen_nomen_id:
+            self.name = self.nomen_nomen_id.name
 
-    name = fields.Char(string=u"Регистратор", required=True)
-    date = fields.Datetime(string='Дата последнего изменения')
+    def reg_update(self, nomen_nomen_id):
+        zapros = """SELECT  sum(s.amount_oborot), sum(s.kol_oborot)
+                    FROM sklad_oborot s
+                    WHERE s.nomen_nomen_id=%s
+                """ %(nomen_nomen_id)
+        #print zapros
+        self._cr.execute(zapros,)
+        result = self._cr.fetchone()
+        if len(result)>0:
+            
+            vals = {
+                         'nomen_nomen_id': nomen_nomen_id, 
+                         'kol': result[1],
+                         'amount': result[0], 
+                        }
+            
+            ost = self.search([
+                              ('nomen_nomen_id', '=', nomen_nomen_id),
+                            ])
+            if len(ost)>0:
+                ost.browse(ost[0].id).write(vals)
+            else:
+                ost.create(vals)
+                
+
+    # def reg_move(self, vals, vid_dvijeniya):
+    #     print vals
+
+    #     ost = self.search([
+    #               ('nomen_nomen_id', '=', vals['nomen_nomen_id']),
+    #             ])
+    #     if len(ost)>0:
+    #         vals['id'] = ost[0].id
+    #         kol_do = ost[0].kol
+    #         amount_do = ost[0].amount
+            
+    #     else:
+    #         vals['id'] = False    
+    #         kol_do = 0
+    #         amount_do = 0
+
+    #     if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
+    #             vals['kol'] += kol_do
+    #             vals['amount'] += amount_do
+
+                
+    #     if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
+    #         vals['kol'] = kol_do - vals['kol']
+    #         vals['amount'] = amount_do - vals['amount']
+
+
+    #     if vals['id'] == False:
+    #         ost.create(vals)
+    #     else:
+    #         ost.browse(vals['id']).write(vals)
+
+
+
+
+class sklad_ostatok(models.Model):
+    _name = 'sklad.ostatok'
+    _description = u'Остатки номенклатуры'
+  
+    
+    name = fields.Char(string=u"Наименование", compute='_get_price', store=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
-    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
-    amount = fields.Float(digits=(10, 2), string=u"Сумма")
+    
+    @api.one
+    @api.depends('kol')
+    def _get_price(self):
+        if self.nomen_nomen_id:
+            self.name = self.nomen_nomen_id.name
+
+
+    def reg_update(self, sklad_sklad_id, nomen_nomen_id):
+        
+        zapros = """SELECT  sum(s.kol_oborot)
+                    FROM sklad_oborot s
+                    WHERE s.sklad_sklad_id=%s and s.nomen_nomen_id=%s
+                """ %(sklad_sklad_id, nomen_nomen_id)
+        
+        self._cr.execute(zapros,)
+        result = self._cr.fetchone()
+        if len(result)>0:
+            
+            vals = {
+                         'nomen_nomen_id': nomen_nomen_id, 
+                         'kol': result[0],
+                    }
+            
+            ost = self.search([
+                              ('sklad_sklad_id', '=', sklad_sklad_id),
+                              ('nomen_nomen_id', '=', nomen_nomen_id),
+                            ])
+            if len(ost)>0:
+                ost.browse(ost[0].id).write(vals)
+            else:
+                ost.create(vals)
+
 
     #@api.one
     def reg_move(self, obj, vals, vid_dvijeniya):
@@ -130,8 +234,10 @@ class sklad_ostatok(models.Model):
             Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
         """
         print u"Начало проведение документа"
+        #print vals
         message = ''
         
+
 
 
         if len(vals) == 0:
@@ -140,17 +246,14 @@ class sklad_ostatok(models.Model):
             return False
 
         ost = obj.env['sklad.ostatok']
+        ost_price = obj.env['sklad.ostatok_price']
         for line in vals:
-            ost_nomen = ost.search([
-                ('sklad_sklad_id', '=', line['sklad_sklad_id']),
-                ('nomen_nomen_id', '=', line['nomen_nomen_id']),
-                ])
             err = False
             line['id'] = False
             line['obj'] = obj.__class__.__name__
             line['obj_id'] = obj.id
             line['date'] = obj.date
-            line['vid'] = vid_dvijeniya
+            line['vid_dvijeniya'] = vid_dvijeniya
             if vid_dvijeniya == 'prihod':
                 line['kol_prihod'] = line['kol']
                 line['kol_oborot'] = line['kol']
@@ -159,6 +262,9 @@ class sklad_ostatok(models.Model):
                 line['kol_oborot'] = -1*line['kol']
 
             #Проверка на ошибки
+            if vid_dvijeniya != 'rashod' and vid_dvijeniya != 'prihod':
+                err = True
+                message = u"Не верно указан вид движения"
             if line['kol']<=0:
                 err = True
                 message = u"Кол-во должно быть больше нуля"
@@ -168,85 +274,95 @@ class sklad_ostatok(models.Model):
             if line['nomen_nomen_id']==False or line['sklad_sklad_id']==None:
                 err = True
                 message = u"Не указана номенклатура"
-
-            if len(ost_nomen)>0:
-                line['id'] = ost_nomen[0].id
-                kol_do = ost_nomen[0].kol
-                amount_do = ost_nomen[0].amount
-            else:
-                kol_do = 0
-                amount_do = 0
-
-            if 'amount' not in line:
-                line['amount'] = 0
-
-            if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod-draft':
-                line['kol'] += kol_do
-                line['amount'] += amount_do
-            if vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft':
-                line['kol'] = kol_do - line['kol']
-                line['amount'] = amount_do - line['amount']
-                    
-            #Контроль отрицательных остатков
+            #-------------------------------------------------------------------------------
+            #---------Контроль отрицательных остатков---------------------------------------
+            #-------------------------------------------------------------------------------
             # if (vid_dvijeniya == 'rashod' or vid_dvijeniya == 'prihod-draft') and line['kol']<0:
             #         err = True
             #         message = u'Невозможно списать %s %s. Требуется %s, на остатке %s' % (line['name'], line['kol'], line['kol_oborot'], kol_do)
+            #-------------------------------------------------------------------------------
+            #---------Контроль отрицательных остатков---------------------------------------
+            #-------------------------------------------------------------------------------
+
+
+            # ost_nomen = ost.search([
+            #     ('sklad_sklad_id', '=', line['sklad_sklad_id']),
+            #     ('nomen_nomen_id', '=', line['nomen_nomen_id']),
+            #     ])
+            
+            # if len(ost_nomen)>0:
+            #     line['id'] = ost_nomen[0].id
+            #     kol_do = ost_nomen[0].kol
+                
+            # else:
+            #     kol_do = 0
+                
+
+
+            if 'amount' not in line:
+                line['is_raschet'] = True #Признак что необходимо расчитать стоимость
+            else:
+                line['is_raschet'] = False
+                if vid_dvijeniya == 'prihod':
+                    line['amount_oborot'] = line['amount']
+                    line['amount_prihod'] = line['amount']
+                if vid_dvijeniya == 'rashod':
+                    line['amount_oborot'] = -1 * line['amount']
+                    line['amount_rashod'] = line['amount']
+
+                           
 
             if err == True:
                 raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
                 return False
             
-            
-            #Формируем словарь с ключами для записи sklad_ostatok
-            ost_vals = {
-                             'name': line['name'], 
-                             'sklad_sklad_id': line['sklad_sklad_id'], 
-                             'nomen_nomen_id': line['nomen_nomen_id'], 
-                             'kol': line['kol'], 
-                             'amount': line['amount'], 
-                            }
-            if line['id'] == False:
-                ost.create(ost_vals)
-            else:
-                ost.browse(line['id']).write(ost_vals)
-            
+        #Если нет ошибок приступаем к записям в регистры   
+        obr = obj.env['sklad.oborot']
+        for line in vals:    
+
             #Движения по Регистру остатки - обороты
             line.pop('kol', None)  #Удаляем ключ kol т.к его нет в структуре sklad_oborot
-            obr = obj.env['sklad.oborot']
-            if vid_dvijeniya == 'prihod' or vid_dvijeniya == 'rashod':
-                obr.create(line)
+            obr.create(line)
 
+            ost.reg_update(line['sklad_sklad_id'], line['nomen_nomen_id'])
+            ost_price.reg_update(line['nomen_nomen_id'])
 
 
         
 
         return True
+
 
     def reg_move_draft(self, obj):
 
         obr = obj.env['sklad.oborot']
         ids_del = obr.search([  ('obj_id', '=', obj.id),
-                                    ('obj', '=', obj.__class__.__name__),
-                                    ])
+                                ('obj', '=', obj.__class__.__name__),
+                            ])
         for line in ids_del:
             vals = []
-            vid_dvijeniya = line['vid']+'-draft'
+            vid_dvijeniya = line['vid_dvijeniya']+'-draft'
             vals.append({
-                         'name': line.nomen_nomen_id.name, 
                          'sklad_sklad_id': line.sklad_sklad_id.id, 
                          'nomen_nomen_id': line.nomen_nomen_id.id, 
-                         'kol': line.kol_oborot if line.kol_oborot>0 else -1*line.kol_oborot
                         })
-            #print vals
-            #Отменяем движения по регистрам
-            if self.reg_move(obj, vals, vid_dvijeniya) == False:
-                return False
-            
+                        
             line.na_udalenie = True #Пометка на удаление, если что пойдет не так, можно увидеть что не удалено
 
         ids_del.unlink()  #Удаляем записи
+
+        #Пересчитываем итоги
+        ost = obj.env['sklad.ostatok']
+        ost_price = obj.env['sklad.ostatok_price']
+        for line in vals:
+            ost.reg_update(line['sklad_sklad_id'], line['nomen_nomen_id'])
+            ost_price.reg_update(line['nomen_nomen_id'])
+
         
         return True
+    
+
+
         # #Группируем спиcок по видам движения, преобразуем в формат:
         # RESULT = [{vid: vid_dvijeniya, data: [{name,sklad_sklad_id,nomen_nomen_id,kol}]}]
 
@@ -279,26 +395,37 @@ class sklad_ostatok_period(models.Model):
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
 
 
+
+
 class sklad_oborot(models.Model):
     _name = 'sklad.oborot'
     _description = u'Остатки номенклатуры. Движение'
+
+    @api.one
+    @api.depends('kol_oborot', 'amount_oborot')
+    def _get_price(self):
+        if self.kol_oborot!=0 and self.amount_oborot:
+            self.price = self.amount_oborot/self.kol_oborot
+        if self.nomen_nomen_id:
+            self.name = self.nomen_nomen_id.name
   
-    name = fields.Char(string=u"Регистратор", required=True)
+    name = fields.Char(string=u"Регистратор", compute='_get_price', store=True)
     obj = fields.Char(string=u"Регистратор", required=True)
     obj_id = fields.Integer(string=u"ID Регистратора", required=True)
     date = fields.Datetime(string='Дата', required=True)
-    vid = fields.Char(string=u"Вид движения", required=True)
+    vid_dvijeniya = fields.Char(string=u"Вид движения", required=True, oldname='vid')
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
-    kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот")
-    kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход")
-    kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход")
-    price = fields.Float(digits=(10, 2), string=u"Цена")
-    amount_oborot = fields.Float(digits=(10, 2), string=u"Сумма оборот")
-    amount_prihod = fields.Float(digits=(10, 2), string=u"Сумма приход")
-    amount_rashod = fields.Float(digits=(10, 2), string=u"Сумма расход")
+    kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот", default=0)
+    kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход", default=0)
+    kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход", default=0)
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True, default=0)
+    amount_oborot = fields.Float(digits=(10, 2), string=u"Сумма оборот", default=0)
+    amount_prihod = fields.Float(digits=(10, 2), string=u"Сумма приход", default=0)
+    amount_rashod = fields.Float(digits=(10, 2), string=u"Сумма расход", default=0)
     na_udalenie = fields.Boolean(string=u"На удаление?", default=False)
-
+    is_raschet = fields.Boolean(string=u"Расчитывать сумму?", default=False, help=u"Если истина то суммы нужно расчитать например для док-та перемещении товаров")
+    
 
 # def reg_ostatok_move(obj,vals, vid_dvijeniya):
 #     """
@@ -496,7 +623,8 @@ class pokupka_pokupka(models.Model):
                              'amount': line.amount_bez_nds, 
                             })
 
-                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+                # print "++++++++++++++++++++++++++++++++++++++++++++", vals
+                # print "++++++++++++++++++++++++++++++++++++++++++++", line.amount_bez_nds
                 
             sklad_ostatok = self.env['sklad.ostatok']
             if sklad_ostatok.reg_move(doc, vals, 'prihod')==True:
@@ -518,6 +646,15 @@ class pokupka_pokupka_line(models.Model):
     _description = u'Поступление товаров строки'
     _order = 'sequence'
 
+
+    @api.model
+    def create(self, vals):
+        print vals
+        if vals.get('nalog_nds_id') == False:
+            raise exceptions.ValidationError(_(u"Не заполнено поле НДС"))
+
+        result = super(pokupka_pokupka_line, self).create(vals)
+        return result
 
     @api.one
     @api.depends('nomen_nomen_id','kol','price','amount','nalog_nds_id')
@@ -558,7 +695,8 @@ class pokupka_pokupka_line(models.Model):
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
             self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
-            self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+            if self.nomen_nomen_id.nalog_nds_id:
+                self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
 
     def return_name(self):
         self.name = self.pokupka_pokupka_id.name

@@ -48,6 +48,13 @@
             </field>
         </record>
 
+
+        <record model="ir.actions.act_window" id="act_nomen_open_ostatok">
+            <field name="name">Остатки</field>
+            <field name="context">{'default_nomen_nomen_id': active_id}</field>
+            <field name="domain">[('nomen_nomen_id', '=', active_id)]</field>
+            <field name="res_model">sklad.ostatok</field>
+        </record>
        
         <!-- window action Верхняя панель -->
         <!--

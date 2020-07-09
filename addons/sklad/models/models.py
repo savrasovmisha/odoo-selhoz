@@ -118,6 +118,13 @@ class sklad_ostatok_price(models.Model):
     price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
     amount = fields.Float(digits=(10, 2), string=u"Сумма")
 
+
+    def get_price(self, nomen_nomen_id):
+        return self.search([
+                      ('nomen_nomen_id', '=', nomen_nomen_id),
+                    ], limit=1).price or 0
+
+
     @api.one
     @api.depends('kol', 'amount')
     def _get_price(self):
@@ -190,14 +197,14 @@ class sklad_ostatok(models.Model):
     _description = u'Остатки номенклатуры'
   
     
-    name = fields.Char(string=u"Наименование", compute='_get_price', store=True)
+    name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
     
     @api.one
     @api.depends('kol')
-    def _get_price(self):
+    def _get_name(self):
         if self.nomen_nomen_id:
             self.name = self.nomen_nomen_id.name
 
@@ -212,20 +219,22 @@ class sklad_ostatok(models.Model):
         self._cr.execute(zapros,)
         result = self._cr.fetchone()
         if len(result)>0:
+            kol_ostatok = result[0]
             
-            vals = {
-                         'nomen_nomen_id': nomen_nomen_id, 
-                         'kol': result[0],
-                    }
-            
-            ost = self.search([
-                              ('sklad_sklad_id', '=', sklad_sklad_id),
-                              ('nomen_nomen_id', '=', nomen_nomen_id),
-                            ])
-            if len(ost)>0:
-                ost.browse(ost[0].id).write(vals)
-            else:
-                ost.create(vals)
+        vals = {
+                     'sklad_sklad_id': sklad_sklad_id,
+                     'nomen_nomen_id': nomen_nomen_id, 
+                     'kol': kol_ostatok or 0,
+                }
+        
+        ost = self.search([
+                          ('sklad_sklad_id', '=', sklad_sklad_id),
+                          ('nomen_nomen_id', '=', nomen_nomen_id),
+                        ])
+        if len(ost)>0:
+            ost.browse(ost[0].id).write(vals)
+        else:
+            ost.create(vals)
 
 
     #@api.one
@@ -301,14 +310,17 @@ class sklad_ostatok(models.Model):
 
             if 'amount' not in line:
                 line['is_raschet'] = True #Признак что необходимо расчитать стоимость
+                price = ost_price.get_price(line['nomen_nomen_id'])
+                line['amount'] = price * line['kol']
             else:
                 line['is_raschet'] = False
-                if vid_dvijeniya == 'prihod':
-                    line['amount_oborot'] = line['amount']
-                    line['amount_prihod'] = line['amount']
-                if vid_dvijeniya == 'rashod':
-                    line['amount_oborot'] = -1 * line['amount']
-                    line['amount_rashod'] = line['amount']
+
+            if vid_dvijeniya == 'prihod':
+                line['amount_oborot'] = line['amount']
+                line['amount_prihod'] = line['amount']
+            if vid_dvijeniya == 'rashod':
+                line['amount_oborot'] = -1 * line['amount']
+                line['amount_rashod'] = line['amount']
 
                            
 
@@ -319,7 +331,7 @@ class sklad_ostatok(models.Model):
         #Если нет ошибок приступаем к записям в регистры   
         obr = obj.env['sklad.oborot']
         for line in vals:    
-
+            print line
             #Движения по Регистру остатки - обороты
             line.pop('kol', None)  #Удаляем ключ kol т.к его нет в структуре sklad_oborot
             obr.create(line)
@@ -547,7 +559,7 @@ class pokupka_pokupka(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if pp.state != 'done':
+            if pp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(pokupka_pokupka, self).unlink()
@@ -557,12 +569,19 @@ class pokupka_pokupka(models.Model):
     date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
     partner_id = fields.Many2one('res.partner', string='Контрагент', required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
-    pokupka_pokupka_line = fields.One2many('pokupka.pokupka_line', 'pokupka_pokupka_id', string=u"Строка Поступление товаров")
+    pokupka_pokupka_line = fields.One2many('pokupka.pokupka_line', 'pokupka_pokupka_id', string=u"Строка товаров Поступление товаров")
+    pokupka_pokupka_uslugi_line = fields.One2many('pokupka.pokupka_uslugi_line', 'pokupka_pokupka_id', string=u"Строка услуг Поступление товаров")
     nds_price = fields.Boolean(string=u"Цена включает НДС")
     amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     proveden = fields.Boolean(string=u"Проводен")
+    metod_raspredeleniya = fields.Selection([
+        ('neraspredelyat', "Нераспределяеть"),
+        ('po_stoimosti', "По стоимости"),
+        ('po_kolichestvu', "По количеству")        
+    ], default='po_stoimosti', string=u"Метод распределения услуг")
+    
     state = fields.Selection([
         ('create', "Создан"),
         ('draft', "Черновик"),
@@ -573,7 +592,9 @@ class pokupka_pokupka(models.Model):
 
     @api.one
     @api.depends('pokupka_pokupka_line.kol','pokupka_pokupka_line.price',
-                 'pokupka_pokupka_line.amount','pokupka_pokupka_line.nalog_nds_id')
+                 'pokupka_pokupka_line.amount','pokupka_pokupka_line.nalog_nds_id',
+                 'pokupka_pokupka_uslugi_line.kol','pokupka_pokupka_uslugi_line.price',
+                 'pokupka_pokupka_uslugi_line.amount','pokupka_pokupka_uslugi_line.nalog_nds_id')
     def _amount_all(self):
         """
         Compute the total amounts.
@@ -583,6 +604,11 @@ class pokupka_pokupka(models.Model):
         for line in self.pokupka_pokupka_line:
             self.amount_nds += line.amount_nds
             self.amount_total += line.amount_total
+        
+        for line in self.pokupka_pokupka_uslugi_line:
+            self.amount_nds += line.amount_nds
+            self.amount_total += line.amount_total
+        
         self.amount_bez_nds = self.amount_total - self.amount_nds
 
    
@@ -613,6 +639,28 @@ class pokupka_pokupka(models.Model):
         #self.write({'state': 'confirmed'})
         
         for doc in self:
+            if len(doc.pokupka_pokupka_uslugi_line)>0 and doc.metod_raspredeleniya!='neraspredelyat':
+                
+                amount_uslugi_bez_nds = sum(line.amount_bez_nds for line in doc.pokupka_pokupka_uslugi_line)
+                
+                sum_kol = sum(line.kol for line in doc.pokupka_pokupka_line)
+                
+                if sum_kol>0:
+                    if doc.metod_raspredeleniya == 'po_kolichestvu':
+                        for line in doc.pokupka_pokupka_line:
+                            line.amount_uslugi = line.kol/sum_kol * amount_uslugi_bez_nds
+
+                    if doc.metod_raspredeleniya == 'po_stoimosti':
+                        sum_amount = sum(line.amount_bez_nds for line in doc.pokupka_pokupka_line)
+                        for line in doc.pokupka_pokupka_line:
+                            line.amount_uslugi = line.amount_bez_nds/sum_amount * amount_uslugi_bez_nds
+
+                    #Проверка погрешности распределения
+                    sum_amount_uslugi = sum(line.amount_uslugi for line in doc.pokupka_pokupka_line)
+                    if sum_amount_uslugi != amount_uslugi_bez_nds:
+                        line = doc.pokupka_pokupka_line[0] #берем первую строку и прибавляем погрешность
+                        line.amount_uslugi += amount_uslugi_bez_nds - sum_amount_uslugi
+
             vals = []
             for line in doc.pokupka_pokupka_line:
                 vals.append({
@@ -626,6 +674,8 @@ class pokupka_pokupka(models.Model):
                 # print "++++++++++++++++++++++++++++++++++++++++++++", vals
                 # print "++++++++++++++++++++++++++++++++++++++++++++", line.amount_bez_nds
                 
+
+
             sklad_ostatok = self.env['sklad.ostatok']
             if sklad_ostatok.reg_move(doc, vals, 'prihod')==True:
                 doc.state = 'confirmed'
@@ -687,10 +737,7 @@ class pokupka_pokupka_line(models.Model):
     @api.one
     @api.depends('nomen_nomen_id')
     def _nomen(self):
-        """
-        Compute the total amounts.
-        """
-          
+        
         if self.nomen_nomen_id:
             # func_model = self.env['nomen.ed_izm']
             # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
@@ -701,18 +748,106 @@ class pokupka_pokupka_line(models.Model):
     def return_name(self):
         self.name = self.pokupka_pokupka_id.name
 
+    #@api.one
+    def _set_nds(self):
+        for record in self:
+            if not record.nalog_nds_id: continue
+
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string=u"Поступление", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     price = fields.Float(digits=(10, 2), string=u"Цена", readonly=False, compute='_amount',  store=True)
     amount = fields.Float(digits=(10, 2), string=u"Сумма", readonly=False, store=True, group_operator="sum")
-    nalog_nds_id = fields.Many2one('nalog.nds',string=u"%НДС", readonly=False, compute='_nomen',  store=True)
+    nalog_nds_id = fields.Many2one('nalog.nds',string=u"%НДС", required=True, readonly=False, compute='_nomen', inverse='_set_nds',  store=True)
+    amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
+    amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
+    amount_uslugi = fields.Float(digits=(10, 2), string=u"Доп расходы (услуг)", readonly=True,  store=True, group_operator="sum")
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
+
+
+
+class pokupka_pokupka_uslugi_line(models.Model):
+    _name = 'pokupka.pokupka_uslugi_line'
+    _description = u'Поступление товаров Услуги строки'
+    _order = 'sequence'
+
+
+    @api.model
+    def create(self, vals):
+        print vals
+        if vals.get('nalog_nds_id') == False:
+            raise exceptions.ValidationError(_(u"Не заполнено поле НДС"))
+
+        result = super(pokupka_pokupka_uslugi_line, self).create(vals)
+        return result
+
+    @api.one
+    @api.depends('nomen_nomen_id','kol','price','amount','nalog_nds_id')
+    def _amount_all(self):
+        """
+        Compute the total amounts.
+        """
+        if self.nalog_nds_id and self.kol>0 and self.price>0:
+            
+            if self.pokupka_pokupka_id.nds_price == True:
+                self.amount_nds = self.amount * self.nalog_nds_id.nds/(100 + self.nalog_nds_id.nds)
+                self.amount_total = self.amount
+            else:
+                self.amount_nds = self.amount * self.nalog_nds_id.nds/100
+                self.amount_total = self.amount + self.amount_nds
+            self.amount_bez_nds = self.amount_total - self.amount_nds
+
+
+    @api.one
+    @api.depends('kol','price','amount','nalog_nds_id')
+    def _amount(self):
+        """
+        Compute the total amounts.
+        """
+        if self.amount and self.kol>0:
+            self.price = self.amount / self.kol
+      
+
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        
+        if self.nomen_nomen_id:
+            # func_model = self.env['nomen.ed_izm']
+            # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            if self.nomen_nomen_id.nalog_nds_id:
+                self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+
+    def return_name(self):
+        self.name = self.pokupka_pokupka_id.name
+
+    #@api.one
+    def _set_nds(self):
+        for record in self:
+            if not record.nalog_nds_id: continue
+
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    pokupka_pokupka_id = fields.Many2one('pokupka.pokupka', ondelete='cascade', string=u"Поступление", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Услуги', required=True, domain=[('is_usluga', '=', True)])
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", readonly=False, compute='_amount',  store=True)
+    amount = fields.Float(digits=(10, 2), string=u"Сумма", readonly=False, store=True, group_operator="sum")
+    nalog_nds_id = fields.Many2one('nalog.nds',string=u"%НДС", required=True, readonly=False, compute='_nomen', inverse='_set_nds',  store=True)
     amount_bez_nds = fields.Float(digits=(10, 2), string=u"Сумма без НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_nds = fields.Float(digits=(10, 2), string=u"Сумма НДС", readonly=True, compute='_amount_all', store=True, group_operator="sum")
     amount_total = fields.Float(digits=(10, 2), string=u"Всего", readonly=True, compute='_amount_all',  store=True, group_operator="sum")
     sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
+    
+
+
+
+
     
 
 class sklad_peremeshenie(models.Model):
@@ -734,7 +869,7 @@ class sklad_peremeshenie(models.Model):
     def unlink(self):
         
         for sp in self:
-            if sp.state != 'done':
+            if sp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (sp.name)))
 
         return super(sklad_peremeshenie, self).unlink()
@@ -853,7 +988,7 @@ class sklad_peremeshenie_line(models.Model):
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_peremeshenie_id = fields.Many2one('sklad.peremeshenie', ondelete='cascade', string=u"Перемещение", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
@@ -880,7 +1015,7 @@ class prodaja_prodaja(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if pp.state != 'done':
+            if sp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(prodaja_prodaja, self).unlink()
@@ -1018,7 +1153,7 @@ class prodaja_prodaja_line(models.Model):
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     prodaja_prodaja_id = fields.Many2one('prodaja.prodaja', ondelete='cascade', string=u"Реализация", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     price = fields.Float(digits=(10, 2), string=u"Цена", readonly=False, compute='_amount',  store=True)
@@ -1051,7 +1186,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if pp.state != 'done':
+            if sp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_trebovanie_nakladnaya, self).unlink()
@@ -1189,7 +1324,7 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_trebovanie_nakladnaya_id = fields.Many2one('sklad.trebovanie_nakladnaya', ondelete='cascade', string=u"Требование-Накладная", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     nomen_name = fields.Char(string=u"Наименование для сортировки", compute='_nomen', store=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
@@ -1228,7 +1363,7 @@ class sklad_spisanie(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if pp.state != 'done':
+            if sp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_spisanie, self).unlink()
@@ -1328,7 +1463,7 @@ class sklad_spisanie_line(models.Model):
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_spisanie_id = fields.Many2one('sklad.spisanie', ondelete='cascade', string=u"Списание", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
     amaunt = fields.Float(digits=(10, 2), string=u"Сумма", required=True)
@@ -1359,7 +1494,7 @@ class sklad_inventarizaciya(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if pp.state != 'done':
+            if sp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_inventarizaciya, self).unlink()
@@ -1505,7 +1640,7 @@ class sklad_inventarizaciya_line(models.Model):
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string=u"Инвентаризация", required=True)
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True, default=0)
     kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)

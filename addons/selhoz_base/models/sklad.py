@@ -100,12 +100,13 @@ class nomen_nomen(models.Model):
 
     @api.one
     def _get_ostatok(self):
-        reg = self.env['sklad.ostatok']
-        result = reg.search([ ('nomen_nomen_id', '=', self.id), 
-                                    ('date', '<=', str(datetime.today())),
-                                  ], order="date desc",limit=1)
+        reg = self.env['sklad.ostatok_price']
+        result = reg.search([ 
+                                ('nomen_nomen_id', '=', self.id)                              
+                            ], limit=1)
         if len(result)>0:
             self.ostatok = result.kol
+            self.ostatok_amount = result.amount
 
     @api.one
     @api.depends('nomen_nomen_price_line')
@@ -128,6 +129,7 @@ class nomen_nomen(models.Model):
     id_1c = fields.Char(string=u"Номер в 1С")
     active = fields.Boolean(string=u"Используется", default=True)
     ostatok = fields.Float(digits=(10, 3), string=u"Кол-во", store=False, compute="_get_ostatok")
+    ostatok_amount = fields.Float(digits=(10, 2), string=u"Стоимость остатков", store=False, compute="_get_ostatok")
     model = fields.Char(string=u"Модель")
     kod = fields.Char(string=u"Код")
     zavod_name = fields.Char(string=u"Завод производитель")
@@ -138,6 +140,7 @@ class nomen_nomen(models.Model):
     is_pokupaem = fields.Boolean(string=u"Покупаем", default=False)
     is_proizvodim = fields.Boolean(string=u"Производим", default=False)
     is_prodaem = fields.Boolean(string=u"Продаем", default=False)
+    is_usluga = fields.Boolean(string=u"Это услуга", default=False)
     
     partner_id = fields.Many2one('res.partner', string='Поставщик', compute='_get_price', store=True)
     currency_id = fields.Many2one('res.currency', string='Валюта', compute='_get_price', store=True)

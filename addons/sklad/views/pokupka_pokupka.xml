@@ -47,10 +47,32 @@
                                     <field name="nalog_nds_id"/>
                                     <field name="amount_nds"/>
                                     <field name="amount_total"/>
+                                    <field name="amount_uslugi"/>
                                     <field name="sequence" widget="handle"/>
                                     
                                 </tree>
                             </field>
+                            
+                        </page>
+                        <page string="Услуги">
+                            <field name="metod_raspredeleniya"/>
+                            
+                            <field name="pokupka_pokupka_uslugi_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="pokupka_pokupka_uslugi_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="nalog_nds_id"/>
+                                    <field name="amount_nds"/>
+                                    <field name="amount_total"/>
+                                    <field name="sequence" widget="handle"/>
+                                    
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                             <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
                                 <field name="amount_bez_nds" widget='monetary'/>
                                 <field name="amount_nds" widget='monetary'/>
@@ -60,8 +82,6 @@
                                 </div>
                                 <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
                             </group>
-                        </page>
-                    </notebook>
 		            
                 </sheet>
             </form>

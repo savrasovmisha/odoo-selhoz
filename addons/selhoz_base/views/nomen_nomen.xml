@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+
+
+
+
+
+
 	<record model="ir.ui.view" id="nomen_nomen_form_view">
         <field name="name">nomen_nomen.form</field>
         <field name="model">nomen.nomen</field>
@@ -9,14 +15,7 @@
                 <sheet>
 
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active"  
-                                type="action"
-                                class="oe_stat_button"
-                                icon="fa-building-o">
-                            
-                            <field name="ostatok" widget="statinfo" string="Остаток"/>
-                            
-                        </button>
+                        
 
                         <button name="toggle_active" type="object"
                                 class="oe_stat_button" icon="fa-archive">
@@ -48,6 +47,7 @@
                                     <field name="nomen_categ_id"/>
                                     <field name="nomen_group_id"/>
                                 
+                                    <field name="is_usluga"/>
                                     <field name="is_pokupaem"/>
                                     <field name="is_proizvodim"/>
                                     <field name="is_prodaem"/>
@@ -108,6 +108,13 @@
             </form>
         </field>
     </record>
+
+
+
+
+
+
+
 
         <record model="ir.ui.view" id="view_nomen_nomen_tree" >
             <field name="name">nomen_nomen.tree</field>

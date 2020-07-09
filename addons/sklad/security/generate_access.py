@@ -4,6 +4,9 @@ spisok.append(['sklad.trebovanie_nakladnaya_line',''])
 spisok.append(['buh.nomen_group',''])
 spisok.append(['buh.stati_zatrat',''])
 spisok.append(['sklad.ostatok',''])
+spisok.append(['sklad.ostatok_price',''])
+spisok.append(['sklad.oborot',''])
+spisok.append(['pokupka.pokupka_uslugi_line',''])
 
 
 

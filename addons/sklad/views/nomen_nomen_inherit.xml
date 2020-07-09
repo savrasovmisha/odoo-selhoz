@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="nomen_nomen_form_view_inherit_sklad_ostatok" model="ir.ui.view">
+            <field name="name">nomen_nomen.form.sklad.ostatok</field>
+            <field name="model">nomen.nomen</field>
+            <field name="inherit_id" ref="selhoz_base.nomen_nomen_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//button[@name='toggle_active']" position="before">
+                    	<button name="%(act_nomen_open_ostatok)d"  
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-building-o">
+                            
+                            <field name="ostatok" widget="statinfo" string="Остаток"/>
+                            <field name="ostatok_amount" widget="statinfo" string="Сумма"/>
+                            
+                        </button>
+                    </xpath>
+                </data>
+           </field>
+        </record>
+</odoo>

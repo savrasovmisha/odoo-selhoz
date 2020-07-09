@@ -54,6 +54,7 @@
         'views/nomen_price.xml',
         'views/seq_nomen_price.xml',
         'views/sklad_ostatok.xml',
+        'views/nomen_nomen_inherit.xml',
         'views/menu.xml',
         'security/ir.model.access.csv',
         

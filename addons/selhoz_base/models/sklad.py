@@ -96,7 +96,10 @@ class nomen_group(models.Model):
 class nomen_nomen(models.Model):
     _name = 'nomen.nomen'
     _description = u'Номенклатура'
-    _order = 'name'
+    _parent_name = "parent_id"
+    _parent_store = True
+    _parent_order = 'name'
+    _order  = 'parent_left'
 
     @api.one
     def _get_ostatok(self):
@@ -120,6 +123,7 @@ class nomen_nomen(models.Model):
 
         
     name = fields.Char(string=u"Наименование", required=True)
+    is_group = fields.Boolean(string=u"Это группа", default=False)
     nomen_categ_id = fields.Many2one('nomen.categ', string=u"Категория", default=None)
     nomen_group_id = fields.Many2one('nomen.group', string=u"Группа", default=None)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", required=True)
@@ -146,8 +150,14 @@ class nomen_nomen(models.Model):
     currency_id = fields.Many2one('res.currency', string='Валюта', compute='_get_price', store=True)
     description = fields.Text(string=u"Коментарии")
 
+    parent_id = fields.Many2one('nomen.nomen', string=u'Родительский элемент', index=True, ondelete='cascade')
+    child_ids = fields.One2many('nomen.nomen', 'parent_id', string=u'Подчиненные элементы')
+    parent_left = fields.Integer('Left Parent', index=True)
+    parent_right = fields.Integer('Right Parent', index=True)
+
 
     nomen_nomen_price_line = fields.One2many('nomen.nomen_price_line', 'nomen_nomen_id', string=u"Строка Закупочная стоимость Номенклатуры", copy=False)
+    nomen_nomen_sklad_line = fields.One2many('nomen.nomen_sklad_line', 'nomen_nomen_id', string=u"Строка Основные места хранения Номенклатуры", copy=False)
 
 
 
@@ -170,6 +180,22 @@ class nomen_nomen_price_line(models.Model):
     currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id.id)
     partner_id = fields.Many2one('res.partner', string='Поставщик')
 
+
+class nomen_nomen_sklad_line(models.Model):
+    """Строка Основные места хранения Номенклатуры"""
+    _name = 'nomen.nomen_sklad_line'
+    _description = u'Строка Основные места хранения Номенклатуры'
+    _order  = 'name desc'
+    
+    @api.one
+    def return_name(self):
+        self.name = self.sklad_sklad_id.name
+        
+    
+    name = fields.Char(string=u"Наименование", compute='return_name', store=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', ondelete='cascade', string=u"Номенклатура", required=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    
 
 
 #----------------------------------------------------------

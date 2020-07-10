@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="sklad_razmeshenie_form_view">
+        <field name="name">sklad_razmeshenie.form</field>
+        <field name="model">sklad.razmeshenie</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Размещение товаров">
+                <header>
+                        <button name="action_draft" type="object"
+                                string="Отменить проведение"
+                                states="confirmed"/>
+                        <button name="action_confirm" type="object"
+                                string="Провести" states="draft"
+                                class="oe_highlight"/>
+                        <button name="action_done" type="object"
+                                string="Удалить" 
+                                states="draft"  style="margin-left: 100px;"/>
+                        
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_otp_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Товары">
+                            <field name="sklad_razmeshenie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="sklad_razmeshenie_line" editable="botton">
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol"/>
+                                    <field name="sklad_pol_id" />
+                                    <field name="sequence" widget="handle"/>
+                                                                        
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                
+                            </group>
+                            
+                        </page>
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_sklad_razmeshenie_tree">
+            <field name="name">sklad_razmeshenie.tree</field>
+            <field name="model">sklad.razmeshenie</field>
+            <field name="arch" type="xml">
+                <tree string="Размещение товаров" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="sklad_otp_id"/>
+                    
+                    <field name="state"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+
+
+
+        <record model="ir.actions.act_window" id="sklad_razmeshenie_list_action">
+            <field name="name">Размещение товаров</field>
+            <field name="res_model">sklad.razmeshenie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Размещение товаров
+                </p>
+            </field>
+        </record>
+
+        
+        <record id="sklad_razmeshenie_role_access" model="ir.rule">
+            <field name="name">Размещение товаров Роль доступ только к своим</field>
+            <field name="model_id" search="[('model','=','sklad.razmeshenie')]" model="ir.model"/>
+            <!-- <field name="model">sklad.razmeshenie</field> -->
+            <field name="groups" eval="[(4, ref('group_sklad_manager'))]" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+            <field name="domain_force">[('sklad_otp_id.partner_id', '=', user.partner_id.id)]</field>
+        </record>
+    </data>
+</openerp>
+

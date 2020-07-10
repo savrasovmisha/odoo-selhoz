@@ -17,6 +17,12 @@
                         <button name="action_done" type="object"
                                 string="Удалить" 
                                 states="draft"  style="margin-left: 100px;"/>
+
+                        <button name="action_razmeshenie" type="object"
+                                string="Разместить" 
+                                states="confirmed"  style="margin-left: 100px;"/>
+
+
                         
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -55,7 +61,9 @@
                             
                         </page>
                         <page string="Услуги">
-                            <field name="metod_raspredeleniya"/>
+                            <group>
+                                <field name="metod_raspredeleniya" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            </group>
                             
                             <field name="pokupka_pokupka_uslugi_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="pokupka_pokupka_uslugi_line" editable="botton">

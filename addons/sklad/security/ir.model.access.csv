@@ -49,3 +49,7 @@ access_buh_nomen_group_manager,buh.nomen_group,selhoz_base.model_buh_nomen_group
 access_buh_stati_zatrat_manager,buh.stati_zatrat,selhoz_base.model_buh_stati_zatrat,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_manager,sklad.ostatok,model_sklad_ostatok,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_users,sklad.ostatok,model_sklad_ostatok,group_sklad_users,1,0,0,0
+access_sklad_razmeshenie_manager,sklad.razmeshenie,model_sklad_razmeshenie,group_sklad_manager,1,1,1,1
+access_sklad_razmeshenie_users,sklad.razmeshenie,model_sklad_razmeshenie,group_sklad_users,1,0,0,0
+access_sklad_razmeshenie_line_manager,sklad.razmeshenie_line,model_sklad_razmeshenie_line,group_sklad_manager,1,1,1,1
+access_sklad_razmeshenie_line_users,sklad.razmeshenie_line,model_sklad_razmeshenie_line,group_sklad_users,1,0,0,0

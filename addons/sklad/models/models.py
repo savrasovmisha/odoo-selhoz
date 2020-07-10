@@ -668,7 +668,7 @@ class pokupka_pokupka(models.Model):
                              'sklad_sklad_id': doc.sklad_sklad_id.id, 
                              'nomen_nomen_id': line.nomen_nomen_id.id, 
                              'kol': line.kol, 
-                             'amount': line.amount_bez_nds, 
+                             'amount': line.amount_bez_nds + line.amount_uslugi, 
                             })
 
                 # print "++++++++++++++++++++++++++++++++++++++++++++", vals
@@ -689,6 +689,53 @@ class pokupka_pokupka(models.Model):
     @api.multi
     def action_done(self):
         self.state = 'done'
+
+
+    @api.multi
+    def action_razmeshenie(self):
+        
+        razmeshenie = self.env['sklad.razmeshenie'].create({
+            'sklad_otp_id': self.sklad_sklad_id.id,
+            'obj_id': self.id,
+            'obj': self.__class__.__name__  
+            
+        })
+
+        vals = []
+        for line in self.pokupka_pokupka_line:
+            vals.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                           
+                            })
+
+        razmeshenie.zapolnit(vals)
+
+        return {
+            'name': ('Assignment Sub'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'sklad.razmeshenie',
+            'res_id': razmeshenie.id,
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'target':'self'
+        }
+        # view_id = self.env.ref('sklad.sklad_razmeshenie_form_view').id
+        # context = self._context.copy()
+        # return {
+        #     'name':'sklad_razmeshenie.form',
+        #     'view_type':'form',
+        #     'view_mode':'form',
+        #     'views' : [(view_id,'form')],
+        #     'res_model':'sklad.razmeshenie',
+        #     'view_id':view_id,
+        #     'type':'ir.actions.act_window',
+        #     'res_id':self.id,
+        #     'target':'new',
+        #     'context':context,
+        # }
 
 
 class pokupka_pokupka_line(models.Model):
@@ -991,6 +1038,183 @@ class sklad_peremeshenie_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
+
+
+
+class sklad_razmeshenie(models.Model):
+    _name = 'sklad.razmeshenie'
+    _description = u'Размещение товаров'
+    _order = 'date desc, id desc'
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('sklad.razmeshenie') or 'New'
+            vals['state'] = 'draft'
+
+
+        result = super(sklad_razmeshenie, self).create(vals)
+        return result
+
+    @api.multi
+    def unlink(self):
+        
+        for sp in self:
+            if sp.state == 'confirmed':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (sp.name)))
+
+        return super(sklad_razmeshenie, self).unlink()
+
+
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    obj = fields.Char(string=u"Регистратор")
+    obj_id = fields.Integer(string=u"ID Регистратора")
+    sklad_otp_id = fields.Many2one('sklad.sklad', string='Склад отправитель', required=True)
+    sklad_razmeshenie_line = fields.One2many('sklad.razmeshenie_line', 'sklad_razmeshenie_id', string=u"Строка Размещения товаров")
+    
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Черновик"),
+        ('confirmed', "Проведен"),
+        ('done', "Отменен"),
+        
+    ], default='create')
+
+    
+   
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            
+            sklad_ostatok = self.env['sklad.ostatok']
+            
+            if sklad_ostatok.reg_move_draft(doc)==True:
+                self.state = 'draft'
+
+        
+    
+
+    @api.multi
+    def action_confirm(self):
+        #self.write({'state': 'confirmed'})
+        
+        for doc in self:
+            vals_otp = []
+            vals_pol = []
+            for line in doc.sklad_razmeshenie_line:
+                vals_otp.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': doc.sklad_otp_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
+                vals_pol.append({
+                             'name': line.nomen_nomen_id.name, 
+                             'sklad_sklad_id': line.sklad_pol_id.id, 
+                             'nomen_nomen_id': line.nomen_nomen_id.id, 
+                             'kol': line.kol, 
+                            })
+
+            sklad_ostatok = self.env['sklad.ostatok']
+            if (sklad_ostatok.reg_move(doc, vals_otp, 'rashod')==True and 
+                sklad_ostatok.reg_move(doc, vals_pol, 'prihod')==True):
+                self.state = 'confirmed'
+
+
+
+
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+    def zapolnit(self, vals):
+        for line in vals:
+            line['sklad_razmeshenie_id'] = self.id
+            nomen_sklad = self.env['nomen.nomen_sklad_line']
+            sklad_pol_id = nomen_sklad.search([
+                                    
+                                    ('nomen_nomen_id', '=', line['nomen_nomen_id']),
+                                    ('sklad_sklad_id', 'child_of', self.sklad_otp_id.id),
+
+                                    ], limit=1).sklad_sklad_id.id or self.sklad_otp_id.id
+            # line['sklad_pol_id'] = sklad_pol_id.id or self.sklad_otp_id.id
+            #line['sklad_pol_id'] = self.sklad_otp_id.id
+            print line
+            self.sklad_razmeshenie_line.create({
+                'sklad_razmeshenie_id': self.id,
+                'nomen_nomen_id': line['nomen_nomen_id'],
+                'kol': line['kol'],
+                'sklad_pol_id': sklad_pol_id,
+
+
+
+
+                })
+
+
+
+class sklad_razmeshenie_line(models.Model):
+    _name = 'sklad.razmeshenie_line'
+    _description = u'Размещение товаров строки'
+    _order = 'sequence'
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        """
+        Compute the total amounts.
+        """
+        #print "---------------------**********************"  
+        if self.nomen_nomen_id:
+            # func_model = self.env['nomen.ed_izm']
+            # function = func_model.search([('name', '=', self.nomen_nomen_id.ed_izm_id.name)]).id
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            #self.nalog_nds_id = self.nomen_nomen_id.nalog_nds_id
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _nomen(self):
+        """
+        Compute the total amounts.
+        """
+          
+        if self.nomen_nomen_id:
+            self.ed_izm_id = self.nomen_nomen_id.ed_izm_id
+            
+
+    def return_name(self):
+        self.name = self.sklad_razmeshenie_id.name
+
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _get_sklad(self):
+        
+        nomen_sklad = self.env['nomen.nomen_sklad_line']
+        self.sklad_pol_id = nomen_sklad.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('sklad_sklad_id', 'child_of', self.sklad_razmeshenie_id.sklad_otp_id.id),
+
+                                ], limit=1).sklad_sklad_id
+        
+
+
+    def _set_sklad(self):
+        for record in self:
+            if not record.sklad_pol_id: continue
+
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    
+
+    sklad_razmeshenie_id = fields.Many2one('sklad.razmeshenie', ondelete='cascade', string=u"Размещение", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+    sklad_pol_id = fields.Many2one('sklad.sklad', string='Склад размещения', required=True, compute='_get_sklad', inverse='_set_sklad',  store=True)
     sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
    
 

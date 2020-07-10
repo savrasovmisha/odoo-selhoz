@@ -34,13 +34,15 @@
                     </group>
                     <group>
                         <group>
-                            <field name="ed_izm_id"/>
+                            <field name="parent_id"/>
+                            <field name="ed_izm_id" attrs="{'invisible': [('is_group',  '=', True)]}"/>
                         </group>
                         <group>
+                            <field name="is_group"/>
                             <field name="kod"/>
                         </group>
                     </group>
-                    <notebook>
+                    <notebook attrs="{'invisible': [('is_group',  '=', True)]}">
                         <page string="Основные">
                             <group>
                                 <group>
@@ -87,6 +89,17 @@
                                     <field name="price"/>
                                     <field name="currency_id"/>
                                     <field name="partner_id"/>
+                                   
+                                </tree>
+                            </field>
+                           
+
+                        </page>
+                        <page string="Основные места хранения">
+                            <field name="nomen_nomen_sklad_line">
+                                <tree string="nomen_nomen_sklad_line" editable="botton">
+                                    <field name="sklad_sklad_id"/>
+                                    
                                    
                                 </tree>
                             </field>

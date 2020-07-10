@@ -43,6 +43,8 @@
         'views/seq_prodaja_prodaja.xml',
         'views/sklad_peremeshenie.xml',
         'views/seq_sklad_peremeshenie.xml',
+        'views/sklad_razmeshenie.xml',
+        'views/seq_sklad_razmeshenie.xml',
         'views/sklad_spisanie.xml',
         'views/sklad_spisanie_report.xml',
         'views/seq_sklad_spisanie.xml',

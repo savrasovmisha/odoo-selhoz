@@ -10,28 +10,35 @@
 
         <menuitem id="sklad_menu_doc" name="Документы" sequence="1" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="pokupka_pokupka_menu" name="Поступление товаров" parent="sklad_menu_doc" action="pokupka_pokupka_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="pokupka_pokupka_menu" name="Поступление товаров" sequence="1" parent="sklad_menu_doc" action="pokupka_pokupka_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_peremeshenie_menu" name="Перемещение товаров" parent="sklad_menu_doc" action="sklad_peremeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_peremeshenie_menu" name="Перемещение товаров" sequence="2" parent="sklad_menu_doc" action="sklad_peremeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_razmeshenie_menu" name="Размещение товаров" parent="sklad_menu_doc" action="sklad_razmeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_razmeshenie_menu" name="Размещение товаров" sequence="3" parent="sklad_menu_doc" action="sklad_razmeshenie_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_trebovanie_nakladnaya_menu" name="Требование-накладная" parent="sklad_menu_doc" action="sklad_trebovanie_nakladnaya_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_trebovanie_nakladnaya_menu" name="Требование-накладная" sequence="4" parent="sklad_menu_doc" action="sklad_trebovanie_nakladnaya_list_action" groups="group_sklad_manager,group_sklad_users"/>
     
-        <menuitem id="prodaja_prodaja_menu" name="Реализация товаров" parent="sklad_menu_doc" action="prodaja_prodaja_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="prodaja_prodaja_menu" name="Реализация товаров" sequence="5" parent="sklad_menu_doc" action="prodaja_prodaja_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-         <menuitem id="sklad_spisanie_menu" name="Списание товаров" parent="sklad_menu_doc" action="sklad_spisanie_list_action" groups="group_sklad_manager,group_sklad_users"/>
+         <menuitem id="sklad_spisanie_menu" name="Списание товаров" sequence="6" parent="sklad_menu_doc" action="sklad_spisanie_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-         <menuitem id="sklad_inventarizaciya_menu" name="Инвентаризация товаров" parent="sklad_menu_doc" action="sklad_inventarizaciya_list_action" groups="group_sklad_manager,group_sklad_users"/>
+         <menuitem id="sklad_inventarizaciya_menu" name="Инвентаризация товаров" sequence="7" parent="sklad_menu_doc" action="sklad_inventarizaciya_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-         <menuitem id="nomen_price_menu" name="Установка цен номенклатуры" parent="sklad_menu_doc" action="nomen_price_list_action" groups="group_sklad_manager,group_sklad_users"/>
+         <menuitem id="nomen_price_menu" name="Установка цен номенклатуры" sequence="8" parent="sklad_menu_doc" action="nomen_price_list_action" groups="group_sklad_manager,group_sklad_users"/>
 <!--
 	     Левое меню
 -->
        
 
+        <menuitem id="sklad_menu_report" name="Отчеты" sequence="2" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
+       
+        <menuitem id="sklad_oborot_report_menu" name="Обороты склада" parent="sklad_menu_report" action="sklad_oborot_report_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_menu" name="Справочники" sequence="2" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
+        <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu_report" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
+
+
+
+        <menuitem id="sklad_menu" name="Справочники" sequence="3" parent="base.main_sklad_menu" groups="group_sklad_manager,group_sklad_users"/>
 
         <menuitem id="nomen_ed_izm_categ_menu" name="Категории ед.изм" parent="sklad_menu" action="selhoz_base.nomen_ed_izm_categ_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
@@ -51,7 +58,6 @@
 
         <menuitem id="buh_stati_zatrat_menu" name="Статьи затрат" parent="sklad_menu" action="selhoz_base.buh_stati_zatrat_list_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
         
     </data>
 </openerp>

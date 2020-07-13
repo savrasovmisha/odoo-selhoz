@@ -121,6 +121,7 @@
                                     <field name="kol_fakt"/>
                                     <field name="kol_pogreshnost"/>
                                     <field name="formula"/>
+                                    <field name="sklad_sklad_id"/>
                                     <!-- <field name="formula" on_change="raschet_formuli(formula, korm_korm_id.pogreshnost)"/>
                                      -->
                                     <!-- <field name="description" nolabel="1"/> -->

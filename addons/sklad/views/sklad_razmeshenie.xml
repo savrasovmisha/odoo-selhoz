@@ -30,6 +30,7 @@
                         <group>
                             <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             
+                            <field name="obj_name" attrs="{'invisible': [('obj_name', '=', False)], 'readonly': True}"/>
                         </group>
                       
                         
@@ -39,6 +40,7 @@
                         <page string="Товары">
                             <field name="sklad_razmeshenie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="sklad_razmeshenie_line" editable="botton">
+                                    <field name="sklad_otp_id" invisible="1"/>
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>

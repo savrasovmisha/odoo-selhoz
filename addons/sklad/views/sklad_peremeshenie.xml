@@ -17,6 +17,9 @@
                         <button name="action_done" type="object"
                                 string="Удалить" 
                                 states="draft"  style="margin-left: 100px;"/>
+                        <button name="action_razmeshenie" type="object"
+                                string="Разместить" 
+                                states="confirmed"  style="margin-left: 100px;"/>
                         
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -30,6 +33,7 @@
                         <group>
                             <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="sklad_pol_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_razmeshenie_id" attrs="{'invisible': [('sklad_razmeshenie_id', '=', False)],'readonly': True}"/>
                         </group>
                       
                         
@@ -39,9 +43,12 @@
                         <page string="Товары">
                             <field name="sklad_peremeshenie_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
                                 <tree string="sklad_peremeshenie_line" editable="botton">
+                                    
+                                    <field name="sklad_otp_id" invisible="1"/>
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
                                     <field name="kol"/>
+                                    <field name="sklad_otp_razmeshenie_id"/>
                                      <field name="sequence" widget="handle"/>
                                                                         
                                 </tree>

@@ -1701,6 +1701,14 @@ class korm_korm(models.Model):
 			vals = []
 			vals_sklad = []
 			k = 0.000
+			# #Проверка заполнения склада
+			# for line in doc.korm_korm_detail_line:
+			# 	if not line.sklad_sklad_id:
+			# 		err = u'Не указан склад. Смотрите порядок №'+str(line.sorting)
+			# 		raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+			# 		return False
+
+
 			for svod in doc.korm_korm_svod_line:
 				index = 0
 				vals_sorting = [] #для хранения значений в группе сортировке
@@ -1759,15 +1767,16 @@ class korm_korm(models.Model):
 									})
 
 				
-			
+						
 						vals_sklad.append({
 									 'name': detail.nomen_nomen_id.name, 
-									 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+									 'sklad_sklad_id': detail.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
 									 'nomen_nomen_id': detail.nomen_nomen_id.id, 
 									 'kol': kol, 
 									})
 
-					
+			
+			print vals_sklad		
 			sklad_ostatok = self.env['sklad.ostatok']
 			if (sklad_ostatok.reg_move(doc, vals_sklad, 'rashod')==True and 
 				self.env['reg.rashod_kormov'].move(self, vals, 'create')==True):
@@ -1776,7 +1785,7 @@ class korm_korm(models.Model):
 				err = u'Ошибка при проведении'
 				raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
 						
-			
+
 
 
 
@@ -2285,6 +2294,26 @@ class korm_korm_detail_line(models.Model):
 	def return_date(self):
 		self.date = self.korm_korm_id.date
 
+	@api.one
+	@api.depends('nomen_nomen_id')
+	def _get_sklad(self):
+		
+		nomen_sklad = self.env['nomen.nomen_sklad_line']
+		self.sklad_sklad_id = nomen_sklad.search([
+								
+								('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+								('sklad_sklad_id', 'child_of', self.korm_korm_id.sklad_sklad_id.id),
+
+								], limit=1).sklad_sklad_id.id
+			  
+		
+		
+
+
+	def _set_sklad(self):
+		for record in self:
+			if not record.sklad_sklad_id: continue
+
 
 	name = fields.Char(string=u"Наименование", compute='return_name')
 	korm_korm_id = fields.Many2one('korm.korm', ondelete='cascade', string=u"Кормление", required=True)
@@ -2297,6 +2326,10 @@ class korm_korm_detail_line(models.Model):
 	kol_fakt = fields.Float(digits=(10, 3), string=u"Кол-во по факту", default=0.0, compute='raschet_formuli', store=True)
 	kol_pogreshnost = fields.Float(digits=(10, 3), string=u"Погрешность", default=0.0, compute='raschet_formuli', store=True)
 	formula = fields.Char(string=u"Формула сложения")
+	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
+										compute='_get_sklad', 
+										inverse='_set_sklad', 
+										store=True)
 	description = fields.Text(string=u"Коментарии")
 
 

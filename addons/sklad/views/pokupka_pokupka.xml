@@ -36,6 +36,7 @@
                         <group>
                             <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                             <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_razmeshenie_id" attrs="{'invisible': [('sklad_razmeshenie_id', '=', False)],'readonly': True}"/>
                         </group>
                       
                         

@@ -45,6 +45,7 @@
                                     <field name="kol"/>
                                     <field name="buh_nomen_group_id"/>
                                     <field name="buh_stati_zatrat_id"/>
+                                    <field name="sklad_sklad_id"/>
                                     <!-- <field name="sorting"/> -->
                                     <field name="sequence" widget="handle"/>
                                     

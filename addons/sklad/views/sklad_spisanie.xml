@@ -43,6 +43,7 @@
                                     <field name="kol"/>
                                     <field name="amaunt"/>
                                     <field name="osnovanie" nolabel="1"/>
+                                    <field name="sklad_sklad_id"/>
                                      <field name="sequence" widget="handle"/>
                                     
                                 </tree>

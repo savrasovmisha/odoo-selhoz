@@ -178,11 +178,11 @@ class nomen_nomen_price_line(models.Model):
     date = fields.Date(string='Дата', required=True, index=True, copy=False)
     price = fields.Float(digits=(10, 2), string=u"Цена с НДС", required=True)
     currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id.id)
-    partner_id = fields.Many2one('res.partner', string='Поставщик')
+    partner_id = fields.Many2one('res.partner', string='Поставщик', domain="[('company_type','=','company')]")
 
 
 class nomen_nomen_sklad_line(models.Model):
-    """Строка Основные места хранения Номенклатуры"""
+    """Строка Основные места хранения Номенклатуры и минимальный остаток"""
     _name = 'nomen.nomen_sklad_line'
     _description = u'Строка Основные места хранения Номенклатуры'
     _order  = 'name desc'
@@ -195,6 +195,7 @@ class nomen_nomen_sklad_line(models.Model):
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', ondelete='cascade', string=u"Номенклатура", required=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    kol_min = fields.Float(digits=(10, 3), string=u"Мин. остаток", help=u"Минимальный остаток при достижении которого необходимо сделать заказ")
     
 
 

@@ -5,9 +5,12 @@ access_nomen_categ_manager,nomen.categ,selhoz_base.model_nomen_categ,group_sklad
 access_nomen_group_manager,nomen.group,selhoz_base.model_nomen_group,group_sklad_manager,1,1,1,1
 access_nomen_nomen_manager,nomen.nomen,selhoz_base.model_nomen_nomen,group_sklad_manager,1,1,1,1
 access_nomen_nomen_price_line_manager,nomen.nomen_price_line,selhoz_base.model_nomen_nomen_price_line,group_sklad_manager,1,1,1,1
+access_nomen_nomen_sklad_line_manager,nomen.nomen_sklad_line,selhoz_base.model_nomen_nomen_sklad_line,group_sklad_manager,1,1,1,1
 access_sklad_sklad_manager,sklad.sklad,selhoz_base.model_sklad_sklad,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_manager,sklad.ostatok,model_sklad_ostatok,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_users,sklad.ostatok,model_sklad_ostatok,group_sklad_users,1,0,0,0
+access_sklad_ostatok_price_manager,sklad.ostatok_price,model_sklad_ostatok_price,group_sklad_manager,1,1,1,1
+access_sklad_ostatok_price_users,sklad.ostatok_price,model_sklad_ostatok_price,group_sklad_users,1,0,0,0
 access_sklad_ostatok_period_manager,sklad.ostatok_period,model_sklad_ostatok_period,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_period_users,sklad.ostatok_period,model_sklad_ostatok_period,group_sklad_users,1,0,0,0
 access_sklad_oborot_manager,sklad.oborot,model_sklad_oborot,group_sklad_manager,1,1,1,1

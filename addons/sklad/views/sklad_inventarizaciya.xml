@@ -51,6 +51,7 @@
                                     <field name="kol"/>
                                     <field name="kol_fact"/>
                                     <field name="kol_otk"/>
+                                    <field name="sklad_sklad_id"/>
                                     
                                 </tree>
                             </field>
@@ -89,6 +90,18 @@
                 <p class="oe_view_nocontent_create">Создайте первую запись Инвентаризация товаров
                 </p>
             </field>
+        </record>
+
+
+        <record id="sklad_inventarizaciya_role_access" model="ir.rule">
+            <field name="name">Инвентаризация товаров Роль доступ только к своим</field>
+            <field name="model_id" search="[('model','=','sklad.inventarizaciya')]" model="ir.model"/>
+            <field name="groups" eval="[(4, ref('group_sklad_manager'))]" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+            <field name="domain_force">[('sklad_sklad_id.partner_id', '=', user.partner_id.id)]</field>
         </record>
 
         

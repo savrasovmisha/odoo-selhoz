@@ -61,6 +61,43 @@ class rast_polya_pay_line(models.Model):
     rast_polya_id = fields.Many2one('rast.polya', ondelete='cascade', string=u"Справочник Поля", required=True)
     
 
+
+class rast_kultura(models.Model):
+    _name = 'rast.kultura'
+    _description = u'Справочник Список культур'
+    _order = 'name'
+
+    
+    name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
+    active = fields.Boolean(string=u"Используется", default=True)
+
+
+
+class rast_spp(models.Model):
+    _name = 'rast.spp'
+    _description = u'Справочник Структура посевных площадей'
+    _order = 'name'
+
+    @api.one
+    @api.depends('rast_polya_id')
+    def _get_ploshad_polya(self):
+        if self.rast_polya_id:
+            self.ploshad_max = self.rast_polya_id.ploshad
+    
+    
+    name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
+    rast_polya_id = fields.Many2one('rast.polya', string='Поле', required=True)    
+    ploshad = fields.Float(digits=(10, 1), string=u"Прощадь, га", required=True)
+    ploshad_max = fields.Float(digits=(10, 1), string=u"Макс. возможная, га", readonly=True, compute='_get_ploshad_polya')
+    rast_kultura_id = fields.Many2one('rast.kultura', string='Культура', required=True)    
+    buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
+    year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+    active = fields.Boolean(string=u"Используется", default=True)
+    description = fields.Text(string=u"Коментарии")
+
+
+
+
   
 class rast_rashod(models.Model):
     _name = 'rast.rashod'

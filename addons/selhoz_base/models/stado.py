@@ -14,6 +14,7 @@ class stado_vid_fiz_group(models.Model):
 	_order = 'name'
 
 	name = fields.Char(string=u"Наименование", required=True)
+	buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)', required=True)
 	_sql_constraints = [
 							('name_unique', 'unique(name)', u'Такой вид физиологической группы уже существует!')
 						]

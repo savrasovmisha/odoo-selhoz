@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="rast_kultura_form_view">
+        <field name="name">rast_kultura.form</field>
+        <field name="model">rast.kultura</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Культура">
+                
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "active"}'/>
+                        </button>
+                    
+                    
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        
+                    </group>
+                      
+                  
+                    
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_rast_kultura_tree">
+            <field name="name">rast_kultura.tree</field>
+            <field name="model">rast.kultura</field>
+            <field name="arch" type="xml">
+                <tree string="Список Культур">
+                    <field name="name"/>
+                          
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="rast_kultura_list_action">
+            <field name="name">Список Культур</field>
+            <field name="res_model">rast.kultura</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Культура
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

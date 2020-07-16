@@ -72,6 +72,16 @@
             </field>
         </record>
 
+        <!-- <record id="sklad_ostatok_role_access" model="ir.rule">
+            <field name="name">Остатки номенклатуры Роль доступ только к своим</field>
+            <field name="model_id" search="[('model','=','sklad.ostatok')]" model="ir.model"/>
+            <field name="groups" eval="[(4, ref('group_sklad_manager'))]" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+            <field name="domain_force">[('sklad_sklad_id.partner_id', '=', user.partner_id.id)]</field>
+        </record> -->
         
     </data>
 </openerp>

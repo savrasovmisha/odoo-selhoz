@@ -1654,6 +1654,27 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
     def return_name(self):
         self.name = self.sklad_trebovanie_nakladnaya_id.name
 
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _get_sklad(self):
+        
+        nomen_sklad = self.env['nomen.nomen_sklad_line']
+        self.sklad_sklad_id = nomen_sklad.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('sklad_sklad_id', 'child_of', self.sklad_trebovanie_nakladnaya_id.sklad_sklad_id.id),
+
+                                ], limit=1).sklad_sklad_id.id
+              
+        
+        
+
+
+    def _set_sklad(self):
+        for record in self:
+            if not record.sklad_sklad_id: continue
+            
+
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_trebovanie_nakladnaya_id = fields.Many2one('sklad.trebovanie_nakladnaya', ondelete='cascade', string=u"Требование-Накладная", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
@@ -1665,7 +1686,10 @@ class sklad_trebovanie_nakladnaya_line(models.Model):
     buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
     #sorting = fields.Char(string=u"С.", help="Сортировка")
     sequence = fields.Integer(string=u"Сорт.", help="Сортировка", oldname='sorting')
-
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
+                                        compute='_get_sklad', 
+                                        inverse='_set_sklad', 
+                                        store=True)
 
 
 
@@ -1793,6 +1817,26 @@ class sklad_spisanie_line(models.Model):
     def return_name(self):
         self.name = self.sklad_spisanie_id.name
 
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _get_sklad(self):
+        
+        nomen_sklad = self.env['nomen.nomen_sklad_line']
+        self.sklad_sklad_id = nomen_sklad.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('sklad_sklad_id', 'child_of', self.sklad_spisanie_id.sklad_sklad_id.id),
+
+                                ], limit=1).sklad_sklad_id.id
+              
+        
+        
+
+
+    def _set_sklad(self):
+        for record in self:
+            if not record.sklad_sklad_id: continue
+
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_spisanie_id = fields.Many2one('sklad.spisanie', ondelete='cascade', string=u"Списание", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
@@ -1801,7 +1845,10 @@ class sklad_spisanie_line(models.Model):
     amaunt = fields.Float(digits=(10, 2), string=u"Сумма", required=True)
     osnovanie = fields.Text(string=u"Основание")
     sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
-
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
+                                        compute='_get_sklad', 
+                                        inverse='_set_sklad', 
+                                        store=True)
 
 
 
@@ -1970,6 +2017,27 @@ class sklad_inventarizaciya_line(models.Model):
     def return_name(self):
         self.name = self.sklad_inventarizaciya_id.name
 
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _get_sklad(self):
+        
+        nomen_sklad = self.env['nomen.nomen_sklad_line']
+        self.sklad_sklad_id = nomen_sklad.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('sklad_sklad_id', 'child_of', self.sklad_inventarizaciya_id.sklad_sklad_id.id),
+
+                                ], limit=1).sklad_sklad_id.id
+              
+        
+        
+
+
+    def _set_sklad(self):
+        for record in self:
+            if not record.sklad_sklad_id: continue
+
+
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string=u"Инвентаризация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
@@ -1977,7 +2045,13 @@ class sklad_inventarizaciya_line(models.Model):
     kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True, default=0)
     kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)
     kol_otk = fields.Float(digits=(10, 3), string=u"Отклонение от факта", compute='_amount',  store=True, default=0)
- 
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
+                                        compute='_get_sklad', 
+                                        inverse='_set_sklad', 
+                                        store=True)
+
+
+
 
 class nomen_price(models.Model):
     _name = 'nomen.price'

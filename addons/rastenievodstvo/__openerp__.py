@@ -27,6 +27,8 @@
         'security/rastenievodstvo_security.xml',
            
         'views/polya.xml',
+        'views/kultura.xml',
+        'views/spp.xml',
         'views/rashod.xml',
 
         

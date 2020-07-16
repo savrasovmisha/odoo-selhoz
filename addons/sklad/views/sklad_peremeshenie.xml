@@ -107,7 +107,7 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
-            <field name="domain_force">[('sklad_otp_id.partner_id', '=', user.partner_id.id)]</field>
+            <field name="domain_force">['|',('sklad_otp_id.partner_id', '=', user.partner_id.id), ('sklad_pol_id.partner_id', '=', user.partner_id.id)]</field>
         </record>
     </data>
 </openerp>

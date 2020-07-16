@@ -47,7 +47,7 @@
                                     <field name="kol"/>
                                     <field name="stado_zagon_id" options="{'no_create': True}"  domain="[('activ','=',True)] "/>
                                     <field name="stado_fiz_group_id"/>
-                                
+                                    <field name="sklad_sklad_id"/>
                                     
                                     
                                                                         

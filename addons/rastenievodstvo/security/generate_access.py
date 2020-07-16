@@ -1,6 +1,8 @@
 spisok = []
 spisok.append(['rast.polya',''])
 spisok.append(['rast.polya_pay_line',''])
+spisok.append(['rast.kultura',''])
+spisok.append(['rast.spp',''])
 spisok.append(['rast.rashod',''])
 
 

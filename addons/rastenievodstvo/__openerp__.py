@@ -28,7 +28,11 @@
            
         'views/polya.xml',
         'views/kultura.xml',
+        'views/polya_fizsvoystva.xml',
+        'views/norm.xml',
         'views/spp.xml',
+        'views/akt_rashod.xml',
+        'views/seq_rast_akt_rashod.xml',
         'views/rashod.xml',
 
         

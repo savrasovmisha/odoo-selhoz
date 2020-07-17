@@ -72,6 +72,80 @@ class rast_kultura(models.Model):
     active = fields.Boolean(string=u"Используется", default=True)
 
 
+class rast_naznachenie(models.Model):
+    _name = 'rast.naznachenie'
+    _description = u'Справочник Назначение культур'
+    _order = 'name'
+
+    
+    name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
+    
+
+
+class rast_polya_fizsvoystva(models.Model):
+    _name = 'rast.polya_fizsvoystva'
+    _description = u'Справочник Физичиские свойства поля'
+    _order = 'name'
+
+    
+    name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
+    active = fields.Boolean(string=u"Используется", default=True)
+
+
+
+
+
+
+class rast_norm(models.Model):
+    _name = 'rast.norm'
+    _description = u'Справочник Нормы'
+    _order = 'date desc'
+
+    def return_name(self):
+        self.name = self.rast_kultura_id.name
+    
+    name = fields.Char(string=u"Имя", compute='return_name', store=True)
+    date = fields.Date(string='Дата начала', required=True)
+    
+    rast_kultura_id = fields.Many2one('rast.kultura', string='Культура', required=True)    
+    rast_naznachenie_id = fields.Many2one('rast.naznachenie', string='Назначение', required=True)    
+    description = fields.Text(string=u"Коментарии")
+
+
+    rast_norm_line = fields.One2many('rast.norm_line', 'rast_norm_id', string=u"Строка таблицы Нормы")
+    
+
+class rast_norm_line(models.Model):
+    _name = 'rast.norm_line'
+    _description = u'Справочник Нормы - Материалы'
+    
+
+    @api.one
+    @api.depends('rast_norm_id.name',
+                    'rast_norm_id.date',
+                    'rast_norm_id.rast_kultura_id',
+                    'rast_norm_id.rast_naznachenie_id')
+    def return_name(self):
+        self.name = self.rast_norm_id.name
+        self.date = self.rast_norm_id.date
+        self.rast_kultura_id = self.rast_norm_id.rast_kultura_id
+        self.rast_naznachenie_id = self.rast_norm_id.rast_naznachenie_id
+    
+    name = fields.Char(string=u"Номер", compute='return_name', index=True)
+    date = fields.Date(string='Дата начала', compute='return_name', store=True)
+    rast_kultura_id = fields.Many2one('rast.kultura', string='Культура', compute='return_name', store=True)    
+    rast_naznachenie_id = fields.Many2one('rast.naznachenie', string='Назначение', compute='return_name', store=True)    
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+    kol_norma_ga = fields.Float(digits=(10, 3), string=u"Норма на 1 га", required=True)
+    
+    rast_norm_id = fields.Many2one('rast.norm', ondelete='cascade', string=u"Справочник Нормы", required=True)
+    
+
+
+
+
+
 
 class rast_spp(models.Model):
     _name = 'rast.spp'
@@ -86,14 +160,161 @@ class rast_spp(models.Model):
     
     
     name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
+    date = fields.Date(string='Дата', required=True)
     rast_polya_id = fields.Many2one('rast.polya', string='Поле', required=True)    
     ploshad = fields.Float(digits=(10, 1), string=u"Прощадь, га", required=True)
     ploshad_max = fields.Float(digits=(10, 1), string=u"Макс. возможная, га", readonly=True, compute='_get_ploshad_polya')
     rast_kultura_id = fields.Many2one('rast.kultura', string='Культура', required=True)    
+    rast_naznachenie_id = fields.Many2one('rast.naznachenie', string='Назначение', required=True)    
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
+    rast_polya_fizsvoystva_id = fields.Many2one('rast.polya_fizsvoystva', string='Физичиские св-ва поля')
     year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
+    
     active = fields.Boolean(string=u"Используется", default=True)
     description = fields.Text(string=u"Коментарии")
+
+
+
+
+
+class rast_akt_rashod(models.Model):
+    _name = 'rast.akt_rashod'
+    _description = u'Акт расхода'
+    _order = 'name'
+
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New' or vals.get('name', 'New') == None:
+            vals['name'] = self.env['ir.sequence'].next_by_code('rast.akt_rashod') or 'New'
+            vals['state'] = 'draft'
+
+
+        result = super(rast_akt_rashod, self).create(vals)
+        return result
+
+    @api.multi
+    def unlink(self):
+        for pp in self:
+            if pp.state == 'confirmed':
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+
+        return super(rast_akt_rashod, self).unlink()
+
+    
+    name = fields.Char(string=u"Номер", required=True, copy=False, index=True, default='New')
+    rast_akt_rashod_line = fields.One2many('rast.akt_rashod_line', 'rast_akt_rashod_id', string=u"Строка Акта расхода")
+    
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
+    state = fields.Selection([
+        ('create', "Создан"),
+        ('draft', "Черновик"),
+        ('confirmed', "Проведен"),
+        ('done', "Отменен"),
+        
+    ], default='create')
+
+
+
+
+    @api.multi
+    def action_draft(self):
+        for doc in self:
+            sklad_ostatok = self.env['sklad.ostatok'] 
+            if sklad_ostatok.reg_move_draft(doc) == True:
+                 self.state = 'draft'   
+
+  
+    
+
+    @api.multi
+    def action_confirm(self):
+        for doc in self:
+            vals_prihod = []
+            vals_rashod = []
+            for line in doc.rast_akt_rashod_line:
+                vals_rashod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_fact, 
+                                })
+                      
+
+                #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
+            sklad_ostatok = self.env['sklad.ostatok']    
+            if sklad_ostatok.reg_move(doc, vals_rashod, 'rashod')==True:
+                self.state = 'confirmed'
+
+
+
+
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+
+
+
+
+
+
+class rast_akt_rashod_line(models.Model):
+    _name = 'rast.akt_rashod_line'
+    _description = u'Строки Акт расхода'
+
+    @api.one
+    @api.depends('kol_norma','kol_fact','ploshad','kol_norma_ga')
+    def _amount(self):
+        self.kol_norma = self.kol_norma_ga * self.ploshad
+        self.kol_otk = self.kol_fact - self.kol_norma
+        
+    
+    def return_name(self):
+        self.name = self.rast_akt_rashod_id.name
+
+    @api.one
+    @api.depends('nomen_nomen_id')
+    def _get_sklad(self):
+        
+        nomen_sklad = self.env['nomen.nomen_sklad_line']
+        self.sklad_sklad_id = nomen_sklad.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('sklad_sklad_id', 'child_of', self.rast_akt_rashod_id.sklad_sklad_id.id),
+
+                                ], limit=1).sklad_sklad_id.id
+         
+        
+        
+
+
+    def _set_sklad(self):
+        for record in self:
+            if not record.sklad_sklad_id: continue
+
+
+    name = fields.Char(string=u"Номер", required=True, compute='return_name')
+    rast_akt_rashod_id = fields.Many2one('rast.akt_rashod', ondelete='cascade', string=u"Акт расхода", required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
+    ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
+    rast_spp_id = fields.Many2one('rast.spp', string='Поле спп', required=True)
+    ploshad = fields.Float(digits=(10, 1), string=u"Площ., га", related='rast_spp_id.ploshad', readonly=True,  store=True)
+    
+    kol_norma_ga = fields.Float(digits=(10, 3), string=u"Норма на 1 га", default=0)
+    kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", default=0, compute='_amount')
+    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)
+    kol_otk = fields.Float(digits=(10, 3), string=u"Откл. от факта", compute='_amount',  store=True, default=0)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
+                                        compute='_get_sklad', 
+                                        inverse='_set_sklad', 
+                                        store=True)
+    buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)', related='rast_spp_id.buh_nomen_group_id', readonly=True,  store=True)
+    buh_stati_zatrat_id = fields.Many2one('buh.stati_zatrat', string='Статьи затрат', required=True)
+    #sequence = fields.Integer(string=u"Сорт.", help="Сортировка")
 
 
 

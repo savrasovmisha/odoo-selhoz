@@ -6,17 +6,30 @@
         <menuitem id="base.main_rast_menu" name="Растениеводство"/>
         <!-- A first level in the left side menu is needed
              before using action= attribute -->
+       
+
+        <menuitem id="rast_menu_doc" name="Документы" sequence="1" parent="base.main_rast_menu" groups="group_rast_manager,group_rast_users"/>
+
+        <menuitem id="rast_akt_rashod_menu" name="Акт расхода" sequence="1" parent="rast_menu_doc" action="rast_akt_rashod_list_action" groups="group_rast_manager,group_rast_users"/>
+
+        <menuitem id="rast_rashod_menu" name="Расход" sequence="10" parent="rast_menu_doc" action="rast_rashod_list_action" groups="group_rast_manager,group_rast_users"/>
         
 
-        <menuitem id="rast_menu" name="Справочники" sequence="1" parent="base.main_rast_menu" groups="group_rast_manager,group_rast_users"/>
+
+
+        <menuitem id="rast_menu" name="Справочники" sequence="2" parent="base.main_rast_menu" groups="group_rast_manager,group_rast_users"/>
 
         <menuitem id="rast_polya_menu" name="Поля" sequence="1" parent="rast_menu" action="rast_polya_list_action" groups="group_rast_manager,group_rast_users"/>
 
         <menuitem id="rast_kultura_menu" name="Список Культур" sequence="2" parent="rast_menu" action="rast_kultura_list_action" groups="group_rast_manager,group_rast_users"/>
 
+        <menuitem id="rast_norm_menu" name="Нормы внесения семян и удобрений" sequence="2" parent="rast_menu" action="rast_norm_list_action" groups="group_rast_manager,group_rast_users"/>
+
         <menuitem id="rast_spp_menu" name="Структура посевных площадей" sequence="3" parent="rast_menu" action="rast_spp_list_action" groups="group_rast_manager,group_rast_users"/>
 
-        <menuitem id="rast_rashod_menu" name="Расход" sequence="10" parent="rast_menu" action="rast_rashod_list_action" groups="group_rast_manager,group_rast_users"/>
+        <menuitem id="rast_polya_fizsvoystva_menu" name="Физичиские свойства поля" sequence="20" parent="rast_menu" action="rast_polya_fizsvoystva_list_action" groups="group_rast_manager,group_rast_users"/>
+
+        
 
         
 <!--

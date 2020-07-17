@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="rast_akt_rashod_form_view">
+        <field name="name">rast_akt_rashod.form</field>
+        <field name="model">rast.akt_rashod</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Акт расхода">
+                <header>
+                    <button name="action_draft" type="object"
+                            string="Отменить проведение"
+                            states="confirmed"/>
+                    <button name="action_confirm" type="object"
+                            string="Провести" states="draft"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object"
+                            string="Удалить" 
+                            states="draft"  style="margin-left: 100px;"/>
+                    
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Номер" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                            
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
+                        </group>
+                        
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Материалы">
+                            <field name="rast_akt_rashod_line" attrs="{'readonly': [('state', 'in', ['confirmed',])]}">
+                                <tree string="rast_akt_rashod_line" editable="botton" >
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="rast_spp_id"/>
+                                    <field name="ploshad"/>
+                                    <field name="kol_norma_ga"/>
+                                    <field name="kol_norma"/>
+                                    <field name="kol_fact"/>
+                                    <field name="kol_otk"/>
+                                    <field name="buh_nomen_group_id"/>
+                                    <field name="buh_stati_zatrat_id"/>
+                                    <field name="sklad_sklad_id"/>
+                                  
+                                    
+                                    
+                                </tree>
+                            </field>
+                            
+                        </page>
+                        
+                    </notebook>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_rast_akt_rashod_tree">
+            <field name="name">rast_akt_rashod.tree</field>
+            <field name="model">rast.akt_rashod</field>
+            <field name="arch" type="xml">
+                <tree string="Акт расхода" colors="green:state=='draft';red:state == 'done'">
+                    <field name="name" string="Наименование"/>
+                    <field name="date"/>
+                    <field name="sklad_sklad_id"/>
+                    <field name="state"/>
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="rast_akt_rashod_list_action">
+            <field name="name">Акт расхода</field>
+            <field name="res_model">rast.akt_rashod</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Акт расхода
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

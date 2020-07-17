@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="rast_norm_form_view">
+        <field name="name">rast_norm.form</field>
+        <field name="model">rast.norm</field>
+        <field name="arch" type="xml">
+           
+            <form string="Форма Нормы">
+                
+                <sheet>
+                    
+                    <group>
+                        <group>
+                                                       
+                            <field name="rast_kultura_id"/>
+                            <field name="rast_naznachenie_id"/>
+                            
+                        </group>
+                        <group>
+                            
+                            <field name="date"/>
+                        </group>
+                      
+                        
+                        
+                    </group>
+                    <notebook>
+                        <page string="Нормы внесения семян/удобрений">
+                            <field name="rast_norm_line" >
+                                <tree string="rast_norm_line" editable="botton">
+                                    
+                                    <field name="nomen_nomen_id"/>
+                                    <field name="ed_izm_id"/>
+                                    <field name="kol_norma_ga"/>
+                               
+                                    
+                                </tree>
+                            </field>
+                            
+                        </page>
+                       
+                        
+                    </notebook>
+
+                    <notebook colspan="4">
+                        <page string="Комментарии">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                    
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_rast_norm_tree">
+            <field name="name">rast_norm.tree</field>
+            <field name="model">rast.norm</field>
+            <field name="arch" type="xml">
+                <tree string="Нормы">
+                    <field name="date"/>
+                    <field name="rast_kultura_id"/>
+                    <field name="rast_naznachenie_id"/>
+         
+                    
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+        <record model="ir.actions.act_window" id="rast_norm_list_action">
+            <field name="name">Нормы</field>
+            <field name="res_model">rast.norm</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Нормы
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

@@ -28,10 +28,14 @@
                             <field name="ploshad"/>
                             <field name="ploshad_max"/>
                             <field name="rast_kultura_id"/>
+                            <field name="rast_naznachenie_id"/>
                         </group>
                         <group>
-                            <field name="buh_nomen_group_id"/>
+                            <field name="date"/>
                             <field name="year"/>
+                            <field name="rast_polya_fizsvoystva_id"/>
+                            <field name="buh_nomen_group_id"/>
+                            <field name="nomen_nomen_id"/>
                         </group>
                       
                         

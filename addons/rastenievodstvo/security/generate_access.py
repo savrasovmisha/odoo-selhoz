@@ -2,8 +2,14 @@ spisok = []
 spisok.append(['rast.polya',''])
 spisok.append(['rast.polya_pay_line',''])
 spisok.append(['rast.kultura',''])
+spisok.append(['rast.naznachenie',''])
+spisok.append(['rast.norm',''])
+spisok.append(['rast.norm_line',''])
+spisok.append(['rast.polya_fizsvoystva',''])
 spisok.append(['rast.spp',''])
 spisok.append(['rast.rashod',''])
+spisok.append(['rast.akt_rashod',''])
+spisok.append(['rast.akt_rashod_line',''])
 
 
 

@@ -14,6 +14,7 @@
 
         <menuitem id="rast_rashod_menu" name="Расход" sequence="10" parent="rast_menu_doc" action="rast_rashod_list_action" groups="group_rast_manager,group_rast_users"/>
         
+        <menuitem id="rast_prihod_menu" name="Приход" sequence="11" parent="rast_menu_doc" action="rast_prihod_list_action" groups="group_rast_manager,group_rast_users"/>
 
 
 

@@ -218,7 +218,7 @@
             <field name="name">Активы (оборудование) структура</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">aktiv.aktiv</field>
-            <field name="domain">[('parent_id','=',False)]</field>
+            <!-- <field name="domain">[('parent_id','=',False)]</field> -->
             <field name="view_type">tree</field> 
             <field name="view_mode">tree,form</field> 
             <field name="view_id" ref="view_aktiv_aktiv_tree"/>
@@ -232,16 +232,13 @@
         <record model="ir.ui.view" id="view_aktiv_aktiv_list_tree">
             <field name="name">aktiv_aktiv.tree</field>
             <field name="model">aktiv.aktiv</field>
-            <field name="type">tree</field>
-
-           <!--  <field name="field_parent">child_ids</field> -->
-                        
+                                   
             <field name="arch" type="xml">
                 <tree string="Активы (оборудование)">
                     <field name="name"/>
                     <field name="complete_name"/>
                                    
-                    <!-- <field name="parent_id" invisible="1"/> -->
+                    
                     
                     
                    
@@ -254,13 +251,17 @@
 
         <record model="ir.actions.act_window" id="aktiv_aktiv_list_action">
             <field name="name">Активы (оборудование)</field>
-            <field name="type">ir.actions.act_window</field>
+            <!-- <field name="type">ir.actions.act_window</field> -->
             <field name="res_model">aktiv.aktiv</field>
-            <!-- <field name="domain">[('parent_id','=',False)]</field> -->
-           <!--  <field name="view_type">form</field>  -->
+            
+            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field> 
             <field name="view_id" ref="view_aktiv_aktiv_list_tree"/>
-          
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Активы (оборудование)
+                </p>
+            </field>
+            
         </record>
 
         

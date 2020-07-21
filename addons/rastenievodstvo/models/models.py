@@ -101,6 +101,8 @@ class rast_norm(models.Model):
     _description = u'Справочник Нормы'
     _order = 'date desc'
 
+    @api.one
+    @api.depends('rast_kultura_id')
     def return_name(self):
         self.name = self.rast_kultura_id.name
     
@@ -157,6 +159,12 @@ class rast_spp(models.Model):
     def _get_ploshad_polya(self):
         if self.rast_polya_id:
             self.ploshad_max = self.rast_polya_id.ploshad
+
+    @api.one
+    @api.depends('ploshad', 'urojay', 'refakciya')
+    def _get_sbor(self):
+        self.valoviy_sbor = self.urojay * self.ploshad / 10
+        self.zachetniy_ves = self.valoviy_sbor * (100 - self.refakciya) / 100 
     
     
     name = fields.Char(string=u"Наименование", required=True, copy=False, index=True)
@@ -169,7 +177,11 @@ class rast_spp(models.Model):
     buh_nomen_group_id = fields.Many2one('buh.nomen_group', string='Номенклатурная группа (бух)')
     rast_polya_fizsvoystva_id = fields.Many2one('rast.polya_fizsvoystva', string='Физичиские св-ва поля')
     year = fields.Char(string=u"Год", required=True, default=str(datetime.today().year))
-    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Продукция', required=True, domain=[('is_usluga', '=', False)])
+    urojay = fields.Float(digits=(10, 1), string=u"Урожайность, ц/га", group_operator="avg")
+    valoviy_sbor = fields.Float(digits=(10, 1), string=u"Валовый сбор, т", compute='_get_sbor', store=True)
+    refakciya = fields.Float(digits=(10, 1), string=u"Планируемая рефакция, %", default=10, group_operator="avg")
+    zachetniy_ves = fields.Float(digits=(10, 1), string=u"Зачетный вес, т", compute='_get_sbor', store=True)
     
     active = fields.Boolean(string=u"Используется", default=True)
     description = fields.Text(string=u"Коментарии")
@@ -266,6 +278,23 @@ class rast_akt_rashod_line(models.Model):
     _name = 'rast.akt_rashod_line'
     _description = u'Строки Акт расхода'
 
+    
+
+    @api.one
+    @api.depends('nomen_nomen_id','rast_spp_id')
+    def _get_norma(self):
+        norma = self.env['rast.norm_line']
+        self.kol_norma_ga = norma.search([
+                                
+                                ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
+                                ('rast_kultura_id', '=', self.rast_spp_id.rast_kultura_id.id),
+                                ('date', '<=', self.rast_akt_rashod_id.date),
+
+                                ], order="date desc", limit=1).kol_norma_ga or 0
+
+
+
+
     @api.one
     @api.depends('kol_norma','kol_fact','ploshad','kol_norma_ga')
     def _amount(self):
@@ -304,8 +333,8 @@ class rast_akt_rashod_line(models.Model):
     rast_spp_id = fields.Many2one('rast.spp', string='Поле спп', required=True)
     ploshad = fields.Float(digits=(10, 1), string=u"Площ., га", related='rast_spp_id.ploshad', readonly=True,  store=True)
     
-    kol_norma_ga = fields.Float(digits=(10, 3), string=u"Норма на 1 га", default=0)
-    kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", default=0, compute='_amount')
+    kol_norma_ga = fields.Float(digits=(10, 3), string=u"Норма на 1 га", compute='_get_norma',  store=True, default=0)
+    kol_norma = fields.Float(digits=(10, 3), string=u"Кол-во по норме", default=0, compute='_amount',  store=True)
     kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)
     kol_otk = fields.Float(digits=(10, 3), string=u"Откл. от факта", compute='_amount',  store=True, default=0)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
@@ -323,17 +352,71 @@ class rast_akt_rashod_line(models.Model):
 class rast_rashod(models.Model):
     _name = 'rast.rashod'
     _description = u'Расход'
-    _order = 'name'
+    _order = 'date desc'
 
     
-    name = fields.Char(string=u"Номер", copy=False, index=True, default='')
-    date = fields.Date(string='Дата')
-    voditel = fields.Many2one('res.partner', string='Водитель')    
-    pole = fields.Many2one('rast.polya', string='Поле')   
+    @api.one
+    @api.depends('date', 'voditel')
+    def _get_name(self):
+        self.name = self.voditel.name + u" "+ self.date
+
+
+    @api.one
+    @api.depends('ves_tara', 'ves_brutto')
+    def _get_kol(self):
+        self.kol = self.ves_brutto - self.ves_tara
+
+    def _set_kol(self):
+        for record in self:
+            if not record.kol: continue
+
+
+    name = fields.Char(string=u"Номер", copy=False, index=True, default='', compute='_get_name')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    voditel = fields.Many2one('res.partner', string='Водитель', required=True)    
+    rast_spp_id = fields.Many2one('rast.spp', string='Поле спп', required=True, oldname='pole')
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True) 
-    kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
+
+    ves_tara = fields.Float(digits=(10, 3), string=u"Вес тары, кг", required=True, default=0)
+    ves_brutto = fields.Float(digits=(10, 3), string=u"Вес брутто, кг", required=True, default=0)
+    kol = fields.Float(digits=(10, 3), string=u"Вес нетто, кг", compute='_get_kol', inverse='_set_kol', store=True)
     
 
     
-       
+  
+class rast_prihod(models.Model):
+    _name = 'rast.prihod'
+    _description = u'Приход'
+    _order = 'date desc'
+
+    
+    @api.one
+    @api.depends('date', 'voditel')
+    def _get_name(self):
+        self.name = self.voditel.name + u" "+ self.date
+
+
+    @api.one
+    @api.depends('ves_tara', 'ves_brutto')
+    def _get_kol(self):
+        self.kol = self.ves_brutto - self.ves_tara
+
+    def _set_kol(self):
+        for record in self:
+            if not record.kol: continue
+
+
+    name = fields.Char(string=u"Номер", copy=False, index=True, default='', compute='_get_name')
+    date = fields.Datetime(string='Дата', required=True, default=fields.Datetime.now)
+    voditel = fields.Many2one('res.partner', string='Водитель', required=True)    
+    kombayner = fields.Many2one('res.partner', string='Комбайнер', required=True)    
+    rast_spp_id = fields.Many2one('rast.spp', string='Поле спп', required=True)
+    nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True) 
+
+    ves_brutto = fields.Float(digits=(10, 3), string=u"Вес брутто, кг", required=True, default=0)
+    ves_tara = fields.Float(digits=(10, 3), string=u"Вес тары, кг", required=True, default=0)
+    kol = fields.Float(digits=(10, 3), string=u"Вес нетто, кг", compute='_get_kol', inverse='_set_kol', store=True)
+    
+
+          
     

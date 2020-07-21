@@ -34,6 +34,7 @@
         'views/akt_rashod.xml',
         'views/seq_rast_akt_rashod.xml',
         'views/rashod.xml',
+        'views/prihod.xml',
 
         
         'views/menu.xml',

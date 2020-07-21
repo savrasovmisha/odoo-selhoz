@@ -35,7 +35,12 @@
                             <field name="year"/>
                             <field name="rast_polya_fizsvoystva_id"/>
                             <field name="buh_nomen_group_id"/>
+                            <separator string="Планируемый урожай" colspan="2"/>
                             <field name="nomen_nomen_id"/>
+                            <field name="urojay"/>
+                            <field name="valoviy_sbor"/>
+                            <field name="refakciya"/>
+                            <field name="zachetniy_ves"/>
                         </group>
                       
                         
@@ -73,6 +78,26 @@
                 </tree>
             </field>
         </record>	
+
+
+        <record id="view_rast_spp_pivot" model="ir.ui.view">
+            <field name="name">rast_spp.pivot</field>
+            <field name="model">rast.spp</field>
+             <field name="arch" type="xml">
+                 <pivot string="Структура посевных площадей" disable_linking="True">
+                    
+                     <field name="year" type="row"/>
+                     <field name="rast_naznachenie_id" type="row"/>
+                     <field name="rast_kultura_id" type="row"/>
+                     <field name="rast_polya_id" type="row"/>
+                     
+                     <field name="urojay" type="measure"/>
+                     <field name="zachetniy_ves" type="measure"/>
+                    
+                     
+                 </pivot>
+             </field>
+    </record>
 	
         <record model="ir.actions.act_window" id="rast_spp_list_action">
             <field name="name">Структура посевных площадей</field>

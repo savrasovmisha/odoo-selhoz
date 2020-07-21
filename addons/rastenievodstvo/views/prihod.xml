@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="rast_rashod_form_view">
-        <field name="name">rast_rashod.form</field>
-        <field name="model">rast.rashod</field>
+	<record model="ir.ui.view" id="rast_prihod_form_view">
+        <field name="name">rast_prihod.form</field>
+        <field name="model">rast.prihod</field>
         <field name="arch" type="xml">
            
-            <form string="Форма Расход">
+            <form string="Форма Приход">
                 
                 <sheet>
                     <group>
@@ -14,10 +14,11 @@
                                                        
                             <!-- <field name="name"/> -->
                             <field name="voditel"/>
+                            <field name="kombayner"/>
                             <field name="rast_spp_id"/>
                             <field name="nomen_nomen_id"/>
-                            <field name="ves_tara"/>
                             <field name="ves_brutto"/>
+                            <field name="ves_tara"/>
                             <field name="kol"/>
                         </group>
                         <group>
@@ -34,13 +35,14 @@
         </field>
     </record>
 
-        <record model="ir.ui.view" id="view_rast_rashod_tree">
-            <field name="name">rast_rashod.tree</field>
-            <field name="model">rast.rashod</field>
+        <record model="ir.ui.view" id="view_rast_prihod_tree">
+            <field name="name">rast_prihod.tree</field>
+            <field name="model">rast.prihod</field>
             <field name="arch" type="xml">
-                <tree string="Расход" decoration-danger="kol&lt;=0">
+                <tree string="Приход" decoration-danger="kol&lt;=0">
                     <field name="date"/>
                     <field name="voditel"/>
+                    <field name="kombayner"/>
                     <field name="rast_spp_id"/>
                     <field name="nomen_nomen_id"/>
                     <field name="kol"/>
@@ -52,13 +54,13 @@
             </field>
         </record>	
 	
-        <record model="ir.actions.act_window" id="rast_rashod_list_action">
-            <field name="name">Расход</field>
-            <field name="res_model">rast.rashod</field>
+        <record model="ir.actions.act_window" id="rast_prihod_list_action">
+            <field name="name">Приход</field>
+            <field name="res_model">rast.prihod</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form,pivot</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">Создайте первую запись Расход
+                <p class="oe_view_nocontent_create">Создайте первую запись Приход
                 </p>
             </field>
         </record>

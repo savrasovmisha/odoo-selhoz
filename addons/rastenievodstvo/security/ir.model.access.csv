@@ -17,6 +17,8 @@ access_rast_spp_manager,rast.spp,model_rast_spp,group_rast_manager,1,1,1,1
 access_rast_spp_users,rast.spp,model_rast_spp,group_rast_users,1,0,0,0
 access_rast_rashod_manager,rast.rashod,model_rast_rashod,group_rast_manager,1,1,1,1
 access_rast_rashod_users,rast.rashod,model_rast_rashod,group_rast_users,1,0,0,0
+access_rast_prihod_manager,rast.prihod,model_rast_prihod,group_rast_manager,1,1,1,1
+access_rast_prihod_users,rast.prihod,model_rast_prihod,group_rast_users,1,0,0,0
 access_rast_akt_rashod_manager,rast.akt_rashod,model_rast_akt_rashod,group_rast_manager,1,1,1,1
 access_rast_akt_rashod_users,rast.akt_rashod,model_rast_akt_rashod,group_rast_users,1,0,0,0
 access_rast_akt_rashod_line_manager,rast.akt_rashod_line,model_rast_akt_rashod_line,group_rast_manager,1,1,1,1

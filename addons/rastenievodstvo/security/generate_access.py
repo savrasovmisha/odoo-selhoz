@@ -8,6 +8,7 @@ spisok.append(['rast.norm_line',''])
 spisok.append(['rast.polya_fizsvoystva',''])
 spisok.append(['rast.spp',''])
 spisok.append(['rast.rashod',''])
+spisok.append(['rast.prihod',''])
 spisok.append(['rast.akt_rashod',''])
 spisok.append(['rast.akt_rashod_line',''])
 

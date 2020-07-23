@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-	<record model="ir.ui.view" id="aktiv_aktiv_form_view">
+    <record model="ir.ui.view" id="aktiv_aktiv_form_view">
         <field name="name">aktiv_aktiv.form</field>
         <field name="model">aktiv.aktiv</field>
         <field name="arch" type="xml">
@@ -20,38 +20,44 @@
                         </group>
                     <group>
                         
+                        <group>
                         <field name="is_group"/>
                         <field name="is_uzel" attrs="{'invisible': [('is_group',  '=', True)]}"/>
                         <field name="parent_id"/>
                         <field name="complete_name"/>
+                        </group>
+                        <group>
+                            <field name="aktiv_status_id"/>
+                            <field name="otvetstvenniy_id"/>
+                            <field name="aktiv_remont_service_id"/>
+                            <field name="location_location_id"/>
+                        </group>
                     </group>
 
                     <notebook attrs="{'invisible': [('is_group',  '=', True)]}">
                         <page string="Паспорт">    
                             <group>
-                                <group>
+                                <group string="Классификация">
                                     <field name="aktiv_categ_id"/>
                                     <field name="aktiv_type_id"/>
                                     
                                     <field name="model"/>
                                     <field name="kod"/>
                                 </group>
-                                <group>
-                                    <field name="aktiv_status_id"/>
+                                <group string="Стоимость">
+                                    <field name="price_pokupki"/>
+                                    <field name="amortizaciya"/>
                                     <field name="price"/>
                                 </group>
                             </group>
                             <group>
-                                <group>
-                                    <field name="aktiv_remont_service_id"/>
-                                    <field name="otvetstvenniy_id"/>
-                                    <field name="location_location_id"/>
+                                <group string="Идентификаторы">
                                     <field name="id_1c"/>
                                     <field name="inv_nomer"/>
                                     <field name="serial_nomer"/>
                                     <field name="reg_nomer"/>
                                 </group>
-                                <group>
+                                <group string="Производитель">
                                     <field name="zavod_nomer"/>
                                     <field name="zavod_name"/>
                                     <field name="country_id"/>
@@ -60,14 +66,15 @@
                             </group>
 
                             <group>
-                                <group>
+                                <group string="Дата послупления/списания">
                                     <field name="date_vipuska"/>
                                     <field name="date_postupleniya"/>
                                     <field name="date_vvoda"/>
                                     <field name="date_spisaniya"/>
                                 </group>
-                                <group>
+                                <group string="Сроки службы">
                                     <field name="srok_slujbi"/>
+                                    <field name="srok_slujbi_mtch"/>
                                     <field name="srok_slujbi_ot_vvoda"/>
                                     <field name="date_start"/>
                                     <field name="date_end"/>

@@ -387,13 +387,14 @@ class aktiv_aktiv(models.Model):
 
 
     @api.one
-    @api.depends('name', 'parent_id.complete_name')
+    @api.depends('name', 'parent_id.complete_name', 'inv_nomer')
     def _complete_name(self):
         """ Forms complete name of location from parent location to child location. """
+
         if self.parent_id.complete_name:
-            self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
+            self.complete_name = '%s/%s [%s]' % (self.parent_id.complete_name, self.name, self.inv_nomer)
         else:
-            self.complete_name = self.name
+            self.complete_name = '%s [%s]' % (self.name, self.inv_nomer)
 
     @api.multi
     def name_get(self):
@@ -488,8 +489,11 @@ class aktiv_aktiv(models.Model):
 
     aktiv_status_id = fields.Many2one('aktiv.status', string='Статус')
 
-    price = fields.Integer(string=u"Стоимость")
+    price_pokupki = fields.Float(digits=(10, 2), string=u"Первоначальная стоимость")
+    amortizaciya = fields.Float(digits=(10, 2), string=u"Амортизация")
+    price = fields.Float(digits=(10, 2), string=u"Текущая стоимость")
     srok_slujbi = fields.Integer(string=u"Срок службы, лет")
+    srok_slujbi_mtch = fields.Integer(string=u"Срок службы, моточасов")
     srok_slujbi_ot_vvoda = fields.Boolean(string=u"Срок службы от ввода в эксплуатацию", default=True)
     date_start = fields.Date(string='Срок службы, Дата начала', compute='_srok_slujbi', store=True)
     date_end = fields.Date(string='Срок службы, Дата окончания', compute='_srok_slujbi', store=True)

@@ -514,6 +514,10 @@ class aktiv_aktiv(models.Model):
     m11 = fields.Boolean(string=u"11", default=True)
     m12 = fields.Boolean(string=u"12", default=True)
     
+
+    aktiv_remont_ids = fields.One2many('aktiv.remont', 'aktiv_aktiv_id', copy=False, readonly=True)
+
+
     description = fields.Text(string=u"Коментарии")
     
     attachment_ids = fields.Many2many(
@@ -864,6 +868,7 @@ class aktiv_remont(models.Model):
     aktiv_type_id = fields.Many2one('aktiv.type', string='Тип актива', related='aktiv_aktiv_id.aktiv_type_id', store=True)
     aktiv_vid_remonta_id_r = fields.Many2one('aktiv.vid_remonta', string='Вид ремона и диагностирования') #Ручной ввод
     aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', compute="_get_aktiv_vid_remonta", string='Вид ремона и диагностирования')
+    probeg = fields.Integer(string="Пробег, км/ч или моточасов")
 
     otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный')
     ispolnitel_id = fields.Many2one('res.partner', string='Исполнитель')
@@ -929,7 +934,7 @@ class aktiv_remont_raboti_line(models.Model):
     aktiv_vid_rabot_id = fields.Many2one('aktiv.vid_rabot', string='Виды работ', required=True)
  
     price = fields.Float(digits=(10, 2), string=u"Стоимость")
-    currency_id = fields.Many2one('res.currency', string='Валюта')
+    currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.env.user.company_id.currency_id)
 
     
 

@@ -41,6 +41,7 @@
                                 <field name="aktiv_tr_id" attrs="{'invisible': [('is_graph',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}" domain="[('aktiv_type_id','=', aktiv_type_id)]"/>
                                 <field name="aktiv_vid_remonta_id_r" attrs="{'invisible': [('is_graph',  '=', True)], 'readonly': [('state', 'in', ['confirmed',])]}"/>
 
+                                <field name="probeg" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 
                             </group>
                             <group>

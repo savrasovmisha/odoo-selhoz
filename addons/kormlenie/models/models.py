@@ -1767,13 +1767,13 @@ class korm_korm(models.Model):
 									})
 
 				
-						
-						vals_sklad.append({
-									 'name': detail.nomen_nomen_id.name, 
-									 'sklad_sklad_id': detail.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
-									 'nomen_nomen_id': detail.nomen_nomen_id.id, 
-									 'kol': kol, 
-									})
+						if kol > 0 :
+							vals_sklad.append({
+										 'name': detail.nomen_nomen_id.name, 
+										 'sklad_sklad_id': detail.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
+										 'nomen_nomen_id': detail.nomen_nomen_id.id, 
+										 'kol': kol, 
+										})
 
 			
 			print vals_sklad		

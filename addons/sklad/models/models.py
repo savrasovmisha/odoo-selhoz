@@ -239,12 +239,12 @@ class sklad_ostatok(models.Model):
 
     #@api.one
     def reg_move(self, obj, vals, vid_dvijeniya):
-        """
-            Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
-        """
-        print u"Начало проведение документа"
+        #"""
+        #    Ф-я осуществляет запись в таблицу остатков и оборотов товаров по складам
+        #"""
+        #print u"Начало проведение документа"
         #print vals
-        message = ''
+        message = u''
         
 
 
@@ -352,8 +352,8 @@ class sklad_ostatok(models.Model):
         ids_del = obr.search([  ('obj_id', '=', obj.id),
                                 ('obj', '=', obj.__class__.__name__),
                             ])
+        vals = []
         for line in ids_del:
-            vals = []
             vid_dvijeniya = line['vid_dvijeniya']+'-draft'
             vals.append({
                          'sklad_sklad_id': line.sklad_sklad_id.id, 
@@ -365,11 +365,12 @@ class sklad_ostatok(models.Model):
         ids_del.unlink()  #Удаляем записи
 
         #Пересчитываем итоги
-        ost = obj.env['sklad.ostatok']
-        ost_price = obj.env['sklad.ostatok_price']
-        for line in vals:
-            ost.reg_update(line['sklad_sklad_id'], line['nomen_nomen_id'])
-            ost_price.reg_update(line['nomen_nomen_id'])
+        if len(vals)>0
+            ost = obj.env['sklad.ostatok']
+            ost_price = obj.env['sklad.ostatok_price']
+            for line in vals:
+                ost.reg_update(line['sklad_sklad_id'], line['nomen_nomen_id'])
+                ost_price.reg_update(line['nomen_nomen_id'])
 
         
         return True
@@ -1344,9 +1345,9 @@ class prodaja_prodaja(models.Model):
     def unlink(self):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
-        for pp in self:
+        for sp in self:
             if sp.state == 'confirmed':
-                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
+                raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (sp.name)))
 
         return super(prodaja_prodaja, self).unlink()
 
@@ -1518,7 +1519,7 @@ class sklad_trebovanie_nakladnaya(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if sp.state == 'confirmed':
+            if pp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_trebovanie_nakladnaya, self).unlink()
@@ -1719,7 +1720,7 @@ class sklad_spisanie(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if sp.state == 'confirmed':
+            if pp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_spisanie, self).unlink()
@@ -1873,7 +1874,7 @@ class sklad_inventarizaciya(models.Model):
         
         #print 'sssssssssssssssssssssssssssssssssssssssssssssss', self
         for pp in self:
-            if sp.state == 'confirmed':
+            if pp.state == 'confirmed':
                 raise exceptions.ValidationError(_(u"Документ №%s Проведен и не может быть удален!" % (pp.name)))
 
         return super(sklad_inventarizaciya, self).unlink()
@@ -1937,14 +1938,14 @@ class sklad_inventarizaciya(models.Model):
                 if line.kol_otk>0:
                     vals_prihod.append({
                                  'name': line.nomen_nomen_id.name, 
-                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
                                  'nomen_nomen_id': line.nomen_nomen_id.id, 
                                  'kol': line.kol_otk, 
                                 })
                 if line.kol_otk<0:
                     vals_rashod.append({
                                  'name': line.nomen_nomen_id.name, 
-                                 'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                 'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
                                  'nomen_nomen_id': line.nomen_nomen_id.id, 
                                  'kol': line.kol_otk, 
                                 })

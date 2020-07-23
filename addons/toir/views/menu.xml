@@ -10,7 +10,7 @@
         <menuitem id="toir_menu" name="Справочники" sequence="1" parent="base.main_toir_menu" groups="group_toir_manager,group_toir_users"/>
         
         <menuitem id="aktiv_aktiv_menu" name="Активы (оборудование)" sequence="1" parent="toir_menu" action="aktiv_aktiv_list_action" groups="group_toir_manager,group_toir_users"/>
-        <menuitem id="aktiv_aktiv_tree_menu" name="Активы (иерархия)" sequence="1" parent="toir_menu" action="aktiv_aktiv_tree_action" groups="group_toir_manager,group_toir_users"/>
+        <!-- <menuitem id="aktiv_aktiv_tree_menu" name="Активы (иерархия)" sequence="1" parent="toir_menu" action="aktiv_aktiv_tree_action" groups="group_toir_manager,group_toir_users"/> -->
         
         <menuitem id="aktiv_categ_menu" name="Категории активов" sequence="2" parent="toir_menu" action="aktiv_categ_list_action" groups="group_toir_manager,group_toir_users"/>
 

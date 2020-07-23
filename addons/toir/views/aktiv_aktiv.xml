@@ -122,6 +122,28 @@
                        
                             
                         </page>
+                        <page string="Ремонты">    
+                            <field name="aktiv_remont_ids">
+                                    <tree string="aktiv_remont_ids" editable="botton" sum="true">
+                                        <field name="date"/>
+                                        <field name="name"/>
+                                        <field name="probeg"/>
+                                        <field name="is_graph"/>
+                                        <field name="is_podryad"/>
+                                        <field name="partner_id"/>
+                                        <field name="price" sum="price"/>
+                                        <field name="currency_id"/>
+
+                                    </tree>
+                                </field>
+
+
+
+                                
+                                
+                       
+                            
+                        </page>
                     </notebook>
                     <notebook colspan="4">
                         <page string="Комментарии">
@@ -135,7 +157,7 @@
 
         
 
-        <record model="ir.ui.view" id="view_aktiv_aktiv_tree1">
+       <!--  <record model="ir.ui.view" id="view_aktiv_aktiv_tree1">
             <field name="name">aktiv_aktiv.tree1</field>
             <field name="model">aktiv.aktiv</field>
             <field name="type">tree</field>
@@ -147,7 +169,7 @@
                     
                 </tree>
             </field>
-        </record>
+        </record> -->
  
 
     
@@ -203,7 +225,7 @@
 
 
         <!-- Иерархический вид -->
-        <record model="ir.ui.view" id="view_aktiv_aktiv_tree">
+        <!-- <record model="ir.ui.view" id="view_aktiv_aktiv_tree">
             <field name="name">aktiv_aktiv.tree</field>
             <field name="model">aktiv.aktiv</field>
             <field name="type">tree</field>
@@ -225,12 +247,12 @@
             <field name="name">Активы (оборудование) структура</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">aktiv.aktiv</field>
-            <!-- <field name="domain">[('parent_id','=',False)]</field> -->
+            <field name="domain">[('parent_id','=',False)]</field>
             <field name="view_type">tree</field> 
             <field name="view_mode">tree,form</field> 
             <field name="view_id" ref="view_aktiv_aktiv_tree"/>
           
-        </record>
+        </record> -->
 
 
 

@@ -120,6 +120,8 @@ class nomen_nomen(models.Model):
             self.price = self.nomen_nomen_price_line[0].price
             self.currency_id = self.nomen_nomen_price_line[0].currency_id
             self.partner_id = self.nomen_nomen_price_line[0].partner_id
+        else:
+            self.currency_id=self.env.user.company_id.currency_id
 
         
     name = fields.Char(string=u"Наименование", required=True)

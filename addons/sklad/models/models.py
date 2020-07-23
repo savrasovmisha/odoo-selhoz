@@ -365,7 +365,7 @@ class sklad_ostatok(models.Model):
         ids_del.unlink()  #Удаляем записи
 
         #Пересчитываем итоги
-        if len(vals)>0
+        if len(vals)>0:
             ost = obj.env['sklad.ostatok']
             ost_price = obj.env['sklad.ostatok_price']
             for line in vals:

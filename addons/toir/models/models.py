@@ -828,8 +828,12 @@ class aktiv_remont(models.Model):
     @api.multi
     def action_draft(self):
         for doc in self:
-            self.state = 'draft'
-            
+            sklad_ostatok = self.env['sklad.ostatok']
+            if (sklad_ostatok.reg_move_draft(doc)==True and 
+                self.env['reg.rashod_kormov'].move(self, [], 'unlink')==True):
+                self.state = 'draft'
+        
+               
 
         
     
@@ -838,12 +842,23 @@ class aktiv_remont(models.Model):
     def action_confirm(self):
                 
         for doc in self:
-                          
-            self.state = 'confirmed'
-            # else:
-            #     err = u'Ошибка при проведении'
-            #     raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
-                        
+            vals_sklad = []
+            for line in doc.aktiv_remont_nomen_line:
+                
+                vals_sklad.append({
+                                     'name': line.nomen_nomen_id.name, 
+                                     'sklad_sklad_id': doc.sklad_sklad_id.id, 
+                                     'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                     'kol': line.kol, 
+                                    })
+
+            sklad_ostatok = self.env['sklad.ostatok']
+            if sklad_ostatok.reg_move(doc, vals_sklad, 'rashod')==True:
+                doc.state = 'confirmed' 
+            else:
+                err = u'Ошибка при проведении'
+                raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (doc.name, err)))
+                           
 
     @api.multi
     def action_done(self):
@@ -869,6 +884,9 @@ class aktiv_remont(models.Model):
     aktiv_vid_remonta_id_r = fields.Many2one('aktiv.vid_remonta', string='Вид ремона и диагностирования') #Ручной ввод
     aktiv_vid_remonta_id = fields.Many2one('aktiv.vid_remonta', compute="_get_aktiv_vid_remonta", string='Вид ремона и диагностирования')
     probeg = fields.Integer(string="Пробег, км/ч или моточасов")
+
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад материалов', required=False)
+    
 
     otvetstvenniy_id = fields.Many2one('res.partner', string='Ответственный')
     ispolnitel_id = fields.Many2one('res.partner', string='Исполнитель')
@@ -951,8 +969,10 @@ class aktiv_remont_nomen_line(models.Model):
 
 
     @api.one
-    @api.depends('nomen_nomen_id', 'nomen_nomen_id.nomen_nomen_price_line', 'kol')
+    @api.depends('nomen_nomen_id', 'kol')
     def _get_price(self):
+        ost_price = self.env['sklad.ostatok_price']
+        self.price = ost_price.get_price(self.nomen_nomen_id.id)
         self.amount = self.price * self.kol
   
     name = fields.Char(string=u"Наименование", compute='return_name', store=True)
@@ -961,7 +981,7 @@ class aktiv_remont_nomen_line(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Материалы', required=True)
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", related='nomen_nomen_id.ed_izm_id', readonly=True,  store=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во", required=True)
-    price = fields.Float(digits=(10, 2), string=u"Цена с НДС")
+    price = fields.Float(digits=(10, 2), string=u"Цена без НДС", compute='_get_price', store=True)
     currency_id = fields.Many2one('res.currency', string='Валюта', default=lambda self: self.nomen_nomen_id.currency_id)
     amount = fields.Float(digits=(10, 2), string=u"Стоимость", compute='_get_price', store=True)
 

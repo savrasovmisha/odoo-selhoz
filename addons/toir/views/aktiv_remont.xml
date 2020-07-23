@@ -66,6 +66,7 @@
                         </group> -->
                         <group>
                             <group string="Стоимость ремонта">
+                                <field name="sklad_sklad_id" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 <field name="is_raschet_price" attrs="{'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 <field name="price_raboti_r" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', False)], 'readonly': [('state', 'in', ['confirmed',])]}"/>
                                 <field name="price_raboti" string="Работы" attrs="{'invisible': [('is_raschet_price',  '=', True)], 'readonly': [('state', 'in', ['confirmed',])]}"/>

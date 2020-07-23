@@ -15,6 +15,8 @@ from xlsxwriter.utility import xl_rowcol_to_cell
 import xlsxwriter
 import pandas as pd
 import numpy as np
+#Проверка версии pandas
+from distutils.version import LooseVersion, StrictVersion
 
 def week_magic(day):
 	if type(day)==str:
@@ -622,8 +624,25 @@ class korm_buh_report(models.Model):
 		except ImportError:
 			pass
 		datas = DataFrame(data=korms,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
-		table = pivot_table(datas, values='kol_fakt', index=['date'],
-				columns=['name'], aggfunc=np.sum)
+		#Проверка версии pandas
+		if LooseVersion(pd.__version__) < LooseVersion("0.16.0"):
+			table = pivot_table(datas, values=['kol_fakt'], 
+							#index=['date'],
+							rows=['date'], 
+							cols=['name'], 
+							aggfunc=np.sum, 
+							#margins=True
+							)
+		else:
+			table = pivot_table(datas, values=['kol_fakt'], 
+							index=['date'],
+							#rows=['date'], 
+							columns=['name'], 
+							aggfunc=np.sum, 
+							#margins=True
+							)
+		# table = pivot_table(datas, values='kol_fakt', index=['date'],
+		# 		columns=['name'], aggfunc=np.sum)
 		# import json
 		# j1 = json.loads(table)
 		# print j1
@@ -1044,13 +1063,23 @@ class korm_buh_report(models.Model):
 				datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
 
 
-				table = pivot_table(datas, values=['kol_fakt'], 
-								index=['date'],
-								#rows=['date'], 
-								columns=['name'], 
-								aggfunc=np.sum, 
-								#margins=True
-								)
+				#Проверка версии pandas
+				if LooseVersion(pd.__version__) < LooseVersion("0.16.0"):
+					table = pivot_table(datas, values=['kol_fakt'], 
+									#index=['date'],
+									rows=['date'], 
+									cols=['name'], 
+									aggfunc=np.sum, 
+									#margins=True
+									)
+				else:
+					table = pivot_table(datas, values=['kol_fakt'], 
+									index=['date'],
+									#rows=['date'], 
+									columns=['name'], 
+									aggfunc=np.sum, 
+									#margins=True
+									)
 
 
 						
@@ -1168,14 +1197,24 @@ class korm_buh_report(models.Model):
 
 						datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
 
-
-						table = pivot_table(datas, values=['kol_fakt'], 
-										index=['date'],
-										#rows=['date'], 
-										columns=['name'], 
-										aggfunc=np.sum, 
-										#margins=True
-										)
+						#Проверка версии pandas
+						if LooseVersion(pd.__version__) < LooseVersion("0.16.0"):
+							table = pivot_table(datas, values=['kol_fakt'], 
+											#index=['date'],
+											rows=['date'], 
+											cols=['name'], 
+											aggfunc=np.sum, 
+											#margins=True
+											)
+						else:
+							table = pivot_table(datas, values=['kol_fakt'], 
+											index=['date'],
+											#rows=['date'], 
+											columns=['name'], 
+											aggfunc=np.sum, 
+											#margins=True
+											)
+						
 
 
 								
@@ -1360,14 +1399,24 @@ class korm_buh_report(models.Model):
 
 											datas = DataFrame(data=res,columns=['name', 'date', 'nomen_nomen_id', 'kol_fakt'] )
 
-
-											table = pivot_table(datas, values=['kol_fakt'], 
-															index=['date'],
-															#rows=['date'], 
-															columns=['name'], 
-															aggfunc=np.sum, 
-															#margins=True
-															)
+											#Проверка версии pandas
+											if LooseVersion(pd.__version__) < LooseVersion("0.16.0"):
+												table = pivot_table(datas, values=['kol_fakt'], 
+																#index=['date'],
+																rows=['date'], 
+																cols=['name'], 
+																aggfunc=np.sum, 
+																#margins=True
+																)
+											else:
+												table = pivot_table(datas, values=['kol_fakt'], 
+																index=['date'],
+																#rows=['date'], 
+																columns=['name'], 
+																aggfunc=np.sum, 
+																#margins=True
+																)
+											
 
 
 													

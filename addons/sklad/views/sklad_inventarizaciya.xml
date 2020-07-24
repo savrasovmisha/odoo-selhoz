@@ -48,10 +48,14 @@
                                 <tree string="sklad_inventarizaciya_line" editable="botton">
                                     <field name="nomen_nomen_id"/>
                                     <field name="ed_izm_id"/>
+                                    <field name="sklad_sklad_id"/>
                                     <field name="kol"/>
                                     <field name="kol_fact"/>
                                     <field name="kol_otk"/>
-                                    <field name="sklad_sklad_id"/>
+                                    <field name="price"/>
+                                    <field name="amount"/>
+                                    <field name="amount_fact"/>
+                                    <field name="amount_otk"/>
                                     
                                 </tree>
                             </field>

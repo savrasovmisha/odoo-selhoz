@@ -124,6 +124,26 @@ class sklad_ostatok_price(models.Model):
                       ('nomen_nomen_id', '=', nomen_nomen_id),
                     ], limit=1).price or 0
 
+    def get_price_date(self, date, nomen_nomen_id):
+        
+        price = 0
+        zapros = """SELECT  
+                        CASE
+                            WHEN sum(s.kol_oborot)!=0 THEN  sum(s.amount_oborot)/sum(s.kol_oborot)
+                        ELSE 0
+                        END
+                    FROM sklad_oborot s
+                    WHERE s.nomen_nomen_id=%s and date<'%s'
+                """ %(nomen_nomen_id, date)
+        print zapros
+        self._cr.execute(zapros,)
+        result = self._cr.fetchone()
+        if len(result)>0:
+            price = result[0]
+
+
+        return price
+
 
     @api.one
     @api.depends('kol', 'amount')
@@ -202,6 +222,29 @@ class sklad_ostatok(models.Model):
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
     
+
+    def get_ostatok_date(self, date, nomen_nomen_id, sklad_sklad_id):
+        # kol_tek = self.search([
+        #               ('nomen_nomen_id', '=', nomen_nomen_id),
+        #               ('sklad_sklad_id', '=', sklad_sklad_id),
+        #             ], limit=1).kol or 0
+        kol_ostatok = 0
+        zapros = """SELECT  sum(s.kol_oborot)
+                    FROM sklad_oborot s
+                    WHERE s.nomen_nomen_id=%s and s.sklad_sklad_id=%s and s.date<'%s'
+                """ %(nomen_nomen_id, sklad_sklad_id, date)
+        print zapros
+        self._cr.execute(zapros,)
+        result = self._cr.fetchone()
+        if len(result)>0:
+            print ")))))))))))))))=====", result[0]
+            kol_ostatok = result[0]
+
+
+        return kol_ostatok
+
+
+
     @api.one
     @api.depends('kol')
     def _get_name(self):
@@ -274,7 +317,7 @@ class sklad_ostatok(models.Model):
             if vid_dvijeniya != 'rashod' and vid_dvijeniya != 'prihod':
                 err = True
                 message = u"Не верно указан вид движения"
-            if line['kol']<=0:
+            if line['kol']<=0 and not 'korrekt_stoimost' in line: #Если это не корректировка стоимости
                 err = True
                 message = u"Кол-во должно быть больше нуля"
             if line['sklad_sklad_id']==False or line['sklad_sklad_id']==None:
@@ -306,11 +349,16 @@ class sklad_ostatok(models.Model):
             # else:
             #     kol_do = 0
                 
+            if err == True:
+                print line
+                raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
+                return False
 
 
             if 'amount' not in line:
                 line['is_raschet'] = True #Признак что необходимо расчитать стоимость
-                price = ost_price.get_price(line['nomen_nomen_id'])
+                price = ost_price.get_price_date(nomen_nomen_id=line['nomen_nomen_id'], date=line['date'])
+                #print "pppppppprrrrrrr", price
                 line['amount'] = price * line['kol']
             else:
                 line['is_raschet'] = False
@@ -324,10 +372,6 @@ class sklad_ostatok(models.Model):
 
                            
 
-            if err == True:
-                print line
-                raise exceptions.ValidationError(_(u"Ошибка. Документ №%s Не проведен! %s" % (obj.name, message)))
-                return False
             
         #Если нет ошибок приступаем к записям в регистры   
         obr = obj.env['sklad.oborot']
@@ -1941,6 +1985,7 @@ class sklad_inventarizaciya(models.Model):
                                  'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
                                  'nomen_nomen_id': line.nomen_nomen_id.id, 
                                  'kol': line.kol_otk, 
+                                 'amount': line.amount_otk, 
                                 })
                 if line.kol_otk<0:
                     vals_rashod.append({
@@ -1948,8 +1993,27 @@ class sklad_inventarizaciya(models.Model):
                                  'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
                                  'nomen_nomen_id': line.nomen_nomen_id.id, 
                                  'kol': line.kol_otk, 
+                                 'amount': line.amount_otk, 
                                 })
-                      
+                if line.kol_otk == 0 and line.amount_otk>0:
+                    vals_prihod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                 'amount': line.amount_otk, 
+                                 'korrekt_stoimost': True
+                                })
+                if line.kol_otk == 0 and line.amount_otk<0:
+                    vals_rashod.append({
+                                 'name': line.nomen_nomen_id.name, 
+                                 'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
+                                 'nomen_nomen_id': line.nomen_nomen_id.id, 
+                                 'kol': line.kol_otk, 
+                                 'amount': line.amount_otk, 
+                                 'korrekt_stoimost': True
+                                })
+
 
                 #print "++++++++++++++++++++++++++++++++++++++++++++", doc.sklad_sklad_id.id
             sklad_ostatok = self.env['sklad.ostatok']    
@@ -1973,16 +2037,20 @@ class sklad_inventarizaciya(models.Model):
         else:
             self.sklad_inventarizaciya_line.unlink()
             ost = self.env['sklad.ostatok']
-            ost_nomen = ost.search([('sklad_sklad_id', '=', self.sklad_sklad_id.id)])
+            ost_nomen = ost.search([('sklad_sklad_id', 'child_of', self.sklad_sklad_id.id)])
             for line in ost_nomen:
-                vals={  'sklad_sklad_id': line.sklad_sklad_id.id,
-                        'nomen_nomen_id': line.nomen_nomen_id.id,
-                        'kol': line.kol,
-                        'kol_fact': line.kol,
-                        'sklad_inventarizaciya_id': self.id,
-                        }
-                print vals
-                self.env['sklad.inventarizaciya_line'].create(vals)
+                if line.kol!=0:
+                    vals={  'sklad_sklad_id': line.sklad_sklad_id.id,
+                            'nomen_nomen_id': line.nomen_nomen_id.id,
+                            'kol': line.kol,
+                            'kol_fact': line.kol,
+                            'sklad_inventarizaciya_id': self.id,
+                            }
+                    print vals
+                    l = self.sklad_inventarizaciya_line.create(vals)
+                    l.kol_fact = l.kol
+                    l.amount_fact = l.amount
+
 
 
 
@@ -1992,13 +2060,31 @@ class sklad_inventarizaciya_line(models.Model):
     _description = u'Инвентаризация товаров строки'
 
     @api.one
-    @api.depends('kol','kol_fact')
+    @api.depends('nomen_nomen_id', 'sklad_sklad_id', 'sklad_inventarizaciya_id.sklad_sklad_id', 'sklad_inventarizaciya_id.date')
+    def _get_price(self):
+        if self.nomen_nomen_id and self.sklad_inventarizaciya_id.sklad_sklad_id:
+            ost = self.env['sklad.ostatok']
+            ost_price = self.env['sklad.ostatok_price']
+            self.price = ost_price.get_price_date(nomen_nomen_id=self.nomen_nomen_id.id,
+                                                  date=self.sklad_inventarizaciya_id.date)
+            
+            self.kol = ost.get_ostatok_date(nomen_nomen_id=self.nomen_nomen_id.id, 
+                                            sklad_sklad_id=self.sklad_sklad_id.id or self.sklad_inventarizaciya_id.sklad_sklad_id.id,
+                                            date=self.sklad_inventarizaciya_id.date)
+            
+
+            self.amount = self.price * self.kol
+            
+    
+
+    @api.one
+    @api.depends('nomen_nomen_id','kol_fact', 'price', 'amount_fact')
     def _amount(self):
         """
         Compute the total amounts.
         """
-        
         self.kol_otk = self.kol_fact - self.kol
+        self.amount_otk = self.amount_fact - self.amount
         
 
     @api.one
@@ -2023,14 +2109,15 @@ class sklad_inventarizaciya_line(models.Model):
     def _get_sklad(self):
         
         nomen_sklad = self.env['nomen.nomen_sklad_line']
-        self.sklad_sklad_id = nomen_sklad.search([
+        result = nomen_sklad.search([
                                 
                                 ('nomen_nomen_id', '=', self.nomen_nomen_id.id),
                                 ('sklad_sklad_id', 'child_of', self.sklad_inventarizaciya_id.sklad_sklad_id.id),
 
-                                ], limit=1).sklad_sklad_id.id
-              
-        
+                                ], limit=1).sklad_sklad_id.id or 0
+        if result != 0:
+            #print "11111111",  result  
+            self.sklad_sklad_id = result
         
 
 
@@ -2038,18 +2125,30 @@ class sklad_inventarizaciya_line(models.Model):
         for record in self:
             if not record.sklad_sklad_id: continue
 
+    
+    def _set_kol_fact(self):
+        for record in self:
+            if not record.kol_fact: continue
+    def _set_amount_fact(self):
+        for record in self:
+            if not record.amount_fact: continue
+
 
     name = fields.Char(string=u"Номер", required=True, compute='return_name')
     sklad_inventarizaciya_id = fields.Many2one('sklad.inventarizaciya', ondelete='cascade', string=u"Инвентаризация", required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True, domain=[('is_usluga', '=', False)])
     ed_izm_id = fields.Many2one('nomen.ed_izm', string=u"Ед.изм.", compute='_nomen',  store=True)
-    kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", required=True, default=0)
-    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", required=True, default=0)
+    kol = fields.Float(digits=(10, 3), string=u"Кол-во по учету", compute='_get_price',  store=True)
+    kol_fact = fields.Float(digits=(10, 3), string=u"Кол-во по факту", store=True)
     kol_otk = fields.Float(digits=(10, 3), string=u"Отклонение от факта", compute='_amount',  store=True, default=0)
-    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
-                                        compute='_get_sklad', 
-                                        inverse='_set_sklad', 
-                                        store=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price',  store=True, default=0)
+    amount = fields.Float(digits=(10, 2), string=u"Стоимость по учету", compute='_get_price',  store=True, default=0)
+    amount_fact = fields.Float(digits=(10, 2), string=u"Стоимость по факту",  store=True)
+    amount_otk = fields.Float(digits=(10, 2), string=u"Отклонение стоимости", compute='_amount', store=True)
+    sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', store=True)
+                                        # compute='_get_sklad', 
+                                        # inverse='_set_sklad', 
+                                        # store=True)
 
 
 

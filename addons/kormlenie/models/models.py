@@ -3541,7 +3541,8 @@ class korm_rashod_kormov_line(models.Model):
 	sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', 
 										compute='_get_sklad', 
 										inverse='_set_sklad', 
-										store=True)
+										store=True,
+										copy=True)
 
 
 class korm_plan(models.Model):

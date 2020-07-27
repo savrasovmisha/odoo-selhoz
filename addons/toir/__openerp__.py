@@ -32,6 +32,8 @@
         
         'views/aktiv_remont_service.xml',
         'views/aktiv_categ.xml',
+        'views/aktiv_group_os.xml',
+        'views/aktiv_group_uchet_os.xml',
         'views/aktiv_type.xml',
         'views/aktiv_status.xml',
         'views/aktiv_aktiv.xml',

@@ -141,6 +141,30 @@ class aktiv_status(models.Model):
   
     name = fields.Char(string=u"Наименование", required=True) 
 
+class aktiv_amortizaciya_group(models.Model):
+    """Амортизационная группа (бух)"""
+    _name = 'aktiv.amortizaciya_group'
+    _description = u'Амортизационная группа (бух)'
+    _order  = 'name'
+  
+    name = fields.Char(string=u"Наименование", required=True)
+
+class aktiv_group_os(models.Model):
+    """Группа ОС (бух)"""
+    _name = 'aktiv.group_os'
+    _description = u'Группа ОС (бух)'
+    _order  = 'name'
+  
+    name = fields.Char(string=u"Наименование", required=True) 
+
+class aktiv_group_uchet_os(models.Model):
+    """Группа учета ОС (бух)"""
+    _name = 'aktiv.group_uchet_os'
+    _description = u'Группа учета ОС (бух)'
+    _order  = 'name'
+  
+    name = fields.Char(string=u"Наименование", required=True) 
+
 
 
 class aktiv_vid_rabot(models.Model):
@@ -392,9 +416,16 @@ class aktiv_aktiv(models.Model):
         """ Forms complete name of location from parent location to child location. """
 
         if self.parent_id.complete_name:
-            self.complete_name = '%s/%s [%s]' % (self.parent_id.complete_name, self.name, self.inv_nomer)
+            if self.inv_nomer:
+                self.complete_name = '%s/%s [%s]' % (self.parent_id.complete_name, self.name, self.inv_nomer)
+            else:
+                self.complete_name = '%s/%s' % (self.parent_id.complete_name, self.name)
         else:
-            self.complete_name = '%s [%s]' % (self.name, self.inv_nomer)
+            if self.inv_nomer:
+                self.complete_name = '%s [%s]' % (self.name, self.inv_nomer)
+            else:
+                self.complete_name = '%s' % (self.name)
+
 
     @api.multi
     def name_get(self):
@@ -450,6 +481,7 @@ class aktiv_aktiv(models.Model):
 
 
     name = fields.Char(string=u"Наименование", required=True)
+    name_buh = fields.Char(string=u"Полное наименование (бух)")
     complete_name = fields.Char(string=u"Представление", compute='_complete_name', store=True) 
     parent_id = fields.Many2one('aktiv.aktiv', string=u'Входит в состав', index=True, ondelete='cascade')
     child_ids = fields.One2many('aktiv.aktiv', 'parent_id', string=u'Составные части')
@@ -462,6 +494,10 @@ class aktiv_aktiv(models.Model):
     is_uzel = fields.Boolean(string=u"Узел объекта", default=False)
     is_group = fields.Boolean(string=u"Это группа", default=False)
 
+    is_nedvijimost = fields.Boolean(string=u"Это недвижимое имущество", default=False)
+    buh_podrazdeleniya_id = fields.Many2one('buh.podrazdeleniya', string='Подразделение')
+    aktiv_group_os_id = fields.Many2one('aktiv.group_os', string='Группа ОС (бух)')
+    aktiv_group_uchet_os_id = fields.Many2one('aktiv.group_uchet_os', string='Группа учета ОС (бух)')
     location_location_id = fields.Many2one('location.location', string='Местонахождение')
 
     model = fields.Char(string=u"Модель")
@@ -490,8 +526,13 @@ class aktiv_aktiv(models.Model):
     aktiv_status_id = fields.Many2one('aktiv.status', string='Статус')
 
     price_pokupki = fields.Float(digits=(10, 2), string=u"Первоначальная стоимость")
+    price_period = fields.Float(digits=(10, 2), string=u"Стоимость на начало периода")
     amortizaciya = fields.Float(digits=(10, 2), string=u"Амортизация")
     price = fields.Float(digits=(10, 2), string=u"Текущая стоимость")
+    
+    
+    
+    aktiv_amortizaciya_group_id = fields.Many2one('aktiv.amortizaciya_group', string='Амортизационная группа')
     srok_slujbi = fields.Integer(string=u"Срок службы, лет")
     srok_slujbi_mtch = fields.Integer(string=u"Срок службы, моточасов")
     srok_slujbi_ot_vvoda = fields.Boolean(string=u"Срок службы от ввода в эксплуатацию", default=True)

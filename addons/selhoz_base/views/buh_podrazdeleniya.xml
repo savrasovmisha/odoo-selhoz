@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="buh_podrazdeleniya_form_view">
+        <field name="name">buh_podrazdeleniya.form</field>
+        <field name="model">buh.podrazdeleniya</field>
+        <field name="arch" type="xml">
+            <form string="Форма Подразделения (бух)">
+                <sheet>
+                    <group>
+                        <field name="name" string="Наименование"/>
+                        <field name="sorting"/>
+                        <field name="id_1c"/>
+                        
+                        
+                    </group>
+		            
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+        <record model="ir.ui.view" id="view_buh_podrazdeleniya_tree">
+            <field name="name">buh_podrazdeleniya.tree</field>
+            <field name="model">buh.podrazdeleniya</field>
+            <field name="arch" type="xml">
+                <tree string="Подразделения (бух)">
+                    <field name="name" string="Ноименование"/>
+                    
+                    
+                   
+                </tree>
+            </field>
+        </record>	
+	
+	<record model="ir.ui.view" id="buh_podrazdeleniya_search_view">
+            <field name="name">buh_podrazdeleniya.search</field>
+            <field name="model">buh.podrazdeleniya</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Ноименование"/>
+                   
+                </search>
+            </field>
+        </record>
+        <!-- window action Верхняя панель -->
+        <!--
+            The following tag is an action definition for a "window action",
+            that is an action opening a view or a set of views
+        -->
+        <record model="ir.actions.act_window" id="buh_podrazdeleniya_list_action">
+            <field name="name">Подразделения (бух)</field>
+            <field name="res_model">buh.podrazdeleniya</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Создайте первую запись Подразделения (бух)
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>
+

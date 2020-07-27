@@ -31,5 +31,12 @@ class nalog_nds(models.Model):
 
     name = fields.Char(string=u"Наименование", required=True)
     nds = fields.Float(digits=(10, 2), string=u"% НДС", required=True)
+    id_1c = fields.Char(string=u"Номер в 1С")
 
 
+class buh_podrazdeleniya(models.Model):
+    _name = 'buh.podrazdeleniya'
+    _description = u'Подразделения (бух)'
+    name = fields.Char(string=u"Наименование", required=True)
+    sorting = fields.Char(string=u"Сортировка")
+    id_1c = fields.Char(string=u"Номер в 1С")

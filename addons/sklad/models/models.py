@@ -115,7 +115,7 @@ class sklad_ostatok_price(models.Model):
     name = fields.Char(string=u"Наименование", compute='_get_price', store=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
-    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True)
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True, group_operator="avg")
     amount = fields.Float(digits=(10, 2), string=u"Сумма")
 
 
@@ -477,7 +477,7 @@ class sklad_oborot(models.Model):
     kol_oborot = fields.Float(digits=(10, 3), string=u"Кол-во оборот", default=0)
     kol_prihod = fields.Float(digits=(10, 3), string=u"Кол-во приход", default=0)
     kol_rashod = fields.Float(digits=(10, 3), string=u"Кол-во расход", default=0)
-    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True, default=0)
+    price = fields.Float(digits=(10, 2), string=u"Цена", compute='_get_price', store=True, default=0, group_operator="avg")
     amount_oborot = fields.Float(digits=(10, 2), string=u"Сумма оборот", default=0)
     amount_prihod = fields.Float(digits=(10, 2), string=u"Сумма приход", default=0)
     amount_rashod = fields.Float(digits=(10, 2), string=u"Сумма расход", default=0)

@@ -42,6 +42,7 @@
 
         'views/buh_nomen_group.xml',
         'views/buh_stati_zatrat.xml',
+        'views/buh_podrazdeleniya.xml',
         'views/ed_izm_categ.xml',
         'views/ed_izm.xml',
         'views/nalog_nds.xml',

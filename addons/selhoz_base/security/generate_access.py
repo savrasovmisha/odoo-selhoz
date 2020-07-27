@@ -4,6 +4,7 @@ spisok.append(['milk.config.settings',''])
 spisok_read = []
 spisok_read.append(['buh.nomen_group',''])
 spisok_read.append(['buh.stati_zatrat',''])
+spisok_read.append(['buh.podrazdeleniya',''])
 spisok_read.append(['nomen.ed_izm_categ',''])
 spisok_read.append(['nomen.ed_izm',''])
 spisok_read.append(['nomen.categ',''])

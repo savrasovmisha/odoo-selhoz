@@ -3,6 +3,7 @@ access_milk_config_settings_manager1,milk.config.settings,model_milk_config_sett
 access_milk_config_settings_users1,milk.config.settings,model_milk_config_settings,group_base_selhoz_users,1,0,0,0
 access_buh_nomen_group_users,buh.nomen_group,model_buh_nomen_group,base.group_user,1,0,0,0
 access_buh_stati_zatrat_users,buh.stati_zatrat,model_buh_stati_zatrat,base.group_user,1,0,0,0
+access_buh_podrazdeleniya_users,buh.podrazdeleniya,model_buh_podrazdeleniya,base.group_user,1,0,0,0
 access_nomen_ed_izm_categ_users,nomen.ed_izm_categ,model_nomen_ed_izm_categ,base.group_user,1,0,0,0
 access_nomen_ed_izm_users,nomen.ed_izm,model_nomen_ed_izm,base.group_user,1,0,0,0
 access_nomen_categ_users,nomen.categ,model_nomen_categ,base.group_user,1,0,0,0

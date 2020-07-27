@@ -50,6 +50,8 @@ access_sklad_trebovanie_nakladnaya_line_manager,sklad.trebovanie_nakladnaya_line
 access_sklad_trebovanie_nakladnaya_line_users,sklad.trebovanie_nakladnaya_line,model_sklad_trebovanie_nakladnaya_line,group_sklad_users,1,0,0,0
 access_buh_nomen_group_manager,buh.nomen_group,selhoz_base.model_buh_nomen_group,group_sklad_manager,1,1,1,1
 access_buh_stati_zatrat_manager,buh.stati_zatrat,selhoz_base.model_buh_stati_zatrat,group_sklad_manager,1,1,1,1
+access_buh_podrazdeleniya_manager,buh.podrazdeleniya,selhoz_base.model_buh_podrazdeleniya,group_sklad_manager,1,1,1,1
+access_buh_podrazdeleniya_users,buh.podrazdeleniya,selhoz_base.model_buh_podrazdeleniya,group_sklad_users,1,0,0,0
 access_sklad_ostatok_manager,sklad.ostatok,model_sklad_ostatok,group_sklad_manager,1,1,1,1
 access_sklad_ostatok_users,sklad.ostatok,model_sklad_ostatok,group_sklad_users,1,0,0,0
 access_sklad_razmeshenie_manager,sklad.razmeshenie,model_sklad_razmeshenie,group_sklad_manager,1,1,1,1

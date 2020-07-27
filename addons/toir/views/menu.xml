@@ -12,6 +12,10 @@
         <menuitem id="aktiv_aktiv_menu" name="Активы (оборудование)" sequence="1" parent="toir_menu" action="aktiv_aktiv_list_action" groups="group_toir_manager,group_toir_users"/>
         <!-- <menuitem id="aktiv_aktiv_tree_menu" name="Активы (иерархия)" sequence="1" parent="toir_menu" action="aktiv_aktiv_tree_action" groups="group_toir_manager,group_toir_users"/> -->
         
+        <menuitem id="aktiv_group_os_menu" name="Группа ОС (бух)" sequence="2" parent="toir_menu" action="aktiv_group_os_list_action" groups="group_toir_manager,group_toir_users"/>
+        <menuitem id="aktiv_group_uchet_os_menu" name="Группа учета ОС (бух)" sequence="2" parent="toir_menu" action="aktiv_group_uchet_os_list_action" groups="group_toir_manager,group_toir_users"/>
+
+
         <menuitem id="aktiv_categ_menu" name="Категории активов" sequence="2" parent="toir_menu" action="aktiv_categ_list_action" groups="group_toir_manager,group_toir_users"/>
 
 
@@ -25,6 +29,8 @@
         <menuitem id="aktiv_vid_rabot_menu" name="Виды работ" sequence="2" parent="toir_menu" action="aktiv_vid_rabot_list_action" groups="group_toir_manager,group_toir_users"/>
 
         <menuitem id="aktiv_status_menu" name="Статус активов" sequence="2" parent="toir_menu" action="aktiv_status_list_action" groups="group_toir_manager,group_toir_users"/>
+
+        <menuitem id="buh_podrazdeleniya_menu" name="Подразделения" parent="toir_menu" action="selhoz_base.buh_podrazdeleniya_list_action" groups="group_toir_manager,group_toir_users"/>
 
         <menuitem id="aktiv_nomen_nomen_list_menu" name="Номенклатура" parent="toir_menu" action="selhoz_base.nomen_nomen_list_action" groups="group_toir_manager,group_toir_users"/>
 

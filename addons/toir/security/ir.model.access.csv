@@ -3,6 +3,12 @@ access_aktiv_remont_service_manager,aktiv.remont_service,model_aktiv_remont_serv
 access_aktiv_remont_service_users,aktiv.remont_service,model_aktiv_remont_service,group_toir_users,1,0,0,0
 access_aktiv_categ_manager,aktiv.categ,model_aktiv_categ,group_toir_manager,1,1,1,1
 access_aktiv_categ_users,aktiv.categ,model_aktiv_categ,group_toir_users,1,0,0,0
+access_aktiv_amortizaciya_group_manager,aktiv.amortizaciya_group,model_aktiv_amortizaciya_group,group_toir_manager,1,1,1,1
+access_aktiv_amortizaciya_group_users,aktiv.amortizaciya_group,model_aktiv_amortizaciya_group,group_toir_users,1,0,0,0
+access_aktiv_group_os_manager,aktiv.group_os,model_aktiv_group_os,group_toir_manager,1,1,1,1
+access_aktiv_group_os_users,aktiv.group_os,model_aktiv_group_os,group_toir_users,1,0,0,0
+access_aktiv_group_uchet_os_manager,aktiv.group_uchet_os,model_aktiv_group_uchet_os,group_toir_manager,1,1,1,1
+access_aktiv_group_uchet_os_users,aktiv.group_uchet_os,model_aktiv_group_uchet_os,group_toir_users,1,0,0,0
 access_aktiv_aktiv_manager,aktiv.aktiv,model_aktiv_aktiv,group_toir_manager,1,1,1,1
 access_aktiv_aktiv_users,aktiv.aktiv,model_aktiv_aktiv,group_toir_users,1,0,0,0
 access_aktiv_type_manager,aktiv.type,model_aktiv_type,group_toir_manager,1,1,1,1

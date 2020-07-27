@@ -1,6 +1,9 @@
 spisok = []
 spisok.append(['aktiv.remont_service','', 1])
 spisok.append(['aktiv.categ','', 1])
+spisok.append(['aktiv.amortizaciya_group','', 1])
+spisok.append(['aktiv.group_os','', 1])
+spisok.append(['aktiv.group_uchet_os','', 1])
 spisok.append(['aktiv.aktiv','', 1])
 spisok.append(['aktiv.type','', 1])
 spisok.append(['aktiv.status','', 1])

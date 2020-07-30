@@ -218,10 +218,28 @@ class sklad_ostatok(models.Model):
   
     
     name = fields.Char(string=u"Наименование", compute='_get_name', store=True)
+    sklad_osnovnoy_id = fields.Many2one('sklad.sklad', string='Склад основной', compute='get_osnovnoy_sklad', store=True)
     sklad_sklad_id = fields.Many2one('sklad.sklad', string='Склад', required=True)
     nomen_nomen_id = fields.Many2one('nomen.nomen', string='Номенклатура', required=True)
     kol = fields.Float(digits=(10, 3), string=u"Кол-во")
     
+    
+    def _get_parent(self, sklad_sklad_id):
+        if sklad_sklad_id.parent_id:
+            self._get_parent(sklad_sklad_id.parent_id)
+        else:
+            return sklad_sklad_id
+
+
+
+    @api.multi
+    @api.depends('sklad_sklad_id')
+    def get_osnovnoy_sklad(self):
+        for record in self:
+            record.sklad_osnovnoy_id = record.sklad_sklad_id.sklad_osnovnoy_id
+
+
+
 
     def get_ostatok_date(self, date, nomen_nomen_id, sklad_sklad_id):
         # kol_tek = self.search([

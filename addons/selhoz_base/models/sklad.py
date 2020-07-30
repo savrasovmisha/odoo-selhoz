@@ -316,12 +316,34 @@ class sklad_sklad(models.Model):
         self.env.cr.commit()
         return result
 
+  
+
+    @api.multi
+    @api.depends('name','parent_id')
+    def get_osnovnoy_sklad(self):
+        for record in self:
+            par = record.parent_id
+            while par:
+                if par.parent_id:
+                    par = par.parent_id
+                else:
+                    record.sklad_osnovnoy_id = par
+                    break
+
+            if not record.sklad_osnovnoy_id:
+                record.sklad_osnovnoy_id = record
+
+            # if record.parent_id:
+            #     record.sklad_osnovnoy_id = record.parent_id._get_parent()
+            # else:
+            #     record.sklad_osnovnoy_id = record
 
     name = fields.Char(string=u"Наименование", required=True) 
     complete_name = fields.Char(string=u"Наименование", compute='_complete_name', store=True) 
     partner_id = fields.Many2one('res.partner', string='Ответственный')
     id_1c = fields.Char(string=u"Номер в 1С")
     location_location_id = fields.Many2one('location.location', string='Местонахождение')
+    sklad_osnovnoy_id = fields.Many2one('sklad.sklad', string=u'Основной склад', compute=get_osnovnoy_sklad, store=True)
     parent_id = fields.Many2one('sklad.sklad', string=u'Родительский элемент', index=True, ondelete='cascade')
     child_ids = fields.One2many('sklad.sklad', 'parent_id', string=u'Подчиненные элементы')
     parent_left = fields.Integer('Left Parent', index=True)

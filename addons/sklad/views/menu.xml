@@ -34,7 +34,9 @@
        
         <menuitem id="sklad_oborot_report_menu" name="Обороты склада" parent="sklad_menu_report" action="sklad_oborot_report_action" groups="group_sklad_manager,group_sklad_users"/>
 
-        <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu_report" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/>
+        <!-- <menuitem id="sklad_ostatok_menu" name="Остатки номенклатуры" parent="sklad_menu_report" action="sklad_ostatok_list_action" groups="group_sklad_manager,group_sklad_users"/> -->
+
+        <menuitem id="sklad_ostatok_report_menu" name="Остатки склада" parent="sklad_menu_report" action="sklad_ostatok_report_action" groups="group_sklad_manager,group_sklad_users"/>
 
 
 

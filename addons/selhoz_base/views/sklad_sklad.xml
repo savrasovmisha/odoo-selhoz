@@ -12,6 +12,7 @@
                         <field name="partner_id"/>
                         <field name="id_1c"/>
                         <field name="parent_id"/>
+                        <field name="sklad_osnovnoy_id"/>
                         <field name="location_location_id"/>
                         <!-- <field name="child_ids"/> -->
            

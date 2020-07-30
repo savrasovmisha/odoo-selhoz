@@ -10,6 +10,7 @@ spisok.append(['sklad.oborot',''])
 spisok.append(['pokupka.pokupka_uslugi_line',''])
 spisok.append(['sklad.razmeshenie',''])
 spisok.append(['sklad.razmeshenie_line',''])
+spisok.append(['sklad.ostatok_report',''])
 
 
 

@@ -2,4 +2,4 @@
 
 #import partner
 import sklad_report
-r
+

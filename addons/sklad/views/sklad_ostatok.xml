@@ -9,6 +9,7 @@
                 <sheet>
                     
                     <group>
+                        <field name="sklad_osnovnoy_id"/>
                         <field name="sklad_sklad_id"/>
                         <field name="nomen_nomen_id"/>
                         <field name="kol"/>
@@ -26,6 +27,7 @@
             <field name="model">sklad.ostatok</field>
             <field name="arch" type="xml">
                 <tree string="Номенклатура остатки" >
+                        <field name="sklad_osnovnoy_id"/>
                         <field name="sklad_sklad_id"/>
                         <field name="nomen_nomen_id"/>
                         <field name="kol"/>

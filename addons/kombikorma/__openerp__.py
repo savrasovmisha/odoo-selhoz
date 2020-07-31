@@ -27,6 +27,7 @@
         'security/kombikorma_security.xml',
            
         'views/kombikorma_proizvodstvo.xml',
+        'views/seq_kombikorma_proizvodstvo.xml',
 
         
         'views/menu.xml',

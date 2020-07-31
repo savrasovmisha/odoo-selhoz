@@ -474,9 +474,9 @@ class korm_receptura(models.Model):
 
 
 	@api.one
-	@api.depends('nomen_nomen_id')
+	@api.depends('nomen_nomen_id', 'date')
 	def return_name(self):
-		self.name = self.nomen_nomen_id.name
+		self.name = u'%s от %s' % (self.nomen_nomen_id.name, self.date) 
 
 
 	@api.model

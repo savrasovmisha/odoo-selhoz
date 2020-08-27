@@ -72,7 +72,7 @@
                                     <field name="avg_antibiotik"/>
                                 </group>
 
-                                <group>
+                                <group string="Параметры ТТН">
                                     <!-- <div class="oe_button_box" name="button_box">
                                         <button name="action_next_number"
                                             type="object"
@@ -90,6 +90,14 @@
 
                                     <!-- <field name="nomer_ttn" attrs="{'invisible': [('is_nomer_ruch',  '=', True)]}"/>
                                     <field name="nomer_partii" attrs="{'invisible': [('is_nomer_ruch',  '=', True)]}"/> -->
+                    
+                                </group>
+
+                                <group string="Время погрузки">
+                                                                        
+                                    <field name="vremya_start" string="Начало"/>
+                                    <field name="vremya_stop"  string="Окончание"/>
+                                    
                     
                                 </group>
                         

@@ -137,6 +137,8 @@ class sale_milk(models.Model):
 	avg_kislotnost = fields.Integer(string=u"Кислот- ность", default=u'17', compute='_amount_all', store=True, group_operator="avg")
 	avg_temperatura = fields.Integer(string=u"Темпе- ратура", default=u'4', compute='_amount_all', store=True, group_operator="avg")
 
+	vremya_start = fields.Char(string=u"Время начала погрузки")
+	vremya_stop = fields.Char(string=u"Время окончания погрузки")
 	description = fields.Text(string=u"Коментарии")
 
 	@api.one

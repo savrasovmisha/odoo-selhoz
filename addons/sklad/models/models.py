@@ -2010,7 +2010,7 @@ class sklad_inventarizaciya(models.Model):
                                  'name': line.nomen_nomen_id.name, 
                                  'sklad_sklad_id': line.sklad_sklad_id.id or doc.sklad_sklad_id.id, 
                                  'nomen_nomen_id': line.nomen_nomen_id.id, 
-                                 'kol': line.kol_otk, 
+                                 'kol': -1*line.kol_otk, 
                                  'amount': line.amount_otk, 
                                 })
                 if line.kol_otk == 0 and line.amount_otk>0:
